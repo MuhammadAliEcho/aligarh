@@ -1,0 +1,228 @@
+@extends('layouts.master')
+
+  @section('title', 'Parents |')
+
+  @section('head')
+  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+  <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+  @endsection
+
+  @section('content')
+
+  @include('includes.side_navbar')
+
+        <div id="page-wrapper" class="gray-bg">
+
+          @include('includes.top_navbar')
+
+          <!-- Heading -->
+          <div class="row wrapper border-bottom white-bg page-heading">
+              <div class="col-lg-8 col-md-6">
+                  <h2>Users</h2>
+                  <ol class="breadcrumb">
+                    <li>Home</li>
+                      <li Class="active">
+                          <a>Users</a>
+                      </li>
+                  </ol>
+              </div>
+              <div class="col-lg-4 col-md-6">
+                @include('includes.academic_session')
+              </div>
+          </div>
+
+          <!-- main Section -->
+
+          <div class="wrapper wrapper-content animated fadeInRight">
+
+            <div class="row">
+                <div class="col-lg-12">
+                  <div class="ibox float-e-margins">
+                      <div class="ibox-title">
+                          <h2>Edit User</h2>
+                          <div class="hr-line-dashed"></div>
+                      </div>
+
+                      <div class="ibox-content">
+
+                                    <form id="tchr_rgstr" method="post" action="{{ URL('users/edit/'.$user->id) }}" class="form-horizontal" >
+                                      {{ csrf_field() }}
+
+                                      <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">User Name</label>
+                                        <div class="col-md-6">
+                                          <input type="text" placeholder="User Name" value="{{ old('name', $user->name) }}" class="form-control" readonly="true" />
+                                          @if ($errors->has('name'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">E-Mail</label>
+                                        <div class="col-md-6">
+                                          <input type="text" placeholder="E-Mail" value="{{ old('email', $user->email) }}" class="form-control" readonly="true" />
+                                          @if ($errors->has('email'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group{{ ($errors->has('status'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Status</label>
+                                        <div class="col-md-6">
+                                          <select name="status" id="status" class="form-control"/>
+                                            <option value="0">InActive</option>
+                                            <option value="1">Active</option>
+                                          </select>
+                                          @if ($errors->has('status'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('status') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      @if(Auth::user()->privileges->{$root['content']['id']}->editpwd)
+                                      <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Password</label>
+                                        <div class="col-md-6">
+                                          <input type="password" id="password" name="password" placeholder="Password" value="{{ old('password') }}" class="form-control"/>
+                                          @if ($errors->has('password'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('password') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group{{ ($errors->has('re_password'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Confirm Password</label>
+                                        <div class="col-md-6">
+                                          <input type="password" name="re_password" placeholder="Confirm Password" value="{{ old('re_password') }}" class="form-control"/>
+                                          @if ($errors->has('re_password'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('re_password') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+                                      @endif
+
+                                      <div class="panel panel-success">
+                                        <div class="panel-heading">
+                                          Select Options To Allow User
+                                        </div>
+                                        <div class="panel-body">
+
+                                          @foreach(collect($content)->chunk(3) AS $chunks)
+                                            <div class="row">
+                                            @foreach($chunks AS $key => $chunk)
+                                              <div class="col-sm-4 col-md-4">
+                                                <div class="checkbox checkbox-success">
+                                                  <input id="checkbox_{{ $chunk->id }}" name="privileges[{{ $chunk->id }}][default]" value="1" type="checkbox">
+                                                  <label for="checkbox_{{ $chunk->id }}">
+                                                    {{ $chunk->label }}
+                                                  </label>
+                                                </div>
+                                                @if(COUNT($chunk->options) >= 1 )
+                                                <b>Option:</b>
+                                                <select class="select2 form-control" id="select_{{ $chunk->id }}" multiple="multiple" name="privileges[{{$chunk->id}}][options][]" style="width: 100%">
+                                                  @foreach($chunk->options AS $k => $option)
+                                                    @if(Auth::user()->privileges->{$chunk->id}->{$k})
+                                                      <option value="{{ $k }}">{{ $option }}</option>
+                                                    @endif
+                                                  @endforeach
+                                                </select>
+                                                @endif
+                                              </div>
+                                            @endforeach
+                                            </div>
+                                          @endforeach
+
+
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                          <div class="col-md-offset-2 col-md-6">
+                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Update </button>
+                                          </div>
+                                      </div>
+                                    </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+          </div>
+
+
+          @include('includes.footercopyright')
+
+
+        </div>
+
+    @endsection
+
+    @section('script')
+
+    <!-- Mainly scripts -->
+    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+
+    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+
+    <!-- Input Mask-->
+     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+
+    <!-- Select2 -->
+    <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+
+    <script type="text/javascript">
+    var privileges = {!! json_encode($user->privileges) !!};
+
+      $(document).ready(function(){
+
+        $("#tchr_rgstr").validate({
+            rules: {
+              status: {
+                required: true,
+              },
+           password: {
+                          minlength: 6,
+                         maxlength: 12,
+                      },
+           re_password: {
+                          minlength: 6,
+                          maxlength: 12,
+                        equalTo :"#password"
+          }
+        },
+        messages:{
+          re_pwd:{
+            equalTo:'Password and Confirm password must be same'
+          }
+        }
+        });
+
+        $("#status").val({{ $user->active }});
+
+        $.each(privileges, function(key, val){
+          $('#checkbox_'+key).prop('checked', val.default);
+          $.each(val, function(k, v){
+            $("#select_"+key+" option[value='"+k+"']").prop("selected", v);
+          });
+        });
+
+        $(".select2").select2();
+
+      });
+    </script>
+
+    @endsection

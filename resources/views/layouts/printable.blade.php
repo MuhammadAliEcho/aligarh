@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>@yield('title') Aligarh School Management System</title>
+    <link rel="icon" href="{{ URL::to('src/icon/favicon.png') }}">
+
+    <link href="{{ URL::to('src/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::to('src/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+
+    <script type="text/javascript">
+        // Convert numbers to words
+        // copyright 25th July 2006, by Stephen Chapman http://javascript.about.com
+        // permission to use this Javascript on your web page is granted
+        // provided that all of the code (including this copyright notice) is
+        // used exactly as shown (you can change the numbering system if you wish)
+
+        // American Numbering System
+        var th = ['PKR only.','thousand','million', 'billion','trillion'];
+        // uncomment this line for English Number System
+        // var th = ['','thousand','million', 'milliard','billion'];
+
+        var dg = ['zero','one','two','three','four', 'five','six','seven','eight','nine'];
+        var tn = ['ten','eleven','twelve','thirteen', 'fourteen','fifteen','sixteen', 'seventeen','eighteen','nineteen'];
+        var tw = ['twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+        function toWords(s){s = s.toString(); s = s.replace(/[\, ]/g,''); if (s != parseFloat(s)) return 'not a number'; var x = s.indexOf('.'); if (x == -1) x = s.length; if (x > 15) return 'too big'; var n = s.split(''); var str = ''; var sk = 0; for (var i=0; i < x; i++) {if ((x-i)%3==2) {if (n[i] == '1') {str += tn[Number(n[i+1])] + ' '; i++; sk=1;} else if (n[i]!=0) {str += tw[n[i]-2] + ' ';sk=1;}} else if (n[i]!=0) {str += dg[n[i]] +' '; if ((x-i)%3==0) str += 'hundred ';sk=1;} if ((x-i)%3==1) {if (sk) str += th[(x-i-1)/3] + ' ';sk=0;}} if (x != s.length) {var y = s.length; str += 'point '; for (var i=x+1; i<y; i++) str += dg[n[i]] +' ';} return str.replace(/\s+/g,' ');}
+
+    </script>
+
+
+    @yield('head')
+
+
+
+  </head>
+
+<body>
+  <div class="container">
+    @yield('content')
+
+    <div class="footer">
+        <div class="pull-right">
+             <strong>All rights reserved</strong>
+        </div>
+        <div>
+            <strong>Copyright</strong> HASHMANAGEMENT © 2017
+        </div>
+    </div>
+
+  </div>
+
+
+
+
+
+    <script src="{{ URL::to('src/js/jquery-2.1.1.js') }}"></script>
+    <!-- jQuery UI -->
+    <script src="{{ URL::to('src/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+
+    @yield('script')
+
+    <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
+
+</body>
+
+</html>

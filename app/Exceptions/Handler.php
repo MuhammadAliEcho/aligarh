@@ -42,8 +42,22 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
+
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException)
+        {
+            return redirect()
+                    ->back()
+                    ->withInput($request->except('password'))
+                    ->with([
+                        'toastrmsg' => [
+                                    'type' => 'warning', 
+                                    'title'  =>  'Warning',
+                                    'msg' =>  'TokenMismatchException'
+                                    ],
+                        ]);
+        }
         return parent::render($request, $exception);
     }
 

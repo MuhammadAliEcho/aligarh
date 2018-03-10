@@ -9,10 +9,10 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+	use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function Index(){
-    	return "test ";
-    }
+	protected function FilterAt($var){
+		return str_ireplace('@', '&#64;', $var);
+	}
 
 }
