@@ -170,4 +170,10 @@ return [
 		"unpaid-fee-statment"	=>	1,
 		"yearly-collection-statment"	=>	1,
 		],
+
+	// Fee Scenario
+	34 => [
+		'default'	=>	0,
+		'update'	=>	0,
+		],
 ];

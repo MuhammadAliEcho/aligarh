@@ -623,8 +623,8 @@
         el: '#app',
         data: { 
           fee: {
-            additionalfee: {!! json_encode(old('fee', config('additionalfee'))) !!},
-            tuition_fee: {{ old('tuition_fee', 2100) }},
+            additionalfee: {!! old('fee', config('feeses.additional_fee')) !!},
+            tuition_fee: {{ old('tuition_fee', config('feeses.compulsory.tuition_fee')) }},
             discount:  {{ old('discount', 0) }},
           },
         },

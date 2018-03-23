@@ -109,14 +109,15 @@ class StudentsController extends Controller
 
   public function EditStudent(){
 
-  	$this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
-  	$this->data['classes'] = Classe::select('id', 'name')->get();
-  	foreach ($this->data['classes'] as $key => $class) {
-  		$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
-  	}
+    $this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
+    $this->data['classes'] = Classe::select('id', 'name')->get();
+    foreach ($this->data['classes'] as $key => $class) {
+    	$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
+    }
 
     $this->data['student'] = Student::findorFail($this->data['root']['option']);
     $this->data['additional_fee'] = $this->data['student']->AdditionalFee;
+
     return view('admin.edit_student', $this->data);
   }
 

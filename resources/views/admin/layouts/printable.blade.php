@@ -44,22 +44,21 @@
     @yield('content')
   </div>
 
-
-
-
-
     <script src="{{ URL::to('src/js/jquery-2.1.1.js') }}"></script>
     <!-- jQuery UI -->
     <script src="{{ URL::to('src/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 
     @yield('script')
 
-    <!-- Vue -->
-<!--     <script src="{{ URL::to('src/vue.min-2.5.15.js') }}"></script> -->
-    <!-- Vue dev version -->
-    <script src="{{ URL::to('src/vue.js') }}"></script>
-    @yield('vue')
 
+    @if(env('APP_DEBUG'))
+        <!-- Vue dev version -->
+        <script src="{{ URL::to('src/vue.js') }}"></script>
+    @else
+        <!-- Vue -->
+        <script src="{{ URL::to('src/vue.min-2.5.15.js') }}"></script>
+    @endif
+    @yield('vue')
 
     <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
 

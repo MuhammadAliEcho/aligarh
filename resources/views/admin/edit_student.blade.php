@@ -49,7 +49,6 @@
 										</div>
 
 										<div class="ibox-content">
-
 																		<form id="tchr_rgstr" method="post" action="{{ URL('students/edit/'.$student->id) }}" class="form-horizontal" enctype="multipart/form-data">
 																			{{ csrf_field() }}
 
@@ -129,7 +128,7 @@
 																				</div>
 																			</div>
 
-																			<div class="form-group{{ ($errors->has('img'))? ' has-error' : '' }}">
+																			<div class="form-group {{ ($errors->has('img'))? ' has-error' : '' }}">
 																				<div class="col-md-2">
 																					<span class="btn btn-default btn-block btn-file">
 																						<input type="file" name="img" accept="image/*" id="imginp" />
@@ -138,11 +137,11 @@
 																					</span>
 																				</div>
 																				<div class="col-md-6">
-																					<img id="img" src="{{ URL($student->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
+																					<img id="img" src="{{ URL($student->image_url) or '' }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
 																					@if ($errors->has('img'))
-																							<span class="help-block">
-																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
-																							</span>
+																						<span class="help-block">
+																								<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
+																						</span>
 																					@endif
 																				</div>
 																			</div>
@@ -152,9 +151,9 @@
 																				<div class="col-md-6">
 																					<input type="text" name="last_school" placeholder="Last School Attendent" value="{{ old('last_school', $student->last_school) }}" class="form-control"/>
 																					@if ($errors->has('last_school'))
-																							<span class="help-block">
-																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('last_school') }}</strong>
-																							</span>
+																						<span class="help-block">
+																								<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('last_school') }}</strong>
+																						</span>
 																					@endif
 																				</div>
 																			</div>
@@ -272,7 +271,6 @@
 																					@endif
 																				</div>
 																			</div>
-
 																			<div class="col-lg-8">
 																			<div class="panel panel-info">
 																			<div class="panel-heading">
@@ -380,7 +378,6 @@
 
 		var tr;
 		no = 1;
-
 
 		function readURL(input) {
 			if (input.files && input.files[0]) {
