@@ -565,7 +565,6 @@
               },
               gr_no: {
                 required: true,
-                number: true,
               },
             },
         });

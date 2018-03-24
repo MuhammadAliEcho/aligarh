@@ -191,7 +191,7 @@
 																			<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
 																				<label class="col-md-2 control-label">GR No</label>
 																				<div class="col-md-6">
-																					<input type="text" name="gr_no" placeholder="GR NO" value="{{ old('gr_no', substr($student->gr_no, 3)) }}" class="form-control" />
+																					<input type="text" name="gr_no" placeholder="GR NO" value="{{ old('gr_no', $student->gr_no) }}" class="form-control" />
 																					@if ($errors->has('gr_no'))
 																							<span class="help-block">
 																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }}</strong>
@@ -434,7 +434,6 @@
 							},
 							gr_no: {
 								required: true,
-								number: true,
 							},
 						},
 				});

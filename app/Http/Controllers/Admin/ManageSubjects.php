@@ -15,104 +15,104 @@ use App\Http\Controllers\Controller;
 class ManageSubjects extends Controller
 {
 
-  //  protected $Routes;
-  protected $data, $Classes, $Subjects, $Request;
+	//  protected $Routes;
+	protected $data, $Classes, $Subjects, $Request;
 
-  public function __Construct($Routes){
-    $this->data['root'] = $Routes;
-  }
+	public function __Construct($Routes){
+		$this->data['root'] = $Routes;
+	}
 
-  public function GetSubject(){
+	public function GetSubject(){
 
-    $this->data['teachers'] = Teacher::select('name', 'id')->get();
-    $this->data['classes'] = Classe::select('name', 'id')->get();
-    
-    foreach ($this->data['classes'] as $key => $class) {
+		$this->data['teachers'] = Teacher::select('name', 'id')->get();
+		$this->data['classes'] = Classe::select('name', 'id')->get();
+		
+		foreach ($this->data['classes'] as $key => $class) {
 		$this->data['subjects']['class_'.$class->id] = DB::table('subjects')
 			->leftjoin('teachers', 'subjects.teacher_id', '=', 'teachers.id')
 			->select('subjects.name', 'subjects.book', 'subjects.id', 'teachers.name AS teacher_name')
 			->where('subjects.class_id', '=', $class->id)
 			->get();
-    }
+		}
 
-    return view('admin.subjects', $this->data);
+		return view('admin.subjects', $this->data);
 
-  }
+	}
 
-  public function EditSubject(){
-    if(Subject::where('id', $this->data['root']['option'])->count() == 0){
-    return  redirect('manage-subjects')->with([
-        'toastrmsg' => [
-          'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
-          'msg' =>  'Do Not write hard URL\'s'
-          ]
-      ]);
-    }
-    $this->data['classes'] = Classe::select('name', 'id')->get();
-    $this->data['teachers'] = Teacher::select('name', 'id')->get();
-    $this->data['subject'] = Subject::find($this->data['root']['option']);
+	public function EditSubject(){
+		if(Subject::where('id', $this->data['root']['option'])->count() == 0){
+		return  redirect('manage-subjects')->with([
+				'toastrmsg' => [
+					'type' => 'warning', 
+					'title'  =>  '# Invalid URL',
+					'msg' =>  'Do Not write hard URL\'s'
+					]
+			]);
+		}
+		$this->data['classes'] = Classe::select('name', 'id')->get();
+		$this->data['teachers'] = Teacher::select('name', 'id')->get();
+		$this->data['subject'] = Subject::find($this->data['root']['option']);
 
-    return view('admin.edit_subject', $this->data);
-  }
+		return view('admin.edit_subject', $this->data);
+	}
 
-  public function AddSubject(Request $request){
+	public function AddSubject(Request $request){
 
-    $this->Request = $request;
-    $this->PostValidate();
-    $this->Subjects = new Subject;
-    $this->SetAttributes();
-    $this->Subjects->created_by = Auth::user()->id;
-    $this->Subjects->save();
+		$this->Request = $request;
+		$this->PostValidate();
+		$this->Subjects = new Subject;
+		$this->SetAttributes();
+		$this->Subjects->created_by = Auth::user()->id;
+		$this->Subjects->save();
 
-    return redirect('manage-subjects')->with([
-        'toastrmsg' => [
-          'type' => 'success', 
-          'title'  =>  'Subjects Registration',
-          'msg' =>  'Registration Successfull'
-          ]
-      ]);
+		return redirect('manage-subjects')->with([
+				'toastrmsg' => [
+					'type' => 'success', 
+					'title'  =>  'Subjects Registration',
+					'msg' =>  'Registration Successfull'
+					]
+			]);
 
-  }
+	}
 
-  public function PostEditSubject(Request $request){
+	public function PostEditSubject(Request $request){
 
-    $this->Request = $request;
-    $this->PostValidate();
+		$this->Request = $request;
+		$this->PostValidate();
 
-    if(Subject::where('id', $this->data['root']['option'])->count() == 0){
-    return  redirect('manage-subjects')->with([
-        'toastrmsg' => [
-          'type' => 'warning',
-          'title'  =>  '# Invalid URL',
-          'msg' =>  'Do Not write hard URL\'s'
-          ]
-      ]);
-    }
+		if(Subject::where('id', $this->data['root']['option'])->count() == 0){
+		return  redirect('manage-subjects')->with([
+				'toastrmsg' => [
+					'type' => 'warning',
+					'title'  =>  '# Invalid URL',
+					'msg' =>  'Do Not write hard URL\'s'
+					]
+			]);
+		}
 
-    $this->Subjects = Subject::find($this->data['root']['option']);
+		$this->Subjects = Subject::find($this->data['root']['option']);
 
-    $this->SetAttributes();
-    $this->Subjects->updated_by = Auth::user()->id;
-    $this->Subjects->save();
+		$this->SetAttributes();
+		$this->Subjects->updated_by = Auth::user()->id;
+		$this->Subjects->save();
 
-    return redirect('manage-subjects')->with([
-        'toastrmsg' => [
-          'type' => 'success',
-          'title'  =>  'Subject Registration',
-          'msg' =>  'Save Changes Successfull'
-          ]
-      ]);
-  }
+		return redirect('manage-subjects')->with([
+				'toastrmsg' => [
+					'type' => 'success',
+					'title'  =>  'Subject Registration',
+					'msg' =>  'Save Changes Successfull'
+					]
+			]);
+	}
 
-  protected function PostValidate(){
-    $this->validate($this->Request, [
-        'name'  =>  'required',
-        'book'  =>  'required',
+	protected function PostValidate(){
+		$this->validate($this->Request, [
+				'name'  =>  'required',
+				'book'  =>  'required',
 //        'teacher' =>  'required',
-        'class' =>  'required'
-    ]);
-  }
+				'class' =>  'required'
+		]);
+	}
 
 	protected function SetAttributes(){
 		$this->Subjects->name = $this->Request->input('name');
