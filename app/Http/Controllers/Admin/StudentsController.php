@@ -88,7 +88,7 @@ class StudentsController extends Controller
 		$this->SetAttributes();
 		$this->Student->created_by  = Auth::user()->id;
 		$this->Student->session_id  = Auth::user()->academic_session;
-//		$this->UpdateGrNo();
+		$this->UpdateGrNo();
 		$this->Student->save();
 		if($this->Request->hasFile('img')){
 			$this->SaveImage();
@@ -126,8 +126,9 @@ class StudentsController extends Controller
 		$this->PostValidate();
 		$this->Student = Student::findorFail($this->data['root']['option']);
 		$this->SetAttributes();
-//    $this->Student->save();
-//		$this->UpdateGrNo();
+
+		$this->UpdateGrNo();
+
 		if($this->Request->hasFile('img')){
 			$this->SaveImage();
 		}
@@ -152,7 +153,7 @@ class StudentsController extends Controller
 		$this->Student->gender = $this->Request->input('gender');
 		$this->Student->class_id = $this->Request->input('class');
 		$this->Student->section_id = $this->Request->input('section');
-	    $this->Student->gr_no = $this->Request->input('gr_no');
+//		$this->Student->gr_no = $this->Request->input('gr_no');
 		$this->Student->guardian_id = $this->Request->input('guardian');
 		$this->Student->guardian_relation = $this->Request->input('guardian_relation');
 		$this->Student->email = $this->Request->input('email');
@@ -188,7 +189,7 @@ class StudentsController extends Controller
 		$class = Classe::find($this->Student->class_id);
 		$section = Section::find($this->Student->section_id);
 //    $this->Student->gr_no = $class->numeric_name . $section->nick_name ."-" . $this->Student->id;
-		$this->Student->gr_no = $class->numeric_name . $section->nick_name ."-" . $this->Request->input('gr_no');
+		$this->Student->gr_no = $class->prifix . $section->nick_name ."-" . $this->Request->input('gr_no');
 	}
 
 	protected function SaveImage(){

@@ -99,6 +99,18 @@
                                         </div>
                                       </div>
 
+                                      <div class="form-group{{ ($errors->has('prifix'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Prifix</label>
+                                        <div class="col-md-6">
+                                          <input type="text" name="prifix" placeholder="Prifix" value="{{ old('prifix') }}" class="form-control" required="true" />
+                                          @if ($errors->has('prifix'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('prifix') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
                                       <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
                                         <label class="col-md-2 control-label">Teacher</label>
                                         <div class="col-md-6 select2-div">
@@ -219,10 +231,9 @@
               numeric_name: {
                 required: true,
               },
-/*              teacher: {
+              prifix: {
                 required: true,
               },
-*/
             },
         });
 

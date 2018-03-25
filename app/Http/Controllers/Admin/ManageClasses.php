@@ -68,6 +68,7 @@ class ManageClasses extends Controller
 		$this->validate($this->Request, [
 				'name'  =>  'required',
 				'numeric_name'  =>  'required',
+				'prifix'  =>  'required',
 /*        'teacher' =>  'required'*/
 		]);
 	}
@@ -128,6 +129,7 @@ class ManageClasses extends Controller
 		$this->Classes->name = $this->Request->input('name');
 		$this->Classes->numeric_name = $this->Request->input('numeric_name');
 		$this->Classes->teacher_id = $this->Request->input('teacher');
+		$this->Classes->prifix = $this->Request->input('prifix');
 	}
 
 
