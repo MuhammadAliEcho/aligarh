@@ -52,7 +52,7 @@ class UsersController extends Controller
 
       $this->Request = $request;
       $this->User = User::findOrfail($this->data['root']['option']);
-        if($this->User->created_by == 0 && Auth::user()->id != 9){
+        if($this->User->created_by == 0 && Auth::user()->id != 1){
         return redirect('users')->with([
         'toastrmsg' => [
           'type' => 'warning', 
