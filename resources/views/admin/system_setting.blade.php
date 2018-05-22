@@ -125,6 +125,13 @@
 																			</div>
 
 																			<div class="form-group">
+																				<label class="col-md-2 control-label">Next Chalan No</label>
+																				<div class="col-md-6">
+																					<input type="text" value="{{ config('systemInfo.next_chalan_no') }}" readonly="ture" class="form-control"/>
+																				</div>
+																			</div>
+
+																			<div class="form-group">
 																					<div class="col-md-offset-2 col-md-6">
 																							<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Update </button>
 																					</div>

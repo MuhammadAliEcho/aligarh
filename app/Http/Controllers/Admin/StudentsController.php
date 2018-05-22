@@ -185,6 +185,8 @@ class StudentsController extends Controller
 				$AdditionalFee->student_id = $this->Student->id;
 				$AdditionalFee->fee_name = $value['fee_name'];
 				$AdditionalFee->amount = $value['amount'];
+				$AdditionalFee->onetime = isset($value['onetime'])? 1 : 0;
+				$AdditionalFee->active = isset($value['active'])? 1 : 0;
 				$AdditionalFee->save();
 			}
 		}

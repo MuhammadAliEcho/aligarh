@@ -339,7 +339,7 @@
                                           <tr>
                                             <th>Name</th>
                                             <th>Amount</th>
-                                            <th>Remove</th>
+                                            <th>Actions</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -361,7 +361,19 @@
                                             <tr v-for="(fee, k) in fee.additionalfee">
                                               <td><input type="hidden" :name="'fee['+k+'][id]'" value="0" ><input type="text" :name="'fee['+ k +'][fee_name]'" class="form-control" required="true" v-model="fee.fee_name"></td>
                                               <td><input type="number" :name="'fee['+ k +'][amount]'" class="form-control additfeeamount" required="true" min="1" v-model.number="fee.amount"></td>
-                                              <td><a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" ><span class="fa fa-trash"></span></a></td>
+                                              <td>
+                                                <div class="input-group">
+                                                  <span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
+                                                    <input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" :checked="fee.onetime">
+                                                  </span>
+                                                  <span class="input-group-addon" data-toggle="tooltip" title="Active">
+                                                    <input type="checkbox" :name="'fee['+ k +'][active]'" value="1" :checked="fee.active" @click="fee.active = !fee.active">
+                                                  </span>
+                                                  <a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" >
+                                                    <span class="fa fa-trash"></span>
+                                                  </a>
+                                                </div>
+                                              </td>
                                             </tr>
 
                                         </tbody>
@@ -653,7 +665,9 @@
             this.fee.additionalfee.push({
               id: 0,
               fee_name: '',
-              amount: 0
+              amount: 0,
+              active: 1,
+              onetime: 1
             });
           },
           removeAdditionalFee: function(k){
@@ -665,7 +679,9 @@
           total_amount: function(){
             tot_amount = Number(this.fee.tuition_fee);
             for(k in this.fee.additionalfee) { 
-              tot_amount += Number(this.fee.additionalfee[k].amount);
+              if(this.fee.additionalfee[k].active){
+                tot_amount += Number(this.fee.additionalfee[k].amount);
+              }
             }
             return  tot_amount;
           },

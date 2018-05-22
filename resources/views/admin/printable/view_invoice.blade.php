@@ -42,7 +42,7 @@
     			</div>
     			<div class="col-xs-6 text-right">
     				<address>
-            			<strong>Date : {{ $invoice->created_at }}</strong><br>
+            			<strong>Date : {{ $invoice->date }}</strong><br>
     				</address>
     			</div>
     		</div>

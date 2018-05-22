@@ -85,6 +85,7 @@ return [
 		'create'	=>	0,
 		'findstu'	=>	1,
 		'invoice'	=>	1,
+		'chalan'	=>	1,
 		],
 	// Expense
 	14 => [
@@ -158,9 +159,9 @@ return [
 		'update'	=>	0,
 		],
 
-/*	32 => [
+	32 => [
 		'default'	=>	0,
-		],*/
+		],
 
 	// Reports
 	33 => [

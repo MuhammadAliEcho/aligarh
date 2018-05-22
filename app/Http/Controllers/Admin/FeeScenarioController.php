@@ -53,6 +53,8 @@ class FeeScenarioController extends Controller
 		foreach ($this->request->input('fee') as $key => $value) {
 			$this->feeses['additional_fee'][$key]['fee_name']	=	$value['fee_name'];
 			$this->feeses['additional_fee'][$key]['amount']	=	(int)$value['amount'];
+			$this->feeses['additional_fee'][$key]['active']	=	isset($value['active'])? 1 : 0;
+			$this->feeses['additional_fee'][$key]['onetime']	=	isset($value['onetime'])? 1 : 0;
 		}
 
 		$this->feeses['additional_fee'] = json_encode($this->feeses['additional_fee']);
