@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Auth;
 
 class Exam extends Model
 {
-	
 
 	protected function getStartDateAttribute($start_date){
 		return Carbon::createFromFormat('Y-m-d', $start_date)->format('d/m/Y');
@@ -15,6 +15,14 @@ class Exam extends Model
 
 	protected function getEndDateAttribute($end_date){
 		return Carbon::createFromFormat('Y-m-d', $end_date)->format('d/m/Y');
+	}
+
+	public function AcademicSession(){
+		return $this->belongsTo('App\AcademicSession');
+	}
+
+	public function scopeCurrentSession($query){
+		return $query->where('academic_session_id', Auth::user()->academic_session);
 	}
 
 }

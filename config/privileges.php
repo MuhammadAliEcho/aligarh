@@ -104,7 +104,8 @@ return [
 	16 => [
 		'default'	=>	0,
 		'make'		=>	0,
-		'report'	=>	0,
+		'resultattributes'	=>	0,
+		'maketranscript'	=>	1,
 		],
 	// Users
 	17 => [
@@ -163,7 +164,7 @@ return [
 		'default'	=>	0,
 		],
 
-	// Reports
+	// Fee Collection Reports
 	33 => [
 		'default'	=>	0,
 		'fee-receipts-statment'	=>	1,
@@ -176,6 +177,22 @@ return [
 	// Fee Scenario
 	34 => [
 		'default'	=>	0,
-		'update'	=>	0,
+		'update'	=>	1,
+		],
+
+	// Fee Collection Reports
+	35 => [
+		'default'			=>	0,
+		"findstu"			=>	1,
+		"tabulation-sheet"	=>	1,
+		"award-list"		=>	1,
+		"average-result"	=>	1,
+		"result-transcript"	=>	1,
+		],
+
+	// Exam Grades
+	36 => [
+		'default'	=>	0,
+		'update'	=>	1,
 		],
 ];

@@ -16,6 +16,7 @@ use App\AdditionalFee;
 use DB;
 use Carbon\Carbon;
 use Auth;
+use App\AcademicSessionHistory;
 use App\Http\Controllers\Controller;
 
 class StudentsController extends Controller 
@@ -28,6 +29,8 @@ class StudentsController extends Controller
 		$this->data['root'] = $Routes;
 		$this->Request = $Request;
 		$this->Input  =    $Request->input();
+		//for session update temperory
+//		$this->UpdateStd();
 	}
 
 	public function GetImage(){
@@ -95,6 +98,8 @@ class StudentsController extends Controller
 			$this->Student->save();
 		}
 
+		$this->UpdateAcademicSessionHistory();
+
 		$this->UpdateAdditionalFee();
 
 		return redirect('students')->with([
@@ -136,6 +141,7 @@ class StudentsController extends Controller
 		$this->Student->updated_by  = Auth::user()->id;
 		$this->Student->save();
 
+		$this->UpdateAcademicSessionHistory();
 		$this->UpdateAdditionalFee();
 
 		return redirect('students')->with([
@@ -199,6 +205,18 @@ class StudentsController extends Controller
 		$this->Student->gr_no = $class->prifix . $section->nick_name ."-" . $this->Request->input('gr_no');
 	}
 
+	protected function UpdateAcademicSessionHistory(){
+		AcademicSessionHistory::updateOrCreate(
+			[
+				'student_id' => $this->Student->id,
+				'academic_session_id' => $this->Student->session_id
+			],
+			[
+				'class_id' => $this->Student->class_id
+			]
+		);
+	}
+
 	protected function SaveImage(){
 		$file = $this->Request->file('img');
 		Storage::delete($this->Student->image_dir);
@@ -207,6 +225,24 @@ class StudentsController extends Controller
 //    $file = $this->Request->file('img')->storePubliclyAs('images/students', $this->Student->id.'.'.$file->getClientOriginalExtension(), 'public');
 		$this->Student->image_dir = 'public/students/'.$this->Student->id.'.'.$extension;
 		$this->Student->image_url = 'students/image/'.$this->Student->id;
+	}
+
+
+
+// for session update temperory 
+	protected function UpdateStd(){
+		$Students 	=	Student::all();
+		foreach ($Students as $key => $Student) {
+			AcademicSessionHistory::updateOrCreate(
+				[
+					'student_id' => $Student->id,
+					'academic_session_id' => $Student->session_id
+				],
+				[
+					'class_id' => $Student->class_id
+				]
+			);
+		}
 	}
 
 }

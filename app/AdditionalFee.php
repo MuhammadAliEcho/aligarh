@@ -9,8 +9,8 @@ class AdditionalFee extends Model
 
 
 	protected $casts = [
-		'onetime'      =>  'boolean',
-		'active'      =>  'boolean',
+		'onetime'		=>	'boolean',
+		'active'		=>	'boolean',
 	];
 
 	public function Student(){

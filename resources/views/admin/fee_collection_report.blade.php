@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'System Settings |')
+	@section('title', 'Fee Collection Report |')
 
 	@section('head')
 		<link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">

@@ -24,6 +24,7 @@ class ExamController extends Controller
 
 	protected function PostValidate(){
 		$this->validate($this->Request, [
+			'exam_category'	=>	'required',
 			'name'  =>  'required',
 			'description'  =>  'required',
 			'start_date' =>  'required',
@@ -34,7 +35,7 @@ class ExamController extends Controller
 	public function Index(){
 
 		if (Request::ajax()) {
-			return Datatables::eloquent(Exam::query())->make(true);
+			return Datatables::eloquent(Exam::query()->CurrentSession()->orderBy('id'))->make(true);
 		}
 
 		return view('admin.exam', $this->data);
@@ -82,10 +83,11 @@ class ExamController extends Controller
 	}
 
 	protected function SetAttributes(){
+		$this->Exam->category_id	=	$this->Input['exam_category'];
 		$this->Exam->name			=	$this->Input['name'];
 		$this->Exam->description 	=	$this->Input['description'];
-		$this->Exam->start_date = Carbon::createFromFormat('d/m/Y', $this->Input['start_date'])->toDateString();
-		$this->Exam->end_date = Carbon::createFromFormat('d/m/Y', $this->Input['end_date'])->toDateString();
+		$this->Exam->start_date 	=	Carbon::createFromFormat('d/m/Y', $this->Input['start_date'])->toDateString();
+		$this->Exam->end_date		=	Carbon::createFromFormat('d/m/Y', $this->Input['end_date'])->toDateString();
 	}
 
 }

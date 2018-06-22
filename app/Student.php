@@ -67,6 +67,14 @@ class Student extends Model {
 		return $this->hasOne('App\Section', 'id', 'section_id');
 	}
 
+	public function StudentResult(){
+		return $this->hasMany('App\StudentResult');
+	}
+
+	public function StudentSubjectResult(){
+		return $this->hasOne('App\StudentResult');
+	}
+
 	public function getDateOfBirthAttribute($date){
 		return Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');
 	}
