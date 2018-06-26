@@ -137,6 +137,16 @@
 										</div>
 										</div>
 
+										<div class="form-group{{ ($errors->has('active'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Status</label>
+											<div class="col-md-6">
+												<select name="active" class="form-control">
+													<option value="0">Inactive</option>
+													<option value="1">Active</option>
+												</select>
+											</div>
+										</div>
+
 										<div class="form-group">
 											<div class="col-md-offset-2 col-md-6">
 												<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>

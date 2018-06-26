@@ -24,7 +24,7 @@ class ExamReportController extends Controller
 	}
 
 	public function Index(){
-		$this->data['exams'] = Exam::with('AcademicSession')->get();
+		$this->data['exams'] = Exam::Active()->with('AcademicSession')->CurrentSession()->get();
 		$this->data['classes'] = Classe::select('id', 'name')->get();
 		$this->data['Subjects']	=	Subject::select('id', 'name', 'class_id')->get();
 		return view('admin.exam_report', $this->data);
@@ -53,7 +53,7 @@ class ExamReportController extends Controller
 			'class'    	=>	'required',
 		]);
 
-		$this->data['selected_exam'] = Exam::with('AcademicSession')->findOrFail($request->input('exam'));
+		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->with('AcademicSession')->findOrFail($request->input('exam'));
 		$this->data['selected_class'] = Classe::findOrFail($request->input('class'));		
 
 		$this->data['grades']	=	Grade::all();
@@ -84,7 +84,7 @@ class ExamReportController extends Controller
 			'subject'	=>	'required',
 		]);
 
-		$this->data['selected_exam'] = Exam::with('AcademicSession')->findOrFail($request->input('exam'));
+		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->with('AcademicSession')->findOrFail($request->input('exam'));
 		$this->data['selected_class'] = Classe::findOrFail($request->input('class'));
 		$this->data['selected_subject'] = Subject::findOrFail($request->input('subject'));
 		$this->data['grades']	=	Grade::all();

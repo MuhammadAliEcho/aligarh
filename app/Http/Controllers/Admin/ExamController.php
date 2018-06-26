@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use Yajra\Datatables\Facades\Datatables;
-//use Illuminate\Http\Request;
-use App\Http\Requests;
-use Request;
+use Illuminate\Http\Request;
+//use App\Http\Requests;
+//use Request;
 use App\Exam;
 use Carbon\Carbon;
 use Auth;
@@ -34,7 +34,7 @@ class ExamController extends Controller
 
 	public function Index(){
 
-		if (Request::ajax()) {
+		if ($this->Request->ajax()) {
 			return Datatables::eloquent(Exam::query()->CurrentSession()->orderBy('id'))->make(true);
 		}
 
@@ -46,18 +46,19 @@ class ExamController extends Controller
 		return view('admin.edit_exam', $this->data);
 	}
 
-	public function PostEditExam(){
+	public function PostEditExam(Request $request){
 
 		$this->PostValidate();
 
 		$this->Exam = Exam::findOrfail($this->data['root']['option']);
 		$this->SetAttributes();
+//		dd($request->all());
 		$this->Exam->updated_by = Auth::user()->id;
 		$this->Exam->save();
 
 		return redirect('exam')->with([
 			'toastrmsg' => [
-			'type' => 'success', 
+			'type'	=> 'success',
 			'title'  =>  'Exams',
 			'msg' =>  'Save Changes Successfull'
 			]
@@ -85,6 +86,7 @@ class ExamController extends Controller
 	protected function SetAttributes(){
 		$this->Exam->category_id	=	$this->Input['exam_category'];
 		$this->Exam->name			=	$this->Input['name'];
+		$this->Exam->active			=	$this->Input['active'];
 		$this->Exam->description 	=	$this->Input['description'];
 		$this->Exam->start_date 	=	Carbon::createFromFormat('d/m/Y', $this->Input['start_date'])->toDateString();
 		$this->Exam->end_date		=	Carbon::createFromFormat('d/m/Y', $this->Input['end_date'])->toDateString();

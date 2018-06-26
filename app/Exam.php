@@ -9,6 +9,10 @@ use Auth;
 class Exam extends Model
 {
 
+	protected $casts	=	[
+		'active'	=>	'boolean'
+	];
+
 	protected function getStartDateAttribute($start_date){
 		return Carbon::createFromFormat('Y-m-d', $start_date)->format('d/m/Y');
 	}
@@ -23,6 +27,10 @@ class Exam extends Model
 
 	public function scopeCurrentSession($query){
 		return $query->where('academic_session_id', Auth::user()->academic_session);
+	}
+
+	public function scopeActive($query){
+		return $query->where('active', 1);
 	}
 
 }

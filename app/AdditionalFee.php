@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class AdditionalFee extends Model
 {
 
-
 	protected $casts = [
 		'onetime'		=>	'boolean',
 		'active'		=>	'boolean',
