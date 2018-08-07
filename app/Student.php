@@ -10,7 +10,6 @@ use App\AcademicSession;
 
 class Student extends Model {
 
-
 /*
 	protected static function boot() {
 		parent::boot();

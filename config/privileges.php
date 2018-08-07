@@ -195,4 +195,10 @@ return [
 		'default'	=>	0,
 		'update'	=>	1,
 		],
+	// SMS
+	37 => [
+		'default'	=>	0,
+		'send'		=>	1,
+		'send-bulk'	=>	1,
+		],
 ];

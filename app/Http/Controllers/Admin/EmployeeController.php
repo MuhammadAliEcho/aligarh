@@ -24,7 +24,7 @@ class EmployeeController extends Controller
   }
 
   public function GetImage(){
-    $Employee  = Employee::findorfail($this->data['root']['option']);
+    $Employee  = Employee::findOrFail($this->data['root']['option']);
     $image = Storage::get($Employee->img_dir);
 //    $image = Storage::disk('public/studnets')->get('1.jpg');
 //    return Response($image, 200);
@@ -32,7 +32,7 @@ class EmployeeController extends Controller
   }
 
   public function GetProfile(){
-    $this->data['employee']  = Employee::findorfail($this->data['root']['option']);
+    $this->data['employee']  = Employee::findOrFail($this->data['root']['option']);
     return view('admin.employee_profile', $this->data);
   }
 
@@ -116,13 +116,13 @@ class EmployeeController extends Controller
       ]);
     }
 
-    $this->Employee = Employee::find($this->data['root']['option']);
-        if($this->Employee->id == 3){
+    $this->Employee = Employee::findOrFail($this->data['root']['option']);
+        if($this->Employee->created_by == 0 && Auth::user()->id != 1){
         return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
           'title'  =>  'Employees Registration',
-          'msg' =>  'Sorry '.$this->Employee->name.' Employee Cant be Edited Development version'
+          'msg' =>  'Sorry '.$this->Employee->name.' Employee Can\'t be Editable'
           ]
         ]);
         }

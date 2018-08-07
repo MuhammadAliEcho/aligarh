@@ -3,10 +3,11 @@
   @section('title', 'Fees |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+	<link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+	<link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+	<link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+<!-- 	<link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet"> -->
   @endsection
 
   @section('content')
@@ -99,15 +100,32 @@
 
 									@if($root['job'] == 'create')
 									<div class="row">
-									<form method="POST" action="{{ URL('fee/chalan/'.$student->id) }}" target="_new">
+									<h3>Student Name: <span class="bg-info"> {{ $student->name }} | {{ $student->gr_no }} </span></h3>
+									<form v-show="NoOfMonths" method="POST" action="{{ URL('fee/chalan/'.$student->id) }}" class="form-horizontal" target="_new">
 										{{ csrf_field() }}
-									<select multiple="multiple" name="months[]" class="hidden" required="true">
-										<option v-for="month in months" selected="true">@{{ month }}</option>
-									</select>
-									<h3>
-										Student Name: <span class="bg-info"> {{ $student->name }} | {{ $student->gr_no }} </span> 
-										<button type="submit" class="pull-right btn btn-default"> Get Chalan </button>
-									</h3>
+										<select multiple="multiple" name="months[]" class="hidden" required="true">
+											<option v-for="month in months" selected="true">@{{ month }}</option>
+										</select>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">Issue Date:</label>
+											<div class="col-md-6">
+												<input type="text" name="issue_date" placeholder="Issue Date" required="true" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" />
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">Due Date:</label>
+											<div class="col-md-6">
+												<input type="text" name="due_date" placeholder="Due Date" required="true" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" />
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-4">
+												<button type="submit" class="btn btn-default btn-block"> Get Chalan </button>
+											</div>
+										</div>
 									</form>
 									  <div class="hr-line-dashed"></div>
 
@@ -173,7 +191,7 @@
 										<div class="form-group hidden">
 											<label class="col-md-2 control-label"> Payment Date: </label>
 											<div class="col-md-6">
-												<input type="text" name="date" id="datepicker" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control" readonly="true" required="true">
+												<input type="text" name="date" id="datepicker" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" required="true">
 											</div>
 										</div>
 
@@ -220,6 +238,9 @@
 	<!-- Data picker -->
 	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
 
+	<!-- require with bootstrap-datetimepicker -->
+<!-- 	<script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
+	<script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script> -->
 
 	<script type="text/javascript">
 	var tbl;
@@ -302,7 +323,7 @@
 			},
 		});
 
-		$('#datepicker').datepicker({
+		$('.datepicker').datepicker({
 		  format: 'yyyy-mm-dd',
 		  keyboardNavigation: false,
 		  forceParse: false,

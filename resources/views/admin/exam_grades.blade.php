@@ -48,7 +48,7 @@
 																<div class="panel-body">
 																	
 																	<div class="alert alert-info ">
-																		<h4>Note! </h4>Can set grades prifix between obtain marks and percentages.
+																		<h4>Note! </h4>Can set grades prifix between percentages.
 																	</div>
 
 																	<form id="tchr_rgstr" method="POST" action="{{ URL('exam-grades/update') }}" class="form-horizontal" >

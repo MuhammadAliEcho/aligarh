@@ -4,7 +4,7 @@ return [
 	'title'	=>	'MW Academy',
 	'address'	=>	'Address',
 	'student_capacity'	=>	350,
-	'next_chalan_no'	=>	1800094,
+	'next_chalan_no'	=>	1800113,
 	'contact_no'	=>	null,
 	'email'	=>	null,
 ];

@@ -57,7 +57,7 @@ class UsersController extends Controller
         'toastrmsg' => [
           'type' => 'warning', 
           'title'  =>  'Users Registration',
-          'msg' =>  '"'.$this->User->name.'" User Cant be Editable'
+          'msg' =>  '"'.$this->User->name.'" User Can\'t be Editable'
           ]
         ]);
         }

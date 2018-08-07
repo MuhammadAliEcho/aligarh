@@ -81,8 +81,8 @@
 		<div id="stdcopy">
 			<table style="margin-top: 15px">
 				<tbody>
-					<tr><td width="300px">R.No. <u>{{ config('systemInfo.next_chalan_no') }}</u></td><td width="200px">Issue Date. <u>{{ Carbon\Carbon::now()->Format('d-m-Y') }}</u></td></tr>
-					<tr><td></td><td>Due Date.</td></tr>
+					<tr><td width="300px">R.No. <u>{{ config('systemInfo.next_chalan_no') }}</u></td><td width="200px">Issue Date. <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $issue_date)->Format('d-m-Y') }}</u></td></tr>
+					<tr><td></td><td>Due Date. <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $due_date)->Format('d-m-Y') }}</u></td></tr>
 					<tr><td>Name. <u>{{ $student->name }}</u></td><td>Father's. <u>{{ $student->father_name }}</u></td></tr>
 					<tr><td>Class. <u>{{ $student->std_class->name }}</u></td><td>G.R No. <u>{{ $student->gr_no }}</u></td></tr>
 					<tr><td colspan="2">Fee for the month. <u>

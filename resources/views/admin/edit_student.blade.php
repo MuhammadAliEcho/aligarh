@@ -253,7 +253,10 @@
 												<div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">Contact No</label>
 													<div class="col-md-6">
-														<input type="text" name="phone" value="{{ old('phone', $student->phone) }}" placeholder="Contact No" class="form-control" data-mask="(999) 999-9999"/>
+														<div class="input-group m-b">
+															<span class="input-group-addon">+92</span>
+															<input type="text" name="phone" value="{{ old('phone', $student->phone) }}" placeholder="Contact No" class="form-control" data-mask="9999999999"/>
+														</div>
 														@if ($errors->has('phone'))
 																<span class="help-block">
 																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('phone') }}</strong>
@@ -321,10 +324,10 @@
 																<td>
 																	<div class="input-group">
 																		<span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
-																		<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" :checked="fee.onetime">
+																		<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" v-model="fee.onetime">
 																	</span>
 																	<span class="input-group-addon" data-toggle="tooltip" title="Active">
-																		<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" :checked="fee.active" @click="fee.active = !fee.active">
+																		<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" v-model="fee.active">
 																	</span>
 																	<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" ><span class="fa fa-trash"></span></a>
 																</td>

@@ -159,7 +159,7 @@ class FeesController extends Controller
 		$this->validate($this->Request, [
 			'months'  			=>  'required',
 		]);
-		
+//		dd($this->Request->all());
 		$this->data['student']	=	Student::findOrfail($this->data['root']['option']);
 		$this->data['additionalfee']	=	$this->data['student']->AdditionalFee;
 
@@ -169,6 +169,8 @@ class FeesController extends Controller
 			]);
 		$ConfigWriter->save();
 		$this->data['months']	=	$this->Request->input('months');
+		$this->data['due_date']	= $this->Request->input('due_date');
+		$this->data['issue_date']	= $this->Request->input('issue_date');
 		return view('admin.printable.view_chalan', $this->data);
 	}
 

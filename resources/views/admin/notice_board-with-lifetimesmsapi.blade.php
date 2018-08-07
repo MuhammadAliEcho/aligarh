@@ -47,7 +47,11 @@
                             <li class="make-notice">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Notice</a>
                             </li>
-
+<!-- 
+                            <li>
+                              <a data-toggle="tab" href="#tab-12"><span class="fa fa-envelope"></span> SMS</a>
+                            </li>
+ -->
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -128,7 +132,56 @@
 
                                 </div>
                             </div>
-                        </div>
+<!-- 
+                            <div id="tab-12" class="tab-pane fade">
+                                <div class="panel-body">
+                                  <h2><span class="fa fa-envelope"></span> {{ $smscredit }} Remain</h2>
+                                  <div class="hr-line-dashed"></div>
+
+                                    <form id="sms_frm" method="POST" action="{{ URL('noticeboard/sms') }}" class="form-horizontal" >
+                                      {{ csrf_field() }}
+
+                                      <div class="form-group{{ ($errors->has('no'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">To</label>
+                                        <div class="col-md-6">
+                                          <input type="number" name="no" placeholder="Number" value="{{ old('no') }}" class="form-control" required="true" />
+                                          @if ($errors->has('no'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('no') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group{{ ($errors->has('msg'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Message</label>
+                                        <div class="col-md-6">
+                                          <textarea type="text" name="msg" placeholder="Message" class="form-control" maxlength="145" required="true">{{ old('msg') }}</textarea>
+                                          @if ($errors->has('msg'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('msg') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-6">
+                                          <div id="alert"></div>
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                          <div class="col-md-offset-2 col-md-6">
+                                              <button class="btn btn-primary btn-block" data-loading-text="<span class='fa fa-spinner fa-pulse'></span> Sending...." type="submit"><span class="fa fa-send"></span> Send </button>
+                                          </div>
+                                      </div>
+                                    </form>
+
+                                </div>
+                            </div>
+
+ -->                        </div>
                     </div>
                 </div>
             </div>

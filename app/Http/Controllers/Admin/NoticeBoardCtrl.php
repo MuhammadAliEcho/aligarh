@@ -27,9 +27,9 @@ class NoticeBoardCtrl extends Controller
 
 	public function Index(){
 
+/*
 			$username = "alisweet04" ;
 			$password = "a_03132045991" ;
-			
 			$url = "http://lifetimesms.com/credit?username=".$username."&password=".$password;
 			//Curl start 
 			$ch = curl_init(); 
@@ -40,7 +40,7 @@ class NoticeBoardCtrl extends Controller
 			$response = curl_exec($ch);
 			curl_close($ch);
 			$this->data['smscredit'] = $response;
-
+*/
 		$this->data['notices'] = NoticeBoard::all();
 	    return view('admin.notice_board', $this->data);
 	}
