@@ -12,6 +12,7 @@ use App\Exam;
 use App\Grade;
 use App\Subject;
 use App\Student;
+use Validator;
 
 class ExamReportController extends Controller
 {
@@ -185,6 +186,42 @@ class ExamReportController extends Controller
 
 		return view('admin.printable.exam_transcript', $this->data);
 
+	}
+
+	public function UpdateRank(){
+
+		if($this->Request->ajax()){
+
+			$validator = Validator::make($this->Request->all(), [
+				'rank' => 'required',
+			]);
+
+			if ($validator->fails()) {
+				return  [
+					'type'	=> 'error', 
+					'title'	=>  'Student Results',
+					'msg'	=>  'Something is wrong!'
+				];
+			}
+
+			foreach ($this->Request->input('rank') as $id => $rank) {
+				ExamRemark::findOrFail($id)->update(['rank'	=>	$rank]);
+			}
+
+			return	[
+				'type'	=> 'success', 
+				'title'	=>  'Student Results',
+				'msg'	=>  'Update Results Successfull'
+			];
+		}
+	
+		return redirect('exam-reports')->with([
+									'toastrmsg' => [
+										'type'	=> 'warning', 
+										'title'	=>  'Student Results',
+										'msg'	=>  'Something is wrong!'
+									]
+								]);
 	}
 
 

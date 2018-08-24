@@ -50,7 +50,8 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3>School Capicity and Utilization Status Report</h3>
+	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h4>School Capicity and Utilization Status Report</h4>
 	<h4>AS ON: {{ Carbon\Carbon::now()->format('d-M-Y') }}</h3>
 		<table id="rpt-att" class="table table-bordered">
 			<thead>

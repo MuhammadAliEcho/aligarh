@@ -318,20 +318,23 @@
 															<td></td>
 														</tr>
 
-															<tr v-for="(fee, k) in fee.additionalfee">
-																<td><input type="hidden" :name="'fee['+k+'][id]'" v-model="fee.id" ><input type="text" :name="'fee['+ k +'][fee_name]'" class="form-control" required="true" v-model="fee.fee_name"></td>
-																<td><input type="number" :name="'fee['+ k +'][amount]'" class="form-control additfeeamount" required="true" min="0" v-model.number="fee.amount"></td>
-																<td>
-																	<div class="input-group">
-																		<span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
+														<tr v-for="(fee, k) in fee.additionalfee">
+															<td><input type="hidden" :name="'fee['+k+'][id]'" v-model="fee.id" ><input type="text" :name="'fee['+ k +'][fee_name]'" class="form-control" required="true" v-model="fee.fee_name"></td>
+															<td><input type="number" :name="'fee['+ k +'][amount]'" class="form-control additfeeamount" required="true" min="0" v-model.number="fee.amount"></td>
+															<td>
+																<div class="input-group">
+																	<span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
 																		<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" v-model="fee.onetime">
 																	</span>
 																	<span class="input-group-addon" data-toggle="tooltip" title="Active">
 																		<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" v-model="fee.active">
 																	</span>
-																	<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" ><span class="fa fa-trash"></span></a>
-																</td>
-															</tr>
+																	<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove">
+																		<span class="fa fa-trash"></span>
+																	</a>
+																</div>
+															</td>
+														</tr>
 
 													</tbody>
 													<tfoot>

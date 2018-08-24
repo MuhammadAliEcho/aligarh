@@ -35,6 +35,9 @@
   .table > tbody > tr > td {
       padding: 1px;
     }
+	.table > thead > tr > th {
+		padding: 2px;
+    }
     a[href]:after {
       content: none;
 /*      content: " (" attr(href) ")";*/
@@ -50,12 +53,12 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">AWARD LIST</h3>
-	<h4 class="text-center"><u>@{{ selected_exam.name }}</u></h4>
-	<h4 class="text-center"><u>Session: @{{ selected_exam.academic_session.title }}</u></h4>
+	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h4 class="text-center">AWARD LIST</h4>
+	<h4 class="text-center"><u>@{{ selected_exam.name }}, &nbsp;@{{ selected_exam.academic_session.title }}</u></h4>
 
 	<div class="">
-		<table class="table">
+		<table class="table" style="margin-bottom: 5px;">
 			<tbody>
 				<tr>
 					<td>
@@ -78,6 +81,7 @@
 					<th :colspan="result_attribute.attributes.length">Obtain Marks</th>
 
 					<th rowspan="2">Total Marks</th>
+					<th rowspan="2">Grade</th>
 				</tr>
 				<tr>
 					<template v-for="attribute in result_attribute.attributes">
@@ -97,6 +101,7 @@
 							<td v-else>A</td>
 						</template>
 						<td>@{{ student.total_obtain_marks }}</td>
+						<td>@{{ GradePercentage(k) }}</td>
 					</tr>
 				</template>
 			</tbody>
@@ -108,12 +113,12 @@
 					<td>
 						<u>
 							<p>Total No Of Student: @{{ result_attribute.student_result.length }}</p>
-							<p>Net Result: @{{ percentage }} %</p>
+							<p>Net Result: @{{ netResult() }} %</p>
 						</u>
 					</td>
 					<td class="text-center" width="100px">
-						<h3>__________________</h3><p><b>Teacher's Sign</b></p>
-						<h3>__________________</h3><p><b>Rechecker's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Teacher's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Rechecker's Sign</b></p>
 					</td>
 				</tr>
 			</tbody>
@@ -159,20 +164,29 @@
 			total_obtain_marks: function(){
 				return this.result_attribute.student_result.reduce((a, b) => a + Number(b.total_obtain_marks), 0);
 			},
-			percentage: function(){
-				return	((this.total_obtain_marks / (this.result_attribute.total_marks * this.result_attribute.student_result.length))*100).toFixed(2);
-			}
 		},
 		methods: {
+			GradePercentage: function(k){
+				this.result_attribute.student_result[k].percentage	= this.Percentage(this.result_attribute.student_result[k].total_obtain_marks);
+				return	this.result_attribute.student_result[k].grade	=	this.Grade(this.result_attribute.student_result[k].percentage);
+			},
+			Percentage: function(obtain_marks){
+				return ((obtain_marks/this.result_attribute.total_marks)*100).toFixed(2);
+			},
 			Grade: function (percentage) {
 				grad = '-';
 				this.grades.forEach(function(grade){
 					if(Number(grade.from_percent) < percentage  && percentage <= Number(grade.to_percent)){
 						grad = grade.prifix;
-						break;
 					}
 				});
 				return grad;
+			},
+			NoOfPassStd: function(){
+				return this.result_attribute.student_result.filter(std => std.grade.toLowerCase() != 'f');
+			},
+			netResult: function(){
+				return (((this.NoOfPassStd()).length/this.result_attribute.student_result.length)*100).toFixed(2);
 			}
 		}
 	});

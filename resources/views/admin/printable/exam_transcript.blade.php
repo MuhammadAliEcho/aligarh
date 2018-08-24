@@ -35,6 +35,12 @@
   .table > tbody > tr > td {
       padding: 1px;
     }
+	.table > thead > tr > th {
+		padding: 2px;
+    }
+    .table > tbody > tr > th {
+		padding: 2px;
+    }
     a[href]:after {
       content: none;
 /*      content: " (" attr(href) ")";*/
@@ -49,21 +55,29 @@
 <div class="container-fluid">
 
 	<div class="row">
+	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>	
 	<h4 class="text-center"><u>@{{ exam_title }}</u></h4>
 	<h4 class="text-center"><u>Session: @{{ selected_exams[0].academic_session.title }}</u></h4>
-	<h4 class="text-center">Grade: <u> @{{ student_class.name }} </u></h4>
+	<h4 class="text-center">Transcript for: <u> @{{ student_class.name }} </u></h4>
 
 	<div class="">
-		<table class="table">
+		<hr style="margin-top: 10px; margin-bottom: 5px">
+		<table style="width: 100%; margin-bottom: 10px ">
 			<tbody>
 				<tr>
 					<td>
 						<h4>Academic Record Of: <u> @{{ student.name }}</u></h4>
 					</td>
+					<td>
+						<h4>G.R.No: <u> @{{ student.gr_no }} </u> </h4>
+					</td>
 				</tr>
 				<tr>
 					<td>
-						<h4> S/O - D/O <u> @{{ student.father_name }} </u> G.R.No <u> @{{ student.gr_no }} </u> </h4>
+						<h4> S/O - D/O: <u> @{{ student.father_name }} </u></h4>
+					</td>
+					<td>
+						<h4>Attendance: ____________________</h4>
 					</td>
 				</tr>
 			</tbody>
@@ -94,18 +108,77 @@
 						
 						<td>@{{ result.total_marks[0] }}</td>
 						<td>@{{ result.total_obtain_marks[0] }}</td>
-						<td>@{{ Grade(result.percentage[0]) }}</td>
+						<td>@{{ result.grade[0] }}</td>
 
 						<td>@{{ result.total_marks[1] }}</td>
 						<td>@{{ result.total_obtain_marks[1] }}</td>
-						<td>@{{ Grade(result.percentage[1]) }}</td>
+						<td>@{{ result.grade[1] }}</td>
 
 						<td>@{{ result.total_marks_sum }}</td>
 						<td>@{{ result.total_obtain_marks_sum }}</td>
-						<td>@{{ Grade(result.percentage_sum) }}</td>
+						<td>@{{ result.grade_sum }}</td>
 
 					</tr>
 				</template>
+				<tr>
+					<th>Grand Total: </th>
+
+					<th>@{{ grand_total.total_marks[0] }}</th>
+					<th>@{{ grand_total.total_obtain_marks[0] }}</th>
+					<th>@{{ (grand_total.pass[0])? Grade(grand_total.total_percentage[0]) : 'F' }}</th>
+
+					<th>@{{ grand_total.total_marks[1] }}</th>
+					<th>@{{ grand_total.total_obtain_marks[1] }}</th>
+					<th>@{{ (grand_total.pass[1])? Grade(grand_total.total_percentage[1]) : 'F' }}</th>
+
+					<th>@{{ grand_total.total_marks[2] }}</th>
+					<th>@{{ grand_total.total_obtain_marks[2] }}</th>
+					<th>@{{ (grand_total.pass[2])? Grade(grand_total.total_percentage[2]) : 'F' }}</th>
+
+				</tr>
+				<tr>
+					<th>Percentage: </th>
+
+					<th colspan="3">@{{ (!isNaN(grand_total.total_percentage[0]))? grand_total.total_percentage[0]+'%' : '-' }}</th>
+					<th colspan="3">@{{ (!isNaN(grand_total.total_percentage[1]))? grand_total.total_percentage[1]+'%' : '-' }}</th>
+					<th colspan="3">@{{ grand_total.total_percentage[2]+'%' }}</th>
+					
+				</tr>
+
+				<tr>
+					<th>Result</th>
+
+					<template v-if="grand_total.pass[0]">
+						<th colspan="3" v-if="Grade(grand_total.total_percentage[0]) == '-'">
+							-
+						</th>
+						<th colspan="3" v-else>
+							<u> Passed</u>, &nbsp;&nbsp; Grade: <u>@{{ Grade(grand_total.total_percentage[0]) }}</u>, &nbsp;&nbsp; Rank: <u class="text-capitalize">@{{ stringifyNumber(grand_total.ranks[0]) }} (@{{ grand_total.ranks[0] }})</u>
+						</th>
+					</template>
+					<th colspan="3" v-else>Faild</th>
+
+					<template v-if="grand_total.pass[1]">
+						<th colspan="3" v-if="Grade(grand_total.total_percentage[1]) == '-'">
+							-
+						</th>
+						<th colspan="3" v-else>
+							<u>Passed</u>, &nbsp;&nbsp; Grade: <u>@{{ Grade(grand_total.total_percentage[1]) }}</u>, &nbsp;&nbsp; Rank: <u class="text-capitalize">@{{ stringifyNumber(grand_total.ranks[1]) }} (@{{ grand_total.ranks[1] }})</u>
+						</th>
+					</template>
+					<th colspan="3" v-else>Faild</th>
+
+					<template v-if="grand_total.pass[2]">
+						<th colspan="3" v-if="Grade(grand_total.total_percentage[2]) == '-'">
+							-
+						</th>
+						<th colspan="3" v-else>
+							Passed, Grade: @{{ Grade(grand_total.total_percentage[2]) }}
+						</th>
+					</template>
+					<th colspan="3" v-else>Faild</th>
+
+				</tr>
 			</tbody>
 		</table>
 
@@ -121,10 +194,10 @@
 				</tr>
 				<tr>
 					<td class="text-center" width="100px">
-						<h3>__________________</h3><p><b>Principle Sign</b></p>						
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Principle Sign</b></p>
 					</td>
 					<td class="text-center" width="100px">
-						<h3>__________________</h3><p><b>Teacher's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Teacher's Sign</b></p>
 					</td>
 				</tr>
 			</tbody>
@@ -150,6 +223,8 @@
 	var app = new Vue({
 		el: '#app',
 		data: { 
+			special: ['zeroth','first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelvth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'],
+			deca: ['twent', 'thirt', 'fourt', 'fift', 'sixt', 'sevent', 'eight', 'ninet'],
 			student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
 			selected_exams: {!! json_encode($selected_exams, JSON_NUMERIC_CHECK) !!},
 			results: {!! json_encode($results, JSON_NUMERIC_CHECK) !!},
@@ -158,20 +233,44 @@
 			student_class: 	{!! json_encode($student_class) !!},
 			exam_remarks: '',
 			computed_result: [],
+			grand_total: {
+				total_marks:	[0, 0],
+				total_obtain_marks: [0, 0],
+				total_percentage: [],
+				ranks: ['-', '-'],
+				pass: [
+					true, true, true
+				],
+			},
 		},
 		mounted: function(){
 			if (this.results[0]) {
 				if(this.results[0].remarks){
 					this.exam_remarks += this.results[0].remarks+', ';
 				}
+				if(this.results[0].rank){
+					this.grand_total.ranks[0] = this.results[0].rank;
+				}
 			}
 			if (this.results[1]) {
 				if (this.results[1].remarks) {
 					this.exam_remarks += this.results[1].remarks;
 				}
+				if(this.results[1].rank){
+					this.grand_total.ranks[1] = this.results[1].rank;
+				}
 			}
 			this.computed_result = 	this.compute_result();
+
+			this.grand_total.total_percentage = this.grand_total_percentage();
+
+			this.grand_total.total_marks[2]	=	(this.grand_total.total_marks[0] + this.grand_total.total_marks[1]);
+			this.grand_total.total_obtain_marks[2]	=	(this.grand_total.total_obtain_marks[0] + this.grand_total.total_obtain_marks[1]);
+
+			this.grand_total.total_percentage[2]	=	parseFloat(((this.grand_total.total_obtain_marks[2]/this.grand_total.total_marks[2])*100).toFixed(2));
+
 			window.print();
+
 		},
 		methods: {
 			Grade: function (percentage) {
@@ -184,6 +283,12 @@
 				});
 				return grad;
 			},
+			grand_total_percentage: function(){
+				return 	[
+							parseFloat(((this.grand_total.total_obtain_marks[0]/this.grand_total.total_marks[0])*100).toFixed(2)),
+							parseFloat(((this.grand_total.total_obtain_marks[1]/this.grand_total.total_marks[1])*100).toFixed(2)),
+						];
+			},
 			check_result: function(results){
 				if(results[0]){
 					if(results[1]){
@@ -193,6 +298,11 @@
 				} else {
 					return false;
 				}
+			},
+			stringifyNumber: 	function(n) {
+				if (n < 20) return this.special[n];
+				if (n%10 === 0) return this.deca[Math.floor(n/10)-2] + 'ieth';
+				return this.deca[Math.floor(n/10)-2] + 'y-' + this.special[n%10];
 			},
 			compute_result:		function(){
 
@@ -211,13 +321,15 @@
 						total_marks: [],
 						total_obtain_marks: [],
 						percentage: [],
+						grade: [],
 						total_marks_sum: 0,
 						total_obtain_marks_sum: 0,
 						percentage_sum: 0,
 					});
 
-					computed_result[k].total_marks[mainloop]	=	result.subject_result_attribute.total_marks;
-					computed_result[k].total_obtain_marks[mainloop]	=	result.total_obtain_marks;
+					vm.grand_total.total_marks[mainloop]	+=	computed_result[k].total_marks[mainloop]	=	result.subject_result_attribute.total_marks;
+					
+					vm.grand_total.total_obtain_marks[mainloop]	+=	computed_result[k].total_obtain_marks[mainloop]	=	result.total_obtain_marks;
 
 					computed_result[k].total_marks[subloop]		=	0;
 					computed_result[k].total_obtain_marks[subloop]	=	0;
@@ -228,18 +340,32 @@
 							return result.subject_id == rslt.subject_id;
 						});
 						if (result2) {
-							computed_result[k].total_marks[subloop] = result2.subject_result_attribute.total_marks;
-							computed_result[k].total_obtain_marks[subloop] = result2.total_obtain_marks;
+							vm.grand_total.total_marks[subloop]	+=	computed_result[k].total_marks[subloop] = result2.subject_result_attribute.total_marks;
+							vm.grand_total.total_obtain_marks[subloop]	+=	computed_result[k].total_obtain_marks[subloop] = result2.total_obtain_marks;
 						}
 					}
 
 					computed_result[k].percentage[mainloop] = ((computed_result[k].total_obtain_marks[mainloop] / computed_result[k].total_marks[mainloop])*100).toFixed(2);
 					computed_result[k].percentage[subloop] = ((computed_result[k].total_obtain_marks[subloop] / computed_result[k].total_marks[subloop])*100).toFixed(2);
 
+					computed_result[k].grade[mainloop]	=	vm.Grade(computed_result[k].percentage[mainloop]);
+					if(computed_result[k].grade[mainloop].toLowerCase() == 'f' && vm.grand_total.pass[mainloop]){
+						vm.grand_total.pass[mainloop] = false;
+					}
+					computed_result[k].grade[subloop]	=	vm.Grade(computed_result[k].percentage[subloop]);
+					if(computed_result[k].grade[subloop].toLowerCase() == 'f' && vm.grand_total.pass[subloop]){
+						vm.grand_total.pass[subloop] = false;
+					}
+
 					computed_result[k].total_marks_sum = (computed_result[k].total_marks[mainloop] + computed_result[k].total_marks[subloop]);
 					computed_result[k].total_obtain_marks_sum = (computed_result[k].total_obtain_marks[mainloop] + computed_result[k].total_obtain_marks[subloop]);
 
 					computed_result[k].percentage_sum = ((computed_result[k].total_obtain_marks_sum / computed_result[k].total_marks_sum)*100).toFixed(2);
+					computed_result[k].grade_sum	=	vm.Grade(computed_result[k].percentage_sum);
+					if(computed_result[k].grade_sum.toLowerCase() == 'f' && vm.grand_total.pass[2]){
+						vm.grand_total.pass[2] = false;
+					}
+
 				});
 
 				return computed_result;

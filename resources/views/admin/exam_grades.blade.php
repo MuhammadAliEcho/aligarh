@@ -74,8 +74,8 @@
 																						<tbody>
 																							<tr v-for="(grade, k) in exam_grades">
 																								<td>@{{ k+1 }}</td>
-																								<td><input type="text" :name="'grades['+ grade.id +'][from_percent]'" class="form-control" required="true" v-model="grade.from_percent"></td>
-																								<td><input type="text" :name="'grades['+ grade.id +'][to_percent]'" class="form-control additfeeamount" min="1" v-model="grade.to_percent" required="true"></td>
+																								<td><input type="number" step="0.1" :name="'grades['+ grade.id +'][from_percent]'" class="form-control" required="true" v-model="grade.from_percent"></td>
+																								<td><input type="number" step="0.1" :name="'grades['+ grade.id +'][to_percent]'" class="form-control additfeeamount" min="1" v-model="grade.to_percent" required="true"></td>
 																								<td><input type="text" :name="'grades['+ grade.id +'][prifix]'" class="form-control additfeeamount" v-model="grade.prifix" required="true"></td>
 																								<td><input type="text" :name="'grades['+ grade.id +'][name]'" class="form-control additfeeamount" v-model="grade.name" required="true"></td>
 																								<td>

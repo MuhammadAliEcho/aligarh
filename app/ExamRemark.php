@@ -8,7 +8,7 @@ class ExamRemark extends Model
 {
 
 	protected $fillable = [
-		'exam_id', 'class_id', 'student_id', 'remarks'
+		'exam_id', 'class_id', 'student_id', 'remarks', 'rank'
 	];
 
 	public function StudentResult(){

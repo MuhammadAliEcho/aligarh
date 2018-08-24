@@ -57,8 +57,8 @@
 <div class="container-fluid">
 
 	<div class="row">
-		
-		<h3>Statment Of Unpaid Fee</h3>
+		<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+		<h4>Statment Of Unpaid Fee</h4>
 		<h4>AS ON: {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['start'])->Format('M-Y') }}-{{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['end'])->Format('M-Y') }}</h3>
 
 			@foreach($unpaid_fee_statment AS $classname => $students)

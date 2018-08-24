@@ -372,7 +372,7 @@
                                                   <span class="input-group-addon" data-toggle="tooltip" title="Active">
                                                     <input type="checkbox" :name="'fee['+ k +'][active]'" value="1" :checked="fee.active" @click="fee.active = !fee.active">
                                                   </span>
-                                                  <a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" >
+                                                  <a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove">
                                                     <span class="fa fa-trash"></span>
                                                   </a>
                                                 </div>

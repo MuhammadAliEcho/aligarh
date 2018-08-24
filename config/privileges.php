@@ -181,9 +181,10 @@ return [
 		'update'	=>	1,
 		],
 
-	// Fee Collection Reports
+	// Exam Reports
 	35 => [
 		'default'			=>	0,
+		'updaterank'		=>	1,
 		"findstu"			=>	1,
 		"tabulation-sheet"	=>	1,
 		"award-list"		=>	1,

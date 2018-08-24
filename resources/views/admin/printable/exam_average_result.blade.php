@@ -35,12 +35,13 @@
   .table > tbody > tr > td {
       padding: 1px;
     }
+	.table > thead > tr > th {
+		padding: 2px;
+    }
     a[href]:after {
       content: none;
 /*      content: " (" attr(href) ")";*/
     }
-
-
 
 	</style>
 
@@ -50,7 +51,8 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">AVERAGE RESULT</h3>
+	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h4 class="text-center">AVERAGE RESULT</h4>
 	<h4 class="text-center"><u>@{{ exam_title }}</u></h4>
 	<h4 class="text-center"><u>Session: @{{ selected_exams[0].academic_session.title }}</u></h4>
 
@@ -86,7 +88,7 @@
 			</thead>
 			<tbody>
 				<template v-for="(student, k) in computed_result" :key="student.id">
-					<tr :class="[(student.rank < 4)? 'success' : '']">
+					<tr :class="[(student.rank < 4 && student.rank > 0)? 'success' : '']">
 						<td>@{{ k+1 }}</td>
 						<td>@{{ student.gr_no }}</td>
 						<td>@{{ student.name }}</td>
@@ -96,7 +98,7 @@
 
 						<td>@{{ student.total_obtain_marks_sum }}</td>
 						<td>@{{ student.percentage }}</td>
-						<td>@{{ Grade(student.percentage) }}</td>
+						<td>@{{ (student.rank)? Grade(student.percentage) : 'F' }}</td>
 						<td>@{{ student.rank }}</td>
 						<td>@{{ student.remarks }}</td>
 					</tr>
@@ -113,8 +115,8 @@
 						</u>
 					</td>
 					<td class="text-center" width="100px">
-						<h3>__________________</h3><p><b>Teacher's Sign</b></p>
-						<h3>__________________</h3><p><b>Rechecker's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Teacher's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Rechecker's Sign</b></p>
 					</td>
 				</tr>
 			</tbody>
@@ -150,7 +152,7 @@
 		},
 		mounted: function(){
 			this.computed_result = 	this.compute_result();
-			this.RankCounter();
+//			this.RankCounter();
 			window.print();
 		},
 		computed: {
@@ -210,7 +212,7 @@
 						total_marks_sum: 0,
 						total_obtain_marks_sum: 0,
 						percentage: 0,
-						rank:	0,
+						rank:	result.rank,
 					});
 //					console.log(vm.results);
 					computed_result[k].total_marks[mainloop]	=	result.student_result.reduce((a, b) => a + Number(b.subject_result_attribute.total_marks), 0);

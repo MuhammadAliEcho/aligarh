@@ -90,12 +90,15 @@
 																								<td>
 																									<div class="input-group">
 																										<span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
-																										<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" v-model="fee.onetime" >
-																									</span>
-																									<span class="input-group-addon" data-toggle="tooltip" title="Active">
-																										<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" v-model="fee.active">
-																									</span>
-																									<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" ><span class="fa fa-trash"></span></a>
+																											<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" v-model="fee.onetime" >
+																										</span>
+																										<span class="input-group-addon" data-toggle="tooltip" title="Active">
+																											<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" v-model="fee.active">
+																										</span>
+																										<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove" >
+																											<span class="fa fa-trash"></span>
+																										</a>
+																									</div>
 																								</td>
 																							</tr>
 																						</tbody>

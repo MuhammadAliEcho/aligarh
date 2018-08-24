@@ -50,7 +50,8 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3>Class: {{ $selected_class->name.' '.$section_nick }} ({{ $input['date'] }})</h3>
+	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h4>Class: {{ $selected_class->name.' '.$section_nick }} ({{ $input['date'] }})</h4>
 	<h4>No Of Students: {{ COUNT($students) }}</h3>
 	<h4>Teacher: {{ $selected_class->Teacher->name or '' }}</h3>
 		<table id="rpt-att" class="table table-bordered">
