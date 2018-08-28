@@ -158,7 +158,7 @@
 										<label class="col-md-2 control-label"> Class </label>
 										<div class="col-md-6">
 										  <select class="form-control" name="class" v-model="clas">
-										  	<option value="0">All</option>
+										  	<option :value="0">All</option>
 											<option v-for="(clas, k) in Classe" :value="clas.id">@{{  clas.name }}</option>
 										  </select>
 										</div>
@@ -183,7 +183,7 @@
 										<label class="col-md-2 control-label"> Class </label>
 										<div class="col-md-6">
 										  <select class="form-control" name="class" v-model="clas">
-										  	<option value="0">All</option>
+										  	<option :value="0">All</option>
 											<option v-for="(clas, k) in Classe" :value="clas.id">@{{  clas.name }}</option>
 										  </select>
 										</div>
@@ -340,6 +340,9 @@
 				if(o != ''){
 					$('.select2'+o).select2('destroy');
 				}
+			},
+			bulk_to: function(n, o){
+				this.clas = 0;
 			}
 		},
 
@@ -388,7 +391,7 @@
 				}
 		},
 
-			computed: {
+		computed: {
 			student_number: function(){
 				if(this.selected_student_k > 0){
 					return this.Students[this.selected_student_k-1].phone;

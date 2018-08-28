@@ -34,10 +34,10 @@ class SmsController extends Controller
 				'send_to' => 'required',
 				'message' => 'required',
 
-				'student_id' => 'sometimes|required',
-				'teacher_id' => 'sometimes|required',
-				'employee_id' => 'sometimes|required',
-				'guardian_id' => 'sometimes|required',
+				'student_id' => 'sometimes|required|numeric',
+				'teacher_id' => 'sometimes|required|numeric',
+				'employee_id' => 'sometimes|required|numeric',
+				'guardian_id' => 'sometimes|required|numeric',
 
 				'student_number' => 'sometimes|required|numeric|digits:10',
 				'guardian_number' => 'sometimes|required|numeric|digits:10',
