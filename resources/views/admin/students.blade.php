@@ -10,6 +10,23 @@
   <script type="text/javascript">
       var sections = {!! json_encode($sections) !!};
   </script>
+  <style type="text/css">
+  .print-table {
+    width: 100%;
+  }
+  .print-table th,
+  .print-table td {
+    border: 1px solid black !important;
+    padding: 0px;
+  }   
+
+  .print-table > tbody > tr > td {
+      padding: 1px;
+    }
+  .print-table > thead > tr > th {
+      padding: 3px;
+    }
+  </style>
   @endsection
 
   @section('content')
@@ -68,10 +85,10 @@
                                       </thead>
                                       <tfoot>
                                         <tr>
-                                          <th>GR No</th>
-                                          <th>Name</th>
-                                          <th>Contact</th>
-                                          <th>Address</th>
+                                          <th><input type="text" placeholder="Gr No..." autocomplete="off"></th>
+                                          <th><input type="text" placeholder="Name..." autocomplete="off"></th>
+                                          <th><input type="text" placeholder="Contact..." autocomplete="off"></th>
+                                          <th><input type="text" placeholder="Address..." autocomplete="off"></th>
                                           <th>Options</th>
                                         </tr>
                                       </tfoot>
@@ -503,18 +520,23 @@
     tbl =   $('.dataTables-teacher').DataTable({
           dom: '<"html5buttons"B>lTfgitp',
           buttons: [
-            {extend: 'copy'},
-            {extend: 'csv'},
-            {extend: 'excel', title: 'Students List'},
-            {extend: 'pdf', title: 'Students List'},
+          //  {extend: 'copy'},
+          //  {extend: 'csv'},
+          //  {extend: 'excel', title: 'Students List'},
+          //  {extend: 'pdf', title: 'Students List'},
 
             {extend: 'print',
               customize: function (win){
                 $(win.document.body).addClass('white-bg');
-                $(win.document.body).css('font-size', '10px');
+                $(win.document.body).css('font-size', '12px');
 
                 $(win.document.body).find('table')
                 .addClass('compact')
+                .addClass('print-table')
+                .removeClass('table')
+                .removeClass('table-striped')
+                .removeClass('table-bordered')
+                .removeClass('table-hover')
                 .css('font-size', 'inherit');
               },
               exportOptions: {
@@ -534,6 +556,11 @@
             {render: loadOptions, className: 'hidden-print', "orderable": false},
 
           ],
+          "order": [[1, "asc"]],
+          "scrollY": "450px",
+          "scrollX": true,
+          "scrollCollapse": true,
+          "paging": true,
 /*          "columnDefs": [
             {
                 // The `data` parameter refers to the data for the cell (defined by the
@@ -548,15 +575,34 @@
           ]*/
         });
 
-/*    for Column search
+    var search = $.fn.dataTable.util.throttle(
+      function (colIdx, val ) {
+        tbl
+        .column( colIdx )
+        .search( val )
+        .draw();
+      },
+      1000
+    );
+
+//    for Column search
         tbl.columns().eq( 0 ).each( function ( colIdx ) {
-            $( 'input', tbl.column( colIdx ).header() ).on( 'keyup change', function () {
-                tbl
-                    .column( colIdx )
+            $( 'input', tbl.column( colIdx ).footer() ).on( 'keyup change', function () {
+                search(colIdx, this.value);
+            });
+        });
+
+
+/*    tbl.columns().every( function () {
+        var that = this;
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
                     .search( this.value )
                     .draw();
-            });
-        });*/
+            }
+        });
+    });*/
 
       $('.dataTables-teacher tbody').on('mouseenter', '[data-toggle="tooltip"]', function() {
         $(this).tooltip('show');

@@ -74,18 +74,18 @@
 			  </tr>
 			</thead>
 			<tbody>
-				@foreach($statments AS $statment)
-				<tr>
-					<td>{{ $statment->id }}</td>
-					<td>{{ $statment->payment_type }}</td>
-					<td>{{ $statment->student->name }}</td>
-					<td>{{ $statment->student->father_name }}</td>
-					<td>{{ $statment->student->std_class->name }}</td>
-					<td>{{ $statment->student->gr_no }}</td>
-					<td>{{ $statment->payment_month }}</td>
-					<td class="paid_amount">{{ $statment->paid_amount }}</td>
+
+				<tr v-for="statment in ComputedStatments">
+					<td>@{{ statment.id }}</td>
+					<td>@{{ statment.payment_type }}</td>
+					<td>@{{ statment.student.name }}</td>
+					<td>@{{ statment.student.father_name }}</td>
+					<td>@{{ statment.student.std_class.name }}</td>
+					<td>@{{ statment.student.gr_no }}</td>
+					<td>@{{ statment.payment_month }}</td>
+					<td class="paid_amount">@{{ statment.paid_amount }}</td>
 				</tr>
-				@endforeach
+
 				<tr>
 					<th colspan="8" class="text-center"> Summary </th>
 				</tr>
@@ -97,7 +97,7 @@
 				@endforeach
 				<tr>
 					<th colspan="7" class="text-right">Total</th>
-					<th>@{{ total_paid_amount }}/=</th>
+					<th>@{{ Total }}/=</th>
 				</tr>
 
 		</table>
@@ -123,23 +123,23 @@
 		data: { 
 			total_paid_amount: 0,
 			monthlysome: [],
+			statments: {!! json_encode($statments, JSON_NUMERIC_CHECK) !!},
 		},
 
 		mounted: function(){
-			this.TotalStudents();
 			window.print();
+		},
+		computed: {
+			Total: function(){
+				return this.ComputedStatments.reduce((a, b) => a + Number(b.paid_amount), 0);
+			},
+			ComputedStatments: function(){
+			    return _.orderBy(this.statments, 'student.name');
+			}
 		},
 
 		methods: {
-			TotalStudents: function(){
 
-				var vm = this;
-				$('.paid_amount').each(function(){
-					vm.total_paid_amount+=Number($(this).text());
-				});
-
-
-			},
 		},
 	});
 </script>

@@ -61,6 +61,7 @@
 		<h4>Statment Of Unpaid Fee</h4>
 		<h4>AS ON: {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['start'])->Format('M-Y') }}-{{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['end'])->Format('M-Y') }}</h3>
 
+{{--
 			@foreach($unpaid_fee_statment AS $classname => $students)
 			<h4>{{ $classname }}</h4>
 			<table id="rpt-att" class="table table-bordered">
@@ -92,6 +93,36 @@
 				</tfoot>
 			</table>
 			@endforeach
+--}}
+			<template v-for="(students, classname) in unpaid_fee_statment">
+				<h4>@{{ classname }}</h4>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Gr No.</th>
+							<th>Student Name</th>
+							<th>Father Name</th>
+							<th>Month</th>
+							<th>Amount</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="student in _.orderBy(students, 'name')">
+							<td>@{{ student.gr_no }}</td>
+							<td>@{{ student.name }}</td>
+							<td>@{{ student.father_name }}</td>
+							<td>@{{ student.month }}</td>
+							<td>@{{ student.amount }}</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="4" class="text-right">Total</th>
+							<th>@{{ TotalAmount(students) }}</th>
+						</tr>
+					</tfoot>
+				</table>
+			</template>
 
 	</div>
 
@@ -103,7 +134,34 @@
 
 
 @section('script')
+
+@endsection
+
+@section('vue')
+
 <script type="text/javascript">
-//	window.print();
+
+	var app = new Vue({
+		el: '#app',
+		data: { 
+			unpaid_fee_statment: {!! json_encode($unpaid_fee_statment, JSON_NUMERIC_CHECK) !!},
+		},
+
+		mounted: function(){
+			window.print();
+		},
+		computed: {
+
+
+		},
+
+		methods: {
+			TotalAmount: function(students){
+				return students.reduce((a, b) => a + Number(b.amount), 0);
+			},
+
+		},
+	});
 </script>
+
 @endsection

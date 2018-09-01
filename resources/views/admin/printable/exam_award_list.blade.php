@@ -20,7 +20,6 @@
 			border-top: 1px solid;
 		}
 
-
     body {
       padding: 0px 10px;
       margin: 0px;
@@ -42,8 +41,6 @@
       content: none;
 /*      content: " (" attr(href) ")";*/
     }
-
-
 
 	</style>
 
@@ -91,7 +88,7 @@
 
 			</thead>
 			<tbody>
-				<template v-for="(student, k) in result_attribute.student_result" :key="student.id">
+				<template v-for="(student, k) in ComputedStudentResult" :key="student.id">
 					<tr>
 						<td>@{{ k+1 }}</td>
 						<td>@{{ student.student.gr_no }}</td>
@@ -156,6 +153,9 @@
 			window.print();
 		},
 		computed: {
+			ComputedStudentResult: function(){
+				return _.orderBy(this.result_attribute.student_result, 'student.name');
+			},
 			ordered_computed_transcripts: function(){
 				return this.computed_transcripts.slice().sort(function(a, b) {
 					return b.percentage - a.percentage;

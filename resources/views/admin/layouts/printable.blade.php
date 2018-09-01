@@ -51,6 +51,9 @@
     @yield('script')
 
 
+    <!-- Lodash version 4.17.10 -->
+    <script src="{{ URL::to('src/lodash.min.js') }}"></script>
+
     @if(env('APP_DEBUG'))
         <!-- Vue dev version -->
         <script src="{{ URL::to('src/vue.js') }}"></script>

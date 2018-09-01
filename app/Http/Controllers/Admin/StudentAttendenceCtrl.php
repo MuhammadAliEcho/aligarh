@@ -114,7 +114,7 @@ class StudentAttendenceCtrl extends Controller
 			$qry->where(['students.section_id' => $this->Request->input('section')]);
 		}
 
-		$this->data['students']	=	$qry->get();
+		$this->data['students']	=	$qry->orderBy('name')->get();
 //		$this->data['students']	=	$this->data['students']->CurrentSession()->get();
 		$this->data['attendence'] = [];
 		foreach ($this->data['students'] as $k => $row) {

@@ -78,7 +78,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($section->Students()->WithDiscount()->Active()->CurrentSession()->get() AS $student)
+						@foreach($section->Students()->WithDiscount()->Active()->CurrentSession()->OrderBy('name')->get() AS $student)
 						<tr>
 							<td>{{ $student->gr_no }}</td>
 							<td>{{ $student->name }}</td>

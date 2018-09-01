@@ -62,6 +62,10 @@ class Student extends Model {
 		return $this->hasOne('App\Classe', 'id', 'class_id');
 	}
 
+	public function StdClass() {
+		return $this->hasOne('App\Classe', 'id', 'class_id');
+	}
+
 	public function Section() {
 		return $this->hasOne('App\Section', 'id', 'section_id');
 	}

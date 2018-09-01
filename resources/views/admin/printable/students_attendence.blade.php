@@ -32,8 +32,13 @@
       padding: 0px;
     }   
 
+  .table > thead > tr > th,
+  .table > tbody > tr > th
+   {
+      padding: 2px;
+    }
   .table > tbody > tr > td {
-      padding: 1px;
+      padding: 2px;
     }
     a[href]:after {
       content: none;
@@ -58,7 +63,7 @@
 			<thead>
 			  <tr>
 				<th>Students</th>
-				<th>Gr No</th>
+				<th width="50px">Gr No</th>
 				@for($i=1; $i <= $noofdays; $i++)
 				<th class="{{ in_array($i, $weekends)? 'h' : '' }}" >{{ $i }}</th>
 				@endfor
@@ -75,7 +80,7 @@
 					<td>{{ $student->name }}</td>
 					<td>{{ $student->gr_no }}</td>
 					@for($i=1; $i <= $noofdays; $i++)
-					<th  class="std_{{ $student->id }}_dat_{{ $i }} col_dat_{{ $i }} {{ in_array($i, $weekends)? 'h' : '' }}"></th>
+					<td  class="std_{{ $student->id }}_dat_{{ $i }} col_dat_{{ $i }} {{ in_array($i, $weekends)? 'h' : '' }}"></td>
 					@endfor
 					<td>{{ $noofweekends }}</td>
 					<td class="std_{{ $student->id }}_a"></td>
@@ -85,19 +90,19 @@
 				</tr>
 				@endforeach
 				<tr>
-					<td colspan="2">Present</td>
+					<th colspan="2">Present</th>
 					@for($i=1; $i <= $noofdays; $i++)
 					<td  class="p_std_dat_{{ $i }} {{ in_array($i, $weekends)? 'h' : '' }}"></td>
 					@endfor
 				</tr>
 				<tr>
-					<td colspan="2">Absent</td>
+					<th colspan="2">Absent</th>
 					@for($i=1; $i <= $noofdays; $i++)
 					<td  class="a_std_dat_{{ $i }} {{ in_array($i, $weekends)? 'h' : '' }}"></td>
 					@endfor
 				</tr>
 				<tr>
-					<td colspan="2">% Attendance</td>
+					<th colspan="2">% Attendance</th>
 					@for($i=1; $i <= $noofdays; $i++)
 					<td  class="percent_std_dat_{{ $i }} {{ in_array($i, $weekends)? 'h' : '' }}"></td>
 					@endfor

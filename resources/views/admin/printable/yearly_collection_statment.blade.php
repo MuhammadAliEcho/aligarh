@@ -35,6 +35,11 @@
   .table > tbody > tr > td {
       padding: 1px;
     }
+  .table > thead > tr > th,
+  .table > tfoot > tr > th,
+  .table > tfoot > tr > td {
+      padding: 3px;
+    }
     a[href]:after {
       content: none;
 /*      content: " (" attr(href) ")";*/

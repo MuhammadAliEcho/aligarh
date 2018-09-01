@@ -42,7 +42,12 @@ class FeeCollectionReportController extends Controller
 		]);
 
 		$this->data['betweendates']	=	['start' => $request->input('start'), 'end' => $request->input('end')];
-		$this->data['statments'] = InvoiceMaster::whereBetween('payment_month', $this->data['betweendates'])->get();
+		$this->data['statments'] = InvoiceMaster::whereBetween('payment_month', $this->data['betweendates'])->with(['Student' => function($qry){
+				$qry->select('id', 'name', 'father_name', 'gr_no', 'class_id');
+				$qry->with(['StdClass' => function($qry){
+					$qry->select('id', 'name');
+				}]);
+		}])->get();
 		$this->data['summary'] = DB::table('invoice_master')
 								->select(DB::raw('sum(`paid_amount`) AS `paid_amount`, `payment_month`'))
 								->groupBy('payment_month')
@@ -229,6 +234,7 @@ class FeeCollectionReportController extends Controller
 									->where('students.class_id', $this->data['class']->id)
 									->where('students.section_id', $this->data['section']->id)
 									->groupBy('students.id')
+									->orderBy('students.name')
 									->get();
 
 		$this->data['months'] = $this->getMonthsFromSession($this->data['session']);
