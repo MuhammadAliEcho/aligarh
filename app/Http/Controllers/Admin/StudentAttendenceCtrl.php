@@ -55,7 +55,7 @@ class StudentAttendenceCtrl extends Controller
 			$this->data['section'] = Section::find($this->Request->input('section'));
 		}
 
-		$this->data['students']	=	$this->data['students']->active()->get();
+		$this->data['students']	=	$this->data['students']->active()->orderBy('name')->get();
 		foreach ($this->data['students'] as $k => $row) {
 			$this->data['attendence'][$row->id] =	StudentAttendence::select('id as attendence_id', 'status')->where(['student_id' => $row->id, 'date' => $dbdate])->first();
 		}
@@ -75,13 +75,16 @@ class StudentAttendenceCtrl extends Controller
 		]);
 		$dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
 		foreach($this->Request->input('student_id') as $student_id) {
-			$StudentAttendence = StudentAttendence::firstOrnew([
-														'date' => $dbdate,
-														'student_id' => $student_id,
-														]);
-			$StudentAttendence->status = ($this->Request->input('attendence'.$student_id) !== null)? 1 : 0;
-			$StudentAttendence->user_id	=	Auth::user()->id;
-			$StudentAttendence->save();
+			StudentAttendence::updateOrCreate(
+				[
+					'date'		 => $dbdate,
+					'student_id' => $student_id,
+				],
+				[
+					'status'	=>	($this->Request->input('attendence'.$student_id) !== null)? 1 : 0,
+					'user_id'	=>	Auth::user()->id
+				]
+			);
 		}
 		return redirect('student-attendance')->with([
 									'toastrmsg' => [

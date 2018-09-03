@@ -129,9 +129,9 @@
 	var app = new Vue({
 		el: '#app',
 		data: { 
-	        students: {!! json_encode($students) !!},
-	        attendancerpt: {!! json_encode($attendence) !!},
-	        noofdays: {!! json_encode($noofdays) !!},
+			students: {!! json_encode($students, JSON_NUMERIC_CHECK) !!},
+			attendancerpt: {!! json_encode($attendence, JSON_NUMERIC_CHECK) !!},
+			noofdays: {!! json_encode($noofdays, JSON_NUMERIC_CHECK) !!},
 		},
 
 		mounted: function(){
