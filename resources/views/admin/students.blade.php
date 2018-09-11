@@ -80,6 +80,7 @@
                                           <th>Name</th>
                                           <th>Contact</th>
                                           <th>Address</th>
+                                          <th>Active</th>
                                           <th>Options</th>
                                         </tr>
                                       </thead>
@@ -89,7 +90,14 @@
                                           <th><input type="text" placeholder="Name..." autocomplete="off"></th>
                                           <th><input type="text" placeholder="Contact..." autocomplete="off"></th>
                                           <th><input type="text" placeholder="Address..." autocomplete="off"></th>
-                                          <th>Options</th>
+                                          <th></th>
+                                          <th>
+                                            <select id="filterActive">
+                                              <option value="">All</option>
+                                              <option value="1">Active</option>
+                                              <option value="0">InActive</option>
+                                            </select>
+                                          </th>
                                         </tr>
                                       </tfoot>
                                     </table>
@@ -553,6 +561,7 @@
             {data: 'name', name: 'students.name'},
             {data: 'phone', name: 'students.phone'},
             {data: 'address', name: 'students.address'},
+            {data: 'active', name: 'students.active', visible: false},
 //            {"defaultContent": opthtm, className: 'hidden-print'},
             {render: loadOptions, className: 'hidden-print', "orderable": false},
 
@@ -591,6 +600,9 @@
             $( 'input', tbl.column( colIdx ).footer() ).on( 'keyup change', function () {
                 search(colIdx, this.value);
             });
+        });
+        $("#filterActive").on('change', function(){
+          search(4, this.value);
         });
 
 
