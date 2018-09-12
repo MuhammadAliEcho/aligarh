@@ -148,7 +148,9 @@ class FeeCollectionReportController extends Controller
 				$qry->with(['Invoices'	=>	function($qry){
 					$qry->whereBetween('payment_month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']]);
 				}]);
-				$qry->with('AdditionalFee');
+				$qry->with(['AdditionalFee'	=>	function($qry){
+					$qry->Active();
+				}]);
 			}]);
 		}])->get();
 

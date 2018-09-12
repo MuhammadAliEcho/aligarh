@@ -177,13 +177,13 @@
                                         </div>
                                       </div>
 
-                                      <div class="form-group{{ ($errors->has('relegion'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Relegion</label>
+                                      <div class="form-group{{ ($errors->has('religion'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Religion</label>
                                         <div class="col-md-6">
-                                          <input type="text" name="relegion" placeholder="Relegion" value="{{ old('relegion') }}" class="form-control"/>
-                                          @if ($errors->has('relegion'))
+                                          <input type="text" name="religion" placeholder="Religion" value="{{ old('religion') }}" class="form-control"/>
+                                          @if ($errors->has('religion'))
                                               <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('relegion') }}</strong>
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('religion') }}</strong>
                                               </span>
                                           @endif
                                         </div>
@@ -232,8 +232,9 @@
                                       </div>
 
                                       <div class="alert alert-warning ">
+                                        <h4>Carefully! </h4>
                                         <p>
-                                          <h4>Carefully! </h4>Once set class it will not be editable until session end.
+                                          Once set class it will not be editable until session end.
                                         </p>
 
                                       <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">

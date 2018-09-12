@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Auth;
 use App\AcademicSessionHistory;
 use App\Http\Controllers\Controller;
+use Validator;
 
 class StudentsController extends Controller 
 {
@@ -42,7 +43,7 @@ class StudentsController extends Controller
 	}
 
 	public function GetProfile() {
-		$this->data['student']  = Student::findorfail($this->data['root']['option']);
+		$this->data['student']  = Student::with('StdClass')->with('Section')->with('Guardian')->findorfail($this->data['root']['option']);
 		return view('admin.student_profile', $this->data);
 	}
 
@@ -153,6 +154,52 @@ class StudentsController extends Controller
 			]);
 	}
 
+	public function PostLeaveStudent(){
+
+		if($this->Request->ajax()){
+			$validator = Validator::make($this->Request->all(), [
+				'id'				=>	'required|numeric',
+				'date_of_leaving'	=>	'required|date'
+				]);
+
+			if ($validator->fails()) {
+				return  [
+					'updated'	=>	false,
+					'toastrmsg'	=>	[
+						'type'	=> 'error', 
+						'title'	=>  'Students',
+						'msg'	=>  'Something is wrong!'
+					]
+				];
+			}
+
+			$student =	Student::findorfail($this->Request->input('id'));
+			$student->date_of_leaving = $this->Request->input('date_of_leaving');
+			$student->cause_of_leaving = $this->Request->input('cause_of_leaving');
+			$student->active = 0;
+			$student->save();
+
+				return  [
+					'updated'	=>	true,
+					'toastrmsg'	=>	[
+						'type'	=> 'success', 
+						'title'	=>  'Students',
+						'msg'	=>  'Update Successfull'
+					]
+				];
+		}
+
+		return redirect('students')->with([
+									'toastrmsg' => [
+										'type'	=> 'warning', 
+										'title'	=>  'Students',
+										'msg'	=>  'Something is wrong!'
+									]
+								]);
+
+
+	}
+
 	protected function SetAttributes($new = true){
 		$this->Student->name = $this->Request->input('name');
 		$this->Student->father_name = $this->Request->input('father_name');
@@ -179,7 +226,7 @@ class StudentsController extends Controller
 		$this->Student->date_of_birth   = Carbon::createFromFormat('d/m/Y', $this->Request->input('dob'))->toDateString();
 		$this->Student->date_of_admission   = Carbon::createFromFormat('d/m/Y', $this->Request->input('doa'))->toDateString();
 		$this->Student->place_of_birth  = $this->Request->input('place_of_birth');
-		$this->Student->relegion  = $this->Request->input('relegion');
+		$this->Student->religion  = $this->Request->input('religion');
 		$this->Student->last_school = $this->Request->input('last_school');
 		$this->Student->receipt_no = $this->Request->input('receipt_no');
 	}

@@ -16,4 +16,8 @@ class AdditionalFee extends Model
 		return belongsTo('App\Atudent');
 	}
 
+	public function scopeActive($query){
+		return $query->where('active', 1);
+	}
+
 }
