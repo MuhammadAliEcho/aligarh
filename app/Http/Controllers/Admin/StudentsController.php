@@ -19,6 +19,8 @@ use Auth;
 use App\AcademicSessionHistory;
 use App\Http\Controllers\Controller;
 use Validator;
+use App\Certificate;
+use Larapack\ConfigWriter\Repository as ConfigWriter;
 
 class StudentsController extends Controller 
 {
@@ -43,7 +45,7 @@ class StudentsController extends Controller
 	}
 
 	public function GetProfile() {
-		$this->data['student']  = Student::with('StdClass')->with('Section')->with('Guardian')->findorfail($this->data['root']['option']);
+		$this->data['student']  = Student::with('Certificates')->with('StdClass')->with('Section')->with('Guardian')->findorfail($this->data['root']['option']);
 		return view('admin.student_profile', $this->data);
 	}
 
@@ -79,7 +81,7 @@ class StudentsController extends Controller
 		}
 		$this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
 		$this->data['classes'] = Classe::select('id', 'name')->get();
-		foreach ($this->data['classes'] as $key => $class) {		
+		foreach ($this->data['classes'] as $key => $class) {
 			$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
 		}
 		return view('admin.students', $this->data);
@@ -200,6 +202,95 @@ class StudentsController extends Controller
 
 	}
 
+	public function Certificates(){
+
+		$this->validate($this->Request, [
+			'id' => 'required|numeric'
+		]);
+
+		switch ($this->data['root']['option']) {
+			case 'transfercertificate':
+				$this->data['student']	=	Student::with('StdClass')->findorfail($this->Request->input('id'));
+				return view('admin.printable.student_transfer_certificate', $this->data);
+				break;
+			
+			default:
+				return abort(404);
+				break;
+		}
+
+	}
+
+	public function GetCertificate(){
+
+//				$this->data['student']->date_of_birth_figure = Carbon::createFromFormat('Y-m-d', $this->data['student']->getOriginal('date_of_birth'))->format('l jS \\of F Y');
+		switch ($this->data['root']['option']) {
+			case 'new':
+				$this->data['student']	= Student::findorfail($this->Request->input('student_id'));
+				break;
+
+			case 'update':
+				$this->data['certificate']	= Certificate::with('Student')->findorfail($this->Request->input('certificate_id'));
+				break;
+			
+			default:
+				abort(404);
+				break;
+		}
+
+		return view('admin.student_certificate', $this->data);
+
+	}
+
+	public function PostCertificate(){
+
+		$validate = [
+			'title'	=>	'required',
+			'certificate'	=>	'required',
+			'student_id'	=>	'required'
+		];
+		if($this->Request->has('id')){
+			$validate['id'] = 'required';
+		}
+/*		echo $this->Request->input('certificate');
+		$ConfigWriter = new ConfigWriter('certificates');
+		$ConfigWriter->set([
+				'character_certificate' => $this->Request->input('certificate'),
+			]);
+		$ConfigWriter->save();
+		dd('');*/
+		$this->validate($this->Request, $validate);
+		$this->data['student']	= Student::findorfail($this->Request->input('student_id'));
+
+		if($this->Request->has('id')){
+			Certificate::updateOrCreate(
+				['id'	=>	$this->Request->input('id')],
+				[
+					'updated_by'	=>	Auth::user()->id,
+					'student_id'	=>	$this->Request->input('student_id'),
+					'title'	=>	$this->Request->input('title'),
+					'certificate'	=>	$this->Request->input('certificate')
+				]
+			);
+		} else {
+			Certificate::create([
+				'created_by'	=> Auth::user()->id,
+				'student_id'	=>	$this->Request->input('student_id'),
+				'title'	=>	$this->Request->input('title'),
+				'certificate'	=>	$this->Request->input('certificate')
+			]);
+		}
+
+		return redirect('students/profile/'.$this->Request->input('student_id'))->with([
+									'toastrmsg' => [
+										'type'	=> 'success', 
+										'title'	=>  'Students',
+										'msg'	=>  'Certificate is Updated!'
+									]
+								]);
+
+	}
+
 	protected function SetAttributes($new = true){
 		$this->Student->name = $this->Request->input('name');
 		$this->Student->father_name = $this->Request->input('father_name');
@@ -275,8 +366,6 @@ class StudentsController extends Controller
 		$this->Student->image_dir = 'public/students/'.$this->Student->id.'.'.$extension;
 		$this->Student->image_url = 'students/image/'.$this->Student->id;
 	}
-
-
 
 // for session update temperory 
 	protected function UpdateStd(){

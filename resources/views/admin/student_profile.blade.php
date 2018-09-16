@@ -53,7 +53,7 @@
 								<h4><strong>@{{ student.name }}</strong></h4>
 								<p><i class="fa fa-map-marker"></i> @{{ student.address }}</p>
 								<p v-if="student.active == false"><b>Date Of Leaving:</b> @{{  student.date_of_leaving }}</p>
-								<template v-if="student.active && allow_user">
+								<template v-if="student.active && allow_user_leave">
 									<hr>
 									<a href="#" v-on:dblclick="leavingfrm = !leavingfrm" data-toggle="tooltip" title="DoubleClick to Inactive"><b>Actvie</b></a>
 									<form v-show="leavingfrm" method="post" v-on:submit.prevent="formSubmit($event)" :action="URL+'/students/leave/'+student.id" class="form-horizontal">
@@ -89,6 +89,48 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<h5>Certificates</h5>
+						</div>
+						<div class="ibox-content">
+							<table class="table" v-if="student.certificates.length">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="certificate in student.certificates">
+										<td>@{{ certificate.title }}</td>
+										<td>
+											<a :href="URL+'/students/certificate/update?certificate_id='+certificate.id" title="view" data-toggle="tooltip"><span class="fa fa-file-pdf-o"></span></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<form :action="URL+'/students/certificate/new'" method="get">
+								<input type="hidden" name="student_id" v-model="student.id">
+								<button class="btn btn-primary btn-block">Create Certificate</button>
+							</form>
+						</div>
+					</div>
+
+					<div v-if="allow_user_certificate" class="ibox float-e-margins hidden">
+						<div class="ibox-title">
+							<h5>Certificates</h5>
+						</div>
+						<div class="ibox-content profile-content">
+							<form :action="URL+'/students/certificate/transfercertificate'" method="post" target="_blank">
+								{{ csrf_field() }}
+								<input type="hidden" name="id" :value="student.id">
+								<button type="submit" class="btn btn-primary btn-block"><span class="fa fa-file-pdf-o"></span> Transfer Certificate</button>
+							</form>
+						</div>
+					</div>
+
 				</div>
 				<div class="col-md-8">
 					<div class="ibox float-e-margins">
@@ -202,7 +244,8 @@
 				student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
 				leavingfrm: false,
 				loading: false,
-				allow_user: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->leave }}
+				allow_user_leave: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->leave }},
+				allow_user_certificate: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->certificate }}
 			},
 			mounted: function(){
 				$("[data-toggle='tooltip']").on('mouseenter', function(){

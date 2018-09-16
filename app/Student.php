@@ -102,4 +102,8 @@ class Student extends Model {
 		return $this->hasMany('App\InvoiceMaster');
 	}
 
+	public function Certificates(){
+		return $this->hasMany('App\Certificate');
+	}
+
 }
