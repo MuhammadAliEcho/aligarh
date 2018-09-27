@@ -27,9 +27,7 @@ class FeeCollectionReportController extends Controller
 
 	public function Index(){
 		$this->data['classes'] = Classe::select('id', 'name')->get();
-		foreach ($this->data['classes'] as $key => $class) {
-			$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
-		}
+		$this->data['sections']	= Section::select('id', 'class_id', 'name')->get();
 		return view('admin.fee_collection_report', $this->data);
 	}
 

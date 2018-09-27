@@ -324,12 +324,12 @@
 				data: {
 					classe: 0,
 					sections: [],
-					allSections: {!! json_encode($sections) !!},
+					allSections: {!! json_encode($sections, JSON_NUMERIC_CHECK) !!},
 				},
 
 				watch:{
 					classe: function (newClass, oldClass) {
-						this.sections = this.allSections['class_'+this.classe];
+						this.sections = _.filter(this.allSections, function(section){ return section.class_id == newClass });
 					}
 				}
 			})

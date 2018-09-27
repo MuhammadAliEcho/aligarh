@@ -52,7 +52,7 @@
 								<input v-if="update" type="hidden" name="id" v-model="certificate.id">
 
 								<div v-if="update == false" class="form-group">
-									<label class="col-md-2 control-label">Certificate Type</label>
+									<label class="col-md-2 control-label">Certificate Template</label>
 									<div class="col-md-6">
 										<select class="form-control" v-model="selected_certificate">
 											<option value="transfer_certificate">Transfer Certificate</option>
@@ -116,11 +116,13 @@
 		});
 		window.onload = function() {
 		    CKEDITOR.replace( 'certificate' );
-/*		    _.forEach(app.student, function(value, key) {
-				console.log(value);
-			    app.default_certificate.transfer_certificate =	_.replace(app.default_certificate.transfer_certificate, '@{{'+key+'}}', value);
-			    app.default_certificate.character_certificate =	_.replace(app.default_certificate.character_certificate, '@{{'+key+'}}', value);
-			});*/
+			_.forEach(app.student, function(value, key) {
+				app.default_certificate.transfer_certificate =	_.replace(app.default_certificate.transfer_certificate, new RegExp('@{{'+key+'}}', "g"), value);
+				app.default_certificate.character_certificate =	_.replace(app.default_certificate.character_certificate, new RegExp('@{{'+key+'}}', "g"), value);
+			});
+			_.forEach(app.gender_render, function(v, k){
+				app.default_certificate.character_certificate =	_.replace(app.default_certificate.character_certificate, new RegExp('@{{'+k+'}}', "g"), v[app.student.gender]);
+			});
 			CKEDITOR.instances.certificate.setData(app.computed_certificate);
 		};
 	</script>
@@ -136,10 +138,25 @@
 				URL: "{{ URL('/') }}",
 				default_certificate: {!! json_encode(config('certificates')) !!},
 				selected_certificate: 'transfer_certificate',
+				gender_render: {
+					gender_name: {
+						'Male': 'Mr.',
+						'Female': 'Miss.'
+					},
+					gender_father: {
+						'Male': 'S/O',
+						'Female': 'D/O'
+					},
+					gender_his_her: {
+						'Male': 'His',
+						'Female': 'Her'
+					}
+
+				},
 				@if($root['option'] == 'update')
 					update: true,
 					certificate: {!! json_encode($certificate, JSON_NUMERIC_CHECK) !!},
-					student: {!! json_encode($certificate->Student, JSON_NUMERIC_CHECK) !!}
+					student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!}
 				@else
 					update: false,
 					student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!}

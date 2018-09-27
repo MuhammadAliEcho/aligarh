@@ -223,14 +223,14 @@ class StudentsController extends Controller
 
 	public function GetCertificate(){
 
-//				$this->data['student']->date_of_birth_figure = Carbon::createFromFormat('Y-m-d', $this->data['student']->getOriginal('date_of_birth'))->format('l jS \\of F Y');
 		switch ($this->data['root']['option']) {
 			case 'new':
-				$this->data['student']	= Student::findorfail($this->Request->input('student_id'));
+				$this->CompileStudentForCertificate($this->Request->input('student_id'));
 				break;
 
 			case 'update':
-				$this->data['certificate']	= Certificate::with('Student')->findorfail($this->Request->input('certificate_id'));
+				$this->data['certificate']	= Certificate::findorfail($this->Request->input('certificate_id'));
+				$this->CompileStudentForCertificate($this->data['certificate']->student_id);
 				break;
 			
 			default:
@@ -241,6 +241,13 @@ class StudentsController extends Controller
 		return view('admin.student_certificate', $this->data);
 
 	}
+
+	private function CompileStudentForCertificate($student_id){
+		$this->data['student']	= Student::findorfail($student_id);
+		$this->data['student']['date_of_birth_words'] = Carbon::createFromFormat('Y-m-d', $this->data['student']->getOriginal('date_of_birth'))->format('l jS \\of F Y');
+		$this->data['student']['class_name']	=	Classe::select('name')->findorfail($this->data['student']->class_id)->name;
+	}
+
 
 	public function PostCertificate(){
 

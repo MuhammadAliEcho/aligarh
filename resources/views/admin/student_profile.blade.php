@@ -212,8 +212,6 @@
 								</tbody>
 							</table>
 
-							
-
 						</div>
 					</div>
 
@@ -231,7 +229,6 @@
 
 	<!-- Data picker -->
 	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
-
 
 	@endsection
 
@@ -294,7 +291,7 @@
 							app.loading = false;
 						}
 					});
-				},
+				}
 			}
 
 		});
