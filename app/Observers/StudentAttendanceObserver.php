@@ -4,7 +4,7 @@ namespace App\Observers;
 use App\StudentAttendance;
 use Auth;
 
-class ExamRemarkObserver {
+class StudentAttendanceObserver {
 
 	/**
 	 * Listen to the User created event.

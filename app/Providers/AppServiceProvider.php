@@ -5,8 +5,12 @@ namespace App\Providers;
 
 use App\StudentResult;
 use App\ExamRemark;
+use App\StudentAttendance;
+
 use App\Observers\StudentResultObserver;
 use App\Observers\ExamRemarkObserver;
+use App\Observers\StudentAttendanceObserver;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
 	{
 		StudentResult::observe(StudentResultObserver::class);
 		ExamRemark::observe(ExamRemarkObserver::class);
+		StudentAttendance::observe(StudentAttendanceObserver::class);
 	}
 
 	/**

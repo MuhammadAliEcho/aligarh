@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudentAttendance extends Model
 {
-	protected $fillable = ['date', 'student_id', 'status', 'user_id'];
+	protected $fillable = ['date', 'student_id', 'status'];
 
 	protected $casts = [
 		'status'		=>	'boolean'
