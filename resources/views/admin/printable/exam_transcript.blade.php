@@ -184,11 +184,11 @@
 					<th colspan="3" v-else>Faild</th>
 
 					<template v-if="grand_total.total_percentage[2]">
-						<th colspan="3" v-if="Grade(grand_total.total_percentage[2]).toLowerCase() == 'f'">
-							Faild
+						<th colspan="3" v-if="grand_total.pass[2]">
+							Passed, Grade: @{{ Grade(grand_total.total_percentage[2]) }}
 						</th>
 						<th colspan="3" v-else>
-							Passed, Grade: @{{ Grade(grand_total.total_percentage[2]) }}
+							Faild
 						</th>
 					</template>
 					<th colspan="3" v-else>-</th>
@@ -384,7 +384,8 @@
 						vm.grand_total.pass[subloop] = false;
 					}
 
-					if(computed_result[k].total_marks[mainloop] && computed_result[k].total_marks[subloop]){
+//					if(computed_result[k].total_marks[mainloop] && computed_result[k].total_marks[subloop]){
+					if(computed_result[k].total_marks[1]){
 
 						computed_result[k].total_marks_sum = (computed_result[k].total_marks[mainloop] + computed_result[k].total_marks[subloop]);
 						computed_result[k].total_obtain_marks_sum = (computed_result[k].total_obtain_marks[mainloop] + computed_result[k].total_obtain_marks[subloop]);

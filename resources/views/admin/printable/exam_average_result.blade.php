@@ -98,7 +98,8 @@
 
 						<td>@{{ student.total_obtain_marks_sum }}</td>
 						<td>@{{ student.percentage }}</td>
-						<td>@{{ Grade(student.percentage) }}</td>
+						<td v-if="student.pass">@{{ Grade(student.percentage) }}</td>
+						<td v-else>F</td>
 						<td>@{{ student.rank }}</td>
 						<td>@{{ student.remarks }}</td>
 					</tr>
@@ -173,7 +174,7 @@
 				vm = this;
 				var rankno = 0;
 				this.computed_result.forEach(function(result, i){
-					if(result.total_obtain_marks[0] && result.total_obtain_marks[1]){
+					if(result.total_obtain_marks[0] && result.total_obtain_marks[1] && result.pass){
 						if (i == 0) {
 							vm.computed_result[i].rank	=	rankno	= 1;
 						} else if (vm.computed_result[i-1].percentage > result.percentage) {
@@ -216,6 +217,7 @@
 						total_obtain_marks_sum: 0,
 						percentage: 0,
 						rank:	0,
+						pass: true,
 					});
 //					console.log(vm.results);
 					computed_result[k].total_marks[mainloop]	=	result.student_result.reduce((a, b) => a + Number(b.subject_result_attribute.total_marks), 0);
@@ -235,6 +237,7 @@
 								computed_result[k].remarks += ' ,' + result2.remarks;
 							}
 						
+							computed_result[k].pass = vm.IsPassed(result.student_result, result2.student_result);
 						}
 					}
 
@@ -246,6 +249,36 @@
 				computed_result = computed_result.slice().sort(function(a, b) { return b.percentage - a.percentage; });
 
 				return computed_result;
+			},
+
+			IsPassed: function(r1, r2){
+				if(r1.length >= r2.length){
+					result1 = r1;
+					result2 = r2;
+				} else {
+					result1 = r2;
+					result2 = r1;
+				}
+				total_obtain_marks = total_marks = 0;
+				var rtrn = true;
+				_.forEach(result1, function(value, key){
+					r2k =	_.findIndex(result2, {subject_id: value.subject_id});
+					if(r2k >= 0){
+						total_marks = value.subject_result_attribute.total_marks + result2[r2k].subject_result_attribute.total_marks;
+						total_obtain_marks = value.total_obtain_marks + result2[r2k].total_obtain_marks;
+					} else {
+						total_marks = value.subject_result_attribute.total_marks;
+						total_obtain_marks = value.total_obtain_marks;
+					}
+					rtrn = ((vm.Grade(((total_obtain_marks/total_marks)*100).toFixed(2))).toLowerCase() == 'f')? false : true;
+
+					if(rtrn == false){
+						return false;
+					}
+//						total_marks = value.subject_result_attribute.total_marks 
+				});
+
+				return rtrn;
 			},
 		}
 	});

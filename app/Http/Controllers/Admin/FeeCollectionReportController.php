@@ -174,11 +174,11 @@ class FeeCollectionReportController extends Controller
 					while ($month <= $endmonth) {
 
 						$invoice = $student->Invoices->where('payment_month', Carbon::createFromFormat('Y-m-d', $month)->format('M-Y'));
+						if (empty($this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name])) {
+							$this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name] = collect();
+						}
 						if ($invoice->count()	<=	0) {
 
-							if (empty($this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name])) {
-								$this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name] = collect();
-							}
 
 							$this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name]->push([
 															'id'	=>	$student->id,
