@@ -46,6 +46,9 @@
 													<li>
 														<a data-toggle="tab" href="#tab-11"><span class="fa fa-list"></span> Package Info</a>
 													</li>
+													<li class="hidden">
+														<a data-toggle="tab" href="#tab-12"><span class="fa fa-list"></span> SMS Package Info</a>
+													</li>
 												</ul>
 												<div class="tab-content">
 														<div id="tab-10" class="tab-pane fade fade in active add-guardian">
@@ -132,6 +135,13 @@
 																			</div>
 
 																			<div class="form-group">
+																				<label class="col-md-2 control-label">Avaliable SMS</label>
+																				<div class="col-md-6">
+																					<input type="text" value="{{ config('systemInfo.avaliable_sms').' till '.config('systemInfo.sms_validity') }}" readonly="ture" class="form-control"/>
+																				</div>
+																			</div>
+
+																			<div class="form-group">
 																				<label class="col-md-2 control-label">Next Chalan No</label>
 																				<div class="col-md-6">
 																					<input type="text" value="{{ config('systemInfo.next_chalan_no') }}" readonly="ture" class="form-control"/>
@@ -147,6 +157,7 @@
 
 																</div>
 														</div>
+
 														<div id="tab-11" class="tab-pane fade fade in ">
 															<div class="panel-body">
 																<h2> Invoices <small> 4000/month billing backage </small> <a class="" title="Download" data-toggle="tooltip" href="{{ URL('system-setting/print-invoice-history') }}" target="_blank"> <span class="fa fa-download"> </span> </a> </h2>
@@ -173,6 +184,13 @@
 																		</tr>
 																	</tbody>
 																</table>
+															</div>
+														</div>
+
+														<div id="tab-12" class="tab-pane fade fade in  hidden">
+															<div class="panel-body">
+																<h2> SMS Package <small> Nothing Selected Package </small> </h2>
+																<div class="hr-line-dashed"></div>
 															</div>
 														</div>
 

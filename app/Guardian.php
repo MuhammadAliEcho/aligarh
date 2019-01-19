@@ -12,4 +12,8 @@ class Guardian extends Model
 		return $this->hasMany('App\Student');
 	}
 
+	public function scopeHaveCellNo($query){
+		return $query->where('phone', 'NOT LIKE', '21%')->whereRaw('LENGTH(phone) = 10');
+	}
+
 }

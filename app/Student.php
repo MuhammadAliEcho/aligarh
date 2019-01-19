@@ -20,6 +20,10 @@ class Student extends Model {
 	}
 */
 
+	public function scopeHaveCellNo($query){
+		return $query->where('phone', 'NOT LIKE', '21%')->whereRaw('LENGTH(phone) = 10');
+	}
+
 	public function scopeCurrentSession($query){
 		return $query->where('session_id', Auth::user()->academic_session);
 	}

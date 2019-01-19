@@ -12,4 +12,9 @@ class Employee extends Model
 		return $this->belongsTo('App\User');
 	}
 
+
+	public function scopeHaveCellNo($query){
+		return $query->where('phone', 'NOT LIKE', '21%')->whereRaw('LENGTH(phone) = 10');
+	}
+
 }

@@ -481,8 +481,6 @@
 
     <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-
     <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
