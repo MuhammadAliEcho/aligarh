@@ -7,6 +7,7 @@
 	<link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
 	<link href="{{ URL::to('src/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
 	<link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+	<link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
 
   @endsection
 
@@ -42,16 +43,15 @@
 				<div class="col-lg-12">
 					<div class="tabs-container">
 						<ul class="nav nav-tabs">
-							<li>
+							<li class="active">
 							  <a data-toggle="tab" href="#tab-10"><span class="fa fa-paper-plane"></span> Send SMS</a>
 							</li>
-							<li class="make-notice hidden">
-							  <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> History</a>
+							<li class="sms-history">
+							  <a data-toggle="tab" href="#tab-11"><span class="fa fa fa-file"></span> History</a>
 							</li>
-
 						</ul>
 						<div class="tab-content">
-							<div id="tab-10" class="tab-pane fade">
+							<div id="tab-10" class="tab-pane fade in active">
 								<div class="panel-body">
 								  <h3> @{{availableSms}} SMS available validity till @{{smsValidity}} </h3>
 								  <div class="hr-line-dashed"></div>
@@ -118,6 +118,7 @@
 													<input type="hidden" :name="'phoneinfo['+k+'][send_to]'" :value="phone.send_to">
 													<input type="hidden" :name="'phoneinfo['+k+'][id]'" :value="phone.id">
 													<input type="hidden" :name="'phoneinfo['+k+'][no]'" :value="phone.no">
+													<input type="hidden" :name="'phoneinfo['+k+'][name]'" :value="phone.name">
 												</td>
 												<td><a @click="removePhoneInfo(k)" class="btn btn-info"><span class="fa fa-remove"></span></a></td>
 											</tr>
@@ -136,7 +137,7 @@
 									<transition name="fade">
 										<div v-if="error" class="alert alert-danger alert-dismissible" role="alert">
 											<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<strong>Sorry!</strong> Invalid Number.
+											<strong>Sorry!</strong> @{{ alert_message }}.
 										</div>
 									</transition>
 
@@ -179,7 +180,11 @@
 									<div class="form-group">
 										<label class="col-md-2 control-label"> Students </label>
 										<div class="col-md-6">
-											<input type="hidden" :name="'students['+std.id+']'" v-for="std in Students" v-if="check_no(std.phone) && (clas == 0 || clas == std.class_id)" :value="std.phone">
+											<template v-for="std in Students" v-if="check_no(std.phone) && (clas == 0 || clas == std.class_id)">
+												<input type="hidden" :name="'students['+std.id+'][id]'" :value="std.id">
+												<input type="hidden" :name="'students['+std.id+'][no]'" :value="std.phone">
+												<input type="hidden" :name="'students['+std.id+'][name]'" :value="std.gr_no+' | '+std.name">
+											</template>
 											<select class="form-control" multiple="true" disabled="true">
 												<option v-for="(student, k) in Students" v-if="check_no(student.phone) && (clas == 0 || clas == student.class_id)" :value="student.id">@{{  student.gr_no+' | '+student.name+' | '+student.phone }}</option>
 											</select>
@@ -204,7 +209,11 @@
 									<div class="form-group">
 										<label class="col-md-2 control-label"> Guardians </label>
 										<div class="col-md-6">
-											<input type="hidden" :name="'guardians['+student.guardian.id+']'" v-for="student in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)" :value="student.guardian.phone">
+											<template v-for="student in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)">
+												<input type="hidden" :name="'guardians['+student.guardian.id+'][id]'" :value="student.guardian.id">
+												<input type="hidden" :name="'guardians['+student.guardian.id+'][no]'" :value="student.guardian.phone">
+												<input type="hidden" :name="'guardians['+student.guardian.id+'][name]'" :value="student.guardian.name">
+											</template>
 										  <select class="form-control" multiple="true" disabled="true">
 											<option v-for="(student, k) in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)" :value="student.guardian.id">@{{  student.gr_no+' | '+student.name+' | '+student.guardian.phone }}</option>
 										  </select>
@@ -216,7 +225,11 @@
 									<div class="form-group" v-if="bulk_to == 'teachers'">
 										<label class="col-md-2 control-label"> Teacher </label>
 										<div class="col-md-6">
-											<input type="hidden" :name="'teachers['+teacher.id+']'" v-for="teacher in Teachers" v-if="check_no(teacher.phone)" :value="teacher.phone">
+											<template v-for="teacher in Teachers" v-if="check_no(teacher.phone)">
+												<input type="hidden" :name="'teachers['+teacher.id+'][id]'" :value="teacher.id">
+												<input type="hidden" :name="'teachers['+teacher.id+'][no]'" :value="teacher.phone">
+												<input type="hidden" :name="'teachers['+teacher.id+'][name]'" :value="teacher.name">
+											</template>
 										  <select class="form-control" multiple="true" disabled="true">
 											<option v-for="(teacher, k) in Teachers" v-if="check_no(teacher.phone)" :value="teacher.id" >@{{ teacher.name+' | '+teacher.phone }}</option>
 										  </select>
@@ -227,7 +240,11 @@
 									<div class="form-group" v-if="bulk_to == 'employs'">
 										<label class="col-md-2 control-label"> Employee </label>
 										<div class="col-md-6">
-											<input type="hidden" :name="'employs['+employe.id+']'" v-for="employe in Employee" v-if="check_no(employe.phone)" :value="employe.phone">
+											<template v-for="employe in Employee" v-if="check_no(employe.phone)">
+												<input type="hidden" :name="'employs['+employe.id+'][id]'" :value="employe.id">
+												<input type="hidden" :name="'employs['+employe.id+'][no]'" :value="employe.phone">
+												<input type="hidden" :name="'employs['+employe.id+'][name]'" :value="employe.name">
+											</template>
 										  <select class="form-control" multiple="true" disabled="true">
 											<option v-for="(employe, k) in Employee" v-if="check_no(employe.phone)" :value="employe.id" >@{{ employe.name+' | '+employe.phone }}</option>
 										  </select>
@@ -261,52 +278,30 @@
 								</div>
 							</div>
 
-							<div id="tab-11" class="tab-pane fade make-notice hidden">
+							<div id="tab-11" class="tab-pane fade sms-history">
 								<div class="panel-body">
-								  <h2> SMS History And Delivery Reports </h2>
-								  <div class="hr-line-dashed"></div>
-								  <table class="table table-bordered table-hover">
-								  	<thead>
-								  		<tr>
-								  			<th>ID</th>
-								  			<th>Send To</th>
-								  			<th>Message Detail</th>
-								  			<th>Aknowledgement</th>
-								  			<th>Date Time</th>
-								  			<th>User</th>
-								  			<th>Actions</th>
-								  		</tr>
-								  	</thead>
-								  	<tbody>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-								  	</tbody>
-								  </table>
+									<h2> SMS History </h2>
+									<div class="hr-line-dashed"></div>
+										<form id="sms_history_form" method="POST" action="{{ URL('smsnotifications/history') }}" class="form-horizontal" target="_blank">
+											{{ csrf_field() }}
+
+											<div class="form-group">
+												<label class="col-md-2 control-label">From</label>
+												<div class="col-md-6">
+													<div class="input-daterange input-group" style="width: 100%" id="datepicker">
+														<input type="text" class="input-sm form-control" name="start" required="true" readonly="" placeholder="From Date" />
+														<span class="input-group-addon">to</span>
+														<input type="text" class="input-sm form-control" name="end" required="true" readonly="" placeholder="To Date" />
+													</div>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+													<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+												</div>
+											</div>
+										</form>
 								</div>
 							</div>
 						</div>
@@ -336,16 +331,38 @@
 	<!-- iCheck -->
 	<script src="{{ URL::to('src/js/plugins/iCheck/icheck.min.js') }}"></script>
 
+	<!-- Data picker -->
+	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+
 	<script type="text/javascript">
 
 	  $(document).ready(function(){
 
-	  @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
-		$('a[href="#tab-11"]').tab('show');
-	  @else
-		$('a[href="#tab-10"]').tab('show');
-	  @endif
+		$("#sms_history_form").validate({
+			rules: {
+				start: {
+					required: true,
+				},
+				end: {
+					required: true,
+				},
+			}
+		});
 
+		$('#datepicker').datepicker({
+
+			format: 'yyyy-mm-dd',
+			keyboardNavigation: false,
+			forceParse: false,
+			autoclose: true,
+
+			minViewMode: 0,
+			todayHighlight: true
+		});
+
+      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->history == 0)
+        $('.sms-history').hide();
+      @endif
 
 	  });
 	</script>
@@ -370,6 +387,8 @@
 
 			loading: '',
 			message: '',
+
+			alert_message: '',
 
 			clas: 0,
 			
@@ -426,7 +445,7 @@
 				this.phoneinfo.push({
 					send_to: send_to,
 					id: dta.id,
-					name: dta.name,
+					name: (send_to == 'student')? dta.gr_no+' | '+dta.name : dta.name,
 					no: dta.phone,
 				});
 			},
@@ -447,6 +466,7 @@
 
 						if(msg.errors){
 							vm.error	=	msg.errors;
+							vm.alert_message = toastrmsg.msg;
 							setTimeout(function(){
 								vm.error =	false;
 							}, 3000);

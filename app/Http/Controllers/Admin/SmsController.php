@@ -23,6 +23,20 @@ use Auth;
 class SmsController extends Controller
 {
 
+	protected $raw = [
+		'students' => 'Student',
+		'student' => 'Student',
+
+		'guardians' => 'Guardian',
+		'guardian' => 'Guardian',
+		
+		'teachers' => 'Teacher',
+		'teacher' => 'Teacher',
+		
+		'emloys' => 'Employee',
+		'emloyee' => 'Employee',
+	];
+
 	public function __Construct($Routes){
 		$this->data['root'] = $Routes;
 	}
@@ -58,6 +72,17 @@ class SmsController extends Controller
 				];
 			}
 
+			if($this->ValidateBalance($request->input('phoneinfo')) == false){
+				return [
+					'errors'	=>	true,
+					'toastrmsg'	=>	[
+						'type'	=>	'error',
+						'title'	=>	'Notifications',
+						'msg'	=>	'Insufficient Balance',
+					]
+				];
+			}
+
 			$responseApi = $this->SendSmsAPI('0'.implode(',0', (array_pluck($request->input('phoneinfo'), 'no'))), $request->input('message'));
 			$totalprice = 0;
 			if(array_has($responseApi, 'totalprice')){
@@ -66,9 +91,9 @@ class SmsController extends Controller
 			}
 
 			SmsLog::create([
-				'phone_info'	=>	json_encode($request->input('phoneinfo'), JSON_NUMERIC_CHECK),
+				'phone_info'	=>	$request->input('phoneinfo'),
 				'message'	=>	$request->input('message'),
-				'api_response'	=>	json_encode($responseApi),
+				'api_response'	=>	$responseApi,
 				'total_price'	=>	$totalprice,
 				'created_by'	=>	Auth::user()->id
 			]);
@@ -107,13 +132,6 @@ class SmsController extends Controller
 
 	public function SendBulkSms(Request $request){
 
-		$raw = [
-			'students' => 'Student',
-			'guardians' => 'Guardian',
-			'teachers' => 'Teacher',
-			'emloys' => 'Employee',
-		];
-
 		if($request->ajax()){
 
 			$validator = Validator::make($request->all(), [
@@ -136,7 +154,18 @@ class SmsController extends Controller
 
 			$phoneInfo = $this->MakePhoneInfo($request->input('bulk_to'), $request->input($request->input('bulk_to')));
 
-			$responseApi = $this->SendSmsAPI('0'.implode(',0', $request->input($request->input('bulk_to'))), $request->input('message'));
+			if($this->ValidateBalance($phoneInfo) == false){
+				return [
+					'errors'	=>	true,
+					'toastrmsg'	=>	[
+						'type'	=>	'error',
+						'title'	=>	'Notifications',
+						'msg'	=>	'Insufficient Balance',
+					]
+				];
+			}
+
+			$responseApi = $this->SendSmsAPI('0'.implode(',0', array_pluck($request->input($request->input('bulk_to')), 'no')), $request->input('message'));
 
 			$totalprice = 0;
 			if(array_has($responseApi, 'totalprice')){
@@ -145,9 +174,10 @@ class SmsController extends Controller
 			}
 
 			SmsLog::create([
-				'phone_info'	=>	json_encode($phoneInfo, JSON_NUMERIC_CHECK),
+				'phone_info'	=>	$phoneInfo,
+//				'phone_info'	=>	$request->input($request->input('bulk_to')),
 				'message'	=>	$request->input('message'),
-				'api_response'	=>	json_encode($responseApi),
+				'api_response'	=>	$responseApi,
 				'total_price'	=>	$totalprice,
 				'created_by'	=>	Auth::user()->id
 			]);
@@ -247,7 +277,8 @@ class SmsController extends Controller
 			$phoneInfo[] = [
 				'send_to' => $bulk_to,
 				'id' => $key,
-				'no' => $value,
+				'no' => $value['no'],
+				'name' => $value['name'],
 			];
 		}
 		return $phoneInfo;
@@ -260,13 +291,17 @@ class SmsController extends Controller
 			'end'	=>	'required',
 		]);
 
-		$history	=	SmsLog::whereBetween('created_at', [$request->input('start'), $request->input('end')])->with(['User'	=>	function($qry){
+		$history	=	SmsLog::whereBetween('created_at', [$request->input('start').' 00:00:00', $request->input('end').' 23:59:59'])->with(['User'	=>	function($qry){
 			$qry->select('id', 'name');
 		}])->get();
 
-//		return $history;
 		return view('admin.printable.sms_history', ['history'	=>	$history]);
 
 	}
+
+	protected function ValidateBalance($phoneInfo){
+		return config('systemInfo.available_sms') >= COUNT($phoneInfo);
+	}
+
 
 }
