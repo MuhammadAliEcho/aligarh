@@ -59,7 +59,7 @@ return [
 		'leave'		=>	0,
 		'certificate'	=>	0,
 		'edit'		=>	0,
-		'editclass'	=>	1,
+		'editclass'	=>	0,
 		'image'		=>	1,
 		'profile'	=>	1,
 		'interview'	=>	1,
@@ -209,4 +209,10 @@ return [
 		'send-bulk'	=>	1,
 		'history'	=>	0,
 		],
+	// Student Migrations
+	38	=>	[
+		'default'	=>	0,
+		'students'	=>	1,
+		'migrate'	=>	1,
+	]
 ];

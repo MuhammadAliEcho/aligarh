@@ -185,6 +185,12 @@
 	<script type="text/javascript">
 
 	var tbl;
+
+    function loadOptions(data, type, full, meta) {
+		opthtm = '<a data-toggle="tooltip" title="Edit" class="btn btn-'+((full.active == 1)? 'default' : 'danger') +' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+		return opthtm;
+	}
+
 		$(document).ready(function(){
 
 		@if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
@@ -206,7 +212,6 @@
 		});
 */
 
-		opthtm = '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
 	tbl =   $('.dataTables-teacher').DataTable({
 			dom: '<"html5buttons"B>lTfgitp',
 			buttons: [
@@ -238,7 +243,7 @@
 			{data: 'start_date'},
 //            {data: 'end_date'},
 //            {"defaultContent": '<div class="btn-group"><button data-toggle="dropdown" class="btn btn-default btn-xs dropdown-toggle option" aria-expanded="true">Action <span class="caret"></span></button><ul class="dropdown-menu"><li><a href="#"><span class="fa fa-user"></span> Profile</a></li><li class="divider"></li><li><a data-original-title="Edit" class="edit-option"><span class="fa fa-edit"></span> Edit</a></li><li><a href="#"><span class="fa fa-trash"></span> Delete</a></li></ul></div>', className: 'hidden-print'},
-			{"defaultContent": opthtm, className: 'hidden-print'},
+			{"render": loadOptions, className: 'hidden-print', "orderable": false},
 			],
 			"columnDefs": [
 			{

@@ -104,7 +104,8 @@ class SmsController extends Controller
 					'toastrmsg'	=>	[
 						'type'	=> 'error', 
 						'title'	=>  'Invalid SMS',
-						'msg'	=>  'Contact service center'
+						'msg'	=>	$responseApi->messages[0]->error,
+//						'msg'	=>  'Contact service center'
 					],
 //					[$request->all(), '0'.implode(',0', (array_pluck($request->input('phoneinfo'), 'no')))],
 				];
@@ -188,7 +189,8 @@ class SmsController extends Controller
 					'toastrmsg'	=>	[
 						'type'	=> 'error', 
 						'title'	=>  'Invalid SMS',
-						'msg'	=>  'Contact service center'
+						'msg'	=>	$responseApi->messages[0]->error,
+//						'msg'	=>  'Contact service center'
 					],
 //					[$request->all(), '0'.implode(',0', $request->input($request->input('bulk_to')))],
 				];

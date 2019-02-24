@@ -129,8 +129,8 @@
 									<div class="form-group">
 										<label class="col-md-2 control-label"> Message </label>
 										<div class="col-md-6">
-											<textarea class="form-control" name="message" rows="5" maxlength="300" v-model="message" required></textarea>
-											<span class="text-info">@{{ 300-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
+											<textarea class="form-control" name="message" rows="5" maxlength="600" v-model="message" required></textarea>
+											<span class="text-info">@{{ 600-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
 										</div>
 									</div>
 
@@ -255,8 +255,8 @@
 									<div class="form-group">
 										<label class="col-md-2 control-label"> Message </label>
 										<div class="col-md-6">
-											<textarea class="form-control" name="message" rows="5" maxlength="300" v-model="message" required></textarea>
-											<span class="text-info">@{{ 300-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
+											<textarea class="form-control" name="message" rows="5" maxlength="600" v-model="message" required></textarea>
+											<span class="text-info">@{{ 600-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
 										</div>
 									</div>
 
@@ -438,6 +438,12 @@
 				}
 				return no;
 			},
+			hasUnicode: function() {
+				for (var i = 0; i < this.message.length; i++) {
+					if (this.message.charCodeAt(i) > 127) return true;
+				}
+				return false;
+			},
 			removePhoneInfo: function(k){
 				this.phoneinfo.splice(k, 1);
 			},
@@ -452,6 +458,15 @@
 			formSubmit: function(e){
 					if (this.phoneinfo.length == 0 && e.target.id == 'single') {
 						alert('Add A No');
+						return false;
+					}
+				// hasUnicode
+					if(this.hasUnicode()){
+						this.error	=	true;
+						this.alert_message = 'This Message Can Only Be Submitted Via Unicode';
+						setTimeout(function(){
+							vm.error =	false;
+						}, 3000);
 						return false;
 					}
 					this.loading = true;

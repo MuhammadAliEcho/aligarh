@@ -7,12 +7,11 @@ use Auth;
 
 class AcademicSessionHistory extends Model
 {
-	public $timestamps = false;
-
+	const UPDATED_AT = null;
 	protected $table = 'academic_session_history';
 
 	protected $fillable = [
-		'student_id', 'class_id', 'academic_session_id'
+		'student_id', 'class_id', 'academic_session_id', 'created_by'
 	];
 
 	public function Classe(){
