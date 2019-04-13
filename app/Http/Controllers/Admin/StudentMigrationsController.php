@@ -50,7 +50,16 @@ class StudentMigrationsController extends Controller
 										'session_id' => $this->Request->input('from_session')
                                         ])
                                     ->Active()
-                                    ->get()->toJson();
+                                    ->get();
+        if($this->data['students']->count() == 0){
+            return redirect('student-migrations')->with([
+                                        'toastrmsg' => [
+                                            'type'	=> 'error', 
+                                            'title'	=>  'Students Migrations',
+                                            'msg'	=>  'Students not found!'
+                                        ]
+                                    ]);
+        }
         return $this->Index();
     }
 
@@ -61,7 +70,6 @@ class StudentMigrationsController extends Controller
             'from_class'  =>  'required|integer',
             'to_class'  =>  'required',
         ]);
-
         $classes = Classe::whereIn('id', $Request->input('to_class'))->with('Section')->get();
         $students = Student::whereIn('id', array_keys($Request->input('to_class')))->get();
 
@@ -70,8 +78,9 @@ class StudentMigrationsController extends Controller
             $student = $students->where('id', $id)->first();
             if($student){
                 $student->gr_no = $class->prifix . $class->section[0]->nick_name ."-" . (explode('-', $student->gr_no))[1];
-                $student->class_id  =   $class->id;
-                $student->section_id  =   $class->section[0]->id;
+                $student->class_id      =   $class->id;
+                $student->section_id    =   $class->section[0]->id;
+                $student->session_id    =    $Request->input('to_session');
                 $student->save();
             }
             AcademicSessionHistory::firstOrCreate(
@@ -82,7 +91,7 @@ class StudentMigrationsController extends Controller
                 [
                     'class_id'	=>	$class_id,
                     'created_by'	=>	Auth::user()->id,
-                ]); 
+                ]);
         }
 
         return redirect('student-migrations')->with([

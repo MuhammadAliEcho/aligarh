@@ -87,14 +87,16 @@ class FeesController extends Controller
 		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);
 
 		$this->data['betweendates']	=	[
-				'start'	=>	$this->data['session']->getOriginal('start'),
+//				'start'	=>	$this->data['session']->getOriginal('start'),
+				'start'	=>	$this->data['student']->getOriginal('date_of_enrolled'),
 				'end'	=>	$this->data['session']->getOriginal('end')
 			];
 
 		$this->data['payment_months'] = InvoiceMaster::select('payment_month')
 											->whereBetween('payment_month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']])
 											->where([
-												'gr_no' => $this->data['student']->gr_no,
+//												'gr_no' => $this->data['student']->gr_no,
+												'student_id' => $this->data['student']->id,
 											])->get();
 
 		$this->data['Input'] = $this->Request->input();
