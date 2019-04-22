@@ -88,7 +88,8 @@ class FeesController extends Controller
 
 		$this->data['betweendates']	=	[
 //				'start'	=>	$this->data['session']->getOriginal('start'),
-				'start'	=>	$this->data['student']->getOriginal('date_of_enrolled'),
+//				'start'	=>	$this->data['student']->getOriginal('date_of_enrolled'),
+				'start'	=>	Carbon::createFromFormat('Y-m-d', $this->data['student']->getOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
 				'end'	=>	$this->data['session']->getOriginal('end')
 			];
 

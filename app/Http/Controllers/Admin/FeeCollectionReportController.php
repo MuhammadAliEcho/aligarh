@@ -129,7 +129,8 @@ class FeeCollectionReportController extends Controller
 
 		$this->data['betweendates']	=	[
 				'start'	=>	$this->data['session']->getOriginal('start'),
-				'end'	=>	$request->input('month')
+//				'end'	=>	$request->input('month')
+				'end'	=>	Carbon::createFromFormat('Y-m-d', $request->input('month'))->endOfMonth()->toDateString()
 			];
 		
 		if($this->data['session']->getOriginal('end') < $this->data['betweendates']['end'] || $this->data['session']->getOriginal('start') > $this->data['betweendates']['end']){
