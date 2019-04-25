@@ -174,7 +174,7 @@ class FeeCollectionReportController extends Controller
 										'academic_session_history.class_id' => $request->input('class'),
 										'academic_session_history.academic_session_id' => Auth::user()->academic_session
 										])
-									->where('students.date_of_enrolled', '<=', $this->data['session']->getOriginal('start'))
+									->where('students.date_of_enrolled', '<=', Carbon::createFromFormat('Y-m-d', $this->data['session']->getOriginal('start'))->endOfMonth()->toDateString())
 									->Active()
 									->WithOutFullDiscount()
 									->with(['Invoices'	=>	function($qry){
