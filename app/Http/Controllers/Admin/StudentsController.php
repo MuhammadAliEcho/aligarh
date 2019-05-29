@@ -100,6 +100,7 @@ class StudentsController extends Controller
 //      return Datatables::eloquent(Student::query()->CurrentSession())->make(true);
 		}
 		$this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
+		$this->data['no_of_active_students'] = Student::active()->count();
 
 		foreach ($this->data['classes'] as $key => $class) {
 			$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
@@ -110,6 +111,17 @@ class StudentsController extends Controller
 	public function AddStudent(){
 
 		$this->PostValidate();
+
+		if(Student::active()->count() >= config('systemInfo.student_capacity')){
+			return redirect('students')->with([
+									'toastrmsg' => [
+										'type'	=> 'error', 
+										'title'	=>  'Students',
+										'msg'	=>  'Over students limit'
+									]
+								]);
+		}
+
 		$this->Student = new Student;
 		$this->SetAttributes();
 		$this->Student->created_by  = Auth::user()->id;

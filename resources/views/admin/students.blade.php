@@ -137,7 +137,7 @@
                                   <h2> Admit Student </h2>
                                   <div class="hr-line-dashed"></div>
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('students/add') }}" class="form-horizontal" enctype="multipart/form-data">
+                                    <form v-if="admission_allow" id="tchr_rgstr" method="post" action="{{ URL('students/add') }}" class="form-horizontal" enctype="multipart/form-data">
                                       {{ csrf_field() }}
 
                                       <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
@@ -476,6 +476,10 @@
                                       </div>
                                     </form>
 
+                                    <div v-else class="alert alert-info">
+                                      Student admission limit is over.
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -783,6 +787,8 @@
             tuition_fee: {{ old('tuition_fee', config('feeses.compulsory.tuition_fee')) }},
             discount:  {{ old('discount', 0) }},
           },
+          no_of_active_students:{{ $no_of_active_students }},
+          student_capacity:{{ config('systemInfo.student_capacity') }},
         },
 
         methods: {
@@ -812,6 +818,9 @@
           },
           net_amount: function(){
             return Number(this.total_amount) - Number(this.fee.discount);
+          },
+          admission_allow: function(){
+            return this.no_of_active_students < this.student_capacity
           }
         }
       });
