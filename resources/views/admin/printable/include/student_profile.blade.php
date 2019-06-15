@@ -44,7 +44,7 @@
 			</table>
 		</div>
 		<div class="pull-right col-xs-3" style="border: 1px solid black; height: 200px">
-			<img v-if="student.image_url" alt="image" class="img-responsive" height="200px" :src="URL.student.image_url">
+			<img v-if="student.image_url" alt="image" class="img-responsive" height="200px" :src="URL + '/'+student.image_url">
 			<p v-else style="font-size: 15px; width: 100%; margin-top: 80px" class="text-center">Photo</p>
 		</div>
 		<div style="min-height: 550px; margin-top: 10px">
