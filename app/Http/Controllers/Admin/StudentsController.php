@@ -171,6 +171,8 @@ class StudentsController extends Controller
 
 		if($this->Request->hasFile('img')){
 			$this->SaveImage();
+		} else if($this->Request->input('removeImage')){
+			$this->DeleteImage();
 		}
 
 		$this->Student->updated_by  = Auth::user()->id;
@@ -463,6 +465,14 @@ class StudentsController extends Controller
 //    $file = $this->Request->file('img')->storePubliclyAs('images/students', $this->Student->id.'.'.$file->getClientOriginalExtension(), 'public');
 		$this->Student->image_dir = 'public/students/'.$this->Student->id.'.'.$extension;
 		$this->Student->image_url = 'students/image/'.$this->Student->id;
+	}
+
+	protected function DeleteImage(){
+		if($this->Student->image_dir){
+			Storage::delete($this->Student->image_dir);
+			$this->Student->image_dir = Null;
+			$this->Student->image_url = Null;
+		}
 	}
 
 // for session update temperory 

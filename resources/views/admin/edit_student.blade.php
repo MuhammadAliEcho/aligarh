@@ -137,13 +137,24 @@
 														</span>
 													</div>
 													<div class="col-md-6">
-														<img id="img" src="{{ ($student->image_url == '')? '#' : URL($student->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
+														<input type="hidden" name="removeImage" v-model="removeImage" />
+														<template v-if="removeImage == 0">
+															<button type="button" class="close" @click="removeImage = 1">
+																<span aria-hidden="true">&times;</span>
+															</button>
+															<img id="img" src="{{ ($student->image_url == '')? '#' : URL($student->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
+														</template>
+														<template v-if="removeImage">
+															<img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" />
+														</template>
+													
 														@if ($errors->has('img'))
 															<span class="help-block">
-																	<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
+																<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
 															</span>
 														@endif
 													</div>
+
 												</div>
 
 												<div class="form-group{{ ($errors->has('last_school'))? ' has-error' : '' }}">
@@ -447,6 +458,16 @@
 
 		@endsection
 
+		@section('vue')
+			<script type="text/javascript">
+				var app = new Vue({
+					el: '#app',
+					data: {
+						removeImage: {{ $student->image_url? 0 : 1 }},
+					},
+				});
+			</script>
+		@endsection
 
 
 
