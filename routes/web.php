@@ -32,7 +32,7 @@ Route::group(['middleware' => 'guest'], function(){
 	Route::post('login', 'UserController@PostLogin');
 });
 
-Route::group(['middleware' => 'auth'], function(){
+Route::group(['middleware' => ['auth', 'auth.active']], function(){
 
 	Route::get('ajax/{ctrl?}/{job?}/{option?}', 'ContentController@AjaxLoadController');
 
