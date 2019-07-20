@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+// FOR GUARdian APP Portal API
 Route::group(['prefix' => 'guardian', 'namespace'	=>	'Api\Guardian'], function(){
 
 	Route::post('login', 'UserController@Login')->name('guardian.login');
@@ -41,4 +41,29 @@ Route::group(['prefix' => 'guardian', 'namespace'	=>	'Api\Guardian'], function()
 	});
 
 //		Route::delete('logout/{token_id}', '\Laravel\Passport\Http\Controllers\PersonalAccessTokenController@destroy');
+});
+
+// FOR TMS APP API
+Route::group(['prefix'	=>	'tms', 'namespace'	=>	'Api\TMS'],	function(){
+
+	Route::post('login', 'UserController@Login')->name('tms.login');
+
+	Route::group(['middleware'  =>  'auth:api'], function(){
+
+		Route::group(['middleware'  =>  ['scope:tms', 'auth.active']], function(){
+
+			Route::get('user', function(Request $request){
+				return response()->json(['User' => $request->user()]);
+			});
+
+			Route::post('attendance', 'AttendanceController@Attendance');
+
+			Route::post('cachedata', 'AttendanceController@CacheData');
+
+		});
+
+		Route::post('logout', 'UserController@Logout');
+
+	});
+
 });

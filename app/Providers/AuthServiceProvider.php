@@ -33,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::tokensCan([
             'guardian' => 'Guardian Application',
+            'tms' => 'TMS Attendance Portal',
         ]);
 
     }
