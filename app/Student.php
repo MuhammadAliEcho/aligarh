@@ -122,6 +122,10 @@ class Student extends Model {
 		return $this->hasMany('App\InvoiceMaster');
 	}
 
+	public function InvoiceMonths(){
+		return $this->hasMany('App\InvoiceMonth');
+	}
+
 	public function Certificates(){
 		return $this->hasMany('App\Certificate');
 	}

@@ -9,11 +9,11 @@
 			<table class="table">
 				<tbody>				
 					<tr>
-						<th>Name of Student</th>
+						<th>Student's Name</th>
 						<td class="bottom-border text-uppercase">@{{student.name}}</td>
 					</tr>
 					<tr>
-						<th>Name of Father</th>
+						<th>Father's Name</th>
 						<td class="bottom-border text-uppercase">@{{student.father_name}}</td>
 					</tr>
 					<tr>
@@ -51,7 +51,7 @@
 			<table class="table">
 				<tbody>
 						<tr>
-							<th colspan="2">Name of Guardian</th>
+							<th colspan="2">Name of Father/Guardian (if any)</th>
 							<td colspan="2" class="bottom-border" width="60%">@{{student.guardian.name}} @{{"("+student.guardian_relation+")"}}</td>
 						</tr>
 					<tr>
@@ -109,10 +109,10 @@
 					<td class="bottom-border">@{{student.father_name}}</td>
 				</tr>
 				<tr>
+					<th>GR No</th>
+					<td class="bottom-border">@{{student.gr_no}}</td>
 					<th>Class</th>
-					<td class="bottom-border">@{{student.std_class.name}}</td>
-					<th>Section</th>
-					<td class="bottom-border">@{{student.section.name}}</td>
+					<td class="bottom-border">@{{student.std_class.name}} @{{student.section.name}} </td>
 				</tr>
 				<tr>
 					<th>Receipt No</th>

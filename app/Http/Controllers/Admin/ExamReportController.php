@@ -131,9 +131,9 @@ class ExamReportController extends Controller
 		];
 
 		if ($request->input('exam') == 1) {
-			$this->data['exam_title']	=	'1st Ass/Half Year';
+			$this->data['exam_title']	=	'1st Assessment / Half Year';
 		} else {
-			$this->data['exam_title']	=	'2nd Ass/Final Year';
+			$this->data['exam_title']	=	'2nd Assessment / Final Year';
 		}
 
 		$this->data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
@@ -169,9 +169,9 @@ class ExamReportController extends Controller
 		];
 
 		if ($request->input('exam') == 1) {
-			$this->data['exam_title']	=	'1st Ass/Half Year';
+			$this->data['exam_title']	=	'1st Assessment / Half Year';
 		} else {
-			$this->data['exam_title']	=	'2nd Ass/Final Year';
+			$this->data['exam_title']	=	'2nd Assessment / Final Year';
 		}
 
 		$this->data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();

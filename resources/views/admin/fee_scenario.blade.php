@@ -105,8 +105,22 @@
 																						<tfoot>
 																							<tr>
 																								<th>Total</th>
-																								<th>@{{ total_amount }}</th>
+																								<th><input type="hidden" name="total_amount" v-model="total_amount" >@{{ total_amount }}</th>
 																								<th></th>
+																							</tr>
+																							<tr>
+																								<td>Late Fee</td>
+																								<td>
+																									<div>
+																										<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" min="1" required="true" class="form-control"/>
+																										@if ($errors->has('late_fee'))
+																											<span class="help-block">
+																											<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('late_fee') }}</strong>
+																											</span>
+																										@endif
+																									</div>
+																								</td>
+																								<td title="leave it '0' if not apply" >Apply After Due Date.</td>
 																							</tr>
 																						</tfoot>
 																					</table>
@@ -115,9 +129,10 @@
 																		</div>
 
 																		<div class="form-group">
-																				<div class="col-md-offset-2 col-md-6">
-																						<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Update </button>
-																				</div>
+																			<div class="col-md-offset-2 col-md-6">
+																					<button class="btn btn-primary" name="type" value="1" type="submit"><span class="glyphicon glyphicon-save"></span> Only For New Student </button>
+																					<button class="btn btn-primary" name="type" value="2" type="submit"><span class="glyphicon glyphicon-save"></span> Apply All Student </button>
+																			</div>
 																		</div>
 																	</form>
 
@@ -180,6 +195,7 @@
 		data: { 
 		  fee: {
 			tuition_fee: {{ old('tuition_fee', config('feeses.compulsory.tuition_fee')) }},
+			late_fee: {{ old('late_fee', config('feeses.compulsory.late_fee')) }},
 			additionalfee: {!! old('fee', config('feeses.additional_fee')) !!},
 		  },
 		},

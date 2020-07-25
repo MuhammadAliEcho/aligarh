@@ -25,20 +25,20 @@
 				</tr>
 			</tbody>
 		</table>
-		<h4 class="text-center"><u>GERNAL INFORMATION</u></h4>
+		<h4 class="text-center"><u>GENERAL INFORMATION</u></h4>
 		<div style="margin-top: 5px">
 			<table class="table">
 				<tbody>
 					<tr>
-						<th width="20%">Father Qualification</th>
+						<th width="20%">Father's Qualification</th>
 						<td class="bottom-border" width="30%">@{{interview.father_qualification}}</td>
-						<th width="20%">Mother Qualification</th>
+						<th width="20%">Mother's Qualification</th>
 						<td class="bottom-border">@{{interview.mother_qualification}}</td>
 					</tr>
 					<tr>
-						<th>Father Occupation</th>
+						<th>Father's Occupation</th>
 						<td class="bottom-border">@{{interview.father_occupation}}</td>
-						<th>Mother Occupation</th>
+						<th>Mother's Occupation</th>
 						<td class="bottom-border">@{{interview.mother_occupation}}</td>
 					</tr>
 					<tr>
@@ -53,9 +53,9 @@
 			<table class="table">
 				<tbody>
 					<tr>
-						<th width="20%">Father</th>
+						<th width="20%">Father's</th>
 						<td class="bottom-border" width="30%">@{{interview.other_job_father}}</td>
-						<th width="20%">Mother</th>
+						<th width="20%">Mother's</th>
 						<td class="bottom-border">@{{interview.other_job_mother}}</td>
 					</tr>
 				</tbody>
@@ -116,9 +116,9 @@
 	<table width="100%">
 		<tbody>
 			<tr>
-				<th width="35%" class="text-center" style="border-top: 1px solid; padding-top: 5px">Signature of Principal</th>
+				<th width="35%" class="text-center" style="border-top: 1px solid; padding-top: 5px">Signature of Vice Principal</th>
 				<th width="30%"></th>
-				<th width="35%" class="text-center" style="border-top: 1px solid; padding-top: 5px">Signature of Chairman</th>
+				<th width="35%" class="text-center" style="border-top: 1px solid; padding-top: 5px">Signature of Principal</th>
 			</tr>		
 		</tbody>
 	</table>

@@ -71,6 +71,7 @@
                                   </table>
 
                                   @if($Input['type'] == '')
+
                                   <script type="text/javascript">
                                     $(document).ready(function(){
                                         var doughnutData = [
@@ -112,7 +113,11 @@
                                         };
 
                                         var ctx = document.getElementById("doughnutChart").getContext("2d");
-                                        var DoughnutChart = new Chart(ctx).Doughnut(doughnutData, doughnutOptions);
+                                        var DoughnutChart = new Chart(ctx, {
+                                          'type': 'doughnut',
+                                          data: doughnutData,
+                                          options: doughnutOptions,
+                                        });
                                     });
                                   </script>
                                 @endif

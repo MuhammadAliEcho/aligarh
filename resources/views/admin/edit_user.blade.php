@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Parents |')
+  @section('title', 'Edit User |')
 
   @section('head')
   <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">

@@ -86,6 +86,8 @@ return [
 	13 => [
 		'default'	=>	0,
 		'create'	=>	0,
+		'collect'	=>	0,
+		'edit-invoice'	=>	0,
 		'update'	=>	0,
 		'findstu'	=>	1,
 		'invoice'	=>	1,

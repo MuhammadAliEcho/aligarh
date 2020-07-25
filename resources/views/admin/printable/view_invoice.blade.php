@@ -24,7 +24,7 @@
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container" id="invoiceVueApp">
 
     <div class="row">
         <div class="col-xs-12">
@@ -42,7 +42,12 @@
     			</div>
     			<div class="col-xs-6 text-right">
     				<address>
-            			<strong>Date : {{ $invoice->date }}</strong><br>
+            			<strong>Date : {{ $invoice->created_at }}</strong><br>
+						<template v-if="invoice.paid_amount">
+							<strong >Date Of Payment: @{{ invoice.date_of_payment }}</strong><br>
+							<p class="pull-right bg-info">Paid</p>
+						</template>
+						<p v-else class="pull-right bg-danger">Unpaid</p>
     				</address>
     			</div>
     		</div>
@@ -53,7 +58,7 @@
     	<div class="col-md-12">
     		<div class="panel panel-default">
     			<div class="panel-heading">
-    				<h3 class="panel-title"><strong>Payment Month : {{ $invoice->payment_month }}</strong></h3>
+    				<h3 class="panel-title"><strong>Payment Month : <span v-for="month in months">@{{ month.month }}, </span></strong></h3>
     			</div>
     			<div class="panel-body">
     				<div class="table-responsive">
@@ -76,25 +81,28 @@
 								</tr>
 							@endforeach
     							<tr>
-    								<td class="thick-line"></td>
-									<td class="thick-line"></td>
-    								<td class="thick-line"><strong class="pull-right" style="width: 52px">Total :</strong></td>
+    								<td colspan="3" class="thick-line"><strong class="pull-right" style="width: 100px">Total :</strong></td>
     								<td class="thick-line text-right">{{ $invoice->total_amount }}</td>
     							</tr>
     							@if($invoice->discount >= 1)
     							<tr>
     								<td class="no-line"></td>
 									<td class="no-line"></td>
-    								<td class="no-line"><strong class="pull-right" style="width: 80px">Discount :</strong></td>
+    								<td class="no-line"><strong class="pull-right" style="width: 100px">Discount :</strong></td>
     								<td class="no-line text-right">{{ $invoice->discount }}</td>
     							</tr>
     							<tr>
     								<td class="no-line"></td>
 									<td class="no-line"></td>
     								<td class="no-line"><strong class="pull-right" style="width: 100px">Net Amount :</strong></td>
-    								<td class="no-line text-right">{{ $invoice->paid_amount }}</td>
+    								<td class="no-line text-right">{{ $invoice->net_amount }}</td>
     							</tr>
     							@endif
+    							<tr v-if="invoice.paid_amount">
+    								<td colspan="3" class="thick-line"><strong class="pull-right" style="width: 100px">Paid Amount:</strong></td>
+    								<td class="thick-line text-right">@{{ invoice.paid_amount }}</td>
+    							</tr>
+
 	    							<tr>
 		    							<td class="thick-line" colspan="4"><b>In Words :</b> <span id="inwords"></span></td>
 	    							</tr>
@@ -123,7 +131,20 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		window.print();
-		$('#inwords').text(toWords({{ $invoice->paid_amount }}));
+		$('#inwords').text(toWords({{ $invoice->net_amount }}));
 	});
 </script>
 @endsection
+
+@section('vue')
+	<script type="text/javascript">
+	  var app = new Vue({
+		el: '#invoiceVueApp',
+		data: {
+			invoice: {!! json_encode($invoice, JSON_NUMERIC_CHECK) !!},
+			months: {!! json_encode($invoice->InvoiceMonths, JSON_NUMERIC_CHECK) !!}
+		}
+	  })
+	</script>
+@endsection
+

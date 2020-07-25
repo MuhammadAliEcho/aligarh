@@ -1,5 +1,5 @@
 @extends('admin.layouts.printable')
-@section('title', 'Fee Receipts Statment | ')
+@section('title', 'Bill Remain Statment | ')
 
 @section('head')
 
@@ -58,7 +58,7 @@
 
 	<div class="row">
 		<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
-		<h4>Statment Of Unpaid Fee</h4>
+		<h4>Bill Remain Statment</h4>
 		<h4>AS ON: {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['start'])->Format('M-Y') }}-{{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['end'])->Format('M-Y') }}</h3>
 
 			<template v-for="(students, classname) in unpaid_fee_statment">

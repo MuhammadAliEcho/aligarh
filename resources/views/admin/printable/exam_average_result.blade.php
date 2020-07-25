@@ -113,11 +113,15 @@
 					<td>
 						<u>
 							<p>Total No Of Student: @{{ computed_result.length }}</p>
-						</u>
+							<p>Total No Of Student: @{{ computed_result[0].rank }}</p>
+						</u></br>
+							1st Position Name <u> @{{ computed_result[0].name }}  % @{{ computed_result[0].percentage }}</u> </br>
+							2nd Position Name <u> @{{ computed_result[1].name }}  % @{{ computed_result[0].percentage }} </u> </br>
+							3rd Position Name <u> @{{ computed_result[2].name }}  % @{{ computed_result[0].percentage }} </u> </br>
 					</td>
 					<td class="text-center" width="100px">
 						<h3 style="margin-top: 50px">__________________</h3><p><b>Teacher's Sign</b></p>
-						<h3 style="margin-top: 50px">__________________</h3><p><b>Rechecker's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3><p><b>Rechecker's Sign</b></p>						
 					</td>
 				</tr>
 			</tbody>

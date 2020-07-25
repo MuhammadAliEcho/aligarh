@@ -15,6 +15,9 @@ use App\Teacher;
 use App\Guardian;
 use App\StudentAttendance;
 
+/* use App\InvoiceMaster;
+use App\InvoiceMonth;
+ */
 class DashboardController extends Controller
 {
 
@@ -27,6 +30,21 @@ class DashboardController extends Controller
 	}
 
 	public function GetDashboard(){
+
+/* 		InvoiceMaster::select('id', 'student_id', 'payment_month')->chunk(500, function($invoices){
+			foreach ($invoices as $key => $invoice) {
+				InvoiceMonth::updateOrCreate(
+					[
+						'invoice_id'	=>	$invoice->id,
+						'student_id'	=>	$invoice->student_id,
+					],
+					[
+						'month'	=>	$invoice->getOriginal('payment_month'),
+					]
+				);
+			}
+		});
+ */		
 
 //		dd(Student::active()->count());
 		$this->data['no_of_student'] = Student::active()->count();

@@ -426,6 +426,21 @@
                                             <td></td>
                                           </tr>
 
+                                          <tr>
+                                            <td>Late Fee</td>
+                                            <td>
+                                              <div>
+                                                <input type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Tuition Fee" min="1" class="form-control"/>
+                                                @if ($errors->has('late_fee'))
+                                                    <span class="help-block">
+                                                        <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('late_fee') }}</strong>
+                                                    </span>
+                                                @endif
+                                              </div>
+                                            </td>
+                                            <td></td>
+                                          </tr>
+
                                             <tr v-for="(fee, k) in fee.additionalfee">
                                               <td><input type="hidden" :name="'fee['+k+'][id]'" value="0" ><input type="text" :name="'fee['+ k +'][fee_name]'" class="form-control" required="true" v-model="fee.fee_name"></td>
                                               <td><input type="number" :name="'fee['+ k +'][amount]'" class="form-control additfeeamount" required="true" min="1" v-model.number="fee.amount"></td>
@@ -598,7 +613,7 @@
               exportOptions: {
                 columns: ":visible"
               },
-              title: "Students | {{ config('systemInfo.title') }}",
+              title: "Student Register | {{ config('systemInfo.title') }}",
             },
             'colvis'
           ],
@@ -785,6 +800,7 @@
           fee: {
             additionalfee: {!! old('fee', config('feeses.additional_fee')) !!},
             tuition_fee: {{ old('tuition_fee', config('feeses.compulsory.tuition_fee')) }},
+            late_fee: {{ old('late_fee', config('feeses.compulsory.late_fee')) }},
             discount:  {{ old('discount', 0) }},
           },
           no_of_active_students:{{ $no_of_active_students }},

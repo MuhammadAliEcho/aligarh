@@ -13,6 +13,13 @@
     <link href="{{ URL::to('src/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ URL::to('src/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 
+    <style>
+      .expire  {
+        background-image: url("{{ URL::to('img/expired-stamp.png') }}");
+
+      }
+    </style>
+
     <script type="text/javascript">
         // Convert numbers to words
         // copyright 25th July 2006, by Stephen Chapman http://javascript.about.com
@@ -41,6 +48,10 @@
 
 <body>
   <div id="app">
+  	@if( config('systemInfo.validity') < Carbon\Carbon::now()->toDateString())
+      <img src="{{ URL::to('img/expired-stamp.png') }}" style="opacity: 0.5; width: -webkit-fill-available; position: absolute" id="expired-stamp" >
+    @endif
+  
     @yield('content')
   </div>
 
@@ -65,6 +76,17 @@
 
     <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
 
-</body>
+  	@if( config('systemInfo.validity') < Carbon\Carbon::now()->toDateString())
+    <script>
+      $( document ).ready(function() {
+        const expiredStampsHeight = ($("#expired-stamp").height());
+        const expiredStamps = Number(($("#app").height())/expiredStampsHeight).toFixed(0);
+        for (i = 1; i < expiredStamps; i++) { 
+          $("#app").prepend('<img src="{{ URL::to('img/expired-stamp.png') }}" style="opacity: 0.5; margin-top: '+(expiredStampsHeight * i)+'px; width: -webkit-fill-available; position: absolute">')
+        }
+      });
+    </script>
+    @endif
 
+</body>
 </html>

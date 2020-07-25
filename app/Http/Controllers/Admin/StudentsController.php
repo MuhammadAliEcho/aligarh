@@ -401,6 +401,7 @@ class StudentsController extends Controller
 		}
 		if($new){
 			$this->Student->tuition_fee = $this->Request->input('tuition_fee');
+			$this->Student->late_fee = $this->Request->input('late_fee');
 			$this->Student->net_amount = $this->Request->input('net_amount');
 			$this->Student->discount = $this->Request->input('discount');
 			$this->Student->total_amount = $this->Request->input('total_amount');

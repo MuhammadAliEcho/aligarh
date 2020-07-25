@@ -110,6 +110,7 @@
 					<td>
 						<u>
 							<p>Total No Of Student: @{{ result_attribute.student_result.length }}</p>
+							<p>Total No Of Student Passed: @{{ NoOfPassStd().length }}</p>
 							<p>Net Result: @{{ netResult() }} %</p>
 						</u>
 					</td>

@@ -95,14 +95,14 @@
 		<div id="stdcopy">
 			<table style="margin-top: 15px">
 				<tbody>
-					<tr><td width="250px">R.No. <u>{{ config('systemInfo.next_chalan_no') }}</u></td><td width="250px">Issue Date. <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $issue_date)->Format('d-m-Y') }}</u></td></tr>
-					<tr><td></td><td>Due Date. <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $due_date)->Format('d-m-Y') }}</u></td></tr>
+					<tr><td width="250px">R.No. <u>@{{ Invoice.id }}</u></td><td width="250px">Issue Date. <u>@{{ Invoice.created_at }}</u></td></tr>
+					<tr><td><span v-if="Invoice.paid_amount" class="label label-success hidden-print"> PAID </span><span v-else class="label label-danger hidden-print"> UNPAID </span></td><td>Due Date. <u>@{{ Invoice.due_date }}</u></td></tr>
 					<tr><td>Name. <u>{{ $student->name }}</u></td><td>Father's Name. <u>{{ $student->father_name }}</u></td></tr>
 					<tr><td>Class. <u>{{ $student->std_class->name }}</u></td><td>G.R No. <u>{{ $student->gr_no }}</u></td></tr>
 					<tr><td colspan="2">Fee for the month. <u>
-						@foreach($months as $month)
-						{{ Carbon\Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y').', ' }}
-						@endforeach
+						<span v-for="month in Invoice.invoice_months">
+						@{{ month.month }},
+						</span>
 					</u></td></tr>
 				</tbody>
 			</table>
@@ -117,21 +117,18 @@
 							<th width="200px">Amount</th>
 						</tr>
 
-						<tr>
-							<td>Tuition Fee</td>
-							<td>@{{ total_tuition_fee }}</td>
-						</tr>
-						<tr v-for="additionalfe in additionalfee">
-							<td>@{{ additionalfe.fee_name }}</td>
-							<td>@{{ additionalfe.sumamount }}</td>
+						<tr v-for="detail in Invoice.invoice_detail">
+							<td>@{{ detail.fee_name }}</td>
+							<td>@{{ detail.amount }}</td>
 						</tr>
 
-						<tr v-if="total_discount > 0">
+						<tr v-if="Invoice.discount > 0">
 							<th>Discount</th>
-							<th>@{{ total_discount }}</th>
+							<th>@{{ Invoice.discount }}</th>
 						</tr>
 
-						<tr><th class="text-right">Total</th><th>@{{ net_amount }}/=</th></tr>
+						<tr><th class="text-right">Payable within due date</th><th>@{{ Invoice.net_amount }}/-</th></tr>
+						<tr><td class="text-right">Payable after due date</td><td>@{{ Invoice.net_amount + Invoice.late_fee }}/-</td></tr>
 					</tbody>
 				</table>
 				<p style="width: 500px;margin-top: 15px;">Amount In Words: <u>@{{ inwords() }}</u></p>
@@ -178,15 +175,8 @@
 	  var app = new Vue({
 		el: '#app',
 		data: {
-			months: {!! json_encode($months) !!},
-			fee: {
-				additionalfee: {!! json_encode($student->AdditionalFee) !!},
-				tuition_fee: {{ $student->tuition_fee or 0 }},
-				discount:  {{ $student->discount or 0 }},
-			},
-			chalan_no: '',
-			payment_type: '',
-			total_additional_fee: 0,
+			Invoice: {!! json_encode($invoice, JSON_NUMERIC_CHECK) !!},
+			Student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
 			schoolcopy,
 			address,
 		},
@@ -197,49 +187,9 @@
 			window.print();
 		},
 
-		computed: {
-			additionalfee: function(){
-				additionalfee = [];
-				for(k in this.fee.additionalfee) { 
-					if(this.fee.additionalfee[k].active){
-						additionalfee.push({
-							"fee_name": this.fee.additionalfee[k].fee_name,
-							"sumamount": (Number(this.fee.additionalfee[k].amount) * ((this.fee.additionalfee[k].onetime)? 1 : this.NoOfMonths)),
-							"amount": Number(this.fee.additionalfee[k].amount),
-							"active": Number(this.fee.additionalfee[k].active),
-							"onetime": Number(this.fee.additionalfee[k].onetime)
-						});
-					}
-				}
-				return additionalfee;
-			},
-
-			NoOfMonths: function(){
-				return this.months.length;
-			},
-			total_tuition_fee: function(){
-				return Number(this.fee.tuition_fee) * this.NoOfMonths;
-			},
-			total_discount: function(){
-				return Number(this.fee.discount) * this.NoOfMonths;
-			},
-			total_amount: function(){
-				tot_amount = Number(this.total_tuition_fee);
-				for(k in this.additionalfee) { 
-
-					tot_amount += Number(this.additionalfee[k].sumamount);
-
-				}
-				return  tot_amount;
-			},
-
-			net_amount: function(){
-				return Number(this.total_amount) - Number(this.total_discount);
-			},
-		},
 		methods: {
 			inwords: function (){
-				var inWords = toWords(this.net_amount);
+				var inWords = toWords(this.Invoice.net_amount);
 				return inWords.charAt(0).toUpperCase() + inWords.slice(1);
 			}
 		}

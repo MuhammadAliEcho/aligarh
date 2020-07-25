@@ -30,6 +30,9 @@
   </head>
 
 <body class="pace-done md-skin {{ Auth::user()->settings->skin_config->nav_collapse }}">
+	@if( config('systemInfo.validity') < Carbon\Carbon::now()->toDateString())
+	<div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-warning-sign" ></span> <b> The System Is Expired!</b></div>
+	@endif
   <div id="wrapper">
 	<div id="app">
 		@yield('content')
@@ -81,8 +84,9 @@
 	<script src="{{ URL::to('src/js/demo/sparkline-demo.js') }}"></script>
 
 	<!-- ChartJS-->
-	<script src="{{ URL::to('src/js/plugins/chartJs/Chart.min.js') }}"></script>
-
+{{-- 	<script src="{{ URL::to('src/js/plugins/chartJs/Chart.min.js') }}"></script> --}}
+			<!-- ChartJS-->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 	<!-- Toastr -->
 	<script src="{{ URL::to('src/js/plugins/toastr/toastr.min.js') }}"></script>
 

@@ -40,18 +40,18 @@ class FeeCollectionReportController extends Controller
 			'end'    	=>	'required',
 		]);
 
-		$this->data['betweendates']	=	['start' => $request->input('start'), 'end' => $request->input('end')];
-		$this->data['statments'] = InvoiceMaster::whereBetween('payment_month', $this->data['betweendates'])->with(['Student' => function($qry){
+		$this->data['betweendates']	=	['start' => $request->input('start'), 'end' => Carbon::createFromFormat('Y-m-d', $request->input('end'))->endOfMonth()->toDateString()];
+		$this->data['statments'] = InvoiceMaster::whereBetween('due_date', $this->data['betweendates'])->with(['Student' => function($qry){
 				$qry->select('id', 'name', 'father_name', 'gr_no', 'class_id');
 				$qry->with(['StdClass' => function($qry){
-					$qry->select('id', 'name');
+					$qry->select('id', 'name', 'numeric_name');
 				}]);
-		}])->get();
-		$this->data['summary'] = DB::table('invoice_master')
-								->select(DB::raw('sum(`paid_amount`) AS `paid_amount`, `payment_month`'))
-								->groupBy('payment_month')
-								->whereBetween('payment_month', $this->data['betweendates'])
-								->orderBy('payment_month')->get();
+		}])->with('InvoiceMonths')->get();
+/* 		$this->data['summary'] = DB::table('invoice_master')
+								->select(DB::raw('sum(`paid_amount`) AS `paid_amount`, sum(`net_amount`) AS `net_amount`, `due_date`'))
+								->groupBy(DB::raw('YEAR(`due_date`), MONTH(`due_date`)'))
+								->whereBetween('due_date', $this->data['betweendates'])
+								->orderBy('due_date')->get(); */
 
 		return view('admin.printable.fee_receipt_statment', $this->data);
 	}
@@ -177,8 +177,8 @@ class FeeCollectionReportController extends Controller
 									->where('students.date_of_enrolled', '<=', Carbon::createFromFormat('Y-m-d', $this->data['session']->getOriginal('start'))->endOfMonth()->toDateString())
 									->Active()
 									->WithOutFullDiscount()
-									->with(['Invoices'	=>	function($qry){
-										$qry->whereBetween('payment_month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']]);
+									->with(['InvoiceMonths'	=>	function($qry){
+										$qry->whereBetween('month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']]);
 									}])
 									->with(['AdditionalFee'	=>	function($qry){
 										$qry->Active();
@@ -206,7 +206,7 @@ class FeeCollectionReportController extends Controller
 //					}
 					while ($month <= $endmonth) {
 
-						$invoice = $student->Invoices->where('payment_month', Carbon::createFromFormat('Y-m-d', $month)->format('M-Y'));
+						$invoice = $student->InvoiceMonths->where('month', Carbon::createFromFormat('Y-m-d', $month)->format('M-Y'));
 //						if (empty($this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name])) {
 						if (empty($this->data['unpaid_fee_statment'][$class->name])) {
 //							$this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name] = collect();
@@ -280,23 +280,23 @@ class FeeCollectionReportController extends Controller
 											`students`.`gr_no`,
 											`students`.`name`,
 											`students`.`father_name`,
-											SUM( IF( MONTH(`payment_month`) = 4, `invoice_master`.`paid_amount`, 0) ) AS `Apr`,
-											SUM( IF( MONTH(`payment_month`) = 5, `invoice_master`.`paid_amount`, 0) ) AS `May`,
-											SUM( IF( MONTH(`payment_month`) = 6, `invoice_master`.`paid_amount`, 0) ) AS `Jun`,
-											SUM( IF( MONTH(`payment_month`) = 7, `invoice_master`.`paid_amount`, 0) ) AS `Jul`,
-											SUM( IF( MONTH(`payment_month`) = 8, `invoice_master`.`paid_amount`, 0) ) AS `Aug`,
-											SUM( IF( MONTH(`payment_month`) = 9, `invoice_master`.`paid_amount`, 0) ) AS `Sep`,
-											SUM( IF( MONTH(`payment_month`) = 10, `invoice_master`.`paid_amount`, 0) ) AS `Oct`,
-											SUM( IF( MONTH(`payment_month`) = 11, `invoice_master`.`paid_amount`, 0) ) AS `Nov`,
-											SUM( IF( MONTH(`payment_month`) = 12, `invoice_master`.`paid_amount`, 0) ) AS `Dec`,
-											SUM( IF( MONTH(`payment_month`) = 1, `invoice_master`.`paid_amount`, 0) ) AS `Jan`,
-											SUM( IF( MONTH(`payment_month`) = 2, `invoice_master`.`paid_amount`, 0) ) AS `Feb`,
-											SUM( IF( MONTH(`payment_month`) = 3, `invoice_master`.`paid_amount`, 0) ) AS `Mar`,
+											SUM( IF( MONTH(`due_date`) = 4, `invoice_master`.`paid_amount`, 0) ) AS `Apr`,
+											SUM( IF( MONTH(`due_date`) = 5, `invoice_master`.`paid_amount`, 0) ) AS `May`,
+											SUM( IF( MONTH(`due_date`) = 6, `invoice_master`.`paid_amount`, 0) ) AS `Jun`,
+											SUM( IF( MONTH(`due_date`) = 7, `invoice_master`.`paid_amount`, 0) ) AS `Jul`,
+											SUM( IF( MONTH(`due_date`) = 8, `invoice_master`.`paid_amount`, 0) ) AS `Aug`,
+											SUM( IF( MONTH(`due_date`) = 9, `invoice_master`.`paid_amount`, 0) ) AS `Sep`,
+											SUM( IF( MONTH(`due_date`) = 10, `invoice_master`.`paid_amount`, 0) ) AS `Oct`,
+											SUM( IF( MONTH(`due_date`) = 11, `invoice_master`.`paid_amount`, 0) ) AS `Nov`,
+											SUM( IF( MONTH(`due_date`) = 12, `invoice_master`.`paid_amount`, 0) ) AS `Dec`,
+											SUM( IF( MONTH(`due_date`) = 1, `invoice_master`.`paid_amount`, 0) ) AS `Jan`,
+											SUM( IF( MONTH(`due_date`) = 2, `invoice_master`.`paid_amount`, 0) ) AS `Feb`,
+											SUM( IF( MONTH(`due_date`) = 3, `invoice_master`.`paid_amount`, 0) ) AS `Mar`,
 											SUM(`invoice_master`.`paid_amount`) AS `total_amount`
 										"))
 									->join('invoice_master', 'students.id', '=', 'invoice_master.student_id')
 									->join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
-									->whereBetween('invoice_master.payment_month', [$this->data['session']->getOriginal('start'), $this->data['session']->getOriginal('end')])
+									->whereBetween('invoice_master.due_date', [$this->data['session']->getOriginal('start'), $this->data['session']->getOriginal('end')])
 									->where([
 											'academic_session_history.class_id' => $this->data['class']->id,
 											'academic_session_history.academic_session_id' => Auth::user()->academic_session

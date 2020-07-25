@@ -110,7 +110,7 @@
 
 							<div class="ibox-content">
 
-								<form id="daily_fee_collection" method="POST" action="{{ URL('fee-collection-reports/freeship-students') }}" class="form-horizontal" target="_blank">
+								<form id="freship_students" method="POST" action="{{ URL('fee-collection-reports/freeship-students') }}" class="form-horizontal" target="_blank">
 									{{ csrf_field() }}
 
 									<div class="form-group">
@@ -125,7 +125,7 @@
 
 						<div class="ibox">
 							<div class="ibox-title">
-								<h2>Statment Of Unpaid Fee</h2>
+								<h2>Bill Remain Statment</h2>
 								<div class="hr-line-dashed"></div>
 							</div>
 

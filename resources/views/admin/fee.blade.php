@@ -43,14 +43,19 @@
 					<div class="tabs-container">
 						<ul class="nav nav-tabs">
 							<li class="">
-							  <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Invoice</a>
+								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Invoice</a>
 							</li>
 							<li class="make-fee">
-							  <a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
+								<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
 							</li>
+							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)
+							<li class="collect-invocie">
+								<a data-toggle="tab" href="#tab-12"><span class="fa fa-sticky-note-o"></span> Invoice Collect</a>
+							</li>
+							@endif
 							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)
 							<li class="">
-							  <a data-toggle="tab" href="#tab-12"><span class="fa fa-edit"></span> Update Fee</a>
+								<a data-toggle="tab" href="#tab-13"><span class="fa fa-edit"></span> Update Fee</a>
 							</li>
 							@endif
 						</ul>
@@ -66,7 +71,7 @@
 										  <th>Total Amount</th>
 										  <th>Discount</th>
 										  <th>Paid Amount</th>
-										  <th>Payment Month</th>
+										  <th>Due Date</th>
 										  <th>Created At</th>
 										  <th>Options</th>
 										</tr>
@@ -77,7 +82,7 @@
 								</div>
 							</div>
 							<div id="tab-11" class="tab-pane fade make-fee">
-								<div id="collectfeeApp" class="panel-body">
+								<div id="createfeeApp" class="panel-body">
 								  <h2> Create Invoice </h2>
 								  <div class="hr-line-dashed"></div>
 
@@ -106,11 +111,26 @@
 									@if($root['job'] == 'create')
 									<div class="row">
 									<h3>Student Name: <span class="bg-info"> {{ $student->name }} | {{ $student->gr_no }} </span></h3>
-									<form v-show="NoOfMonths" method="POST" action="{{ URL('fee/chalan/'.$student->id) }}" class="form-horizontal" target="_new">
+
+									  <form action="{{ URL('fee/create/'.$student->id) }}" method="POST" class="form-horizontal">
 										{{ csrf_field() }}
-										<select multiple="multiple" name="months[]" class="hidden" required="true">
-											<option v-for="month in months" selected="true">@{{ month }}</option>
+										<input type="hidden" name="student_id" value="{{ $student->id }}" required="true">
+										<input type="hidden" name="arrears" :value="arrears" required="true">
+										<input type="hidden" name="total_amount" :value="total_amount" required="true">
+										<input type="hidden" name="net_amount" :value="net_amount" required="true">
+
+										<div class="container-fluid form-group">
+										<select class="select2 form-control" multiple="multiple" name="months[]" required="true" style="width: 100%">
+											@foreach($months as $month)
+											<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
+											@endforeach
 										</select>
+										  @if ($errors->has('months'))
+											  <span class="help-block">
+												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('months') }} </strong>
+											  </span>
+										  @endif
+										</div>
 
 										<div class="form-group">
 											<label class="col-md-2 control-label">Issue Date:</label>
@@ -122,33 +142,14 @@
 										<div class="form-group">
 											<label class="col-md-2 control-label">Due Date:</label>
 											<div class="col-md-6">
-												<input type="text" name="due_date" placeholder="Due Date" required="true" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" />
-											</div>
-										</div>
-
-										<div class="form-group">
-											<div class="col-md-offset-2 col-md-4">
-												<button type="submit" class="btn btn-default btn-block"> Get Chalan </button>
-											</div>
-										</div>
-									</form>
-									  <div class="hr-line-dashed"></div>
-
-									  <form action="{{ URL('fee/create/'.$student->id) }}" method="POST" class="form-horizontal">
-										{{ csrf_field() }}
-
-										<select class="select2 form-control" multiple="multiple" name="months[]" required="true" style="width: 100%">
-											@foreach($months as $month)
-											<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
-											@endforeach
-										</select>
-										  @if ($errors->has('months'))
+												<input type="text" name="due_date" placeholder="Due Date" required="true" value="{{ Carbon\Carbon::now()->addDays(14)->toDateString() }}" class="form-control datepicker" readonly="true" />
+										  @if ($errors->has('due_date'))
 											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('months') }} </strong>
+												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('due_date') }} </strong>
 											  </span>
 										  @endif
-
-										<input type="hidden" name="student_id" value="{{ $student->id }}" required="true">
+											</div>
+										</div>
 
 										<table class="table table-striped table-bordered table-hover">
 										  <thead>
@@ -160,7 +161,7 @@
 										  <tbody>
 											<tr>
 											  <td>Tuition Fee @{{ '('+fee.tuition_fee+'*'+NoOfMonths+')' }}</td>
-											  <td>@{{ total_tuition_fee }}</td>
+											  <td><input type="number" class="form-control" v-model="total_tuition_fee" name="total_tuition_fee"></td>
 											</tr>
 											<tr v-for="additionalfe in additionalfee" v-if="additionalfe.active">
 											  <td>@{{ additionalfe.fee_name +' ('+ additionalfe.amount +'*'+ ((additionalfe.onetime)? 1 : NoOfMonths) +')' }}</td>
@@ -168,41 +169,36 @@
 											</tr>
 
 											<tr>
-											  <th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th>
-											  <th>@{{ total_discount }}</th>
+												<th>Total Amount</th>
+												<th>@{{ total_amount }}</th>
 											</tr>
+
 											<tr>
-											  <th>Payment Type</th>
-											  <th>
-												<div class="i-checks"><label> <input type="radio" value="Cash" name="payment_type" required="true" v-model="payment_type"> Cash </label></div>
-												<div class="i-checks"><label> <input type="radio" value="Chalan" name="payment_type" v-model="payment_type"> Chalan </label></div>
-												<div  class="i-checks"><input class="form-control" type="text" name="chalan_no" v-model="chalan_no" v-bind:required="payment_type == 'Chalan'" ></div>
-												@if ($errors->has('chalan_no'))
-													<span class="help-block">
-														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('chalan_no') }} </strong>
-													</span>
-												@endif
-											  </th>
+												<td>Total Arears</td>
+												<td>@{{ arrears }}</td>
+											</tr>
+
+											<tr>
+											  <th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th>
+											  <th><input type="number" class="form-control" name="discount" v-model="total_discount" required="true"></th>
 											</tr>
 										  </tbody>
+
 										  <tfoot>
 											<tr class="success">
-											  <th>Total</th>
+											  <th>Net Total</th>
 											  <th>@{{ net_amount }}</th>
+											</tr>
+											<tr>
+											  <td>Late Fee (Payable after due date)<input type="number" class="form-control" name="late_fee" v-model="fee.late_fee" required="true"></td>
+											  <td>@{{ (Number(fee.late_fee)+net_amount) }}</td>
 											</tr>
 										  </tfoot>
 										</table>
 
-										<div class="form-group hidden">
-											<label class="col-md-2 control-label"> Payment Date: </label>
-											<div class="col-md-6">
-												<input type="text" name="date" id="datepicker" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" required="true">
-											</div>
-										</div>
-
 										<div class="form-group" v-if="NoOfMonths">
 											<div class="col-md-offset-4 col-md-4">
-												<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Collect </button>
+												<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Create Invoice </button>
 											</div>
 										</div>
 
@@ -213,9 +209,147 @@
 
 								</div>
 							</div>
-							
+
+							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)
+							<div id="tab-12" class="tab-pane fade make-fee">
+								<div id="collectfeeApp" class="panel-body">
+									<h2> Invoice Collect </h2>
+									<div class="hr-line-dashed"></div>
+
+									<form id="invoice_collect_form" method="GET" class="form-horizontal" v-on:submit.prevent="invoiceCollectForm($event)" action="{{ URL('fee/collect') }}">
+
+										<div class="form-group">
+											<label class="col-md-2 control-label"> Invoice No </label>
+											<div class="col-md-6">
+												<input type="number" class="form-control" v-model="invoice_no" name="invoice_no" required="true"/>
+												@if ($errors->has('invoice_no'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('invoice_no') }} </strong>
+													</span>
+												@endif
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+											<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+											<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
+											</div>
+										</div>
+
+									</form>
+	
+
+									<div v-show="Invoice.id" class="row">
+										<div class="hr-line-dashed"></div>
+									<h3>Student Name: <span class="bg-info"> @{{ Student.name }} | @{{ Invoice.gr_no }} </span></h3>
+
+									  <form action="{{ URL('fee/collect') }}" id="invoice_post_collect_form" method="POST" class="form-horizontal" v-on:submit.prevent="invoiceCollectForm($event)">
+										{{ csrf_field() }}
+										<input type="hidden" name="invoice_no" :value="Invoice.id" required="true">
+
+										<div class="container-fluid form-group">
+											<label class="col-md-2 control-label">Months:</label>
+											<div class="col-md-6">
+												<select class="form-control" multiple="multiple" readonly>
+													<option selected v-for="month in Invoice.invoice_months" :value="month">@{{ month.month }}</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">Issue Date:</label>
+											<div class="col-md-6">
+												<input type="text" placeholder="Issue Date"  :value="Invoice.created_at" class="form-control" readonly="true" />
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">Due Date:</label>
+											<div class="col-md-6">
+												<input type="text" placeholder="Due Date" :value="Invoice.due_date" class="form-control" readonly="true" />
+											</div>
+										</div>
+
+										<table class="table table-striped table-bordered table-hover">
+										  <thead>
+											<tr>
+											  <th>Fees Name</th>
+											  <th>Amount</th>
+											</tr>
+										  </thead>
+										  <tbody>
+
+											<tr v-for="additionalfee in Invoice.invoice_detail">
+											  <td>@{{ additionalfee.fee_name }}</td>
+											  <td>@{{ additionalfee.amount }}</td>
+											</tr>
+
+											<tr>
+											  <th>Discount</th>
+											  <th>@{{ Invoice.discount }}</th>
+											</tr>
+										  </tbody>
+										  <tfoot>
+											<tr class="success">
+											  <th>Total</th>
+											  <th>@{{ Invoice.net_amount }}</th>
+											</tr>
+											<tr>
+											  <td>Late Fee (Payable after due date)</td>
+											  <td>@{{ (Invoice.late_fee + Invoice.net_amount) }}</td>
+											</tr>
+										  </tfoot>
+										</table>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">Date of payment:</label>
+											<div class="col-md-6">
+												<input type="text" name="date_of_payment" placeholder="date of payment" required="true" :value="date_of_payment" class="form-control datepicker" onChange="feeCollectApp.date_of_payment = this.value" readonly  />
+											</div>
+										</div>
+
+										<div v-if="Invoice.due_date >= date_of_payment" class="form-group">
+											<label class="col-md-2 control-label">Paid Amount:</label>
+											<div class="col-md-6">
+												<input type="number" name="paid_amount" placeholder="Paid Amount" required="true" :value="Invoice.net_amount" :max="Invoice.net_amount" class="form-control" />
+											</div>
+										</div>
+
+										<div v-else class="form-group">
+											<label class="col-md-2 control-label">Paid Amount:</label>
+											<div class="col-md-6">
+												<input type="number" name="paid_amount" placeholder="Paid Amount" required="true" :value="Invoice.net_amount + Invoice.late_fee" :min="Invoice.net_amount + Invoice.late_fee" :max="Invoice.net_amount + Invoice.late_fee" class="form-control" />
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">Payment Mode</label>
+											<div class="col-md-6">
+												<select class="form-control" name="payment_type" required="true">
+													<option>Chalan</option>
+													<option>Cash</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-md-offset-4 col-md-4">
+												<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+												<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Collect Invoice </button>
+											</div>
+										</div>
+
+										</form>
+
+									</div>
+
+								</div>
+							</div>
+							@endif
+
 							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)
-							<div id="tab-12" class="tab-pane fade">
+							<div id="tab-13" class="tab-pane fade">
 								<div id="updatefeeApp" class="panel-body">
 								  <h2> Update Fee </h2>
 								  <div class="hr-line-dashed"></div>
@@ -310,6 +444,13 @@
 																<th>@{{ net_amount }}</th>
 																<th></th>
 															</tr>
+															<tr>
+																<td>Late Fee</td>
+																<td>
+																	<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" class="form-control"/>
+																</td>
+																<td title="leave it '0' if not apply">Apply After Due Date.</td>
+															</tr>
 														</tfoot>
 													</table>
 												</div>
@@ -381,14 +522,15 @@
 		$('a[href="#tab-11"]').tab('show');
 		@if(isset($Input))
 		  $('[name="gr_no"').val('{{ $Input['gr_no'] }}');
-		@else
-		  $('[name="month"').val('{{ old('month') }}');
 		@endif
 	  @else
 		$('a[href="#tab-10"]').tab('show');
 	  @endif
 
 		opthtm = '<a data-toggle="tooltip" target="_new" title="View" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-file-pdf-o"></span></a>';
+		@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->{'edit-invoice'})
+		opthtm += '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-invoice"><span class="fa fa-edit"></span></a>';
+		@endif
 		tbl = $('.dataTables-teacher').DataTable({
 		  dom: '<"html5buttons"B>lTfgitp',
 		  buttons: [
@@ -418,14 +560,18 @@
 			{data: 'total_amount', name: 'invoice_master.total_amount'},
 			{data: 'discount', name: 'invoice_master.discount'},
 			{data: 'paid_amount', name: 'invoice_master.paid_amount'},
-			{data: 'payment_month', name: 'invoice_master.payment_month'},
+			{data: 'due_date', name: 'invoice_master.due_date'},
 			{data: 'created_at', name: 'invoice_master.created_at'},
 			{"defaultContent": opthtm, className: 'hidden-print'},
 		  ],
 		});
 
 	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-option', function () {
-		$(this).attr('href','{{ URL('fee/invoice/') }}/'+tbl.row( $(this).parents('tr') ).data().id);
+		$(this).attr('href','{{ URL('fee/chalan/') }}/'+tbl.row( $(this).parents('tr') ).data().id);
+		$(this).tooltip('show');
+	  });
+	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-invoice', function () {
+		$(this).attr('href','{{ URL('fee/edit-invoice/?id=') }}'+tbl.row( $(this).parents('tr') ).data().id);
 		$(this).tooltip('show');
 	  });
 
@@ -476,7 +622,7 @@
 		});
 
 	  @if(Session::get('invoice_created') !== null)
-		window.open('{{ URL('fee/invoice/'.Session::get('invoice_created')) }}', '_new');
+		window.open('{{ URL('fee/chalan/'.Session::get('invoice_created')) }}', '_new');
 	  @endif
 
 	  @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->create == 0)
@@ -497,15 +643,17 @@
 	@if($root['job'] == 'create')
 	<script type="text/javascript">
 	  var app = new Vue({
-		el: '#collectfeeApp',
+		el: '#createfeeApp',
 		data: {
 			months: {},
 			NoOfMonths:0,
 			fee: {
 				additionalfee: {!! json_encode($student->AdditionalFee, JSON_NUMERIC_CHECK) !!},
 				tuition_fee: {{ $student->tuition_fee or 0 }},
+				late_fee: {{ $student->late_fee or 0 }},
 				discount:  {{ $student->discount or 0 }},
 			},
+			arrears: {{ $arrears or 0 }},
 			chalan_no: '',
 			payment_type: '',
 			total_tuition_fee: 0,
@@ -560,7 +708,7 @@
 			},
 
 			net_amount: function(){
-				return Number(this.total_amount) - Number(this.total_discount);
+				return Number(Number(this.total_amount) - Number(this.total_discount)) + Number(this.arrears);
 			},
 		}
 	  });
@@ -576,6 +724,7 @@
 				fee: {
 					additionalfee: {},
 					tuition_fee: 0,
+					late_fee: 0,
 					discount:  0,
 					feedata: false,
 				},
@@ -601,6 +750,7 @@
 							feeApp.std.gr_no = msg.gr_no;
 							feeApp.fee.additionalfee = msg.additional_fee;
 							feeApp.fee.tuition_fee = msg.tuition_fee;
+							feeApp.fee.late_fee = msg.late_fee;
 							feeApp.fee.discount = msg.discount;
 							feeApp.fee.feedata = true;
 						} else {
@@ -658,6 +808,64 @@
 
 		});
 	</script>
+	@endif
+
+	@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)
+		<script type="text/javascript">
+		var feeCollectApp = new Vue({
+			el: '#collectfeeApp',
+			data: {	
+				loading: false,
+				invoice_no: null,
+				date_of_payment: '{{ Carbon\Carbon::now()->toDateString() }}',
+				Invoice: [],
+				Student: [],
+			},
+			methods: {
+				invoiceCollectForm: function(e){
+					this.loading = true;
+					$.ajax({
+					type: e.target.method,
+					url:  e.target.action,
+					data: $(e.target).serialize(),
+					success: function(msg){
+						if (e.target.id == 'invoice_collect_form' && e.target.method == "get") {
+							feeCollectApp.Invoice = msg.invoice;
+							feeCollectApp.Invoice['invoice_detail'] = msg.invoice_detail;
+							feeCollectApp.Invoice['invoice_months'] = msg.invoice_months;
+							feeCollectApp.Student = msg.student;
+						} else {
+							feeCollectApp.AjaxMsg(msg);
+							feeCollectApp.Invoice = [];
+							feeCollectApp.Student = [];
+						}
+						feeCollectApp.loading = false;
+					},
+					error: function(error){
+							console.log(error);
+							if(error.status == 422){
+								feeCollectApp.AjaxMsg(error.responseJSON);
+							} else {
+								alert('Request failure');
+							}
+							feeCollectApp.loading = false;
+							feeCollectApp.Invoice = [];
+							feeCollectApp.Student = [];
+						}
+					});
+				},
+				AjaxMsg: function(msg){
+						toastr.options = {
+							closeButton: true,
+							progressBar: true,
+							showMethod: 'slideDown',
+							timeOut: 8000
+						};
+						toastr[msg.type](msg.msg, msg.title);
+				},
+			}
+		});
+		</script>
 	@endif
 
 	@endsection
