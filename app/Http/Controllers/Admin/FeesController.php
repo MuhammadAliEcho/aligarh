@@ -87,20 +87,23 @@ class FeesController extends Controller
 
 		$invoice =	InvoiceMaster::where('student_id', $this->data['student']->id)->orderBy('id', 'desc')->first();
 
-		if($invoice->getOriginal('due_date') >= Carbon::now()->toDateString()){
-			return redirect('fee')->withInput()->withErrors(['gr_no' => "Invoice# $invoice->id already created"])->with([
-				'toastrmsg' => [
-					'type' => 'info', 
-					'title'  =>  "Invoice# $invoice->id",
-					'msg' =>  'Invoice Already Created'
-				],
-			]);
-		}
+		if($invoice){
 
-		if($invoice->getOriginal('data_of_payment') >= $invoice->getOriginal('due_date')){
-			$this->data['arrears']	=	($invoice->net_amount+$invoice->late_fee) - $invoice->paid_amount;
-		} else {
-			$this->data['arrears']	=	$invoice->net_amount - $invoice->paid_amount;
+			if($invoice->getOriginal('due_date') >= Carbon::now()->toDateString()){
+				return redirect('fee')->withInput()->withErrors(['gr_no' => "Invoice# $invoice->id already created"])->with([
+					'toastrmsg' => [
+						'type' => 'info', 
+						'title'  =>  "Invoice# $invoice->id",
+						'msg' =>  'Invoice Already Created'
+					],
+				]);
+			}
+
+			if($invoice->getOriginal('data_of_payment') >= $invoice->getOriginal('due_date')){
+				$this->data['arrears']	=	($invoice->net_amount+$invoice->late_fee) - $invoice->paid_amount;
+			} else {
+				$this->data['arrears']	=	$invoice->net_amount - $invoice->paid_amount;
+			}
 		}
 
 		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);

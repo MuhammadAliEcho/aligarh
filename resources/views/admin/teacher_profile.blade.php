@@ -74,7 +74,7 @@
                                         <td>{{ $teacher->relegion }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Facther :</th>
+                                        <th>Father Name :</th>
                                         <td>{{ $teacher->f_name }}</td>
                                     </tr>
                                     <tr>

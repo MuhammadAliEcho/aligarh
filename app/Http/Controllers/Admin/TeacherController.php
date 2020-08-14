@@ -168,7 +168,7 @@ class TeacherController extends Controller
   protected function SetAttributes(){
     $this->Teacher->name = $this->Request->input('name');
     $this->Teacher->f_name = $this->Request->input('f_name');
-//    $this->Teacher->husband_name = $this->Request->input('husband_name');
+    $this->Teacher->husband_name = $this->Request->input('husband_name');
     $this->Teacher->subject = $this->Request->input('subject');
     $this->Teacher->gender = $this->Request->input('gender');
     $this->Teacher->email = $this->Request->input('email');

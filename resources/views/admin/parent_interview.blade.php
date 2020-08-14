@@ -135,7 +135,7 @@
 												<div class="form-group{{ ($errors->has('father_occupation'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">Father Occupation</label>
 													<div class="col-md-6">
-														<input type="text" name="father_occupation" placeholder="Father Qualification" v-model="interview.father_occupation" class="form-control" />
+														<input type="text" name="father_occupation" placeholder="Father Occupation" v-model="interview.father_occupation" class="form-control" />
 														@if ($errors->has('father_occupation'))
 																<span class="help-block">
 																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('father_occupation') }}</strong>

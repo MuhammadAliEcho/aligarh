@@ -150,6 +150,18 @@
                                               </span>
                                           @endif
                                         </div>
+									  </div>
+									  
+                                      <div class="form-group{{ ($errors->has('husband_name'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Husband Name</label>
+                                        <div class="col-md-6">
+                                          <input type="text" name="husband_name" placeholder="Husband Name" value="{{ old('husband_name') }}" class="form-control"/>
+                                          @if ($errors->has('husband_name'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('husband_name') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
