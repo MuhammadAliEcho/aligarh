@@ -240,7 +240,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         //-- Data table
-        'Datatables'  =>  Yajra\Datatables\Facades\Datatables::class,
+        'Datatables'  =>  Yajra\DataTables\Facades\DataTables::class,
 
         //---- Debugbar
         'Debugbar' => Barryvdh\Debugbar\Facade::class,

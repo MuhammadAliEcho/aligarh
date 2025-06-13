@@ -22,6 +22,8 @@ class ContentController extends Controller {
   }
 
   protected function LoadContent(){
+    // dd(Auth::user()->allow_content);
+    // dd($this->Content);
     $Content = 'App\\'.Auth::user()->allow_content.'Content';
     $this->Routes['content'] = $this->Content = $Content::where('root', $this->Routes['ctrl'])->firstOrfail();
   }

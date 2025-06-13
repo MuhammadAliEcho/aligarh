@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Vendor;
@@ -28,7 +28,7 @@ class VendorsController extends Controller
 
     public function GetVendor(){
       if ($this->Request->ajax()) {
-        return Datatables::eloquent(Vendor::select('v_name', 'c_name', 'email', 'id', 'phone', 'address'))->make(true);
+        return DataTables::eloquent(Vendor::select('v_name', 'c_name', 'email', 'id', 'phone', 'address'))->make(true);
       }
       return view('admin.vendor', $this->data);
     }

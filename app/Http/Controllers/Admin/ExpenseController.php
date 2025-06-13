@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 //use Illuminate\Http\Request;
 use App\Http\Requests;
 use Request;
@@ -35,7 +35,7 @@ class ExpenseController extends Controller
   public function Index(){
 
   	if (Request::ajax()) {
-	    return Datatables::eloquent(Expense::query())->make(true);
+	    return DataTables::eloquent(Expense::query())->make(true);
   	}
 
     return view('admin.expense', $this->data);

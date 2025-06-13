@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Guardian;
@@ -31,7 +31,7 @@ class GuardiansController extends Controller
     public function GetGuardian(){
 
       if ($this->Request->ajax()) {
-        return Datatables::eloquent(Guardian::select('name', 'email', 'id', 'phone', 'address'))->make(true);
+        return DataTables::eloquent(Guardian::select('name', 'email', 'id', 'phone', 'address'))->make(true);
       }
       
       return view('admin.guardian', $this->data);

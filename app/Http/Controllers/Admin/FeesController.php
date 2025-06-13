@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 //use Illuminate\Http\Request;
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests;
 use App\InvoiceMaster;
 use App\InvoiceDetail;
@@ -42,12 +42,12 @@ class FeesController extends Controller
 		echo "</pre>";*/
 
 		if (Request::ajax()) {
-			return Datatables::eloquent(InvoiceMaster::query())->make(true);
-/*			return Datatables::eloquent(InvoiceMaster::select(['invoice_master.*', 'students.name'])
+			return DataTables::eloquent(InvoiceMaster::query())->make(true);
+/*			return DataTables::eloquent(InvoiceMaster::select(['invoice_master.*', 'students.name'])
 				->join('students', 'invoice_master.student_id', '=', 'students.id'))
 				->make(true);
 */
-/*			return Datatables::queryBuilder(DB::table('invoice_master')
+/*			return DataTables::queryBuilder(DB::table('invoice_master')
 				->select(['invoice_master.*', 'invoice_master.id AS invoice_id', 'students.name'])
 				->leftjoin('students', 'invoice_master.student_id', '=', 'students.id'))
 				->make(true);

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Book;
@@ -28,7 +28,7 @@ class LibraryController extends Controller
     public function GetLibrary(){
 
       if ($this->Request->ajax()) {
-        return Datatables::eloquent(Book::select('id', 'title', 'author', 'edition', 'qty'))->make(true);
+        return DataTables::eloquent(Book::select('id', 'title', 'author', 'edition', 'qty'))->make(true);
       }
       return view('admin.library', $this->data);
 

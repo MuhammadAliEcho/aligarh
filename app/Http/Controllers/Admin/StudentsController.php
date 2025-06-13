@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 //use Illuminate\Http\Request;
@@ -83,9 +83,9 @@ class StudentsController extends Controller
 		$this->data['classes'] = Classe::select('id', 'name')->get();
 		if (Request::ajax()) {
 	/*
-			return Datatables::eloquent(Student::query())->make(true);
+			return DataTables::eloquent(Student::query())->make(true);
 	*/
-			return Datatables::of(DB::table('students')
+			return DataTables::of(DB::table('students')
 				->join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
 				->select('students.*', 'academic_session_history.class_id AS class')
 				->where([
@@ -97,7 +97,7 @@ class StudentsController extends Controller
 				return $html;
 				})
 				->make(true);
-//      return Datatables::eloquent(Student::query()->CurrentSession())->make(true);
+//      return DataTables::eloquent(Student::query()->CurrentSession())->make(true);
 		}
 		$this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
 		$this->data['no_of_active_students'] = Student::active()->count();

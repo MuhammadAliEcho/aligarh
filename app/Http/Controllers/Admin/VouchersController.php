@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Carbon\Carbon;
@@ -35,7 +35,7 @@ class VouchersController extends Controller
 
     public function GetVoucher(){
       if ($this->Request->ajax()) {
-      return Datatables::queryBuilder(DB::table('vouchers')
+      return DataTables::queryBuilder(DB::table('vouchers')
                                         ->leftJoin('vendors', 'vouchers.vendor_id', '=', 'vendors.id')
                                         ->select('vouchers.id', 'vouchers.net_amount', 'vouchers.voucher_no', 'vouchers.voucher_date', 'vendors.v_name'))
                                         ->make(true);

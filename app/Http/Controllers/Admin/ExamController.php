@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 //use Request;
@@ -35,7 +35,7 @@ class ExamController extends Controller
 	public function Index(){
 
 		if ($this->Request->ajax()) {
-			return Datatables::eloquent(Exam::query()->CurrentSession()->orderBy('id'))->make(true);
+			return DataTables::eloquent(Exam::query()->CurrentSession()->orderBy('id'))->make(true);
 		}
 
 		return view('admin.exam', $this->data);

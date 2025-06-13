@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 //use Illuminate\Http\Request;
 use App\Http\Requests;
 use Request;
@@ -25,7 +25,7 @@ class ManageClasses extends Controller
 
 	public function GetClasses(){
 		if(Request::ajax()){
-			return Datatables::queryBuilder(DB::table('classes')->leftjoin('teachers', 'classes.teacher_id', '=', 'teachers.id')
+			return DataTables::queryBuilder(DB::table('classes')->leftjoin('teachers', 'classes.teacher_id', '=', 'teachers.id')
 																->select('classes.name', 'classes.numeric_name', 'classes.id','teachers.name AS teacher_name')
 																)->make(true);
 		}

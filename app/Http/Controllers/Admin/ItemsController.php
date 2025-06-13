@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Item;
@@ -27,7 +27,7 @@ class ItemsController extends Controller
 
     public function GetItem(){
     	if ($this->Request->ajax()) {
-	    	return Datatables::eloquent(Item::select('id', 'name', 'category', 'qty', 'location', 'qty_level'))->make(true);
+	    	return DataTables::eloquent(Item::select('id', 'name', 'category', 'qty', 'location', 'qty_level'))->make(true);
     	}
       return view('admin.item', $this->data);
     }

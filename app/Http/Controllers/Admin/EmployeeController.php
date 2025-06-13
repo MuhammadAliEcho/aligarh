@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Employee;
@@ -53,7 +53,7 @@ class EmployeeController extends Controller
   public function GetEmployee(){
 
     if ($this->Request->ajax()) {
-      return Datatables::queryBuilder(DB::table('employees')
+      return DataTables::queryBuilder(DB::table('employees')
                                           ->leftJoin('users', 'employees.user_id', '=', 'users.id')
                                           ->select('employees.name', 'employees.email', 'employees.role', 'employees.id', 'employees.phone', 'users.active', 'users.id AS user_id'))
                                           ->make(true);

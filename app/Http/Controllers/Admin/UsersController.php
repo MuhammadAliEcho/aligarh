@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\UserPrivilege;
@@ -36,7 +36,7 @@ class UsersController extends Controller
     public function GetUsers(){
 
       if ($this->Request->ajax()) {
-        return Datatables::eloquent(User::select('id', 'name', 'email', 'role', 'foreign_id', 'user_type', 'active')->Staff())->make(true);
+        return DataTables::eloquent(User::select('id', 'name', 'email', 'role', 'foreign_id', 'user_type', 'active')->Staff())->make(true);
       }
 
       $this->Content();

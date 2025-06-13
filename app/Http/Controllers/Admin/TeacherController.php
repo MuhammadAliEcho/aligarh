@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 //use Request;
 use App\Http\Requests;
@@ -59,7 +59,7 @@ class TeacherController extends Controller
     //$this->data['teachers'] = Teacher::select('name', 'email', 'address', 'id', 'phone')->get();
 
     if($this->Request->ajax()){
-      return Datatables::queryBuilder(DB::table('teachers')
+      return DataTables::queryBuilder(DB::table('teachers')
                                           ->leftJoin('users', 'teachers.user_id', '=', 'users.id')
                                           ->select('teachers.name', 'teachers.email', 'teachers.address', 'teachers.id', 'teachers.phone', 'users.active', 'users.id AS user_id'))->make(true);
     }
