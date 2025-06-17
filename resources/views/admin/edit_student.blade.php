@@ -180,8 +180,8 @@
 														@endif
 													</div>
 												</div>
-
-												@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->editclass)
+												{{-- Permission will be applied later --}}
+												{{-- @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->editclass) --}}
 												<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">Class</label>
 													<div class="col-md-6 select2-div">
@@ -211,7 +211,7 @@
 														@endif
 													</div>
 												</div>
-												@endif
+												{{-- @endif --}}
 
 												<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">GR No</label>

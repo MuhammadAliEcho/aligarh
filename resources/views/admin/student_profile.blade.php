@@ -325,8 +325,13 @@
 				student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
 				leavingfrm: false,
 				loading: false,
-				allow_user_leave: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->leave }},
-				allow_user_certificate: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->certificate }}
+				// {
+				// "expression": "Auth::user()->getprivileges->privileges->{$root['content']['id']}->leave",
+				// "expression": "Auth::user()->getprivileges->privileges->{$root['content']['id']}->certificate",
+				// "note": "Permission will be applied later"
+				// }
+				allow_user_leave: 1, //
+				allow_user_certificate: 1,
 			},
 			mounted: function(){
 				$("[data-toggle='tooltip']").on('mouseenter', function(){

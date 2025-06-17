@@ -103,7 +103,7 @@ class Student extends Model {
 	}
 
 	public function setDateOfBirthInwordsAttribute($date){
-		$this->attributes['date_of_birth_inwords']	=	Carbon::createFromFormat('Y-m-d', $date)->format('l jS \\of F Y');
+		$this->attributes['date_of_birth_inwords'] = Carbon::createFromFormat('d/m/Y', $date)->format('l jS \\of F Y');
 	}
 
 	public function AdditionalFee(){

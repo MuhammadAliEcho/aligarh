@@ -53,7 +53,16 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
 
     Route::prefix('students')->name('students')->group(function(){
         Route::get('/', [StudentsController::class, 'Index'])->name('.index');
+        Route::get('/image/{id}', [StudentsController::class, 'GetImage'])->name('.image');
         Route::get('/profile/{id}', [StudentsController::class, 'GetProfile'])->name('.profile');
+        Route::get('/edit/{id}', [StudentsController::class, 'EditStudent'])->name('.edit');
+        Route::get('/interview/{id}', [StudentsController::class, 'GetInterview'])->name('.interview.get');
+        Route::get('/certificate/{action}', [StudentsController::class, 'GetCertificate'])->where('action', 'new|update')->name('.certificate.get');
+        Route::post('/interview/{id}', [StudentsController::class, 'UpdateOrCreateInterview'])->name('.interview.update.create');
+        Route::post('/certificate', [StudentsController::class, 'PostCertificate'])->name('.certificate.create');
+        Route::post('/add', [StudentsController::class, 'AddStudent'])->name('.add');
+        Route::post('/leave/{id}', [StudentsController::class, 'PostLeaveStudent'])->name('.leave');
+        Route::post('/edit/{id}', [StudentsController::class, 'PostEditStudent'])->name('.edit.post');
     });
 
     Route::get('/teacher', [DashboardController::class, 'GetDashboard'])->name('dashboard');

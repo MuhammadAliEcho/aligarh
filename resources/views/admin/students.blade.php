@@ -555,11 +555,10 @@
     function loadOptions(data, type, full, meta) {
 
        opthtm = '<a href="{{ URL('students/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-'+((full.active == 1)? 'default' : 'danger') +' btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
-
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        //Permission will be applied later
+          // condition = 'Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)'
           opthtm += '<a href="{{ URL('students/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Student" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
-
+          //
         return opthtm;
     }
 
@@ -778,14 +777,12 @@
       $("#imginp").change(function(){
           readURL(this);
       });
+        //Permission will be applied later
+        var c1 = 'Auth-user-getprivileges-privileges-{root[content][id]}-add == 0)';
+        var c2 = 'Auth-user-getprivileges-privileges-{root[content][id]}-edit == 0)';
+        // $('.add-student').hide();
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-student').hide();
-      @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-student').hide();
-      @endif
+        // $('.edit-student').hide();
        
       });
     </script>
