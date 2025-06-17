@@ -305,9 +305,10 @@
     function loadOptions(data, type, full, meta) {
         opthtm = '<a href="{{ URL('teacher/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn '+ ((full.user_id != null)? ((full.active)? 'btn-info' : 'btn-primary') : 'btn-default') +' btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
         
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        //Permission will be applied later
+        //var ps= 'Auth-user()-getprivileges-privileges-{$root[content][id]}-edit)'
           opthtm += '<a href="{{ URL('teacher/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
+        // endif
         if(full.user_id != null){
           opthtm += '<a href="{{ URL('users/edit') }}/'+full.user_id+'" data-toggle="tooltip" title="Edit User" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
         }
@@ -451,13 +452,14 @@
           readURL(this);
       });
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-teacher').hide();
-      @endif
+       //Permission will be applied later
+      // (Auth-user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
+        // $('.add-teacher').hide();
+      // 
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-teacher').hide();
-      @endif
+      // Auth-user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
+        // $('.edit-teacher').hide();
+      //
 
 
       });
