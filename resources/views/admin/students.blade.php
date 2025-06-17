@@ -778,8 +778,8 @@
           readURL(this);
       });
         //Permission will be applied later
-        var c1 = 'Auth-user-getprivileges-privileges-{root[content][id]}-add == 0)';
-        var c2 = 'Auth-user-getprivileges-privileges-{root[content][id]}-edit == 0)';
+        // var c1 = 'Auth-user-getprivileges-privileges-{root[content][id]}-add == 0)';
+        // var c2 = 'Auth-user-getprivileges-privileges-{root[content][id]}-edit == 0)';
         // $('.add-student').hide();
 
         // $('.edit-student').hide();

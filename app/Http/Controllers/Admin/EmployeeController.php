@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Employee;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -14,30 +13,21 @@ use App\Http\Controllers\Controller;
 
 class EmployeeController extends Controller
 {
-
-//  protected $Routes;
-  protected $data, $Employee, $Request;
-
-  public function __Construct($Routes, Request $Request){
-    $this->data['root'] = $Routes;
-    $this->Request = $Request;
-  }
-
-  public function GetImage(){
-    $Employee  = Employee::findOrFail($this->data['root']['option']);
+  public function GetImage($id){
+    $Employee  = Employee::findOrFail($id);
     $image = Storage::get($Employee->img_dir);
 //    $image = Storage::disk('public/studnets')->get('1.jpg');
 //    return Response($image, 200);
     return Response($image, 200)->header('Content-Type', 'image');
   }
 
-  public function GetProfile(){
-    $this->data['employee']  = Employee::findOrFail($this->data['root']['option']);
-    return view('admin.employee_profile', $this->data);
+  public function GetProfile($id){
+    $data['employee']  = Employee::findOrFail($id);
+    return view('admin.employee_profile', $data);
   }
 
-  protected function PostValidate(){
-    $this->validate($this->Request, [
+  protected function PostValidate($request){
+    $this->validate($request, [
         'name'      =>  'required',
 //        'subject'   =>  'required',
         'gender'    =>  'required',
@@ -50,23 +40,23 @@ class EmployeeController extends Controller
     ]);
   }
 
-  public function GetEmployee(){
+  public function GetEmployee(Request $request){
 
-    if ($this->Request->ajax()) {
+    if ($request->ajax()) {
       return DataTables::queryBuilder(DB::table('employees')
                                           ->leftJoin('users', 'employees.user_id', '=', 'users.id')
                                           ->select('employees.name', 'employees.email', 'employees.role', 'employees.id', 'employees.phone', 'users.active', 'users.id AS user_id'))
                                           ->make(true);
     }
 
-    return view('admin.employee', $this->data);
+    return view('admin.employee');
   }
 
-  public function FindEmployee(){
-    if ($this->Request->ajax()) {
-      $employees = Employee::where('name', 'LIKE', '%'.$this->Request->input('q').'%')
-                  ->orwhere('email', 'LIKE', '%'.$this->Request->input('q').'%')
-                  ->orwhere('role', 'LIKE', '%'.$this->Request->input('q').'%')
+  public function FindEmployee(Request $request){
+  if ($request->ajax()) {
+    $employees = Employee::where('name', 'LIKE', '%'.$request->input('q').'%')
+                ->orwhere('email', 'LIKE', '%'.$request->input('q').'%')
+                ->orwhere('role', 'LIKE', '%'.$request->input('q').'%')
                   ->get();
                   $k = 0;
       foreach ($employees as $employee) {
@@ -86,9 +76,9 @@ class EmployeeController extends Controller
     return abort(404);
   }
 
-  public function EditEmployee(){
+  public function EditEmployee($id){
 
-    if(Employee::where('id', $this->data['root']['option'])->count() == 0){
+    if(Employee::where('id', $id)->count() == 0){
     return  redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -98,15 +88,13 @@ class EmployeeController extends Controller
       ]);
     }
 
-    $this->data['employee'] = Employee::find($this->data['root']['option']);
-    return view('admin.edit_employee', $this->data);
+    $data['employee'] = Employee::find($id);
+    return view('admin.edit_employee', $data);
   }
 
-  public function PostEditEmployee(Request $request){
+  public function PostEditEmployee(Request $request, $id){
 
-    $this->Request = $request;
-
-    if(Employee::where('id', $this->data['root']['option'])->count() == 0){
+    if(Employee::where('id', $id)->count() == 0){
     return  redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -116,23 +104,23 @@ class EmployeeController extends Controller
       ]);
     }
 
-    $this->Employee = Employee::findOrFail($this->data['root']['option']);
-        if($this->Employee->created_by == 0 && Auth::user()->id != 1){
+    $Employee = Employee::findOrFail($id);
+        if($Employee->created_by == 0 && Auth::user()->id != 1){
         return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
           'title'  =>  'Employees Registration',
-          'msg' =>  'Sorry '.$this->Employee->name.' Employee Can\'t be Editable'
+          'msg' =>  'Sorry '.$Employee->name.' Employee Can\'t be Editable'
           ]
         ]);
         }
-    $this->PostValidate();
-    $this->SetAttributes();
-    if($this->Request->hasFile('img')){
-      $this->SaveImage();
+    $this->PostValidate($request);
+    $this->SetAttributes($Employee, $request);
+    if($request->hasFile('img')){
+      $this->SaveImage($Employee, $request);
     }
-    $this->Employee->updated_by  = Auth::user()->id;
-    $this->Employee->save();
+    $Employee->updated_by  = Auth::user()->id;
+    $Employee->save();
 
     return redirect('employee')->with([
         'toastrmsg' => [
@@ -144,17 +132,16 @@ class EmployeeController extends Controller
   }
 
   public function AddEmployee(Request $request){
-    $this->Request = $request;
-    $this->PostValidate();
-    $this->Employee = new Employee;
-    $this->SetAttributes();
-    $this->Employee->created_by  = Auth::user()->id;
-    $this->Employee->save();
-    if($this->Request->hasFile('img')){
-      $this->SaveImage();
+    $this->PostValidate($request);
+    $Employee = new Employee;
+    $this->SetAttributes($Employee, $request);
+    $Employee->created_by  = Auth::user()->id;
+    $Employee->save();
+    if($request->hasFile('img')){
+      $this->SaveImage($Employee, $request);
     }
 
-    $this->Employee->save();
+    $Employee->save();
 
     return redirect('employee')->with([
         'toastrmsg' => [
@@ -165,27 +152,27 @@ class EmployeeController extends Controller
       ]);
   }
 
-  protected function SetAttributes(){
-    $this->Employee->name = $this->Request->input('name');
-    $this->Employee->gender = $this->Request->input('gender');
-    $this->Employee->email = $this->Request->input('email');
-    $this->Employee->role = $this->Request->input('role');
-    $this->Employee->qualification = $this->Request->input('qualification');
-    $this->Employee->salary = $this->Request->input('salary');
-    $this->Employee->address = $this->Request->input('address');
-    $this->Employee->relegion = $this->Request->input('relegion');
-    $this->Employee->phone = $this->Request->input('phone');
+  protected function SetAttributes($Employee, $request){
+    $Employee->name = $request->input('name');
+    $Employee->gender = $request->input('gender');
+    $Employee->email = $request->input('email');
+    $Employee->role = $request->input('role');
+    $Employee->qualification = $request->input('qualification');
+    $Employee->salary = $request->input('salary');
+    $Employee->address = $request->input('address');
+    $Employee->relegion = $request->input('relegion');
+    $Employee->phone = $request->input('phone');
   }
 
 
-  protected function SaveImage(){
-    $file = $this->Request->file('img');
-    Storage::delete($this->Employee->img_dir);
+  protected function SaveImage($Employee, $request){
+    $file = $request->file('img');
+    Storage::delete($Employee->img_dir);
     $extension = $file->getClientOriginalExtension();
-    Storage::disk('public')->put('employee/'.$this->Employee->id.'.'.$extension,  File::get($file));
-//    $file = $this->Request->file('img')->storePubliclyAs('images/employee', $this->Employee->id.'.'.$file->getClientOriginalExtension(), 'public');
-    $this->Employee->img_dir = 'public/employee/'.$this->Employee->id.'.'.$extension;
-    $this->Employee->img_url = 'employee/image/'.$this->Employee->id;
+    Storage::disk('public')->put('employee/'.$Employee->id.'.'.$extension,  File::get($file));
+//    $file = $this->Request->file('img')->storePubliclyAs('images/employee', $Employee->id.'.'.$file->getClientOriginalExtension(), 'public');
+    $Employee->img_dir = 'public/employee/'.$Employee->id.'.'.$extension;
+    $Employee->img_url = 'employee/image/'.$Employee->id;
   }
 
 }

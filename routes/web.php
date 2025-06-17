@@ -74,9 +74,16 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::post('/edit/{id}', [TeacherController::class, 'PostEditTeacher'])->name('.edit.post');
 
     });
+
+    Route::prefix('employee')->name('employee')->group(function(){
+        Route::get('/', [EmployeeController::class, 'GetEmployee'])->name('getemployee');
+        Route::get('/image/{id}', [EmployeeController::class, 'GetImage'])->name('.image');
+        Route::get('/profile/{id}', [EmployeeController::class, 'GetProfile'])->name('.profile');
+        Route::get('/edit/{id}', [EmployeeController::class, 'EditEmployee'])->name('.edit');
+        Route::post('/add', [EmployeeController::class, 'AddEmployee'])->name('.add');
+        Route::post('/edit/{id}', [EmployeeController::class, 'PostEditEmployee'])->name('.edit.post');
+    });
     
-    // Route::get('/teacher', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/employee', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/guardian', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/student-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/manage-classes', [DashboardController::class, 'GetDashboard'])->name('dashboard');
