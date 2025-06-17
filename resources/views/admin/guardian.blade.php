@@ -211,9 +211,10 @@
     function loadOptions(data, type, full, meta) {
         opthtm = '<a href="{{ URL('guardians/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
 
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        //Permission will be applied later
+        // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
           opthtm += '<a href="{{ URL('guardians/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
+        //"endif"
 
         return opthtm;
     }
@@ -222,9 +223,9 @@
 
         opthtm = '<a data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
 
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
           opthtm += '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-option eidt-guardian"><span class="fa fa-edit"></span></a>';
-        @endif
+        // "endif"
 
         tbl = $('.dataTables-teacher').DataTable({
           dom: '<"html5buttons"B>lTfgitp',
@@ -323,13 +324,14 @@
         $('.nav-tabs a[href="#tab-10"]').tab('show');
       @endif
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-guardian').hide();
-      @endif
+      //Permission will be applied later
+      // var pc = "Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+      //   $('.add-guardian').hide();
+      //
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-guardian').hide();
-      @endif
+      //var pc = "(Auth-user()-getprivileges-privileges-{$root[content][id]}-edit == 0)"
+      //   $('.edit-guardian').hide();
+      //
 
 
       });

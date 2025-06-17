@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\StudentsController;
 use App\Http\Controllers\Admin\IdcardController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\GuardianController;
+use App\Http\Controllers\Admin\GuardiansController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -66,7 +66,7 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
     });
 
     Route::prefix('teacher')->name('teacher')->group(function(){
-        Route::get('/', [TeacherController::class, 'GetTeacher'])->name('getteacher');
+        Route::get('/', [TeacherController::class, 'GetTeacher'])->name('.index');
         Route::get('/image/{id}', [TeacherController::class, 'GetImage'])->name('.image');
         Route::get('/profile/{id}', [TeacherController::class, 'GetProfile'])->name('.profile');
         Route::get('/edit/{id}', [TeacherController::class, 'EditTeacher'])->name('.edit');
@@ -76,15 +76,22 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
     });
 
     Route::prefix('employee')->name('employee')->group(function(){
-        Route::get('/', [EmployeeController::class, 'GetEmployee'])->name('getemployee');
+        Route::get('/', [EmployeeController::class, 'GetEmployee'])->name('.index');
         Route::get('/image/{id}', [EmployeeController::class, 'GetImage'])->name('.image');
         Route::get('/profile/{id}', [EmployeeController::class, 'GetProfile'])->name('.profile');
         Route::get('/edit/{id}', [EmployeeController::class, 'EditEmployee'])->name('.edit');
         Route::post('/add', [EmployeeController::class, 'AddEmployee'])->name('.add');
         Route::post('/edit/{id}', [EmployeeController::class, 'PostEditEmployee'])->name('.edit.post');
     });
+
+    Route::prefix('guardians')->name('guardian')->group(function(){
+        Route::get('/', [GuardiansController::class, 'GetGuardian'])->name('.index');
+        Route::get('/profile/{id}', [GuardiansController::class, 'GetProfile'])->name('.profile');
+        Route::get('/edit/{id}', [GuardiansController::class, 'EditGuardian'])->name('.edit');
+        Route::post('/add', [GuardiansController::class, 'AddGuardian'])->name('.add');
+        Route::post('/edit/{id}', [GuardiansController::class, 'PostEditGuardian'])->name('.edit.post');
+    });
     
-    Route::get('/guardian', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/student-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/manage-classes', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/manage-sections', [DashboardController::class, 'GetDashboard'])->name('dashboard');
