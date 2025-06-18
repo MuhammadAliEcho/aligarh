@@ -249,10 +249,10 @@
     function loadOptions(data, type, full, meta) {
 
        opthtm = '<a href="{{ URL('vouchers/details') }}/'+full.id+'" data-toggle="tooltip" title="Detail" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-eye"></span></a>';
-
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        //Permission will be applied later
+        //"(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
           opthtm += '<a href="{{ URL('vouchers/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Voucher" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
+        // "endif"
 
         return opthtm;
     }
@@ -393,9 +393,10 @@
       @endif
 
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-voucher').hide();
-      @endif
+      //Permission will be applied later
+      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+      //   $('.add-voucher').hide();
+      // "endif"
 
 
       });

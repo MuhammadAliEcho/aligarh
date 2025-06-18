@@ -254,13 +254,14 @@
         $('a[href="#tab-10"]').tab('show');
       @endif
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-section').hide();
-      @endif
+      //Permission will be applied later
+      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+      //   $('.add-section').hide();
+      // 
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-section').hide();
-      @endif
+      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
+      //   $('.edit-section').hide();
+      //
 
 
       });

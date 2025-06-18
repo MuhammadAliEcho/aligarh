@@ -21,20 +21,21 @@ class StudentAttendanceCtrl extends Controller
 {
 
 	//  protected $Routes;
-	protected $data, $Attendance, $Request, $DateRange, $AcademicSession;
+	// protected $data, $Attendance, $Request, $DateRange, $AcademicSession;
 
-	public function __Construct($Routes, $Request){
-		Carbon::setWeekendDays([
-			Carbon::SUNDAY,
-			Carbon::SATURDAY,
-		]);
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
+	public function __Construct(){
+		// Carbon::setWeekendDays([
+		// 	Carbon::SUNDAY,
+		// 	Carbon::SATURDAY,
+		// ]);
+		// $this->data['root'] = $Routes;
+		// $this->Request = $Request;
 	}
 
 	public function Index(){
-		$this->data['classes'] = Classe::select('id', 'name')->get();
-		foreach ($this->data['classes'] as $key => $class) {
+		$Classe = Classe::select('id', 'name')->get();
+		dd($Classe);
+		foreach ($Classe as $key => $class) {
 			$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
 		}
 		return view('admin.students_attendance', $this->data);

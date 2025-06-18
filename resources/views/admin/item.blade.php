@@ -178,9 +178,10 @@
       opthtm = '';
       //  opthtm = '<a href="{{ URL('items/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
 
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        //Permission will be applied later
+        // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
           opthtm += '<a href="{{ URL('items/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
+        // endif
 
         return opthtm;
     }
@@ -244,9 +245,10 @@
         $('a[href="#tab-10"]').tab('show');
       @endif
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-item').hide();
-      @endif
+      //Permission will be applied later
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+      //   $('.add-item').hide();
+      // "endif"
 
 
       });

@@ -4,14 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentsController;
-use App\Http\Controllers\Admin\IdcardController;
+use App\Http\Controllers\Admin\ManageClasses;
+use App\Http\Controllers\Admin\ManageSections;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\GuardiansController;
-use App\Http\Controllers\Admin\VendorController;
-use App\Http\Controllers\Admin\ItemController;
-use App\Http\Controllers\Admin\VoucherController;
-use App\Http\Controllers\Admin\RoutineController;
+use App\Http\Controllers\Admin\VendorsController;
+use App\Http\Controllers\Admin\ItemsController;
+use App\Http\Controllers\Admin\VouchersController;
+use App\Http\Controllers\Admin\ManageRoutine;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ResultController;
@@ -22,7 +23,7 @@ use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\FeeScenarioController;
 use App\Http\Controllers\Admin\ExamGradeController;
-use App\Http\Controllers\Admin\StudentAttendanceController;
+use App\Http\Controllers\IdcardController;
 use App\Http\Controllers\Admin\TeacherAttendanceController;
 use App\Http\Controllers\Admin\EmployeeAttendanceController;
 /*
@@ -80,8 +81,8 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::get('/image/{id}', [EmployeeController::class, 'GetImage'])->name('.image');
         Route::get('/profile/{id}', [EmployeeController::class, 'GetProfile'])->name('.profile');
         Route::get('/edit/{id}', [EmployeeController::class, 'EditEmployee'])->name('.edit');
-        Route::post('/add', [EmployeeController::class, 'AddEmployee'])->name('.add');
-        Route::post('/edit/{id}', [EmployeeController::class, 'PostEditEmployee'])->name('.edit.post');
+        Route::post('/add', [EmployeeController::class, 'AddEmployee'])->name('.add');#store should be used instead of add
+        Route::post('/edit/{id}', [EmployeeController::class, 'PostEditEmployee'])->name('.edit.post');#put
     });
 
     Route::prefix('guardians')->name('guardian')->group(function(){
@@ -92,26 +93,66 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::post('/edit/{id}', [GuardiansController::class, 'PostEditGuardian'])->name('.edit.post');
     });
     
-    Route::get('/student-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/manage-classes', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/manage-sections', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/vendors', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/items', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/vouchers', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/routines', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/student-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/teacher-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/employee-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/manage-subjects', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/exam', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/manage-result', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/noticeboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/library', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/fee', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/expense', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/users', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/system-setting', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/fee-scenario', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    Route::get('/exam-grades', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    Route::prefix('manage-classes')->name('manage-classes')->group(function(){
+        Route::get('/', [ManageClasses::class, 'GetClasses'])->name('.index');
+        Route::get('/edit/{id}', [ManageClasses::class, 'EditClass'])->name('.edit');
+        Route::post('/add', [ManageClasses::class, 'AddClass'])->name('.add');
+        Route::post('/edit/{id}', [ManageClasses::class, 'PostEditClass'])->name('.edit.post');
+    });
+
+    Route::prefix('manage-sections')->name('manage-sections')->group(function(){
+        Route::get('/', [ManageSections::class, 'GetSections'])->name('.index');
+        Route::get('/edit/{id}', [ManageSections::class, 'EditSection'])->name('.edit');
+        Route::post('/add', [ManageSections::class, 'AddSection'])->name('.add');
+        Route::post('/edit/{id}', [ManageSections::class, 'PostEditSection'])->name('.edit.post');
+    });
+    
+    Route::prefix('vendors')->name('vendors')->group(function(){
+        Route::get('/', [VendorsController::class, 'GetVendor'])->name('.index');
+        Route::get('/edit/{id}', [VendorsController::class, 'EditVendor'])->name('.edit');
+        Route::post('/add', [VendorsController::class, 'AddVendor'])->name('.add');
+        Route::post('/edit/{id}', [VendorsController::class, 'PostEditVendor'])->name('.edit.post');
+
+    });
+
+    Route::prefix('items')->name('items')->group(function(){
+        Route::get('/', [ItemsController::class, 'GetItem'])->name('.index');
+        Route::get('/edit/{id}', [ItemsController::class, 'EditItem'])->name('.edit');
+        Route::post('/add', [ItemsController::class, 'AddItem'])->name('.add');
+        Route::post('/edit/{id}', [ItemsController::class, 'PostEditItem'])->name('.edit.post');
+
+    });
+
+    Route::prefix('vouchers')->name('vouchers')->group(function(){
+        Route::get('/', [VouchersController::class, 'GetVoucher'])->name('.index');
+        Route::get('/edit/{id}', [VouchersController::class, 'EditVoucher'])->name('.edit');
+        Route::get('/details/{id}', [VouchersController::class, 'GetDetails'])->name('.detail');
+        Route::post('/add', [VouchersController::class, 'AddVoucher'])->name('.add');
+        Route::post('/edit/{id}', [VouchersController::class, 'PostEditVoucher'])->name('.edit.post');
+    });
+
+    Route::prefix('routines')->name('routines')->group(function(){
+        Route::get('/', [ManageRoutine::class, 'GetRoutine'])->name('.index');
+        Route::get('/edit/{id}', [ManageRoutine::class, 'EditRoutine'])->name('.edit');
+        Route::post('/delete', [ManageRoutine::class, 'DeleteRoutine'])->name('.delete');
+        Route::post('/add', [ManageRoutine::class, 'AddRoutine'])->name('.add');
+        Route::post('/edit/{id}', [ManageRoutine::class, 'PostEditRoutine'])->name('.edit.post');
+    });
+
+    
+    // Route::get('/student-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/teacher-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/employee-attendance', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/manage-subjects', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/exam', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/manage-result', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/noticeboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/library', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/fee', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/expense', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/users', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/system-setting', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/fee-scenario', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+    // Route::get('/exam-grades', [DashboardController::class, 'GetDashboard'])->name('dashboard');
 
 });

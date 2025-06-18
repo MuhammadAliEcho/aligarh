@@ -170,9 +170,10 @@
     function loadOptions(data, type, full, meta) {
 
         opthtm = '';
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
+        //Permission will be applied later
+        //var pc = "Authuser()->getprivileges->privileges->{$root['content']['id']}->edit)"
           opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Class" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
+        //
 
         return opthtm;
     }
@@ -245,13 +246,14 @@
       @endif
 
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-class').hide();
-      @endif
+      //Permission will be applied later
+      //"Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+      //   $('.add-class').hide();
+      // 
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-class').hide();
-      @endif
+      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
+      //   $('.edit-class').hide();
+      //
 
 
       });

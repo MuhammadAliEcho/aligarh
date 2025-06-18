@@ -418,17 +418,17 @@
         $('a[href="#tab-11"]').tab('show');
       @endif
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-routine-tab').hide();
-      @endif
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+        // $('.add-routine-tab').hide();
+      // "endif"
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-routine').hide();
-      @endif
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
+        // $('.edit-routine').hide();
+      // "endif"
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)
-        $('.delete-routine').hide();
-      @endif
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)"
+        // $('.delete-routine').hide();
+      // "endif"
 
 
       });

@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Yajra\DataTables\Facades\DataTables;
-//use Illuminate\Http\Request;
-use App\Http\Requests;
-use Request;
+use Illuminate\Http\Request;
 use App\Teacher;
 use App\Section;
 use App\Classe;
@@ -15,25 +13,17 @@ use App\Http\Controllers\Controller;
 
 class ManageClasses extends Controller
 {
-
-	//  protected $Routes;
-	protected $data, $Classes, $Request;
-
-	public function __Construct($Routes){
-		$this->data['root'] = $Routes;
-	}
-
-	public function GetClasses(){
-		if(Request::ajax()){
+	public function GetClasses(Request $request){
+		if($request->ajax()){
 			return DataTables::queryBuilder(DB::table('classes')->leftjoin('teachers', 'classes.teacher_id', '=', 'teachers.id')
 																->select('classes.name', 'classes.numeric_name', 'classes.id','teachers.name AS teacher_name')
 																)->make(true);
 		}
-		$this->data['classes'] = DB::table('classes')->leftjoin('teachers', 'classes.teacher_id', '=', 'teachers.id')
+		$data['classes'] = DB::table('classes')->leftjoin('teachers', 'classes.teacher_id', '=', 'teachers.id')
 															->select('classes.*', 'teachers.name AS teacher_name')
 															->get();
-		$this->data['teachers'] = Teacher::select('name', 'id')->get();
-		return view('admin.classes', $this->data);
+		$data['teachers'] = Teacher::select('name', 'id')->get();
+		return view('admin.classes', $data);
 
 /*    $this->data['classes'] = Classe::select('name', 'numeric_name', 'teacher_id', 'id')->teacher()->select('name')->get();
 		foreach ($this->data['classes'] as $key => $class) {
@@ -47,10 +37,10 @@ class ManageClasses extends Controller
 	*/
 	}
 
-	public function EditClass(){
-		$this->data['class'] = Classe::findOrFail($this->data['root']['option']);
+	public function EditClass($id){
+		$data['class'] = Classe::findOrFail($id);
 /*
-		if(Classe::where('id', $this->data['root']['option'])->count() == 0){
+		if(Classe::where('id', $id)->count() == 0){
 		return  redirect('manage-classes')->with([
 				'toastrmsg' => [
 					'type' => 'warning', 
@@ -59,13 +49,13 @@ class ManageClasses extends Controller
 					]
 			]);
 		}
-*///    $this->data['class'] = Classe::find($this->data['root']['option']);
-		$this->data['teachers'] = Teacher::select('name', 'id')->get();
-		return view('admin.edit_class', $this->data);
+*///    $data['class'] = Classe::find($id);
+		$data['teachers'] = Teacher::select('name', 'id')->get();
+		return view('admin.edit_class', $data);
 	}
 
-	protected function PostValidate(){
-		$this->validate($this->Request, [
+	protected function PostValidate($request){
+		$this->validate($request, [
 				'name'  =>  'required',
 				'numeric_name'  =>  'required',
 				'prifix'  =>  'required',
@@ -73,17 +63,16 @@ class ManageClasses extends Controller
 		]);
 	}
 
-	public function AddClass($request){
+	public function AddClass(Request $request){
 
-		$this->Request = $request;
-		$this->PostValidate();
-		$this->Classes = new Classe;
-		$this->SetAttributes();
-		$this->Classes->created_by = Auth::user()->id;
-		$this->Classes->save();
+		$this->PostValidate($request);
+		$Classes = new Classe;
+		$this->SetAttributes($Classes, $request);
+		$Classes->created_by = Auth::user()->id;
+		$Classes->save();
 
 		$Section  = new Section;
-		$Section->AddDefaultSection($this->Classes->id, $this->Classes->teacher_id);
+		$Section->AddDefaultSection($Classes->id, $Classes->teacher_id);
 
 		return redirect('manage-classes')->with([
 				'toastrmsg' => [
@@ -95,12 +84,11 @@ class ManageClasses extends Controller
 
 	}
 
-	public function PostEditClass($request){
+	public function PostEditClass(Request $request, $id){
 
-		$this->Request = $request;
-		$this->PostValidate();
+		$this->PostValidate($request);
 
-		if(Classe::where('id', $this->data['root']['option'])->count() == 0){
+		if(Classe::where('id', $id)->count() == 0){
 		return  redirect('manage-classes')->with([
 				'toastrmsg' => [
 					'type' => 'warning', 
@@ -110,11 +98,11 @@ class ManageClasses extends Controller
 			]);
 		}
 
-		$this->Classes = Classe::find($this->data['root']['option']);
+		$Classes = Classe::find($id);
 
-		$this->SetAttributes();
-		$this->Classes->updated_by = Auth::user()->id;
-		$this->Classes->save();
+		$this->SetAttributes($Classes, $request);
+		$Classes->updated_by = Auth::user()->id;
+		$Classes->save();
 
 		return redirect('manage-classes')->with([
 				'toastrmsg' => [
@@ -125,11 +113,11 @@ class ManageClasses extends Controller
 			]);
 	}
 
-	protected function SetAttributes(){
-		$this->Classes->name = $this->Request->input('name');
-		$this->Classes->numeric_name = $this->Request->input('numeric_name');
-		$this->Classes->teacher_id = $this->Request->input('teacher');
-		$this->Classes->prifix = $this->Request->input('prifix');
+	protected function SetAttributes($Classes, $request){
+		$Classes->name = $request->input('name');
+		$Classes->numeric_name = $request->input('numeric_name');
+		$Classes->teacher_id = $request->input('teacher');
+		$Classes->prifix = $request->input('prifix');
 	}
 
 
