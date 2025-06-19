@@ -251,11 +251,12 @@
         $('a[href="#tab-10"]').tab('show');
       @endif
 
+      //Permission will be applied later
       // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
       //   $('.add-subject').hide();
       // "endif"
 
-      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
+      // "student_migrations(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
       //   $('.edit-subject').hide();
       //"endif"
 

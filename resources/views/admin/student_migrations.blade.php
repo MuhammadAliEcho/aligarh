@@ -260,7 +260,7 @@
 
 				to_class: {},
 
-				students:	{!! $students OR 'false' !!},
+				students:	{!! $students ?? 'false' !!},
 
 			},
 			computed: {

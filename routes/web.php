@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\StudentAttendanceCtrl;
 use App\Http\Controllers\Admin\TeacherAttendanceCtrl;
 use App\Http\Controllers\Admin\EmployeeAttendanceCtrl;
 use App\Http\Controllers\Admin\ManageSubjects;
+use App\Http\Controllers\Admin\StudentMigrationsController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ResultController;
 use App\Http\Controllers\Admin\NoticeboardController;
@@ -163,13 +164,18 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::post('/make', [EmployeeAttendanceCtrl::class, 'UpdateAttendance'])->name('.make.post');
     });
 
-    Route::prefix('manage-subjects')->name('employee-attendance')->group(function(){
+    Route::prefix('manage-subjects')->name('manage-subjects')->group(function(){
         Route::get('/', [ManageSubjects::class, 'GetSubject'])->name('.index');
         Route::get('/edit/{id}', [ManageSubjects::class, 'EditSubject'])->name('.edit');
         Route::post('/add', [ManageSubjects::class, 'AddSubject'])->name('.add');
         Route::post('/edit/{id}', [ManageSubjects::class, 'PostEditSubject'])->name('.edit.post');
     });
-    // Route::get('/manage-subjects', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+
+    Route::prefix('student-migrations')->name('student-migrations')->group(function(){
+        Route::get('/', [StudentMigrationsController::class, 'Index'])->name('.index');
+        Route::get('/students', [StudentMigrationsController::class, 'GetStudents'])->name('.create');
+        Route::post('/create', [StudentMigrationsController::class, 'PostMigration'])->name('.create.post');
+    });
     // Route::get('/exam', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     // Route::get('/manage-result', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     // Route::get('/noticeboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
