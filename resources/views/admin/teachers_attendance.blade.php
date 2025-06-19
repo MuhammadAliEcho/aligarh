@@ -75,7 +75,7 @@
 
                                     </form>
 
-                                    @if($root['job'] == 'make')
+                                    @if($root == 'make')
                                     <div class="row">
                                       <h3>Teachers Attendance Date: ({{ $input['date'] }})</h3>
                                       <div class="hr-line-dashed"></div>
@@ -154,7 +154,7 @@
 
                                     </form>
 
-                                    @if($root['job'] == 'report')
+                                    @if($root == 'report')
                                     <div class="row">
                                     <h3>Teachers Attendance Date: ({{ $input['date'] }})</h3>
                                       <div class="hr-line-dashed"></div>
@@ -221,13 +221,13 @@
           $('.selectAtt').prop('checked', $(this).prop("checked"));
         });
 
-        @if($root['job'] == 'report')
+        @if($root == 'report')
           $('#rpt_att_frm [name="date"]').val("{{ $input['date'] }}");
-        @elseif($root['job'] == 'make')
+        @elseif($root == 'make')
           $('#mk_att_frm [name="date"]').val("{{ $input['date'] }}");
         @endif
 
-      @if($root['job'] == 'report')
+      @if($root == 'report')
         attendancerpt = {!! json_encode($attendance) !!};
         // console.log(attendancerpt);
         $.each(attendancerpt, function(k, v){
@@ -287,13 +287,12 @@
 
             });
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->make == 0)
-        $('.make-attendance').hide();
-      @endif
+      //Permission will be applied later
+      // "Auth::user()->getprivileges->privileges->{$root['content']['id']}->make == 0)"
+        // $('.make-attendance').hide();
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->report == 0)
-        $('.get-attendance').hide();
-      @endif
+      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->report == 0)"
+        // $('.get-attendance').hide();
 
       });
     </script>

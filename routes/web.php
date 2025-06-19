@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ItemsController;
 use App\Http\Controllers\Admin\VouchersController;
 use App\Http\Controllers\Admin\ManageRoutine;
 use App\Http\Controllers\Admin\StudentAttendanceCtrl;
+use App\Http\Controllers\Admin\TeacherAttendanceCtrl;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ResultController;
@@ -145,6 +146,13 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::get('/make', [StudentAttendanceCtrl::class, 'MakeAttendance'])->name('.make');
         Route::get('/report', [StudentAttendanceCtrl::class, 'AttendanceReport'])->name('.report');
         Route::post('/make', [StudentAttendanceCtrl::class, 'UpdateAttendance'])->name('.make.post');
+    });
+
+    Route::prefix('teacher-attendance')->name('student-attendance')->group(function(){
+        Route::get('/', [TeacherAttendanceCtrl::class, 'Index'])->name('.index');
+        Route::get('/make', [TeacherAttendanceCtrl::class, 'MakeAttendance'])->name('.make');
+        Route::get('/report', [TeacherAttendanceCtrl::class, 'AttendanceReport'])->name('.report');
+        Route::post('/make', [TeacherAttendanceCtrl::class, 'UpdateAttendance'])->name('.make.post');
     });
 
     
