@@ -243,14 +243,14 @@
             });
 
           });
+      //Permission will be applied later
+      //"(Auth::user()->getprivileges->privileges->{$root['content']['id']}->create == 0)"
+        //$('.make-notice').hide();
+      //endif
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->create == 0)
-        $('.make-notice').hide();
-      @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)
-        $('.delete-notice').hide();
-      @endif
+      //"(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)"
+        //$('.delete-notice').hide();
+      //"endif"
 
       });
     </script>

@@ -21,7 +21,7 @@ use App\Http\Controllers\Admin\StudentMigrationsController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ManageStudentResultCtrl;
 use App\Http\Controllers\Admin\LibraryController;
-use App\Http\Controllers\Admin\NoticeboardController;
+use App\Http\Controllers\Admin\NoticeBoardCtrl;
 use App\Http\Controllers\Admin\FeeController;
 use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\SystemSettingController;
@@ -198,7 +198,12 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::get('/edit/{id}', [LibraryController::class, 'EditBook'])->name('.edit');
         Route::post('/add', [LibraryController::class, 'AddBook'])->name('.add');
         Route::post('/edit/{id}', [LibraryController::class, 'PostEditBook'])->name('.edit.post');  
+    });
 
+    Route::prefix('noticeboard')->name('noticeboard')->group(function(){
+        Route::get('/', [NoticeBoardCtrl::class, 'Index'])->name('.index');
+        Route::post('/create', [NoticeBoardCtrl::class, 'CreateNotice'])->name('.create');
+        Route::post('/delete', [NoticeBoardCtrl::class, 'DeleteNotice'])->name('.delete');
     });
     // Route::get('/noticeboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     // Route::get('/fee', [DashboardController::class, 'GetDashboard'])->name('dashboard');
