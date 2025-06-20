@@ -110,7 +110,7 @@
 
 									</form>
 
-									@if($root['job'] == 'make')
+									@if($root == 'make')
 									<div class="row">
 										<form v-if="SavedResultId > 0" id="SavedResultRemoveForm" method="POST" action="{{ URL('manage-result/remove') }}">
 											{{ csrf_field() }}
@@ -242,7 +242,7 @@
 
 									</form>
 
-									@if($root['job'] == 'resultattributes')
+									@if($root == 'resultattributes')
 									@if($subject_result->count())
 									<div class="row">
 										<div id="result_attributes">
@@ -370,42 +370,43 @@
 		$('[name="class"]').val("{{ $input['class'] }}");
 		$('[name="class"]').change();
 		$('[name="exam"]').val("{{ $input['exam'] }}");
-		@if($root['job'] == 'make')
+		@if($root == 'make')
 		$('select[name="subject"]').val("{{ $input['subject'] }}");
 		@endif
 	  @endif
 
 
-		@if($root['job'] == 'resultattributes')
+		@if($root == 'resultattributes')
 			$('.nav-tabs a[href="#tab-11"]').tab('show');
 		@else
 			$('.nav-tabs a[href="#tab-10"]').tab('show');
 		@endif
 
+	//Permission will be applied later
+	//   "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->make == 0)"
+	// 		$('.make-result').hide();
+	//   "endif"
 
-	  @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->make == 0)
-		$('.make-result').hide();
-	  @endif
-
-	  @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->resultattributes == 0)
-		$('.get-result').hide();
-	  @endif
+	//   "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->resultattributes == 0)"
+	// 		$('.get-result').hide();
+	//   "endif"
 
 	  });
 	</script>
 
 	@endsection
 
-	@if($root['job'] == 'make')
+	@if($root == 'make')
 	@section('vue')
 	<script type="text/javascript">
 		var app = new Vue({
 			el:	'#app',
 			data:	{
 				students: {!! json_encode($students) !!},
-				ResutlAttributes: {!! (COUNT($result_attribute) > 0)? json_encode($result_attribute->attributes, JSON_NUMERIC_CHECK) : json_encode([['name'=>'','marks'=>0]]) !!},
-				@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->remove)
-					SavedResultId: {{ $result_attribute->id or 0 }},
+				ResutlAttributes: 	{!! (!empty($result_attribute?->attributes))? json_encode($result_attribute->attributes, JSON_NUMERIC_CHECK): json_encode([['name'=>'','marks'=>0]])!!},
+				// (Auth::user()->getprivileges->privileges->{$root['content']['id']}->remove)
+				@if(isset($result_attribute))
+					SavedResultId: {{ $result_attribute->id ?? 0 }},
 				@else
 					SavedResultId: 0,
 				@endif

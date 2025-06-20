@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\EmployeeAttendanceCtrl;
 use App\Http\Controllers\Admin\ManageSubjects;
 use App\Http\Controllers\Admin\StudentMigrationsController;
 use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Admin\ManageStudentResultCtrl;
 use App\Http\Controllers\Admin\ResultController;
 use App\Http\Controllers\Admin\NoticeboardController;
 use App\Http\Controllers\Admin\LibraryController;
@@ -183,7 +184,15 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::post('/add', [ExamController::class, 'AddExam'])->name('.add');
         Route::post('/edit/{id}', [ExamController::class, 'PostEditExam'])->name('.edit.post');
     });
-    // Route::get('/manage-result', [DashboardController::class, 'GetDashboard'])->name('dashboard');
+
+    Route::prefix('manage-result')->name('manage-result')->group(function(){
+        Route::get('/', [ManageStudentResultCtrl::class, 'Index'])->name('.index');
+        Route::get('/make', [ManageStudentResultCtrl::class, 'MakeResult'])->name('.make');
+        Route::get('/resultattributes', [ManageStudentResultCtrl::class, 'ResultAttributes'])->name('.attributes');
+        Route::get('/maketranscript', [ManageStudentResultCtrl::class, 'MakeTranscript'])->name('.maketranscript');
+        Route::post('/maketranscript', [ManageStudentResultCtrl::class, 'SaveTranscript'])->name('.maketranscript.create');
+        Route::post('/make', [ManageStudentResultCtrl::class, 'UpdateResult'])->name('.result');
+    });
     // Route::get('/noticeboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     // Route::get('/library', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     // Route::get('/fee', [DashboardController::class, 'GetDashboard'])->name('dashboard');

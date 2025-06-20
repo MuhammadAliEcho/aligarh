@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-use Request;
-use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Exam;
 use App\Classe;
 use App\Subject;
@@ -20,38 +19,29 @@ use Validator;
 
 class ManageStudentResultCtrl extends Controller
 {
-
-	//  protected $Routes;
-	protected $data, $Result, $Request, $Input;
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
-		$this->Input = $Request->input();
-	}
-
-	public function Index(){
-		$this->data['exams'] = Exam::Active()->CurrentSession()->get();
-		$this->data['classes'] = Classe::select('id', 'name')->get();
-		foreach ($this->data['classes'] as $key => $class) {
-			$this->data['subjects']['class_'.$class->id] = Subject::select('name', 'id')->where(['class_id' => $class->id])->Examinable()->get();
+	public function Index(array $data = [], $job = ''){
+		$data['exams'] = Exam::Active()->CurrentSession()->get();
+		$data['classes'] = Classe::select('id', 'name')->get();
+		foreach ($data['classes'] as $key => $class) {
+			$data['subjects']['class_'.$class->id] = Subject::select('name', 'id')->where(['class_id' => $class->id])->Examinable()->get();
 		}
-		return view('admin.manage_result', $this->data);
+		$data['root'] = $job;
+		return view('admin.manage_result', $data);
 	}
 
-	public function MakeResult(){
+	public function MakeResult(Request $request){
 
-		$this->validate($this->Request, [
+		$this->validate($request, [
 			'exam'  	=>  'required',
 			'class'  	=>  'required|numeric',
 			'subject'  	=>  'required',
 		]);
 
-//		$dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
+		//$dbdate =	Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
 
-		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->where('id', $this->Request->input('exam'))->first();
+		$data['selected_exam'] = Exam::Active()->CurrentSession()->where('id', $request->input('exam'))->first();
 
-		if($this->data['selected_exam'] == null){
+		if($data['selected_exam'] == null){
 			return redirect('manage-result')->withInput()->with([
 				'toastrmsg' => [
 								'type'	=> 'error',
@@ -61,26 +51,26 @@ class ManageStudentResultCtrl extends Controller
 			]);
 		}
 
-		$this->data['selected_class'] = Classe::find($this->Request->input('class'));
-		$this->data['selected_subject'] = Subject::find($this->Request->input('subject'));
-		$this->data['result_attribute']	=	SubjectResultAttribute::where([
-													'exam_id'	=>	$this->Input['exam'],
-													'subject_id'	=>	$this->Input['subject']
+		$data['selected_class'] = Classe::find($request->input('class'));
+		$data['selected_subject'] = Subject::find($request->input('subject'));
+		$data['result_attribute']	=	SubjectResultAttribute::where([
+													'exam_id'	=>	$request['exam'],
+													'subject_id'	=>	$request['subject']
 												])->first();
 
-		$this->data['students']	=	Student::select('id', 'name', 'gr_no')->where(['class_id' => $this->Input['class']])->CurrentSession()->Active()->orderBy('name');
+		$data['students']	=	Student::select('id', 'name', 'gr_no')->where(['class_id' => $request['class']])->CurrentSession()->Active()->orderBy('name');
 
-		if ($this->data['result_attribute']) {
-			$this->data['students']->with(['StudentSubjectResult' => function($query){
+		if ($data['result_attribute']) {
+			$data['students']->with(['StudentSubjectResult' => function($query) use ($data) {
 				$query->where([
-					'subject_result_attribute_id'	=>	$this->data['result_attribute']->id
+					'subject_result_attribute_id'	=>	$data['result_attribute']->id
 				]);
 			}]);
 		}
 
-		$this->data['students']	=	$this->data['students']->get();
+		$data['students']	=	$data['students']->get();
 
-		if($this->data['students']->isEmpty()){
+		if($data['students']->isEmpty()){
 			return redirect('manage-result')->withInput()->with([
 				'toastrmsg' => [
 								'type'	=> 'error',
@@ -90,14 +80,14 @@ class ManageStudentResultCtrl extends Controller
 			]);
 		}
 
-		$this->data['input'] = $this->Request->input();
-
-		return $this->Index();
+		$data['input'] = $request->input();
+		$job = 'make';
+		return $this->Index($data, $job);
 
 	}
 
-	public function UpdateResult(){
-		$this->validate($this->Request, [
+	public function UpdateResult(Request $request){
+		$this->validate($request, [
 			'exam'  	=>  'required',
 			'subject'  	=>  'required',
 			'total_marks'  	=>  'required',
@@ -105,23 +95,23 @@ class ManageStudentResultCtrl extends Controller
 			'attributes'  	=>  'required',
 		]);
 
-		// $dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
+		// $dbdate =	Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
 
 		$result_attribute = SubjectResultAttribute::updateOrCreate([
-								'subject_id'	=>	$this->Request->input('subject'),
-								'class_id'		=>	$this->Request->input('class'),
-								'exam_id'		=>	$this->Request->input('exam'),
+								'subject_id'	=>	$request->input('subject'),
+								'class_id'		=>	$request->input('class'),
+								'exam_id'		=>	$request->input('exam'),
 							],
 							[
-								'total_marks'		=>	$this->Request->input('total_marks'),
-								'attributes'		=>	$this->Request->input('attributes'),
+								'total_marks'		=>	$request->input('total_marks'),
+								'attributes'		=>	$request->input('attributes'),
 							]);
 
-		foreach($this->Input['students'] as $k => $student) {
+		foreach($request['students'] as $k => $student) {
 
 			$ExamRemark 	=	ExamRemark::firstOrCreate([
-					'exam_id'	=>	$this->Request->input('exam'),
-					'class_id'	=>	$this->Request->input('class'),
+					'exam_id'	=>	$request->input('exam'),
+					'class_id'	=>	$request->input('class'),
 					'student_id'	=>	$k,
 				]
 			);
@@ -133,8 +123,8 @@ class ManageStudentResultCtrl extends Controller
 				'exam_remark_id' => $ExamRemark->id,
 			],
 			[
-				'subject_id'	=>	$this->Request->input('subject'),
-				'exam_id'		=>	$this->Request->input('exam'),
+				'subject_id'	=>	$request->input('subject'),
+				'exam_id'		=>	$request->input('exam'),
 				'obtain_marks'	=>	$this->MakeObtainMarks($student['obtain_marks']),
 				'total_obtain_marks'	=>	$obtain_marks->sum('marks'),
 			]);
@@ -171,16 +161,16 @@ class ManageStudentResultCtrl extends Controller
 								]); 
 	}
 
-	public function ResultAttributes(){
-		$this->validate($this->Request, [
+	public function ResultAttributes(Request $request){
+		$this->validate($request, [
 			'exam'  	=>  'required',
 			'class'  	=>  'required',
 		]);
 
-		$this->data['input'] = $this->Request->input();
-		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->where('id', $this->Request->input('exam'))->first();
+		$data['input'] = $request->input();
+		$data['selected_exam'] = Exam::Active()->CurrentSession()->where('id', $request->input('exam'))->first();
 
-		if($this->data['selected_exam'] == null){
+		if($data['selected_exam'] == null){
 			return redirect('manage-result')->withInput()->with([
 				'toastrmsg' => [
 								'type'	=> 'error',
@@ -190,24 +180,25 @@ class ManageStudentResultCtrl extends Controller
 			]);
 		}
 
-		$this->data['selected_class'] = Classe::findOrFail($this->Request->input('class'));
+		$data['selected_class'] = Classe::findOrFail($request->input('class'));
 
-		$this->data['subject_result']	=	SubjectResultAttribute::where(['exam_id' => $this->data['selected_exam']->id, 'class_id' => $this->data['selected_class']->id])->with('Subject')->get();
+		$data['subject_result']	=	SubjectResultAttribute::where(['exam_id' => $data['selected_exam']->id, 'class_id' => $data['selected_class']->id])->with('Subject')->get();
 
-		return $this->Index();
+		$job = 'resultattributes';
+		return $this->Index($data, $job);
 	}
 
-	public function MakeTranscript(){
+	public function MakeTranscript(Request $request){
 
-		$this->validate($this->Request, [
+		$this->validate($request, [
 			'exam'  	=>  'required',
 			'class'  	=>  'required',
 		]);
 
-		$this->data['input'] = $this->Request->input();
-		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->where('id', $this->Request->input('exam'))->first();
+		$data['input'] = $request->input();
+		$data['selected_exam'] = Exam::Active()->CurrentSession()->where('id', $request->input('exam'))->first();
 
-		if($this->data['selected_exam'] == null){
+		if($data['selected_exam'] == null){
 			return redirect('manage-result')->withInput()->with([
 				'toastrmsg' => [
 								'type'	=> 'error',
@@ -217,25 +208,25 @@ class ManageStudentResultCtrl extends Controller
 			]);
 		}
 
-		$this->data['selected_class'] = Classe::findOrFail($this->Request->input('class'));
+		$data['selected_class'] = Classe::findOrFail($request->input('class'));
 
-		$this->data['transcripts'] = ExamRemark::where([
-			'exam_id'	=>	$this->data['selected_exam']->id,
-			'class_id'	=>	$this->data['selected_class']->id,
+		$data['transcripts'] = ExamRemark::where([
+			'exam_id'	=>	$data['selected_exam']->id,
+			'class_id'	=>	$data['selected_class']->id,
 		])->with(['Student'	=>	function($qry){
 			$qry->select('id', 'name', 'gr_no', 'father_name');
 		}])->with(['StudentResult'	=>	function($qry){
 			$qry->with('Subject')->with('SubjectResultAttribute');
 		}])->get();
 
-		return view('admin.make_transcript', $this->data);
+		return view('admin.make_transcript', $data);
 	}
 
-	public function SaveTranscript(){
+	public function SaveTranscript(Request $request){
 
-		if($this->Request->ajax()){
+		if($request->ajax()){
 
-			$validator = Validator::make($this->Request->all(), [
+			$validator = Validator::make($request->all(), [
 				'id' => 'required',
 			]);
 
@@ -247,8 +238,8 @@ class ManageStudentResultCtrl extends Controller
 				];
 			}
 
-			$ExamRemark = ExamRemark::findOrFail($this->Request->input('id'));
-			$ExamRemark->remarks = $this->Request->input('remarks');
+			$ExamRemark = ExamRemark::findOrFail($request->input('id'));
+			$ExamRemark->remarks = $request->input('remarks');
 			$ExamRemark->save();
 		
 			return	[
