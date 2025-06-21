@@ -28,9 +28,10 @@ use App\Http\Controllers\Admin\SmsController;
 use App\Http\Controllers\Admin\SeatsReportController;
 use App\Http\Controllers\Admin\FeeCollectionReportController;
 use App\Http\Controllers\Admin\ExamReportController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\FeeScenarioController;
-use App\Http\Controllers\Admin\ExamGradeController;
+use App\Http\Controllers\Admin\ExamGradesController;
 use App\Http\Controllers\IdcardController;
 use App\Http\Controllers\Admin\TeacherAttendanceController;
 use App\Http\Controllers\Admin\EmployeeAttendanceController;
@@ -244,9 +245,25 @@ Route::group(['middleware' => ['auth', 'auth.active']], function(){
         Route::post('/average-result', [ExamReportController::class, 'AverageResult'])->name('.averageresult');
         Route::post('/result-transcript', [ExamReportController::class, 'ResultTranscript'])->name('.resulttranscript');
     });
-    // Route::get('/users', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    // Route::get('/system-setting', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    // Route::get('/fee-scenario', [DashboardController::class, 'GetDashboard'])->name('dashboard');
-    // Route::get('/exam-grades', [DashboardController::class, 'GetDashboard'])->name('dashboard');
 
+    Route::prefix('users')->name('users')->group(function(){
+        Route::get('/', [UsersController::class, 'GetUsers'])->name('.index');
+    });
+
+    Route::prefix('system-setting')->name('system-setting')->group(function(){
+        Route::get('/', [SystemSettingController::class, 'GetSetting'])->name('.index');
+        Route::get('/print-invoice-history', [SystemSettingController::class, 'PrintInvoiceHistory'])->name('.printinvoicehistory');
+        Route::post('/update', [SystemSettingController::class, 'UpdateSetting'])->name('.update');
+        Route::post('/history', [SystemSettingController::class, 'History'])->name('.history');
+    });
+
+    Route::prefix('fee-scenario')->name('fee-scenario')->group(function(){
+        Route::get('/', [FeeScenarioController::class, 'Index'])->name('.index');
+        Route::post('/update', [FeeScenarioController::class, 'UpdateScenario'])->name('.updatescenario');
+    });
+
+    Route::prefix('exam-grades')->name('exam-grades')->group(function(){
+        Route::get('/', [ExamGradesController::class, 'Index'])->name('dashboard');
+        Route::post   ('/update', [ExamGradesController::class, 'UpdateGrade'])->name('dashboard');
+    });
 });

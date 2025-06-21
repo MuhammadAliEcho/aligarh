@@ -10,31 +10,22 @@ use PDF;
 
 class SystemSettingController extends Controller
 {
-
-	protected $data, $Request;
-
-	public function __Construct($Routes, Request $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
-	}
-
-
 	public function GetSetting(){
-		$this->data['system_invoices']	=	SystemInvoice::all();
-		return view('admin.system_setting', $this->data);
+		$data['system_invoices']	=	SystemInvoice::all();
+		return view('admin.system_setting', $data);
 	}
 
 	public function PrintInvoiceHistory(){
-		$this->data['system_invoices']	=	SystemInvoice::all();
-		$pdf = PDF::loadView('admin.printable.system_invoice_history', $this->data)->setPaper('a4');
+		$data['system_invoices']	=	SystemInvoice::all();
+		$pdf = PDF::loadView('admin.printable.system_invoice_history', $data)->setPaper('a4');
 		return $pdf->stream('invoice-history-2018.pdf');
-//		return $pdf->download('invoice-history-2018.pdf');
-//		return view('admin.printable.system_invoice_history', $this->data);
+		//return $pdf->download('invoice-history-2018.pdf');
+		//return view('admin.printable.system_invoice_history', $data);
 	}
 
 	public function UpdateSetting(Request $request){
 
-		$this->validate($this->Request, [
+		$this->validate($request, [
 			'name'  =>  'required',
 			'title'  =>  'required',
 			'email'  =>  'nullable|email',
