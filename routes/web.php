@@ -33,8 +33,7 @@ use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\FeeScenarioController;
 use App\Http\Controllers\Admin\ExamGradesController;
 use App\Http\Controllers\IdcardController;
-use App\Http\Controllers\Admin\TeacherAttendanceController;
-use App\Http\Controllers\Admin\EmployeeAttendanceController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,8 +54,7 @@ Route::group(['middleware' => 'guest'], function(){
 
 Route::group(['middleware' => ['auth', 'auth.active']], function(){
 
-    Route::get('id-card/student', "IdcardController@StudentIdcard");
-
+    Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
     Route::get('/', [DashboardController::class, 'GetDashboard'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
 
