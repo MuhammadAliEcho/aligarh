@@ -19,3 +19,15 @@ if (!function_exists('isActiveRoute')) {
         return $current === $routes ? $output : '';
     }
 }
+
+if (!function_exists('canAny')) {
+    function canAny($permissions) {
+        return collect($permissions)->some(fn($permission) => auth()->user()->can($permission));
+    }
+}
+
+if (!function_exists('canAll')) {
+    function canAll($permissions) {
+        return collect($permissions)->every(fn($permission) => auth()->user()->can($permission));
+    }
+}

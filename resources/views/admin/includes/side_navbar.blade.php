@@ -23,10 +23,12 @@
                     SMS
                 </div>
             </li>
+            @can('dashboard')
             <li class="{{ isActiveRoute('dashboard') }}">
                 <a href="{{ URL('dashboard') }}" data-root="dashboard"><i class="fa fa-th-large"></i> <span
                         class="nav-label">Dashboard</span></a>
             </li>
+            @endcan
             @can('students.index')
             <li class="{{ isActiveRoute('students.index') }}">
                 <a href="{{ route('students.index') }}" data-root="{{ Route::currentRouteName() }}"><i
@@ -51,6 +53,7 @@
                         class="nav-label"></span>Guardians</a>
             </li>
             @endcan
+            @if (canAny(['manage-classes.index', 'manage-sections.index']))
             <li class="{{ isActiveRoute('manage-*') }}">
                 <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Class</a>
@@ -67,6 +70,8 @@
                     @endcan
                 </ul>
             </li>
+            @endif
+            @if (canAny(['vendors.index', 'items.index', 'vouchers.index']))
             <li class="{{ isActiveRoute(['vendors.index', 'items.index', 'vouchers.index']) }}">
                 <a href="#"><i class="fa fa-cubes"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Inventory</a>
@@ -88,12 +93,14 @@
                     @endcan
                 </ul>
             </li>
+            @endif
             @can('routines.index')
             <li class="{{ isActiveRoute('routines.index') }}">
                 <a href="{{ route('routines.index') }}" data-root=""><i class="entypo-target"></i> <span
                         class="nav-label"></span>Class Routine</a>
             </li>
             @endcan
+            @if (canAny(['student-attendance.index', 'teacher-attendance.index', 'employee-attendance.index']))
             <li class="{{ isActiveRoute('*attendance*') }}">
                 <a href="#"><i class="fa fa-bar-chart"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Daily Attendance</a>
@@ -115,6 +122,7 @@
                     @endcan
                 </ul>
             </li>
+            @endif
             @can('manage-subjects.index')
             <li class="{{ isActiveRoute('manage-subjects.index') }}">
                 <a href="{{ route('manage-subjects.index') }}" data-root=""><i class="entypo-docs"></i> <span
@@ -128,6 +136,7 @@
                     Migrations</a>
             </li>
             @endcan
+            @if (canAny(['exam.index', 'manage-result.index']))
             <li class="{{ isActiveRoute('exam*') }}">
                 <a href="#"><i class="fa fa-graduation-cap"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Exam</a>
@@ -144,6 +153,7 @@
                     @endcan
                 </ul>
             </li>
+            @endif
             @can('library.index')
             <li class="{{ isActiveRoute('library.index') }}">
                 <a href="{{ route('library.index') }}" data-root=""><i class="fa fa-book"></i> <span
@@ -156,6 +166,7 @@
                         class="nav-label"></span>Noticeboard</a>
             </li>
             @endcan
+            @if (canAny(['fee.index', 'expense.index']))
             <li class="{{ isActiveRoute(['fee.index', 'expense.index']) }}">
                 <a href="#"><i class="entypo-suitcase"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Accounting</a>
@@ -172,12 +183,14 @@
                     @endcan
                 </ul>
             </li>
+            @endif
             @can('smsnotifications.index')
             <li class="{{ isActiveRoute('smsnotifications.index') }}">
                 <a href="{{ route('smsnotifications.index') }}" data-root=""><i class="fa fa-paper-plane"></i>
                     <span class="nav-label"></span>SMS Notifications</a>
             </li>
             @endcan
+            @if (canAny(['seatsreport', 'fee-collection-reports.index', 'exam-reports.index']))
             <li class="{{ isActiveRoute(['seatsreport', '*reports*']) }}">
                 <a href="#"><i class="fa fa-file"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Report</a>
@@ -199,6 +212,8 @@
                     @endcan
                 </ul>
             </li>
+            @endif
+            @if (canAny(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index']))
             <li
                 class="{{ isActiveRoute(['users.index', 'roles.index', 'system-setting.index', 'fee-scenario.index', 'exam-grades.index']) }}">
                 <a href="#"><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span
@@ -231,6 +246,7 @@
                     @endcan
                 </ul>
             </li>
+            @endif
         </ul>
 
     </div>
