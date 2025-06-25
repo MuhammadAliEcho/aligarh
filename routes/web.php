@@ -54,7 +54,7 @@ Route::group(['middleware' => 'guest'], function(){
 	Route::post('login', [UserController::class, 'PostLogin'])->name('login.post');
 });
 
-Route::group(['middleware' => ['auth', 'auth.active']], function(){
+Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], function(){
 
     Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
     Route::get('/', [DashboardController::class, 'GetDashboard']);
