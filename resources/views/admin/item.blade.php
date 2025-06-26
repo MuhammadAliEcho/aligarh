@@ -44,9 +44,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Items</a>
                             </li>
+                            @can('items.add')
                             <li class="add-item">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Items</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade ">
@@ -179,11 +181,9 @@
 
       opthtm = '';
       //  opthtm = '<a href="{{ URL('items/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
-
-        //Permission will be applied later
-        // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
-          opthtm += '<a href="{{ URL('items/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        // endif
+      @can('items.edit.post')
+      opthtm += '<a href="{{ URL('items/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+      @endcan    
 
         return opthtm;
     }

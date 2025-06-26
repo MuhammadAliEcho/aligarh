@@ -100,22 +100,22 @@
                         class="nav-label"></span>Class Routine</a>
             </li>
             @endcan
-            @if (canAny(['student-attendance.index', 'teacher-attendance.index', 'employee-attendance.index']))
+            @if (canAny(['student-attendance.make.post', 'teacher-attendance.make.post', 'employee-attendance.make.post']))
             <li class="{{ isActiveRoute('*attendance*') }}">
                 <a href="#"><i class="fa fa-bar-chart"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Daily Attendance</a>
                 <ul class="nav nav-second-level collapse">
-                    @can('student-attendance.index')
+                    @can('student-attendance.make.post')
                     <li class="{{ isActiveRoute('student-attendance.index') }}" data-show="">
                         <a href="{{ route('student-attendance.index') }}">Student Attendance</a>
                     </li>
                     @endcan
-                    @can('teacher-attendance.index')
+                    @can('teacher-attendance.make.post')
                     <li class="{{ isActiveRoute('teacher-attendance.index') }}" data-show="">
                         <a href="{{ route('teacher-attendance.index') }}">Teacher Attendance</a>
                     </li>
                     @endcan
-                    @can('employee-attendance.index')
+                    @can('employee-attendance.make.post')
                     <li class="{{ isActiveRoute('employee-attendance.index') }}" data-show="">
                         <a href="{{ route('employee-attendance.index') }}">Employee Attendance</a>
                     </li>
@@ -129,7 +129,7 @@
                         class="nav-label"></span>Subjects</a>
             </li>
             @endcan
-            @can('student-migrations.index')
+            @can('student-migrations.create')
             <li class="{{ isActiveRoute('student-migrations.index') }}">
                 <a href="{{ route('student-migrations.index') }}" data-root=""><i
                         class="glyphicon glyphicon-transfer"></i> <span class="nav-label"></span>Student

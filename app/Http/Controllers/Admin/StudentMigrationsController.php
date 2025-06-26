@@ -12,10 +12,11 @@ use App\AcademicSessionHistory;
 
 class StudentMigrationsController extends Controller
 {
-    public function Index(){
+    public function Index($students = null){
 
         $data['academic_session'] =    AcademicSession::UserAllowSession()->get();
         $data['classes'] =    Classe::all();
+        $data['students'] = $students;
 		return view('admin.student_migrations', $data);
     }
 
@@ -52,7 +53,7 @@ class StudentMigrationsController extends Controller
                                         ]
                                     ]);
         }
-        return $this->Index();
+        return $this->Index($data['students']);
     }
 
     public function PostMigration(Request $request){

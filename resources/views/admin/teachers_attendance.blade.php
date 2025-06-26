@@ -45,9 +45,11 @@
                             <li class="make-attendance">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Attendance </a>
                             </li>
+                            @can('teacher-attendance.report')
                             <li class="get-attendance">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Attendance Reports</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade make-attendance">

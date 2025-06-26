@@ -42,9 +42,11 @@
 							<li class="">
 								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Exam List</a>
 							</li>
+							@can('exam.add')
 							<li class="add-exam">
 								<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Exam</a>
 							</li>
+							@endcan
 						</ul>
 						<div class="tab-content">
 							<div id="tab-10" class="tab-pane fade">
@@ -187,7 +189,10 @@
 	var tbl;
 
     function loadOptions(data, type, full, meta) {
+		opthtm = '';
+		@can('exam.edit.post')
 		opthtm = '<a data-toggle="tooltip" title="Edit" class="btn btn-'+((full.active == 1)? 'default' : 'danger') +' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+		@endcan
 		return opthtm;
 	}
 

@@ -44,9 +44,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Vendors</a>
                             </li>
+                            @can('vendors.add')
                             <li class="add-vendor">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Vendors</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade ">
@@ -175,12 +177,10 @@
 
       //  opthtm = '<a href="{{ URL('vendors/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
       opthtm = '';
-        //Permission will be applied later
-        // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
-          opthtm += '<a href="{{ URL('vendors/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Vendor" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        // "endif"
-
-        return opthtm;
+      @can('vendors.edit.post')
+      opthtm += '<a href="{{ URL('vendors/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Vendor" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+      @endcan
+      return opthtm;
     }
 
 

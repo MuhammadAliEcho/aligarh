@@ -185,8 +185,8 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::prefix('student-migrations')->name('student-migrations')->group(function(){
         Route::get('/', [StudentMigrationsController::class, 'Index'])->name('.index');
-        Route::get('/students', [StudentMigrationsController::class, 'GetStudents'])->name('.create');
-        Route::post('/create', [StudentMigrationsController::class, 'PostMigration'])->name('.create.post');
+        Route::get('/students', [StudentMigrationsController::class, 'GetStudents'])->name('.get');
+        Route::post('/create', [StudentMigrationsController::class, 'PostMigration'])->name('.create');
     });
 
     Route::prefix('exam')->name('exam')->group(function(){

@@ -60,9 +60,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Teachers</a>
                             </li>
+                            @can('teacher.add')
                             <li class="add-teacher">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Teachers</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -305,14 +307,19 @@
     }
 
     function loadOptions(data, type, full, meta) {
+        opthtm = '';
+        @can('teacher.profile')
         opthtm = '<a href="{{ URL('teacher/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn '+ ((full.user_id != null)? ((full.active)? 'btn-info' : 'btn-primary') : 'btn-default') +' btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
+        @endcan
+        @can('teacher.edit.post')
+        opthtm += '<a href="{{ URL('teacher/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
         
-        //Permission will be applied later
-        //var ps= 'Auth-user()-getprivileges-privileges-{$root[content][id]}-edit)'
-          opthtm += '<a href="{{ URL('teacher/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
         // endif
         if(full.user_id != null){
+          @can('users.update')
           opthtm += '<a href="{{ URL('users/edit') }}/'+full.user_id+'" data-toggle="tooltip" title="Edit User" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+          @endcan
         }
 
         return opthtm;

@@ -61,9 +61,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Employees</a>
                             </li>
+                            @can('employee.add')
                             <li class="add-employee">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Employee</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -283,15 +285,16 @@
     }
 
     function loadOptions(data, type, full, meta) {
+        opthtm = '';
+        @can('employee.profile')
         opthtm = '<a href="{{ URL('employee/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn '+ ((full.user_id != null)? ((full.active == 1)? 'btn-info' : 'btn-primary') : 'btn-default') +' btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
-
-        // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)"
-          opthtm += '<a href="{{ URL('employee/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        // "endif"
-
-        // if(full.user_id != null){
-          opthtm += '<a href="{{ URL('users/edit') }}/'+full.user_id+'" data-toggle="tooltip" title="Edit User" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        // }
+        @endcan
+        @can('employee.edit.post')
+        opthtm += '<a href="{{ URL('employee/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
+        @can('users.update')
+        opthtm += '<a href="{{ URL('users/edit') }}/'+full.user_id+'" data-toggle="tooltip" title="Edit User" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
 
         return opthtm;
     }

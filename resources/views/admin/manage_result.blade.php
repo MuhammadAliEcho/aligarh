@@ -39,12 +39,16 @@
 				<div class="col-lg-12">
 					<div class="tabs-container">
 						<ul class="nav nav-tabs">
+							@can('manage-result.result')
 							<li class="make-result">
 							  <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Result </a>
 							</li>
+							@endcan
+							@can('manage-result.maketranscript.create')
 							<li class="get-result">
 							  <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Result Attributes</a>
 							</li>
+							@endcan
 						</ul>
 						<div class="tab-content">
 							<div id="tab-10" class="tab-pane fade make-result">

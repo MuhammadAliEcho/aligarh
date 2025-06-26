@@ -42,12 +42,16 @@
 														<li class="">
 															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Expenses</a>
 														</li>
+														@can('expense.add')
 														<li class="add-expense">
 															<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Expense</a>
 														</li>
+														@endcan
+														@can('expense.summary')
 														<li class="summary-expense">
 															<a data-toggle="tab" href="#tab-12"><span class="fa fa-files-o"></span> Summary</a>
 														</li>
+														@endcan
 												</ul>
 												<div class="tab-content">
 														<div id="tab-10" class="tab-pane fade">
@@ -269,7 +273,10 @@
 				});
 */
 
+				opthtm = '';
+				@can('expense.edit.post')
 				opthtm = '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+				@endcan
 		tbl =   $('.dataTables-teacher').DataTable({
 					dom: '<"html5buttons"B>lTfgitp',
 					buttons: [
@@ -358,20 +365,6 @@
 						});
 
 					});
-
-			//Permission will be applied later
-			// "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
-			// 	$('.add-expense').hide();
-			// "endif"
-
-			// "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
-			// 	$('.edit-expense').hide();
-			// "endif"
-
-			// "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->summary == 0)"
-			// 	$('.summary-expense').hide();
-			// "endif"
-
 			});
 		</script>
 

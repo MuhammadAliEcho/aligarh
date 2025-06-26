@@ -53,9 +53,11 @@
                             <li class="active">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Routines</a>
                             </li>
+                            @can('routines.add')
                             <li class="add-routine-tab">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Routine</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade in active">
@@ -65,9 +67,11 @@
                                       <div class="ibox-title back-change">
                                         <h5 class="collapse-link">Class: {{ $class->name }}</h5>
                                         <div class="ibox-tools">
+                                          @can('routines.add')
                                           <a class-id="{{ $class->id }}" data-type="class" class="add-routine">
                                             <span class="fa fa-plus" data-toggle="tooltip" title="Add Routine"></span>
                                           </a>
+                                          @endcan
                                           <a class="collapse-link">
                                             <i data-toggle="tooltip" title="Collapse" class="fa fa-chevron-up"></i>
                                           </a>
@@ -108,15 +112,20 @@
                                                               {{ $routin->subject_name.' ( '.$routin->from_time.'-'.$routin->to_time.' ) ' }}
                                                               <span class="caret"></span></button>
                                                               <ul class="dropdown-menu">
+                                                                @can('routines.edit.post')
                                                                 <li class="edit-routine"><a href="{{ URL('routines/edit/'.$routin->id) }}"><span class="fa fa-edit"></span> Edit</a></li>
+                                                                @endcan
+                                                                @can('routines.delete')
                                                                 <li class="delete-routine"><a routine-id="{{ $routin->id }}" href="#" class="delete-btn" ><span class="fa fa-trash"></span> Delete</a></li>
+                                                                @endcan
                                                               </ul>
                                                             </div>
                                                           @endforeach
-
+                                                          @can('routines.add')
                                                           <a data-toggle="tooltip" title="Add Routine" class-id="{{ $class->id }}" section-id="{{ $section->id }}" day="{{ $day }}" data-type="day" class="add-routine pull-right">
                                                             <span class="fa fa-plus"></span>
                                                           </a>
+                                                          @endcan
 
                                                         </td>
                                                       </tr>

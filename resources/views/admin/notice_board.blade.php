@@ -46,10 +46,11 @@
                             <li>
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-clipboard"></span> Notices</a>
                             </li>
+                            @can('noticeboard.create')
                             <li class="make-notice">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Notice</a>
                             </li>
-
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -65,7 +66,9 @@
                                                       <small>Till: {{ $notice->till_date }}</small>
                                                       <h4>{{ $notice->title }}</h4>
                                                       <p>{{ $notice->notice }}</p>
+                                                      @can('noticeboard.delete')
                                                       <a class="delete-notice-btn delete-notice" notice-id="{{ $notice->id }}" href="#"><i class="fa fa-trash-o "></i></a>
+                                                      @endcan
                                                   </div>
                                               </li>
                                           @endforeach

@@ -45,9 +45,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Sections</a>
                             </li>
+                            @can('manage-sections.add')
                             <li class="add-section">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Section</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -85,9 +87,11 @@
                                                     <td>{{ $section->Students->count() }} | {{ $section->capacity }}</td>
                                                     <td>{{ $section->Teacher['name'] }}</td>
                                                     <td class="edit-section">
+                                                      @can('manage-sections.edit.post')
                                                       <a href="{{ URL('manage-sections/edit/'.$section->id) }}" data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-option">
                                                         <span class="fa fa-edit"></span>
                                                       </a>
+                                                      @endcan
                                                     </td>
                                                   </tr>
                                                 @endforeach
@@ -255,17 +259,6 @@
       @else
         $('a[href="#tab-10"]').tab('show');
       @endif
-
-      //Permission will be applied later
-      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
-      //   $('.add-section').hide();
-      // 
-
-      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
-      //   $('.edit-section').hide();
-      //
-
-
       });
     </script>
 

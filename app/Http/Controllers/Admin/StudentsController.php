@@ -19,7 +19,6 @@ use App\Http\Controllers\Controller;
 use Validator;
 use App\Certificate;
 use App\ParentInterview;
-use Larapack\ConfigWriter\Repository as ConfigWriter;
 
 class StudentsController extends Controller 
 {
@@ -38,8 +37,6 @@ class StudentsController extends Controller
 	public function GetImage($id){
 		$student  = Student::findorfail($id);
 		$image = Storage::get($student->image_dir);
-//    $image = Storage::disk('public/studnets')->get('1.jpg');
-//    return Response($image, 200);
 		return Response($image, 200)->header('Content-Type', 'image');
 	}
 
@@ -66,11 +63,8 @@ class StudentsController extends Controller
 				'class'   =>  'sometimes|required',
 				'section'  =>  'sometimes|required',
 				'gr_no'  =>  'required|unique:students,gr_no,'.$id,
-				//Permission will be applied later
-				// 'gr_no'  =>  ($this->data['root']['job'] == 'edit')? 'required|unique:students,gr_no,'.$this->data['root']['option'] : 'required|unique:students',
 				'guardian'    =>  'required',
 				'guardian_relation'  =>  'required',
-// 		    	'email'   =>  ($this->data['root']['job'] == 'edit')? 'email|unique:students,email,'.$this->data['root']['option'] : 'email|unique:students',
 				'tuition_fee'  =>  'sometimes|required|numeric',
 				'dob'       =>  'required',
 				'doa'       =>  'required',
@@ -80,12 +74,8 @@ class StudentsController extends Controller
 	}
 
 	public function Index(Request $request){
-		//$this->data['teachers'] = Teacher::select('name', 'email', 'address', 'id', 'phone')->get();
 		$data['classes'] = Classe::select('id', 'name')->get();
 		if ($request->ajax()) {
-			/*
-					return DataTables::eloquent(Student::query())->make(true);
-			*/
 			return DataTables::of(DB::table('students')
 				->join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
 				->select('students.*', 'academic_session_history.class_id AS class')
@@ -98,7 +88,6 @@ class StudentsController extends Controller
 				return $html;
 				})
 				->make(true);
-			//return DataTables::eloquent(Student::query()->CurrentSession())->make(true);
 		}
 		$data['guardians'] = Guardian::select('id', 'name', 'email')->get();
 		$data['no_of_active_students'] = Student::active()->count();

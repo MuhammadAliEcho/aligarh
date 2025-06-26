@@ -45,9 +45,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Subjects</a>
                             </li>
+                            @can('manage-subjects.add')
                             <li class="add-subject">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Subject</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade ">
@@ -83,9 +85,11 @@
                                                     <td>{{ $subject->book }}</td>
                                                     <td>{{ $subject->teacher_name }}</td>
                                                     <td class="edit-subject">
+                                                      @can('manage-subjects.edit.post')
                                                       <a href="{{ URL('manage-subjects/edit/'.$subject->id) }}" data-toggle="tooltip" title="Edit" class="btn btn-circle btn-xs edit-option {{ ($subject->examinable)? 'btn-primary' : 'btn-default' }}">
                                                         <span class="fa fa-edit"></span>
                                                       </a>
+                                                      @endcan
                                                     </td>
                                                   </tr>
                                                 @endforeach
@@ -252,16 +256,6 @@
       @else
         $('a[href="#tab-10"]').tab('show');
       @endif
-
-      //Permission will be applied later
-      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
-      //   $('.add-subject').hide();
-      // "endif"
-
-      // "student_migrations(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
-      //   $('.edit-subject').hide();
-      //"endif"
-
       });
     </script>
 

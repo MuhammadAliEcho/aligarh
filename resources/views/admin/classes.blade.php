@@ -46,9 +46,11 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Classes</a>
                             </li>
 
+                            @can('manage-classes.add')
                             <li class="add-class">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Classes</a>
                             </li>
+                            @endcan
 
                         </ul>
                         <div class="tab-content">
@@ -172,11 +174,9 @@
     function loadOptions(data, type, full, meta) {
 
         opthtm = '';
-        //Permission will be applied later
-        //var pc = "Authuser()->getprivileges->privileges->{$root['content']['id']}->edit)"
-          opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Class" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        //
-
+        @can('manage-classes.edit.post')
+        opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Class" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
         return opthtm;
     }
 
