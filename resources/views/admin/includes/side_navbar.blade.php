@@ -31,7 +31,7 @@
             @endcan
             @can('students.index')
             <li class="{{ isActiveRoute('students.index') }}">
-                <a href="{{ route('students.index') }}" data-root="{{ Route::currentRouteName() }}"><i
+                <a href="{{ route('students.index') }}"><i
                         class="fa fa-group"></i> <span class="nav-label"></span>Students</a>
             </li>
             @endcan
@@ -54,7 +54,7 @@
             </li>
             @endcan
             @if (canAny(['manage-classes.index', 'manage-sections.index']))
-            <li class="{{ isActiveRoute('manage-*') }}">
+            <li class="{{ isActiveRoute(['manage-classes.index','manage-sections.index']) }}">
                 <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Class</a>
                 <ul class="nav nav-second-level collapse">
@@ -101,7 +101,7 @@
             </li>
             @endcan
             @if (canAny(['student-attendance.make.post', 'teacher-attendance.make.post', 'employee-attendance.make.post']))
-            <li class="{{ isActiveRoute('*attendance*') }}">
+            <li class="{{ isActiveRoute(['student-attendance.index','teacher-attendance.index','employee-attendance.index']) }}">
                 <a href="#"><i class="fa fa-bar-chart"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Daily Attendance</a>
                 <ul class="nav nav-second-level collapse">
@@ -137,7 +137,7 @@
             </li>
             @endcan
             @if (canAny(['exam.index', 'manage-result.index']))
-            <li class="{{ isActiveRoute('exam*') }}">
+            <li class="{{ isActiveRoute(['exam.index','manage-result.index']) }}">
                 <a href="#"><i class="fa fa-graduation-cap"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Exam</a>
                 <ul class="nav nav-second-level collapse">
@@ -191,7 +191,7 @@
             </li>
             @endcan
             @if (canAny(['seatsreport', 'fee-collection-reports.index', 'exam-reports.index']))
-            <li class="{{ isActiveRoute(['seatsreport', '*reports*']) }}">
+            <li class="{{ isActiveRoute(['seatsreport', 'fee-collection-reports.index','exam-reports.index']) }}">
                 <a href="#"><i class="fa fa-file"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Report</a>
                 <ul class="nav nav-second-level collapse">
