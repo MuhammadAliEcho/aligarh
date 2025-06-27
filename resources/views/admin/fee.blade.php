@@ -45,20 +45,21 @@
 							<li class="">
 								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Invoice</a>
 							</li>
+							@can('fee.create.store')
 							<li class="make-fee">
 								<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
 							</li>
-							{{-- Permission will be applied later --}}
-							{{-- "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)" --}}
+							@endcan
+							@can('fee.collect.store')
 							<li class="collect-invocie">
 								<a data-toggle="tab" href="#tab-12"><span class="fa fa-sticky-note-o"></span> Invoice Collect</a>
 							</li>
-							{{-- "endif" --}}
-							{{-- "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)" --}}
+							@endcan
+							@can('fee.update')
 							<li class="">
 								<a data-toggle="tab" href="#tab-13"><span class="fa fa-edit"></span> Update Fee</a>
 							</li>
-							{{-- "endif" --}}
+							@endcan
 						</ul>
 						<div class="tab-content">
 							<div id="tab-10" class="tab-pane fade">
@@ -211,8 +212,7 @@
 								</div>
 							</div>
 
-							{{-- Permission will be applied later --}}
-							{{-- "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)" --}}
+							@can('fee.collect.store')
 							<div id="tab-12" class="tab-pane fade make-fee">
 								<div id="collectfeeApp" class="panel-body">
 									<h2> Invoice Collect </h2>
@@ -348,9 +348,8 @@
 
 								</div>
 							</div>
-							{{-- "endif" --}}
-
-							{{-- "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)" --}}
+							@endcan
+							@can('fee.update')
 							<div id="tab-13" class="tab-pane fade">
 								<div id="updatefeeApp" class="panel-body">
 								  <h2> Update Fee </h2>
@@ -470,7 +469,7 @@
 									</form>
 								</div>
 							</div>
-							{{-- "endif" --}}
+							@endcan
 						</div>
 					</div>
 				</div>
@@ -529,11 +528,16 @@
 		$('a[href="#tab-10"]').tab('show');
 	  @endif
 
-		opthtm = '<a data-toggle="tooltip" target="_new" title="View" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-file-pdf-o"></span></a>';
-		//Permission will be applied later
-		// "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->{'edit-invoice'})"
+		opthtm = '';
+		@can('fee.chalan.print')
+		opthtm += '<a data-toggle="tooltip" target="_new" title="View" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-file-pdf-o"></span></a>';
+		@endcan
+		@can('fee.invoice.print')
+		opthtm += '<a data-toggle="tooltip" target="_new" title="Print Invoice" class="btn btn-default btn-circle btn-xs print-invoice"><span class="fa fa-print"></span></a>';
+		@endcan
+		@can('fee.edit.invoice.post')
 		opthtm += '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-invoice"><span class="fa fa-edit"></span></a>';
-		// "endif"
+		@endcan
 		tbl = $('.dataTables-teacher').DataTable({
 		  dom: '<"html5buttons"B>lTfgitp',
 		  buttons: [
@@ -571,6 +575,10 @@
 
 	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-option', function () {
 		$(this).attr('href','{{ URL('fee/chalan/') }}/'+tbl.row( $(this).parents('tr') ).data().id);
+		$(this).tooltip('show');
+	  });
+	  $('.dataTables-teacher tbody').on( 'mouseenter', '.print-invoice', function () {
+		$(this).attr('href','{{ URL('fee/invoice/') }}/'+tbl.row( $(this).parents('tr') ).data().id);
 		$(this).tooltip('show');
 	  });
 	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-invoice', function () {
@@ -627,12 +635,6 @@
 	  @if(Session::get('invoice_created') !== null)
 		window.open('{{ URL('fee/chalan/'.Session::get('invoice_created')) }}', '_new');
 	  @endif
-
-	//Permission will be applied later
-	//   "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->create == 0)"
-		// $('.make-fee').hide();
-	//   "endif"
-
 
 	  });
 	</script>
@@ -718,10 +720,7 @@
 	  });
 	</script>
 	@endif
-
-	<!--//Permission will be applied later
-	// "@(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)"
-	-->
+	@can('fee.update')
 	<script type="text/javascript">
 		var feeApp = new Vue({
 			el: '#updatefeeApp',
@@ -814,10 +813,8 @@
 
 		});
 	</script>
-	// "endif"
-
-	//Permission will be applied later
-	// "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)"
+	@endcan
+	@can('fee.collect.store')
 		<script type="text/javascript">
 		var feeCollectApp = new Vue({
 			el: '#collectfeeApp',
@@ -873,6 +870,5 @@
 			}
 		});
 		</script>
-	// "endif"
-
+		@endcan
 	@endsection

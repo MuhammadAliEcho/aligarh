@@ -220,19 +220,17 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
      Route::prefix('fee')->name('fee')->group(function(){
         Route::get('/', [FeesController::class, 'Index'])->name('.index');
-        Route::get('/create ', [FeesController::class, 'FindInvoice'])->name('.create ');
-        Route::get('/findstu ', [FeesController::class, 'FindStudent'])->name('.findstu');
-        Route::get('/invoice ', [FeesController::class, 'PrintInvoice'])->name('.invoice ');
-        Route::get('/update ', [FeesController::class, 'GetStudentFee'])->name('.getstudentfee ');
-        Route::get('/collect', [FeesController::class, 'GetInvoice'])->name('.getinvoice');
-        Route::get('/chalan/{id}', [FeesController::class, 'PrintChalan'])->name('.chalan');
-        Route::get('/edit-invoice', [FeesController::class, 'GetEditInvoice'])->name('.index');
-        Route::post('/edit-invoice', [FeesController::class, 'PostEditInvoice'])->name('.index');
-        Route::post('/create/{id}', [FeesController::class, 'CreateInvoice'])->name('.create ');
-        Route::post('/edit-invoice/{id} ', [FeesController::class, 'PostEditInvoice'])->name('.create ');
-        Route::post('/update ', [FeesController::class, 'UpdateFee'])->name('.create ');
-        Route::post('/collect ', [FeesController::class, 'CollectInvoice'])->name('.put.collect');
-
+        Route::get('/create ', [FeesController::class, 'FindInvoice'])->name('.create');
+        Route::post('/create/{id}', [FeesController::class, 'CreateInvoice'])->name('.create.store');
+        Route::get('/collect', [FeesController::class, 'GetInvoice'])->name('.get.invoice.collect');
+        Route::post('/collect ', [FeesController::class, 'CollectInvoice'])->name('.collect.store');
+        Route::get('/update ', [FeesController::class, 'GetStudentFee'])->name('.get.student.fee');
+        Route::post('/update ', [FeesController::class, 'UpdateFee'])->name('.update');
+        Route::get('/chalan/{id}', [FeesController::class, 'PrintChalan'])->name('.chalan.print');
+        Route::get('/edit-invoice', [FeesController::class, 'GetEditInvoice'])->name('.edit.invoice');
+        Route::post('/edit-invoice', [FeesController::class, 'PostEditInvoice'])->name('.edit.invoice.post');
+        Route::get('/findstu', [FeesController::class, 'FindStudent'])->name('.findstu');
+        Route::get('/invoice/{id} ', [FeesController::class, 'PrintInvoice'])->name('.invoice.print');
     });
 
     Route::prefix('expense')->name('expense')->group(function(){

@@ -45,7 +45,10 @@ class EmployeeController extends Controller
     if ($request->ajax()) {
       return DataTables::queryBuilder(DB::table('employees')
                                           ->leftJoin('users', 'employees.user_id', '=', 'users.id')
-                                          ->where('users.id', '!=', 1)
+                                          ->where(fn($query) => 
+                                              $query->where('users.id', '!=', 1)
+                                                    ->orWhereNull('users.id')
+                                          )
                                           ->select('employees.name', 'employees.email', 'employees.role', 'employees.id', 'employees.phone', 'users.active', 'users.id AS user_id'))
                                           ->make(true);
     }
