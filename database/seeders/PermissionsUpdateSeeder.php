@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -18,16 +17,6 @@ class PermissionsUpdateSeeder extends Seeder
      */
     public function run()
     {
-        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        // DB::table('permissions')->truncate();
-        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        // $routehaspermissions = config('routehaspermissions', []);
-        // $employeePermissions   = $routehaspermissions['employee.role'] ?? [];
-
-
-
-        // Get all route names as permissions
         $ignored = config('permission.ignore_routes', []);
 
         $Permissions = collect(Route::getRoutes())

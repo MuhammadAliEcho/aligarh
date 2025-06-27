@@ -252,8 +252,6 @@ class RoleController extends Controller
 				'manage-result.maketranscript' => 'Make Transcript',
 				'manage-result.maketranscript.create' => 'Create Transcript',
 				'manage-result.result' => 'View Result',
-				'exam-grades.index' => 'Exam Grades View',
-				'exam-grades.update' => 'Exam Grades View',
 			],
 			'Library' => [
 				'library.index' => 'Library View',
@@ -311,6 +309,8 @@ class RoleController extends Controller
 				'system-setting.history' => 'System History',
 				'fee-scenario.index' => 'Fee Scenario View',
 				'fee-scenario.updatescenario' => 'Fee Scenario Update',
+				'exam-grades.index' => 'Exam Grades View',
+				'exam-grades.update' => 'Exam Grades View',
 			],
 		];
 	}

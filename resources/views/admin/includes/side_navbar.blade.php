@@ -13,8 +13,9 @@
                             </span> <span class="text-muted text-xs block text-capitalize">{{ Auth::user()->name }}<b
                                     class="caret"></b></span> </span> </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a href="{{ URL('user-settings') }}"><span class="fa fa-gear fa-spin"></span> User
-                                Settings</a></li>
+                        @can('user-settings.password.update')
+                        <li><a href="{{ URL('user-settings') }}"><span class="fa fa-gear fa-spin"></span> User Settings</a></li>
+                        @endcan
                         <li class="divider"></li>
                         <li><a href="{{ URL('logout') }}"><span class="fa fa-sign-out"></span> Logout</a></li>
                     </ul>
@@ -214,8 +215,7 @@
             </li>
             @endif
             @if (canAny(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index']))
-            <li
-                class="{{ isActiveRoute(['users.index', 'roles.index', 'system-setting.index', 'fee-scenario.index', 'exam-grades.index']) }}">
+            <li class="{{ isActiveRoute(['users.index', 'roles.index', 'system-setting.index', 'fee-scenario.index', 'exam-grades.index']) }}">
                 <a href="#"><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span
                         class="fa arrow"></span>Administrative Tools</a>
                 <ul class="nav nav-second-level collapse">
