@@ -47,9 +47,9 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-clipboard"></span> Notices</a>
                             </li>
                             @can('noticeboard.create')
-                            <li class="make-notice">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Notice</a>
-                            </li>
+                              <li class="make-notice">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Notice</a>
+                              </li>
                             @endcan
                         </ul>
                         <div class="tab-content">
@@ -79,60 +79,61 @@
                                   </div>
                                 </div>
                             </div>
+                            @can('noticeboard.create')
+                              <div id="tab-11" class="tab-pane fade make-notice">
+                                  <div class="panel-body">
+                                    <h2> Create Notice </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                            <div id="tab-11" class="tab-pane fade make-notice">
-                                <div class="panel-body">
-                                  <h2> Create Notice </h2>
-                                  <div class="hr-line-dashed"></div>
+                                      <form id="tchr_rgstr" method="POST" action="{{ URL('noticeboard/create') }}" class="form-horizontal" >
+                                        {{ csrf_field() }}
 
-                                    <form id="tchr_rgstr" method="POST" action="{{ URL('noticeboard/create') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
-
-                                      <div class="form-group{{ ($errors->has('title'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Title</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="title" placeholder="Title" value="{{ old('title') }}" class="form-control"/>
-                                          @if ($errors->has('title'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('title') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('notice'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Notice</label>
-                                        <div class="col-md-6">
-                                          <textarea type="text" name="notice" placeholder="Notice" class="form-control">{{ old('notice') }}</textarea>
-                                          @if ($errors->has('notice'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('notice') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('till_date'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label"> Till Time </label>
-                                        <div class="col-md-6">
-                                        <input id="datetimepicker4" type="text" name="till_date" class="form-control" placeholder="Date" value="{{ old('till_date') }}" required="true">
-                                          @if ($errors->has('till_date'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('till_date') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Create </button>
+                                        <div class="form-group{{ ($errors->has('title'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Title</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="title" placeholder="Title" value="{{ old('title') }}" class="form-control"/>
+                                            @if ($errors->has('title'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('title') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('notice'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Notice</label>
+                                          <div class="col-md-6">
+                                            <textarea type="text" name="notice" placeholder="Notice" class="form-control">{{ old('notice') }}</textarea>
+                                            @if ($errors->has('notice'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('notice') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('till_date'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label"> Till Time </label>
+                                          <div class="col-md-6">
+                                          <input id="datetimepicker4" type="text" name="till_date" class="form-control" placeholder="Date" value="{{ old('till_date') }}" required="true">
+                                            @if ($errors->has('till_date'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('till_date') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Create </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -248,15 +249,6 @@
             });
 
           });
-      //Permission will be applied later
-      //"(Auth::user()->getprivileges->privileges->{$root['content']['id']}->create == 0)"
-        //$('.make-notice').hide();
-      //endif
-
-      //"(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)"
-        //$('.delete-notice').hide();
-      //"endif"
-
       });
     </script>
 

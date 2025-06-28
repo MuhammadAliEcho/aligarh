@@ -45,9 +45,9 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Items</a>
                             </li>
                             @can('items.add')
-                            <li class="add-item">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Items</a>
-                            </li>
+                              <li class="add-item">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Items</a>
+                              </li>
                             @endcan
                         </ul>
                         <div class="tab-content">
@@ -70,83 +70,85 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-item">
-                                <div class="panel-body">
-                                  <h2> Item Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('items.add')
+                              <div id="tab-11" class="tab-pane fade add-item">
+                                  <div class="panel-body">
+                                    <h2> Item Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="vdr_rgstr" method="post" action="{{ URL('items/add') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
+                                      <form id="vdr_rgstr" method="post" action="{{ URL('items/add') }}" class="form-horizontal" >
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Item Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="name" placeholder="Item Name" value="{{ old('name') }}" class="form-control"/>
-                                          @if ($errors->has('name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('category'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Category</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="category" placeholder="Category" value="{{ old('category') }}" class="form-control"/>
-                                          @if ($errors->has('category'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('category') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('qty'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Qty</label>
-                                        <div class="col-md-6">
-                                          <input type="number" name="qty" placeholder="Qty" value="{{ old('qty') }}" class="form-control"/>
-                                          @if ($errors->has('qty'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qty') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('qty_level'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Qty Level</label>
-                                        <div class="col-md-6">
-                                          <input type="number" name="qty_level" placeholder="Qty Level" value="{{ old('qty_level') }}" class="form-control"/>
-                                          @if ($errors->has('qty_level'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qty_level') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('location'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Location</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="location" placeholder="Location" value="{{ old('location') }}" class="form-control"/>
-                                          @if ($errors->has('location'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('location') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Item Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="name" placeholder="Item Name" value="{{ old('name') }}" class="form-control"/>
+                                            @if ($errors->has('name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('category'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Category</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="category" placeholder="Category" value="{{ old('category') }}" class="form-control"/>
+                                            @if ($errors->has('category'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('category') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('qty'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Qty</label>
+                                          <div class="col-md-6">
+                                            <input type="number" name="qty" placeholder="Qty" value="{{ old('qty') }}" class="form-control"/>
+                                            @if ($errors->has('qty'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qty') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('qty_level'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Qty Level</label>
+                                          <div class="col-md-6">
+                                            <input type="number" name="qty_level" placeholder="Qty Level" value="{{ old('qty_level') }}" class="form-control"/>
+                                            @if ($errors->has('qty_level'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qty_level') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('location'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Location</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="location" placeholder="Location" value="{{ old('location') }}" class="form-control"/>
+                                            @if ($errors->has('location'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('location') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -246,13 +248,6 @@
       @else
         $('a[href="#tab-10"]').tab('show');
       @endif
-
-      //Permission will be applied later
-      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
-      //   $('.add-item').hide();
-      // "endif"
-
-
       });
     </script>
 

@@ -45,9 +45,9 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Books</a>
                             </li>
                             @can('library.add')
-                            <li class="add-item">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Book</a>
-                            </li>
+                              <li class="add-item">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Book</a>
+                              </li>
                             @endcan                   
                         </ul>
                         <div class="tab-content">
@@ -70,107 +70,109 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-item">
-                                <div class="panel-body">
-                                  <h2> Book Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('library.add')
+                              <div id="tab-11" class="tab-pane fade add-item">
+                                  <div class="panel-body">
+                                    <h2> Book Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="vdr_rgstr" method="post" action="{{ URL('library/add') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
+                                      <form id="vdr_rgstr" method="post" action="{{ URL('library/add') }}" class="form-horizontal" >
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('title'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Title</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="title" placeholder="Book Title" value="{{ old('title') }}" class="form-control"/>
-                                          @if ($errors->has('title'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('title') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('author'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Author</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="author" placeholder="author" value="{{ old('author') }}" class="form-control"/>
-                                          @if ($errors->has('author'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('author') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('edition'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Edition</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="edition" placeholder="edition" value="{{ old('edition') }}" class="form-control"/>
-                                          @if ($errors->has('edition'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('edition') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('publisher'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Publisher</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="publisher" placeholder="publisher" value="{{ old('publisher') }}" class="form-control"/>
-                                          @if ($errors->has('publisher'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('publisher') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('qty'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Qty</label>
-                                        <div class="col-md-6">
-                                          <input type="number" name="qty" placeholder="Qty" value="{{ old('qty') }}" class="form-control"/>
-                                          @if ($errors->has('qty'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qty') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('rate'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Rate</label>
-                                        <div class="col-md-6">
-                                          <input type="number" name="rate" placeholder="Rate" value="{{ old('rate') }}" class="form-control"/>
-                                          @if ($errors->has('rate'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('rate') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Description</label>
-                                        <div class="col-md-6">
-                                          <textarea name="description" placeholder="description" value="{{ old('description') }}" class="form-control"></textarea>
-                                          @if ($errors->has('description'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Add Book </button>
+                                        <div class="form-group{{ ($errors->has('title'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Title</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="title" placeholder="Book Title" value="{{ old('title') }}" class="form-control"/>
+                                            @if ($errors->has('title'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('title') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('author'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Author</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="author" placeholder="author" value="{{ old('author') }}" class="form-control"/>
+                                            @if ($errors->has('author'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('author') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('edition'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Edition</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="edition" placeholder="edition" value="{{ old('edition') }}" class="form-control"/>
+                                            @if ($errors->has('edition'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('edition') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('publisher'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Publisher</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="publisher" placeholder="publisher" value="{{ old('publisher') }}" class="form-control"/>
+                                            @if ($errors->has('publisher'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('publisher') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('qty'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Qty</label>
+                                          <div class="col-md-6">
+                                            <input type="number" name="qty" placeholder="Qty" value="{{ old('qty') }}" class="form-control"/>
+                                            @if ($errors->has('qty'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qty') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('rate'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Rate</label>
+                                          <div class="col-md-6">
+                                            <input type="number" name="rate" placeholder="Rate" value="{{ old('rate') }}" class="form-control"/>
+                                            @if ($errors->has('rate'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('rate') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Description</label>
+                                          <div class="col-md-6">
+                                            <textarea name="description" placeholder="description" value="{{ old('description') }}" class="form-control"></textarea>
+                                            @if ($errors->has('description'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Add Book </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -270,13 +272,6 @@
       @else
         $('a[href="#tab-10"]').tab('show');
       @endif
-
-      //Permission will be applied later
-      //"(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
-      //   $('.add-item').hide();
-      // "end"
-
-
       });
     </script>
 

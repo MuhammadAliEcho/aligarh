@@ -46,9 +46,9 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Attendance </a>
                             </li>
                             @can('teacher-attendance.report')
-                            <li class="get-attendance">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Attendance Reports</a>
-                            </li>
+                              <li class="get-attendance">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Attendance Reports</a>
+                              </li>
                             @endcan
                         </ul>
                         <div class="tab-content">
@@ -131,64 +131,66 @@
                                 </div>
                             </div>
 
-                            <div id="tab-11" class="tab-pane fade get-attendance">
-                                <div class="panel-body" style="min-height: 400px">
-                                  <h2> Search Fields </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('teacher-attendance.report')
+                              <div id="tab-11" class="tab-pane fade get-attendance">
+                                  <div class="panel-body" style="min-height: 400px">
+                                    <h2> Search Fields </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="rpt_att_frm" method="GET" action="{{ URL('teacher-attendance/report') }}" class="form-horizontal jumbotron" role="form" >
+                                      <form id="rpt_att_frm" method="GET" action="{{ URL('teacher-attendance/report') }}" class="form-horizontal jumbotron" role="form" >
 
-                                      <div class="form-group{{ ($errors->has('date'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label"> Date Month </label>
-                                        <div class="col-md-6">
-                                        <input id="datetimepicker4r" type="text" name="date" class="form-control" placeholder="Date" value="{{ old('date') }}" required="true" autocomplete="off">
-                                          @if ($errors->has('date'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date') }}</strong>
-                                              </span>
-                                          @endif
+                                        <div class="form-group{{ ($errors->has('date'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label"> Date Month </label>
+                                          <div class="col-md-6">
+                                          <input id="datetimepicker4r" type="text" name="date" class="form-control" placeholder="Date" value="{{ old('date') }}" required="true" autocomplete="off">
+                                            @if ($errors->has('date'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
                                         </div>
-                                      </div>
 
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="fa fa-list"></span> Show Report </button>
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="fa fa-list"></span> Show Report </button>
+                                            </div>
+                                        </div>
+
+                                      </form>
+
+                                      @if($root == 'report')
+                                      <div class="row">
+                                      <h3>Teachers Attendance Date: ({{ $input['date'] }})</h3>
+                                        <div class="hr-line-dashed"></div>
+                                          <div class="table-responsive">
+                                            <table id="rpt-att" class="table table-striped table-bordered table-hover">
+                                              <thead>
+                                                <tr>
+                                                  <td style="text-align: center;">Teachers<i class="entypo-down-thin"></i>|Date<i class="entypo-right-thin"></i></td>
+                                                  @for($i=1; $i <= $dbdate['noofdays']; $i++)
+                                                    <th>{{ $i }}</th>
+                                                  @endfor
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                @foreach($teachers as $teacher)
+                                                <tr>
+                                                  <td>{{ $teacher->name }}</td>
+                                                  @for($i=1; $i <= $dbdate['noofdays']; $i++)
+                                                    <th class="tchr_{{ $teacher->id }}_dat_{{ $i }}"></th>
+                                                  @endfor
+                                                </tr>
+                                                @endforeach
+                                              </tbody>
+                                            </table>
                                           </div>
                                       </div>
+                                      @endif
 
-                                    </form>
-
-                                    @if($root == 'report')
-                                    <div class="row">
-                                    <h3>Teachers Attendance Date: ({{ $input['date'] }})</h3>
-                                      <div class="hr-line-dashed"></div>
-                                        <div class="table-responsive">
-                                          <table id="rpt-att" class="table table-striped table-bordered table-hover">
-                                            <thead>
-                                              <tr>
-                                                <td style="text-align: center;">Teachers<i class="entypo-down-thin"></i>|Date<i class="entypo-right-thin"></i></td>
-                                                @for($i=1; $i <= $dbdate['noofdays']; $i++)
-                                                  <th>{{ $i }}</th>
-                                                @endfor
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              @foreach($teachers as $teacher)
-                                              <tr>
-                                                <td>{{ $teacher->name }}</td>
-                                                @for($i=1; $i <= $dbdate['noofdays']; $i++)
-                                                  <th class="tchr_{{ $teacher->id }}_dat_{{ $i }}"></th>
-                                                @endfor
-                                              </tr>
-                                              @endforeach
-                                            </tbody>
-                                          </table>
-                                        </div>
                                     </div>
-                                    @endif
-
-                                  </div>
-                            </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -290,14 +292,6 @@
                 ]
 
             });
-
-      //Permission will be applied later
-      // "Auth::user()->getprivileges->privileges->{$root['content']['id']}->make == 0)"
-        // $('.make-attendance').hide();
-
-      // "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->report == 0)"
-        // $('.get-attendance').hide();
-
       });
     </script>
 

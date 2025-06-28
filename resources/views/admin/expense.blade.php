@@ -43,14 +43,14 @@
 															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Expenses</a>
 														</li>
 														@can('expense.add')
-														<li class="add-expense">
-															<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Expense</a>
-														</li>
+															<li class="add-expense">
+																<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Expense</a>
+															</li>
 														@endcan
 														@can('expense.summary')
-														<li class="summary-expense">
-															<a data-toggle="tab" href="#tab-12"><span class="fa fa-files-o"></span> Summary</a>
-														</li>
+															<li class="summary-expense">
+																<a data-toggle="tab" href="#tab-12"><span class="fa fa-files-o"></span> Summary</a>
+															</li>
 														@endcan
 												</ul>
 												<div class="tab-content">
@@ -72,100 +72,18 @@
 
 																</div>
 														</div>
-														<div id="tab-11" class="tab-pane fade add-expense">
-																<div class="panel-body">
-																	<h2> Add Expense </h2>
-																	<div class="hr-line-dashed"></div>
+														@can('expense.add')
+															<div id="tab-11" class="tab-pane fade add-expense">
+																	<div class="panel-body">
+																		<h2> Add Expense </h2>
+																		<div class="hr-line-dashed"></div>
 
-																		<form id="tchr_rgstr" method="post" action="{{ URL('expense/add') }}" class="form-horizontal" >
-																			{{ csrf_field() }}
+																			<form id="tchr_rgstr" method="post" action="{{ URL('expense/add') }}" class="form-horizontal" >
+																				{{ csrf_field() }}
 
-																			<div class="form-group{{ ($errors->has('type'))? ' has-error' : '' }}">
-																				<label class="col-md-2 control-label">Type</label>
-																				<div class="col-md-6">
-																				<select class="form-control" name="type" >
-																					<option></option>
-																					<option>Salary</option>
-																					<option>Bills</option>
-																					<option>Maintenance</option>
-																					<option>Others</option>
-																				</select>
-																					@if ($errors->has('type'))
-																							<span class="help-block">
-																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('type') }}</strong>
-																							</span>
-																					@endif
-																				</div>
-																			</div>
-
-																			<div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
-																				<label class="col-md-2 control-label">Description</label>
-																				<div class="col-md-6">
-																					<textarea type="text" name="description" placeholder="Description" class="form-control" required="true">{{ old('description') }}</textarea>
-																					@if ($errors->has('description'))
-																							<span class="help-block">
-																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>
-																							</span>
-																					@endif
-																				</div>
-																			</div>
-
-																			<div class="form-group{{ ($errors->has('amount'))? ' has-error' : '' }}">
-																				<label class="col-md-2 control-label">Amount</label>
-																				<div class="col-md-6">
-																					<input type="number" name="amount" value="{{ old('amount') }}" placeholder="Amount" class="form-control"/>
-																					@if ($errors->has('amount'))
-																							<span class="help-block">
-																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('amount') }}</strong>
-																							</span>
-																					@endif
-																				</div>
-																			</div>
-
-																			<div class="form-group{{ ($errors->has('date'))? ' has-error' : '' }}">
-																				<label class="col-md-2 control-label">Date</label>
-																				<div class="col-md-6">
-																					<input type="text" name="date" value="{{ old('date') }}" placeholder="Date" class="form-control datetimepicker"/>
-																					@if ($errors->has('date'))
-																							<span class="help-block">
-																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date') }}</strong>
-																							</span>
-																					@endif
-																				</div>
-																			</div>
-
-																			<div class="form-group">
-																					<div class="col-md-offset-2 col-md-6">
-																							<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>
-																					</div>
-																			</div>
-																		</form>
-
-																</div>
-														</div>
-														<div id="tab-12" class="tab-pane fade summary-expense">
-															<div class="panel-body">
-															<div class="jumbotron">
-																<div class="container">
-																	<form id="summaryfrm" class="form-horizontal" role="form" action="{{ URL('expense/summary') }}">
-
-																			<div class="form-group">
-																				<label class="col-md-2 control-label">From Date</label>
-																				<div class="col-md-6">
-																					<input type="text" name="from_date" placeholder="Date" class="form-control datetimepicker" required="true" />
-																				</div>
-																			</div>
-
-																			<div class="form-group">
-																				<label class="col-md-2 control-label">To Date</label>
-																				<div class="col-md-6">
-																					<input type="text" name="to_date" placeholder="Date" class="form-control datetimepicker" required="true" />
-																				</div>
-																			</div>
-																		
-																			<div class="form-group">
-																				<label class="col-md-2 control-label">Type</label>
-																				<div class="col-md-6">
+																				<div class="form-group{{ ($errors->has('type'))? ' has-error' : '' }}">
+																					<label class="col-md-2 control-label">Type</label>
+																					<div class="col-md-6">
 																					<select class="form-control" name="type" >
 																						<option></option>
 																						<option>Salary</option>
@@ -173,35 +91,119 @@
 																						<option>Maintenance</option>
 																						<option>Others</option>
 																					</select>
-																				</div>
-																			</div>
-
-																			<div class="form-group">
-																				<label class="col-md-2 control-label">Description</label>
-																				<div class="col-md-6">
-																					<input type="text" name="description" placeholder="Description" class="form-control"/>
-																				</div>
-																			</div>
-
-																			<div class="form-group">
-																					<div class="col-md-offset-2 col-md-6">
-																							<button class="btn btn-primary btn-block" type="submit" data-loading-text="<span class='fa fa-spinner fa-pulse'></span> Processing...."><span class="glyphicon glyphicon-search"></span> Search </button>
-																							<a class="expense-report-print" href="#"><span class="glyphicon glyphicon-print"></span> Print</a>
+																						@if ($errors->has('type'))
+																								<span class="help-block">
+																										<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('type') }}</strong>
+																								</span>
+																						@endif
 																					</div>
-																			</div>
+																				</div>
 
-																	</form>
+																				<div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
+																					<label class="col-md-2 control-label">Description</label>
+																					<div class="col-md-6">
+																						<textarea type="text" name="description" placeholder="Description" class="form-control" required="true">{{ old('description') }}</textarea>
+																						@if ($errors->has('description'))
+																								<span class="help-block">
+																										<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>
+																								</span>
+																						@endif
+																					</div>
+																				</div>
+
+																				<div class="form-group{{ ($errors->has('amount'))? ' has-error' : '' }}">
+																					<label class="col-md-2 control-label">Amount</label>
+																					<div class="col-md-6">
+																						<input type="number" name="amount" value="{{ old('amount') }}" placeholder="Amount" class="form-control"/>
+																						@if ($errors->has('amount'))
+																								<span class="help-block">
+																										<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('amount') }}</strong>
+																								</span>
+																						@endif
+																					</div>
+																				</div>
+
+																				<div class="form-group{{ ($errors->has('date'))? ' has-error' : '' }}">
+																					<label class="col-md-2 control-label">Date</label>
+																					<div class="col-md-6">
+																						<input type="text" name="date" value="{{ old('date') }}" placeholder="Date" class="form-control datetimepicker"/>
+																						@if ($errors->has('date'))
+																								<span class="help-block">
+																										<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date') }}</strong>
+																								</span>
+																						@endif
+																					</div>
+																				</div>
+
+																				<div class="form-group">
+																						<div class="col-md-offset-2 col-md-6">
+																								<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>
+																						</div>
+																				</div>
+																			</form>
+
+																	</div>
+															</div>
+														@endcan
+														@can('expense.summary')
+														<div id="tab-12" class="tab-pane fade summary-expense">
+															<div class="panel-body">
+																<div class="jumbotron">
+																	<div class="container">
+																		<form id="summaryfrm" class="form-horizontal" role="form" action="{{ URL('expense/summary') }}">
+
+																				<div class="form-group">
+																					<label class="col-md-2 control-label">From Date</label>
+																					<div class="col-md-6">
+																						<input type="text" name="from_date" placeholder="Date" class="form-control datetimepicker" required="true" />
+																					</div>
+																				</div>
+
+																				<div class="form-group">
+																					<label class="col-md-2 control-label">To Date</label>
+																					<div class="col-md-6">
+																						<input type="text" name="to_date" placeholder="Date" class="form-control datetimepicker" required="true" />
+																					</div>
+																				</div>
+																			
+																				<div class="form-group">
+																					<label class="col-md-2 control-label">Type</label>
+																					<div class="col-md-6">
+																						<select class="form-control" name="type" >
+																							<option></option>
+																							<option>Salary</option>
+																							<option>Bills</option>
+																							<option>Maintenance</option>
+																							<option>Others</option>
+																						</select>
+																					</div>
+																				</div>
+
+																				<div class="form-group">
+																					<label class="col-md-2 control-label">Description</label>
+																					<div class="col-md-6">
+																						<input type="text" name="description" placeholder="Description" class="form-control"/>
+																					</div>
+																				</div>
+
+																				<div class="form-group">
+																						<div class="col-md-offset-2 col-md-6">
+																								<button class="btn btn-primary btn-block" type="submit" data-loading-text="<span class='fa fa-spinner fa-pulse'></span> Processing...."><span class="glyphicon glyphicon-search"></span> Search </button>
+																								<a class="expense-report-print" href="#"><span class="glyphicon glyphicon-print"></span> Print</a>
+																						</div>
+																				</div>
+
+																		</form>
+																	</div>
+																</div>
+																<div class="row">
+																	<div id="expense_report">
+
+																	</div>
 																</div>
 															</div>
-
-															<div class="row">
-																<div id="expense_report">
-
-																</div>
-															</div>
-
-															</div>
-													</div>
+														</div>
+														@endcan
 												</div>
 										</div>
 								</div>

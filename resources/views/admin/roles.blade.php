@@ -305,15 +305,6 @@
                     $('.select-all[data-group="' + group + '"]').prop('checked', false);
                 }
             });
-
-            //Permission will be applied later
-            // "Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
-            //   $('.add-user').hide();
-            // "endif"
-
-            // "Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
-            //   $('.edit-user').hide();
-            // "endif"
         });
     </script>
 

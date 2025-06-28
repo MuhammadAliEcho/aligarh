@@ -47,266 +47,267 @@
 							  <a data-toggle="tab" href="#tab-10"><span class="fa fa-paper-plane"></span> Send SMS</a>
 							</li>
 							@can('smsnotifications.history')
-							<li class="sms-history">
-							  <a data-toggle="tab" href="#tab-11"><span class="fa fa fa-file"></span> History</a>
-							</li>
+								<li class="sms-history">
+								<a data-toggle="tab" href="#tab-11"><span class="fa fa fa-file"></span> History</a>
+								</li>
 							@endcan
 						</ul>
 						<div class="tab-content">
 							<div id="tab-10" class="tab-pane fade in active">
 								<div class="panel-body">
 									@can('smsnotifications.sendsms')
-									<h3> @{{availableSms}} SMS available validity till @{{smsValidity}} <small v-if="ValidateExpireDate == false" ><span class="label label-danger">Expired</span></small> </h3>
-									<div class="hr-line-dashed"></div>
-									<h2> Send Single SMS Notification </h2>
-									<div class="hr-line-dashed"></div>
-									<form id="single" method="POST" v-on:submit.prevent="formSubmit($event)" action="{{ URL('smsnotifications/send') }}" class="form-horizontal">
-										{{ csrf_field() }}
+										<h3> @{{availableSms}} SMS available validity till @{{smsValidity}} <small v-if="ValidateExpireDate == false" ><span class="label label-danger">Expired</span></small> </h3>
+										<div class="hr-line-dashed"></div>
+										<h2> Send Single SMS Notification </h2>
+										<div class="hr-line-dashed"></div>
+										<form id="single" method="POST" v-on:submit.prevent="formSubmit($event)" action="{{ URL('smsnotifications/send') }}" class="form-horizontal">
+											{{ csrf_field() }}
 
-										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label"> Select One </label>
-											<div class="col-md-6">
-												<div class="i-checks"><label> <input type="radio" value="student" name="send_to" v-model="send_to" required=""> <i></i> Student </label></div>
-												<div class="i-checks"><label> <input type="radio" value="guardian" name="send_to" v-model="send_to"> <i></i> Parent/Guardian </label></div>
-												<div class="i-checks"><label> <input type="radio" value="teacher" name="send_to" v-model="send_to"> <i></i> Teacher </label></div>
-												<div class="i-checks"><label> <input type="radio" value="employee" name="send_to" v-model="send_to"> <i></i> Employee </label></div>
+											<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+												<label class="col-md-2 control-label"> Select One </label>
+												<div class="col-md-6">
+													<div class="i-checks"><label> <input type="radio" value="student" name="send_to" v-model="send_to" required=""> <i></i> Student </label></div>
+													<div class="i-checks"><label> <input type="radio" value="guardian" name="send_to" v-model="send_to"> <i></i> Parent/Guardian </label></div>
+													<div class="i-checks"><label> <input type="radio" value="teacher" name="send_to" v-model="send_to"> <i></i> Teacher </label></div>
+													<div class="i-checks"><label> <input type="radio" value="employee" name="send_to" v-model="send_to"> <i></i> Employee </label></div>
+												</div>
 											</div>
-										</div>
 
 
 
-										<table class="table table-hover">
-											<tbody>
-												<tr v-if="send_to == 'student'">
-													<td>Student</td>
-													<td width="40%">
-														<select class="form-control select2student" v-model="selected_student_k">
-															<option v-for="(student, k) in Students" :value="k+1">@{{  student.gr_no+' | '+student.name+' | '+student.phone }}</option>
+											<table class="table table-hover">
+												<tbody>
+													<tr v-if="send_to == 'student'">
+														<td>Student</td>
+														<td width="40%">
+															<select class="form-control select2student" v-model="selected_student_k">
+																<option v-for="(student, k) in Students" :value="k+1">@{{  student.gr_no+' | '+student.name+' | '+student.phone }}</option>
+															</select>
+														</td>
+														<td><a @click="addPhoneInfo(send_to, Students[selected_student_k-1])" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
+													</tr>
+													<tr v-if="send_to == 'guardian'">
+														<td>Guardian</td>
+														<td width="40%">
+															<select class="form-control select2guardian" v-model="selected_guardian_k">
+																<option v-for="(student, k) in Students" v-if="check_no(student.guardian.phone)" :value="k+1">@{{  student.gr_no+' | '+student.name+' | '+student.guardian.phone }}</option>
+															</select>
+														</td>
+														<td><a @click="addPhoneInfo(send_to, Students[selected_guardian_k-1].guardian)" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
+													</tr>
+													<tr v-if="send_to == 'teacher'">
+														<td>Teacher</td>
+														<td width="40%">
+														<select class="form-control select2teacher" v-model="selected_teacher_k">
+															<option v-for="(teacher, k) in Teachers" v-if="check_no(teacher.phone)" :value="k+1">@{{ teacher.name+' | '+teacher.phone }}</option>
 														</select>
-													</td>
-													<td><a @click="addPhoneInfo(send_to, Students[selected_student_k-1])" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
-												</tr>
-												<tr v-if="send_to == 'guardian'">
-													<td>Guardian</td>
-													<td width="40%">
-														<select class="form-control select2guardian" v-model="selected_guardian_k">
-															<option v-for="(student, k) in Students" v-if="check_no(student.guardian.phone)" :value="k+1">@{{  student.gr_no+' | '+student.name+' | '+student.guardian.phone }}</option>
+														</td>
+														<td><a @click="addPhoneInfo(send_to, Teachers[selected_teacher_k-1])" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
+													</tr>
+													<tr v-if="send_to == 'employee'">
+														<td>Employee</td>
+														<td width="40%">
+														<select class="form-control select2employee" v-model="selected_employee_k">
+															<option v-for="(employe, k) in Employee" v-if="check_no(employe.phone)" :value="k+1">@{{ employe.name+' | '+employe.phone }}</option>
 														</select>
-													</td>
-													<td><a @click="addPhoneInfo(send_to, Students[selected_guardian_k-1].guardian)" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
-												</tr>
-												<tr v-if="send_to == 'teacher'">
-													<td>Teacher</td>
-													<td width="40%">
-													<select class="form-control select2teacher" v-model="selected_teacher_k">
-														<option v-for="(teacher, k) in Teachers" v-if="check_no(teacher.phone)" :value="k+1">@{{ teacher.name+' | '+teacher.phone }}</option>
-													</select>
-													</td>
-													<td><a @click="addPhoneInfo(send_to, Teachers[selected_teacher_k-1])" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
-												</tr>
-												<tr v-if="send_to == 'employee'">
-													<td>Employee</td>
-													<td width="40%">
-													<select class="form-control select2employee" v-model="selected_employee_k">
-														<option v-for="(employe, k) in Employee" v-if="check_no(employe.phone)" :value="k+1">@{{ employe.name+' | '+employe.phone }}</option>
-													</select>
-													</td>
-													<td><a @click="addPhoneInfo(send_to, Employee[selected_employee_k-1])" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
-												</tr>
+														</td>
+														<td><a @click="addPhoneInfo(send_to, Employee[selected_employee_k-1])" class="btn btn-info"><span class="fa fa-plus"></span></a></td>
+													</tr>
 
-												<tr v-for="(phone, k) in phoneinfo">
-													<td colspan="2">
-														Send to: @{{phone.send_to}}, Name: @{{phone.name}}, No: @{{phone.no}}
-														<input type="hidden" :name="'phoneinfo['+k+'][send_to]'" :value="phone.send_to">
-														<input type="hidden" :name="'phoneinfo['+k+'][id]'" :value="phone.id">
-														<input type="hidden" :name="'phoneinfo['+k+'][no]'" :value="phone.no">
-														<input type="hidden" :name="'phoneinfo['+k+'][name]'" :value="phone.name">
-													</td>
-													<td><a @click="removePhoneInfo(k)" class="btn btn-info"><span class="fa fa-remove"></span></a></td>
-												</tr>
+													<tr v-for="(phone, k) in phoneinfo">
+														<td colspan="2">
+															Send to: @{{phone.send_to}}, Name: @{{phone.name}}, No: @{{phone.no}}
+															<input type="hidden" :name="'phoneinfo['+k+'][send_to]'" :value="phone.send_to">
+															<input type="hidden" :name="'phoneinfo['+k+'][id]'" :value="phone.id">
+															<input type="hidden" :name="'phoneinfo['+k+'][no]'" :value="phone.no">
+															<input type="hidden" :name="'phoneinfo['+k+'][name]'" :value="phone.name">
+														</td>
+														<td><a @click="removePhoneInfo(k)" class="btn btn-info"><span class="fa fa-remove"></span></a></td>
+													</tr>
 
-											</tbody>
-										</table>
+												</tbody>
+											</table>
 
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Message </label>
-											<div class="col-md-6">
-												<textarea class="form-control" name="message" rows="5" maxlength="600" v-model="message" required></textarea>
-												<span class="text-info">@{{ 600-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Message </label>
+												<div class="col-md-6">
+													<textarea class="form-control" name="message" rows="5" maxlength="600" v-model="message" required></textarea>
+													<span class="text-info">@{{ 600-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
+												</div>
 											</div>
-										</div>
 
-										<transition name="fade">
-											<div v-if="error" class="alert alert-danger alert-dismissible" role="alert">
-												<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-												<strong>Sorry!</strong> @{{ alert_message }}.
-											</div>
-										</transition>
+											<transition name="fade">
+												<div v-if="error" class="alert alert-danger alert-dismissible" role="alert">
+													<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+													<strong>Sorry!</strong> @{{ alert_message }}.
+												</div>
+											</transition>
 
-										<div class="form-group">
-											<div class="col-md-offset-2 col-md-6">
-												<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-												<button v-else class="btn btn-primary btn-block" type="submit"><span class="fa fa-paper-plane"></span> Send </button>
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+													<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+													<button v-else class="btn btn-primary btn-block" type="submit"><span class="fa fa-paper-plane"></span> Send </button>
+												</div>
 											</div>
-										</div>
-									</form>
+										</form>
 									@endcan	
-
 									@can('smsnotifications.sendbulksms')
-									<h2> Send Bulk SMS Notification </h2>
-									<div class="hr-line-dashed"></div>
-									<form id="bulk" method="POST" v-on:submit.prevent="formSubmit($event)" action="{{ URL('smsnotifications/send-bulk') }}" class="form-horizontal">
-										{{ csrf_field() }}
+										<h2> Send Bulk SMS Notification </h2>
+										<div class="hr-line-dashed"></div>
+										<form id="bulk" method="POST" v-on:submit.prevent="formSubmit($event)" action="{{ URL('smsnotifications/send-bulk') }}" class="form-horizontal">
+											{{ csrf_field() }}
 
-										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label"> Select One </label>
-											<div class="col-md-6">
-												<div class="i-checks"><label> <input type="radio" value="students" name="bulk_to" v-model="bulk_to" required=""> <i></i> Students </label></div>
-												<div class="i-checks"><label> <input type="radio" value="guardians" name="bulk_to" v-model="bulk_to"> <i></i> Parents/Guardians </label></div>
-												<div class="i-checks"><label> <input type="radio" value="teachers" name="bulk_to" v-model="bulk_to"> <i></i> Teachers </label></div>
-												<div class="i-checks"><label> <input type="radio" value="employs" name="bulk_to" v-model="bulk_to"> <i></i> Employee </label></div>
+											<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+												<label class="col-md-2 control-label"> Select One </label>
+												<div class="col-md-6">
+													<div class="i-checks"><label> <input type="radio" value="students" name="bulk_to" v-model="bulk_to" required=""> <i></i> Students </label></div>
+													<div class="i-checks"><label> <input type="radio" value="guardians" name="bulk_to" v-model="bulk_to"> <i></i> Parents/Guardians </label></div>
+													<div class="i-checks"><label> <input type="radio" value="teachers" name="bulk_to" v-model="bulk_to"> <i></i> Teachers </label></div>
+													<div class="i-checks"><label> <input type="radio" value="employs" name="bulk_to" v-model="bulk_to"> <i></i> Employee </label></div>
+												</div>
 											</div>
-										</div>
 
-										<template v-if="bulk_to == 'students'">
-										
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Class </label>
-											<div class="col-md-6">
-											<select class="form-control" name="class" v-model="clas">
-												<option :value="0">All</option>
-												<option v-for="(clas, k) in Classe" :value="clas.id">@{{  clas.name }}</option>
-											</select>
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Students </label>
-											<div class="col-md-6">
-												<template v-for="std in Students" v-if="check_no(std.phone) && (clas == 0 || clas == std.class_id)">
-													<input type="hidden" :name="'students['+std.id+'][id]'" :value="std.id">
-													<input type="hidden" :name="'students['+std.id+'][no]'" :value="std.phone">
-													<input type="hidden" :name="'students['+std.id+'][name]'" :value="std.gr_no+' | '+std.name">
-												</template>
-												<select class="form-control" multiple="true" disabled="true">
-													<option v-for="(student, k) in Students" v-if="check_no(student.phone) && (clas == 0 || clas == student.class_id)" :value="student.id">@{{  student.gr_no+' | '+student.name+' | '+student.phone }}</option>
+											<template v-if="bulk_to == 'students'">
+											
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Class </label>
+												<div class="col-md-6">
+												<select class="form-control" name="class" v-model="clas">
+													<option :value="0">All</option>
+													<option v-for="(clas, k) in Classe" :value="clas.id">@{{  clas.name }}</option>
 												</select>
-												<span class="text-info">@{{ selected_students_ks.length }} selected out of @{{ Students.length }} @{{ bulk_to }}</span>
+												</div>
 											</div>
-										</div>
 
-										</template>
-
-										<template v-if="bulk_to == 'guardians'">
-
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Class </label>
-											<div class="col-md-6">
-											<select class="form-control" name="class" v-model="clas">
-												<option :value="0">All</option>
-												<option v-for="(clas, k) in Classe" :value="clas.id">@{{  clas.name }}</option>
-											</select>
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Students </label>
+												<div class="col-md-6">
+													<template v-for="std in Students" v-if="check_no(std.phone) && (clas == 0 || clas == std.class_id)">
+														<input type="hidden" :name="'students['+std.id+'][id]'" :value="std.id">
+														<input type="hidden" :name="'students['+std.id+'][no]'" :value="std.phone">
+														<input type="hidden" :name="'students['+std.id+'][name]'" :value="std.gr_no+' | '+std.name">
+													</template>
+													<select class="form-control" multiple="true" disabled="true">
+														<option v-for="(student, k) in Students" v-if="check_no(student.phone) && (clas == 0 || clas == student.class_id)" :value="student.id">@{{  student.gr_no+' | '+student.name+' | '+student.phone }}</option>
+													</select>
+													<span class="text-info">@{{ selected_students_ks.length }} selected out of @{{ Students.length }} @{{ bulk_to }}</span>
+												</div>
 											</div>
-										</div>
 
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Guardians </label>
-											<div class="col-md-6">
-												<template v-for="student in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)">
-													<input type="hidden" :name="'guardians['+student.guardian.id+'][id]'" :value="student.guardian.id">
-													<input type="hidden" :name="'guardians['+student.guardian.id+'][no]'" :value="student.guardian.phone">
-													<input type="hidden" :name="'guardians['+student.guardian.id+'][name]'" :value="student.guardian.name">
-												</template>
-											<select class="form-control" multiple="true" disabled="true">
-												<option v-for="(student, k) in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)" :value="student.guardian.id">@{{  student.gr_no+' | '+student.name+' | '+student.guardian.phone }}</option>
-											</select>
-											<span class="text-info">@{{ selected_guardians_ks.length }} selected out of @{{ Students.length }} @{{ bulk_to }}</span>
-											</div>
-										</div>
-										</template>
+											</template>
 
-										<div class="form-group" v-if="bulk_to == 'teachers'">
-											<label class="col-md-2 control-label"> Teacher </label>
-											<div class="col-md-6">
-												<template v-for="teacher in Teachers" v-if="check_no(teacher.phone)">
-													<input type="hidden" :name="'teachers['+teacher.id+'][id]'" :value="teacher.id">
-													<input type="hidden" :name="'teachers['+teacher.id+'][no]'" :value="teacher.phone">
-													<input type="hidden" :name="'teachers['+teacher.id+'][name]'" :value="teacher.name">
-												</template>
-											<select class="form-control" multiple="true" disabled="true">
-												<option v-for="(teacher, k) in Teachers" v-if="check_no(teacher.phone)" :value="teacher.id" >@{{ teacher.name+' | '+teacher.phone }}</option>
-											</select>
-											<span class="text-info">@{{ selected_teachers_ks.length }} selected out of @{{ Teachers.length }} @{{ bulk_to }}</span>
-											</div>
-										</div>
+											<template v-if="bulk_to == 'guardians'">
 
-										<div class="form-group" v-if="bulk_to == 'employs'">
-											<label class="col-md-2 control-label"> Employee </label>
-											<div class="col-md-6">
-												<template v-for="employe in Employee" v-if="check_no(employe.phone)">
-													<input type="hidden" :name="'employs['+employe.id+'][id]'" :value="employe.id">
-													<input type="hidden" :name="'employs['+employe.id+'][no]'" :value="employe.phone">
-													<input type="hidden" :name="'employs['+employe.id+'][name]'" :value="employe.name">
-												</template>
-											<select class="form-control" multiple="true" disabled="true">
-												<option v-for="(employe, k) in Employee" v-if="check_no(employe.phone)" :value="employe.id" >@{{ employe.name+' | '+employe.phone }}</option>
-											</select>
-											<span class="text-info">@{{ selected_employs_ks.length }} selected out of @{{ Employee.length }} @{{ bulk_to }}</span>
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Class </label>
+												<div class="col-md-6">
+												<select class="form-control" name="class" v-model="clas">
+													<option :value="0">All</option>
+													<option v-for="(clas, k) in Classe" :value="clas.id">@{{  clas.name }}</option>
+												</select>
+												</div>
 											</div>
-										</div>
 
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Message </label>
-											<div class="col-md-6">
-												<textarea class="form-control" name="message" rows="5" maxlength="600" v-model="message" required></textarea>
-												<span class="text-info">@{{ 600-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Guardians </label>
+												<div class="col-md-6">
+													<template v-for="student in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)">
+														<input type="hidden" :name="'guardians['+student.guardian.id+'][id]'" :value="student.guardian.id">
+														<input type="hidden" :name="'guardians['+student.guardian.id+'][no]'" :value="student.guardian.phone">
+														<input type="hidden" :name="'guardians['+student.guardian.id+'][name]'" :value="student.guardian.name">
+													</template>
+												<select class="form-control" multiple="true" disabled="true">
+													<option v-for="(student, k) in Students" v-if="check_no(student.guardian.phone) && (clas == 0 || clas == student.class_id)" :value="student.guardian.id">@{{  student.gr_no+' | '+student.name+' | '+student.guardian.phone }}</option>
+												</select>
+												<span class="text-info">@{{ selected_guardians_ks.length }} selected out of @{{ Students.length }} @{{ bulk_to }}</span>
+												</div>
 											</div>
-										</div>
+											</template>
 
-										<transition name="fade">
-											<div v-if="error" class="alert alert-danger alert-dismissible" role="alert">
-												<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-												<strong>Sorry!</strong> Invalid Number.
+											<div class="form-group" v-if="bulk_to == 'teachers'">
+												<label class="col-md-2 control-label"> Teacher </label>
+												<div class="col-md-6">
+													<template v-for="teacher in Teachers" v-if="check_no(teacher.phone)">
+														<input type="hidden" :name="'teachers['+teacher.id+'][id]'" :value="teacher.id">
+														<input type="hidden" :name="'teachers['+teacher.id+'][no]'" :value="teacher.phone">
+														<input type="hidden" :name="'teachers['+teacher.id+'][name]'" :value="teacher.name">
+													</template>
+												<select class="form-control" multiple="true" disabled="true">
+													<option v-for="(teacher, k) in Teachers" v-if="check_no(teacher.phone)" :value="teacher.id" >@{{ teacher.name+' | '+teacher.phone }}</option>
+												</select>
+												<span class="text-info">@{{ selected_teachers_ks.length }} selected out of @{{ Teachers.length }} @{{ bulk_to }}</span>
+												</div>
 											</div>
-										</transition>
 
-										<div class="form-group">
-											<div class="col-md-offset-2 col-md-6">
-												<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-												<button v-else class="btn btn-primary btn-block" type="submit"><span class="fa fa-paper-plane"></span> Send </button>
+											<div class="form-group" v-if="bulk_to == 'employs'">
+												<label class="col-md-2 control-label"> Employee </label>
+												<div class="col-md-6">
+													<template v-for="employe in Employee" v-if="check_no(employe.phone)">
+														<input type="hidden" :name="'employs['+employe.id+'][id]'" :value="employe.id">
+														<input type="hidden" :name="'employs['+employe.id+'][no]'" :value="employe.phone">
+														<input type="hidden" :name="'employs['+employe.id+'][name]'" :value="employe.name">
+													</template>
+												<select class="form-control" multiple="true" disabled="true">
+													<option v-for="(employe, k) in Employee" v-if="check_no(employe.phone)" :value="employe.id" >@{{ employe.name+' | '+employe.phone }}</option>
+												</select>
+												<span class="text-info">@{{ selected_employs_ks.length }} selected out of @{{ Employee.length }} @{{ bulk_to }}</span>
+												</div>
 											</div>
-										</div>
-									</form>
+
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Message </label>
+												<div class="col-md-6">
+													<textarea class="form-control" name="message" rows="5" maxlength="600" v-model="message" required></textarea>
+													<span class="text-info">@{{ 600-message.length }} &nbsp; &nbsp; &nbsp; &nbsp; COUNT: @{{ count_msg }}</span>
+												</div>
+											</div>
+
+											<transition name="fade">
+												<div v-if="error" class="alert alert-danger alert-dismissible" role="alert">
+													<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+													<strong>Sorry!</strong> Invalid Number.
+												</div>
+											</transition>
+
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+													<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+													<button v-else class="btn btn-primary btn-block" type="submit"><span class="fa fa-paper-plane"></span> Send </button>
+												</div>
+											</div>
+										</form>
 									@endcan
 								</div>
 							</div>
 
-							<div id="tab-11" class="tab-pane fade sms-history">
-								<div class="panel-body">
-									<h2> SMS History </h2>
-									<div class="hr-line-dashed"></div>
-										<form id="sms_history_form" method="POST" action="{{ URL('smsnotifications/history') }}" class="form-horizontal" target="_blank">
-											{{ csrf_field() }}
+							@can('smsnotifications.history')
+								<div id="tab-11" class="tab-pane fade sms-history">
+									<div class="panel-body">
+										<h2> SMS History </h2>
+										<div class="hr-line-dashed"></div>
+											<form id="sms_history_form" method="POST" action="{{ URL('smsnotifications/history') }}" class="form-horizontal" target="_blank">
+												{{ csrf_field() }}
 
-											<div class="form-group">
-												<label class="col-md-2 control-label">From</label>
-												<div class="col-md-6">
-													<div class="input-daterange input-group" style="width: 100%" id="datepicker">
-														<input type="text" class="input-sm form-control" name="start" required="true" readonly="" placeholder="From Date" />
-														<span class="input-group-addon">to</span>
-														<input type="text" class="input-sm form-control" name="end" required="true" readonly="" placeholder="To Date" />
+												<div class="form-group">
+													<label class="col-md-2 control-label">From</label>
+													<div class="col-md-6">
+														<div class="input-daterange input-group" style="width: 100%" id="datepicker">
+															<input type="text" class="input-sm form-control" name="start" required="true" readonly="" placeholder="From Date" />
+															<span class="input-group-addon">to</span>
+															<input type="text" class="input-sm form-control" name="end" required="true" readonly="" placeholder="To Date" />
+														</div>
 													</div>
 												</div>
-											</div>
 
-											<div class="form-group">
-												<div class="col-md-offset-2 col-md-6">
-													<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+												<div class="form-group">
+													<div class="col-md-offset-2 col-md-6">
+														<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+													</div>
 												</div>
-											</div>
-										</form>
+											</form>
+									</div>
 								</div>
-							</div>
+							@endcan
 						</div>
 					</div>
 				</div>
@@ -362,11 +363,6 @@
 			minViewMode: 0,
 			todayHighlight: true
 		});
-		//Permission will be applied later
-    //   "(Auth::user()->getprivileges->privileges->{$root['content']['id']}->history == 0)"
-    //     $('.sms-history').hide();
-    //   "endif"
-
 	  });
 	</script>
 

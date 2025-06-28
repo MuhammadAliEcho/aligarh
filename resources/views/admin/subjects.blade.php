@@ -46,9 +46,9 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Subjects</a>
                             </li>
                             @can('manage-subjects.add')
-                            <li class="add-subject">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Subject</a>
-                            </li>
+                              <li class="add-subject">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Subject</a>
+                              </li>
                             @endcan
                         </ul>
                         <div class="tab-content">
@@ -105,96 +105,98 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-subject">
-                                <div class="panel-body">
-                                  <h2> Subject Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('manage-subjects.add')
+                              <div id="tab-11" class="tab-pane fade add-subject">
+                                  <div class="panel-body">
+                                    <h2> Subject Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('manage-subjects/add') }}" class="form-horizontal">
-                                      {{ csrf_field() }}
+                                      <form id="tchr_rgstr" method="post" action="{{ URL('manage-subjects/add') }}" class="form-horizontal">
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Class</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="class" style="width: 100%">
-                                            <option></option>
-                                            @foreach($classes AS $class)
-                                              <option value="{{ $class->id }}">{{ $class->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('class'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
-                                          @if ($errors->has('name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('book'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Book</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="book" placeholder="Book" value="{{ old('book') }}" class="form-control"/>
-                                          @if ($errors->has('book'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('book') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Teacher</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="teacher" style="width: 100%">
-                                            <option></option>
-                                            @foreach($teachers AS $teacher)
-                                              <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('teacher'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('examinable'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Examinable</label>
-                                        <div class="col-md-6">
-                                          <select class="form-control" name="examinable">
-                                            <option value="1">Active</option>
-                                            <option value="0">Inactive</option>
-                                          </select>
-                                          @if ($errors->has('examinable'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('examinable') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Class</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="class" style="width: 100%">
+                                              <option></option>
+                                              @foreach($classes AS $class)
+                                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('class'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
+                                            @if ($errors->has('name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('book'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Book</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="book" placeholder="Book" value="{{ old('book') }}" class="form-control"/>
+                                            @if ($errors->has('book'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('book') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Teacher</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="teacher" style="width: 100%">
+                                              <option></option>
+                                              @foreach($teachers AS $teacher)
+                                                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('teacher'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('examinable'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Examinable</label>
+                                          <div class="col-md-6">
+                                            <select class="form-control" name="examinable">
+                                              <option value="1">Active</option>
+                                              <option value="0">Inactive</option>
+                                            </select>
+                                            @if ($errors->has('examinable'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('examinable') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>

@@ -54,9 +54,9 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Routines</a>
                             </li>
                             @can('routines.add')
-                            <li class="add-routine-tab">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Routine</a>
-                            </li>
+                              <li class="add-routine-tab">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Routine</a>
+                              </li>
                             @endcan
                         </ul>
                         <div class="tab-content">
@@ -144,124 +144,126 @@
                                   @endforeach
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-routine-tab">
-                                <div class="panel-body">
-                                  <h2> Routine Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('routines.add')
+                              <div id="tab-11" class="tab-pane fade add-routine-tab">
+                                  <div class="panel-body">
+                                    <h2> Routine Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('routines/add') }}" class="form-horizontal">
-                                      {{ csrf_field() }}
+                                      <form id="tchr_rgstr" method="post" action="{{ URL('routines/add') }}" class="form-horizontal">
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Class</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="class">
-                                            <option></option>
-                                            @foreach($classes AS $class)
-                                              <option value="{{ $class->id }}">{{ $class->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('class'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Section</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="section">
-                                          </select>
-                                          @if ($errors->has('section'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('section') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Subject</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="subject">
-                                          </select>
-                                          @if ($errors->has('subject'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('subject') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Teacher</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="teacher">
-                                            <option></option>
-                                            @foreach($teachers AS $teacher)
-                                              <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('teacher'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('day'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Day</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="day">
-                                            <option></option>
-                                            @foreach($days AS $day)
-                                              <option value="{{ $day }}">{{ $day }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('day'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('day') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('from_time'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Start At</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="from_time" placeholder="Time" value="{{ old('from_time') }}" class="form-control timepicker"/>
-                                          @if ($errors->has('from_time'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('from_time') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('to_time'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">End At</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="to_time" placeholder="Time" value="{{ old('to_time') }}" class="form-control timepicker"/>
-                                          @if ($errors->has('to_time'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('to_time') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Class</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="class">
+                                              <option></option>
+                                              @foreach($classes AS $class)
+                                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('class'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Section</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="section">
+                                            </select>
+                                            @if ($errors->has('section'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('section') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Subject</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="subject">
+                                            </select>
+                                            @if ($errors->has('subject'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('subject') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Teacher</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="teacher">
+                                              <option></option>
+                                              @foreach($teachers AS $teacher)
+                                                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('teacher'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('day'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Day</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="day">
+                                              <option></option>
+                                              @foreach($days AS $day)
+                                                <option value="{{ $day }}">{{ $day }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('day'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('day') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('from_time'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Start At</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="from_time" placeholder="Time" value="{{ old('from_time') }}" class="form-control timepicker"/>
+                                            @if ($errors->has('from_time'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('from_time') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('to_time'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">End At</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="to_time" placeholder="Time" value="{{ old('to_time') }}" class="form-control timepicker"/>
+                                            @if ($errors->has('to_time'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('to_time') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
