@@ -78,9 +78,11 @@
                             <li class="">
                                 <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Roles</a>
                             </li>
-                            <li class="add-role">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Roles</a>
-                            </li>
+                            @can('roles.create')
+                                <li class="add-role">
+                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Roles</a>
+                                </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -99,75 +101,77 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-role">
-                                <div class="panel-body">
-                                    <h2> Role Registration </h2>
-                                    <div class="hr-line-dashed"></div>
+                            @can('roles.create')
+                                <div id="tab-11" class="tab-pane fade add-role">
+                                    <div class="panel-body">
+                                        <h2> Role Registration </h2>
+                                        <div class="hr-line-dashed"></div>
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('roles/create') }}"
-                                        class="form-horizontal">
-                                        {{ csrf_field() }}
+                                        <form id="tchr_rgstr" method="post" action="{{ URL('roles/create') }}"
+                                            class="form-horizontal">
+                                            {{ csrf_field() }}
 
-                                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                                            <label class="col-md-2 control-label">Role</label>
-                                            <div class="col-md-6">
-                                                <input type="text" name="name" placeholder="Role Name"
-                                                    value="{{ old('name') }}" class="form-control" />
-                                                @if ($errors->has('name'))
-                                                    <span class="help-block">
-                                                        <strong><span class="fa fa-exclamation-triangle"></span>
-                                                            {{ $errors->first('name') }}</strong>
-                                                    </span>
-                                                @endif
+                                            <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                                                <label class="col-md-2 control-label">Role</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" name="name" placeholder="Role Name"
+                                                        value="{{ old('name') }}" class="form-control" />
+                                                    @if ($errors->has('name'))
+                                                        <span class="help-block">
+                                                            <strong><span class="fa fa-exclamation-triangle"></span>
+                                                                {{ $errors->first('name') }}</strong>
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
-                                        <!-- Permissions Section -->
-                                        <div class="form-group">
-                                            <label class="col-md-2 control-label">Permissions</label>
-                                            <div class="col-md-10">
-                                                <div class="panel panel-default">
-                                                    <div class="panel-body">
+                                            <!-- Permissions Section -->
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Permissions</label>
+                                                <div class="col-md-10">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-body">
 
-                                                        @foreach ($permissions as $groupName => $groupPermissions)
-                                                            <div class="permission-group" style="margin-bottom: 30px;">
-                                                                <h4>
-                                                                    <label style="font-weight: bold; color: #337ab7;">
-                                                                        <input type="checkbox" class="select-all"
-                                                                            data-group="{{ Str::slug($groupName) }}">
-                                                                        {{ $groupName }}
-                                                                    </label>
-                                                                </h4>
-                                                                <div class="row" style="margin-left: 20px;">
-                                                                    @foreach ($groupPermissions as $permission => $label)
-                                                                        <div class="col-md-4" style="margin-bottom: 10px;">
-                                                                            <label style="font-weight: normal;">
-                                                                                <input type="checkbox" name="permissions[]"
-                                                                                    value="{{ $permission }}"
-                                                                                    class="{{ Str::slug($groupName) }}"
-                                                                                    {{ is_array(old('permissions')) && in_array($permission, old('permissions')) ? 'checked' : '' }}>
-                                                                                {{ $label }}
-                                                                            </label>
-                                                                        </div>
-                                                                    @endforeach
+                                                            @foreach ($permissions as $groupName => $groupPermissions)
+                                                                <div class="permission-group" style="margin-bottom: 30px;">
+                                                                    <h4>
+                                                                        <label style="font-weight: bold; color: #337ab7;">
+                                                                            <input type="checkbox" class="select-all"
+                                                                                data-group="{{ Str::slug($groupName) }}">
+                                                                            {{ $groupName }}
+                                                                        </label>
+                                                                    </h4>
+                                                                    <div class="row" style="margin-left: 20px;">
+                                                                        @foreach ($groupPermissions as $permission => $label)
+                                                                            <div class="col-md-4" style="margin-bottom: 10px;">
+                                                                                <label style="font-weight: normal;">
+                                                                                    <input type="checkbox" name="permissions[]"
+                                                                                        value="{{ $permission }}"
+                                                                                        class="{{ Str::slug($groupName) }}"
+                                                                                        {{ is_array(old('permissions')) && in_array($permission, old('permissions')) ? 'checked' : '' }}>
+                                                                                    {{ $label }}
+                                                                                </label>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <hr>
-                                                        @endforeach
+                                                                <hr>
+                                                            @endforeach
 
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-md-offset-2 col-md-6">
-                                                <button class="btn btn-primary" type="submit"><span
-                                                        class="glyphicon glyphicon-save"></span> Register </button>
+                                            <div class="form-group">
+                                                <div class="col-md-offset-2 col-md-6">
+                                                    <button class="btn btn-primary" type="submit"><span
+                                                            class="glyphicon glyphicon-save"></span> Register </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
 
+                                    </div>
                                 </div>
-                            </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -210,9 +214,11 @@
         };
 
         function loadOptions(data, type, full, meta) {
-            opthtm = '<a href="{{ URL('roles/edit') }}/' + full.id +
-            '" data-toggle="tooltip" title="Edit" class="btn btn-';
-            opthtm += ' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+            opthtm = '';
+            @can('roles.update')
+                opthtm = '<a href="{{ URL('roles/edit') }}/' + full.id + '" data-toggle="tooltip" title="Edit" class="btn btn-';
+                opthtm += ' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+            @endcan
             return opthtm;
         }
 

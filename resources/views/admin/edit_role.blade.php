@@ -150,6 +150,13 @@
 <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 <!-- Select2 -->
 <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+@if ($errors->any())
+    <script>
+        @foreach ($errors->all() as $error)
+            toastr.error("{{ $error }}", "Validation Error");
+        @endforeach
+    </script>
+@endif
 <script type="text/javascript">
 
 $(document).ready(function() {

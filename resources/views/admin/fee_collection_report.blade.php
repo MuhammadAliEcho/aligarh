@@ -38,17 +38,15 @@
 
 				<div class="row ">
 					<div class="col-lg-12">
+						@can('fee-collection-reports.fee.receipts.statment')
 						<div class="ibox">
 							<div class="ibox-title">
 									<h2>Fee Receipts Statment</h2>
 									<div class="hr-line-dashed"></div>
 							</div>
-
 							<div class="ibox-content">
-
 								<form id="fee_receipts_statment" method="POST" action="{{ URL('fee-collection-reports/fee-receipts-statment') }}" class="form-horizontal" target="_blank">
 									{{ csrf_field() }}
-
 									<div class="form-group">
 										<label class="col-md-2 control-label">From</label>
 										<div class="col-md-6">
@@ -59,28 +57,24 @@
 											</div>
 										</div>
 									</div>
-
 									<div class="form-group">
 										<div class="col-md-offset-2 col-md-6">
 												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
 										</div>
 									</div>
 								</form>
-
 							</div>
 						</div>
-
+						@endcan
+						@can('fee-collection-reports.fee.receipts.statment')
 						<div class="ibox">
 							<div class="ibox-title">
 									<h2>Daily Fee Collection Report</h2>
 									<div class="hr-line-dashed"></div>
 							</div>
-
 							<div class="ibox-content">
-
 								<form id="daily_fee_collection" method="POST" action="{{ URL('fee-collection-reports/daily-fee-collection') }}" class="form-horizontal" target="_blank">
 									{{ csrf_field() }}
-
 									<div class="form-group">
 										<label class="col-md-2 control-label">From</label>
 										<div class="col-md-6">
@@ -91,38 +85,34 @@
 											</div>
 										</div>
 									</div>
-
 									<div class="form-group">
 										<div class="col-md-offset-2 col-md-6">
 												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
 										</div>
 									</div>
 								</form>
-
 							</div>
 						</div>
-
+						@endcan
+						@can('fee-collection-reports.free.ship.students')
 						<div class="ibox">
 							<div class="ibox-title">
 								<h2>List Of Full/Half Freeship</h2>
 								<div class="hr-line-dashed"></div>
 							</div>
-
 							<div class="ibox-content">
-
 								<form id="freship_students" method="POST" action="{{ URL('fee-collection-reports/freeship-students') }}" class="form-horizontal" target="_blank">
 									{{ csrf_field() }}
-
 									<div class="form-group">
 										<div class="col-md-offset-2 col-md-6">
 											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
 										</div>
 									</div>
 								</form>
-
 							</div>
 						</div>
-
+						@endcan
+						@can('fee-collection-reports.unpaid.fee.statment')
 						<div class="ibox">
 							<div class="ibox-title">
 								<h2>Bill Remain Statment</h2>
@@ -173,7 +163,8 @@
 
 							</div>
 						</div>
-
+						@endcan
+						@can('fee-collection-reports.yearly.collection.statment')
 						<div class="ibox">
 							<div class="ibox-title">
 								<h2>Yearly Collection Statment</h2>
@@ -196,7 +187,6 @@
 											</select>
 										</div>
 									</div>
-
 									<div class="form-group hidden">
 										<label class="col-md-2 control-label"> Section </label>
 										<div class="col-md-6">
@@ -205,17 +195,15 @@
 										</select>
 										</div>
 									</div>
-
 									<div class="form-group">
 										<div class="col-md-offset-2 col-md-6">
 											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
 										</div>
 									</div>
 								</form>
-
 							</div>
 						</div>
-
+						@endcan
 					</div>
 				</div>
 

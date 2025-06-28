@@ -63,9 +63,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Users</a>
                             </li>
+                            @can('users.create')
                             <li class="add-user">
                               <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Users</a>
                             </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -288,18 +290,24 @@
       };
 
     function loadOptions(data, type, full, meta) {
-
+        opthtm = '';
+        @can('users.update')
         opthtm = '<a href="{{ URL('users/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit" class="btn btn-';
         opthtm  +=   (full.active == 1)? 'default' : 'danger';
         opthtm  +=  ' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+        @endcan
         
         switch(full.user_type) {
             case 'teacher':
+              @can('teacher.profile')
               opthtm += '<a href="{{ URL('teacher/profile') }}/'+full.foreign_id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
+              @endcan
                 break;
 
             case 'employee':
+              @can('teacher.profile')
               opthtm += '<a href="{{ URL('employee/profile') }}/'+full.foreign_id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
+              @endcan  
                 break;
 
             default:

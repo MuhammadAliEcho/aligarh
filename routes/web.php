@@ -252,20 +252,20 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::prefix('fee-collection-reports')->name('fee-collection-reports')->group(function(){
         Route::get('/', [FeeCollectionReportController::class, 'Index'])->name('.index');
-        Route::post('/fee-receipts-statment', [FeeCollectionReportController::class, 'Index'])->name('.feereceiptsstatment');
-        Route::post('/daily-fee-collection', [FeeCollectionReportController::class, 'DailyFeeCollection'])->name('.dailyfeecollection');
-        Route::post('/freeship-students', [FeeCollectionReportController::class, 'FreeshipStudents'])->name('.freeshipstudents');
-        Route::post('/unpaid-fee-statment', [FeeCollectionReportController::class, 'UnpaidFeeStatment'])->name('.unpaidfeestatment');
-        Route::post('/yearly-collection-statment', [FeeCollectionReportController::class, 'YearlyCollectionStatment'])->name('.yearlycollectionstatment');
+        Route::post('/fee-receipts-statment', [FeeCollectionReportController::class, 'FeeReceiptStatment'])->name('.fee.receipts.statment');
+        Route::post('/daily-fee-collection', [FeeCollectionReportController::class, 'DailyFeeCollection'])->name('.daily.fee.collection');
+        Route::post('/freeship-students', [FeeCollectionReportController::class, 'FreeshipStudents'])->name('.free.ship.students');
+        Route::post('/unpaid-fee-statment', [FeeCollectionReportController::class, 'UnpaidFeeStatment'])->name('.unpaid.fee.statment');
+        Route::post('/yearly-collection-statment', [FeeCollectionReportController::class, 'YearlyCollectionStatment'])->name('.yearly.collection.statment');
     });
 
     Route::prefix('exam-reports')->name('exam-reports')->group(function(){
         Route::get('/', [ExamReportController::class, 'Index'])->name('.index');
-        Route::get('/findstu', [ExamReportController::class, 'FindStudent'])->name('.findstudent');
-        Route::post('/tabulation-sheet', [ExamReportController::class, 'GetExamTabulation'])->name('.tabulationsheet');
-        Route::post('/award-list', [ExamReportController::class, 'AwardList'])->name('.awardlist');
-        Route::post('/average-result', [ExamReportController::class, 'AverageResult'])->name('.averageresult');
-        Route::post('/result-transcript', [ExamReportController::class, 'ResultTranscript'])->name('.resulttranscript');
+        Route::post('/tabulation-sheet', [ExamReportController::class, 'GetExamTabulation'])->name('.tabulation.sheet');
+        Route::post('/award-list', [ExamReportController::class, 'AwardList'])->name('.award.list');
+        Route::post('/average-result', [ExamReportController::class, 'AverageResult'])->name('.average.result');
+        Route::get('/findstu', [ExamReportController::class, 'FindStudent'])->name('.find.student');
+        Route::post('/result-transcript', [ExamReportController::class, 'ResultTranscript'])->name('.result.transcript');
     });
 
     Route::prefix('users')->name('users')->group(function(){
@@ -284,14 +284,14 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::prefix('system-setting')->name('system-setting')->group(function(){
         Route::get('/', [SystemSettingController::class, 'GetSetting'])->name('.index');
-        Route::get('/print-invoice-history', [SystemSettingController::class, 'PrintInvoiceHistory'])->name('.printinvoicehistory');
         Route::post('/update', [SystemSettingController::class, 'UpdateSetting'])->name('.update');
+        Route::get('/print-invoice-history', [SystemSettingController::class, 'PrintInvoiceHistory'])->name('.print.invoice.history');
         Route::post('/history', [SystemSettingController::class, 'History'])->name('.history');
     });
 
     Route::prefix('fee-scenario')->name('fee-scenario')->group(function(){
         Route::get('/', [FeeScenarioController::class, 'Index'])->name('.index');
-        Route::post('/update', [FeeScenarioController::class, 'UpdateScenario'])->name('.updatescenario');
+        Route::post('/update', [FeeScenarioController::class, 'UpdateScenario'])->name('.update.scenario');
     });
 
     Route::prefix('exam-grades')->name('exam-grades')->group(function(){

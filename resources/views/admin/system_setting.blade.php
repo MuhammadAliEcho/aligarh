@@ -41,17 +41,24 @@
 								<div class="col-lg-12">
 										<div class="tabs-container">
 												<ul class="nav nav-tabs">
-													<li class="active">
-														<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> General Info</a>
-													</li>
-													<li>
-														<a data-toggle="tab" href="#tab-11"><span class="fa fa-list"></span> Package Info</a>
-													</li>
+													@can('system-setting.update')
+														<li class="active">
+															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> General Info</a>
+														</li>
+													@endcan
+													@can('system-setting.print.invoice.history')
+														<li>
+															<a data-toggle="tab" href="#tab-11"><span class="fa fa-list"></span> Package Info</a>
+														</li>
+													@endcan
+													@can('system-setting.history')
 													<li>
 														<a data-toggle="tab" href="#tab-12"><span class="fa fa-list"></span> SMS Package Info</a>
 													</li>
+													@endcan
 												</ul>
 												<div class="tab-content">
+													@can('system-setting.update')
 														<div id="tab-10" class="tab-pane fade fade in active add-guardian">
 																<div class="panel-body">
 																	<h2> General </h2>
@@ -158,7 +165,8 @@
 
 																</div>
 														</div>
-
+													@endcan
+													@can('system-setting.print.invoice.history')
 														<div id="tab-11" class="tab-pane fade fade in ">
 															<div class="panel-body">
 																<h2> Invoices <small> 4000/month billing backage </small> <a class="" title="Download" data-toggle="tooltip" href="{{ URL('system-setting/print-invoice-history') }}" target="_blank"> <span class="fa fa-download"> </span> </a> </h2>
@@ -187,7 +195,8 @@
 																</table>
 															</div>
 														</div>
-
+													@endcan
+													@can('system-setting.history')
 														<div id="tab-12" class="tab-pane fade in">
 															<div class="panel-body">
 																<h2> SMS Package <small> <span class="label label-info">PREMIUM</span> </small> </h2>
@@ -241,6 +250,7 @@
 																</form>
 															</div>
 														</div>
+													@endcan
 
 												</div>
 										</div>
