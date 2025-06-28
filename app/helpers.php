@@ -1,15 +1,24 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 
-//for blade li active class route Active 
 if (!function_exists('isActiveRoute')) {
     function isActiveRoute($routes, $output = 'active')
     {
         $current = Route::currentRouteName();
 
         if (is_array($routes)) {
-            return in_array($current, $routes) ? $output : '';
+            foreach ($routes as $route) {
+                if (str_ends_with($route, '*')) {
+                    if (str_starts_with($current, rtrim($route, '*'))) {
+                        return $output;
+                    }
+                } else {
+                    if ($current === $route) {
+                        return $output;
+                    }
+                }
+            }
+            return '';
         }
 
         if (str_ends_with($routes, '*')) {

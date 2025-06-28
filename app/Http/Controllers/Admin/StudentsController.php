@@ -69,7 +69,7 @@ class StudentsController extends Controller
 				'dob'       =>  'required',
 				'doa'       =>  'required',
 				'doe'       =>  'required',
-				'img'       =>  'image|mimes:jpeg,png,jpg|max:4096',
+				'img'       => 	'image|mimes:jpg,jpeg|max:2048',
 		]);
 	}
 
