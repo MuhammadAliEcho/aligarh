@@ -130,6 +130,42 @@
 																				</div>
 																			</div>
 
+																			<div class="form-group{{ ($errors->has('bank_name'))? ' has-error' : '' }}">
+																				<label class="col-md-2 control-label">Bank</label>
+																				<div class="col-md-6">
+																					<input type="text" name="bank_name" placeholder="Name" value="{{ old('bank_name', config('systemInfo.bank_name')) }}" class="form-control"/>
+																					@if ($errors->has('bank_name'))
+																							<span class="help-block">
+																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('bank_name') }}</strong>
+																							</span>
+																					@endif
+																				</div>
+																			</div>
+
+																			<div class="form-group{{ ($errors->has('bank_address'))? ' has-error' : '' }}">
+																				<label class="col-md-2 control-label">Bank Address</label>
+																				<div class="col-md-6">
+																					<input type="text" name="bank_address" placeholder="Address" value="{{ old('bank_address', config('systemInfo.bank_address')) }}" class="form-control"/>
+																					@if ($errors->has('bank_address'))
+																							<span class="help-block">
+																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('bank_address') }}</strong>
+																							</span>
+																					@endif
+																				</div>
+																			</div>
+
+																			<div class="form-group{{ ($errors->has('bank_account_no'))? ' has-error' : '' }}">
+																				<label class="col-md-2 control-label">Bank Account No</label>
+																				<div class="col-md-6">
+																					<input type="text" name="bank_account_no" placeholder="Account no" value="{{ old('bank_account_no', config('systemInfo.bank_account_no')) }}" class="form-control"/>
+																					@if ($errors->has('bank_account_no'))
+																							<span class="help-block">
+																									<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('bank_account_no') }}</strong>
+																							</span>
+																					@endif
+																				</div>
+																			</div>
+
 																			<div class="form-group{{ ($errors->has('student_capacity'))? ' has-error' : '' }}">
 																				<label class="col-md-2 control-label">Student Capacity</label>
 																				<div class="col-md-6">

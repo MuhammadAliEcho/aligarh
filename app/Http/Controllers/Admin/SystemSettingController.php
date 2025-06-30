@@ -30,6 +30,9 @@ class SystemSettingController extends Controller
 			'title'  =>  'required',
 			'email'  =>  'nullable|email',
 			'address'  =>  'required',
+			'bank_name'  =>  'required',
+			'bank_address'  =>  'required',
+			'bank_account_no'  =>  'required',
 		]);
 
 		$ConfigWriter = new ConfigWriter('systemInfo');
@@ -39,6 +42,9 @@ class SystemSettingController extends Controller
 				'email' => $request->input('email'),
 				'address' => $request->input('address'),
 				'contact_no' => $request->input('contact_no'),
+				'bank_name'  =>  $request->input('bank_name'),
+				'bank_address'  =>  $request->input('bank_address'),
+				'bank_account_no'  =>  $request->input('bank_account_no'),
 			]);
 		$ConfigWriter->save();
 
