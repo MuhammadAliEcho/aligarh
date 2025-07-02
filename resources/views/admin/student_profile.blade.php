@@ -180,15 +180,19 @@
 									<tr v-for="certificate in student.certificates">
 										<td>@{{ certificate.title }}</td>
 										<td>
+											@can('students.certificate.create')
 											<a :href="URL+'/students/certificate/update?certificate_id='+certificate.id" title="view" data-toggle="tooltip"><span class="fa fa-file-pdf-o"></span></a>
+											@endcan
 										</td>
 									</tr>
 								</tbody>
 							</table>
+							@can('students.certificate.create')
 							<form :action="URL+'/students/certificate/new'" method="get">
 								<input type="hidden" name="student_id" v-model="student.id">
 								<button class="btn btn-primary btn-block">Create Certificate</button>
 							</form>
+							@endcan
 						</div>
 					</div>
 
@@ -289,8 +293,9 @@
 									</tr>
 								</tbody>
 							</table>
-
+							@can('students.interview.update.create')
 							<a :href="URL+'/students/interview/'+student.id" class=" btn btn-primary btn-block"><span class="fa fa-podcast"></span> Parent Interview</a>
+							@endcan
 
 						</div>
 					</div>
@@ -325,8 +330,8 @@
 				student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
 				leavingfrm: false,
 				loading: false,
-				allow_user_leave: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->leave }},
-				allow_user_certificate: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->certificate }}
+				allow_user_leave: {{ Auth::user()->hasPermissionTo('students.leave') ? 'true' : 'false' }},
+				allow_user_certificate: {{ Auth::user()->hasPermissionTo('students.certificate.get') ? 'true' : 'false' }},
 			},
 			mounted: function(){
 				$("[data-toggle='tooltip']").on('mouseenter', function(){

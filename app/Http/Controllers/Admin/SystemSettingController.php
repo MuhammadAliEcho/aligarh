@@ -10,35 +10,29 @@ use PDF;
 
 class SystemSettingController extends Controller
 {
-
-	protected $data, $Request;
-
-	public function __Construct($Routes, Request $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
-	}
-
-
 	public function GetSetting(){
-		$this->data['system_invoices']	=	SystemInvoice::all();
-		return view('admin.system_setting', $this->data);
+		$data['system_invoices']	=	SystemInvoice::all();
+		return view('admin.system_setting', $data);
 	}
 
 	public function PrintInvoiceHistory(){
-		$this->data['system_invoices']	=	SystemInvoice::all();
-		$pdf = PDF::loadView('admin.printable.system_invoice_history', $this->data)->setPaper('a4');
+		$data['system_invoices']	=	SystemInvoice::all();
+		$pdf = PDF::loadView('admin.printable.system_invoice_history', $data)->setPaper('a4');
 		return $pdf->stream('invoice-history-2018.pdf');
-//		return $pdf->download('invoice-history-2018.pdf');
-//		return view('admin.printable.system_invoice_history', $this->data);
+		//return $pdf->download('invoice-history-2018.pdf');
+		//return view('admin.printable.system_invoice_history', $data);
 	}
 
 	public function UpdateSetting(Request $request){
 
-		$this->validate($this->Request, [
+		$this->validate($request, [
 			'name'  =>  'required',
 			'title'  =>  'required',
 			'email'  =>  'nullable|email',
 			'address'  =>  'required',
+			'bank_name'  =>  'required',
+			'bank_address'  =>  'required',
+			'bank_account_no'  =>  'required',
 		]);
 
 		$ConfigWriter = new ConfigWriter('systemInfo');
@@ -48,6 +42,9 @@ class SystemSettingController extends Controller
 				'email' => $request->input('email'),
 				'address' => $request->input('address'),
 				'contact_no' => $request->input('contact_no'),
+				'bank_name'  =>  $request->input('bank_name'),
+				'bank_address'  =>  $request->input('bank_address'),
+				'bank_account_no'  =>  $request->input('bank_account_no'),
 			]);
 		$ConfigWriter->save();
 

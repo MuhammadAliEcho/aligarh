@@ -62,5 +62,6 @@ class Kernel extends HttpKernel
         'client'    =>  \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+        'route_has_permission' => \App\Http\Middleware\RouteNamePermissionsMiddleware::class
     ];
 }

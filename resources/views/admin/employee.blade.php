@@ -43,9 +43,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -59,9 +61,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Employees</a>
                             </li>
-                            <li class="add-employee">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Employee</a>
-                            </li>
+                            @can('employee.add')
+                              <li class="add-employee">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Employee</a>
+                              </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -92,151 +96,140 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-employee">
-                                <div class="panel-body">
-                                  <h2> Employee Registration </h2>
-                                  <div class="hr-line-dashed"></div>
-
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('employee/add') }}" class="form-horizontal" enctype="multipart/form-data">
-                                      {{ csrf_field() }}
-
-                                      <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
-                                          @if ($errors->has('name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('relegion'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Relegion</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="relegion" placeholder="Relegion" value="{{ old('relegion') }}" class="form-control"/>
-                                          @if ($errors->has('relegion'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('relegion') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('img'))? ' has-error' : '' }}">
-                                        <div class="col-md-2">
-                                          <span class="btn btn-default btn-block btn-file">
-                                            <input type="file" name="img" accept="image/*" id="imginp" />
-                                              <span class="fa fa-image"></span>
-                                              Upload Image
-                                          </span>
-                                        </div>
-                                        <div class="col-md-6">
-                                          <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" />
-                                          @if ($errors->has('img'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('gender'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Gender</label>
-                                        <div class="col-md-6">
-                                          <select class="form-control" name="gender">
-                                            <option></option>
-                                            <option>Male</option>
-                                            <option>Female</option>
-                                          </select>
-                                          @if ($errors->has('gender'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gender') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">E-Mail</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="email" placeholder="E-Mail" value="{{ old('email') }}" class="form-control"/>
-                                          @if ($errors->has('email'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('role'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Employee Role</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="role" placeholder="Employee Role" value="{{ old('role') }}" class="form-control"/>
-                                          @if ($errors->has('role'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('role') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('qualification'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Qualification</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="qualification" placeholder="Qualification" value="{{ old('qualification') }}" class="form-control"/>
-                                          @if ($errors->has('qualification'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qualification') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                        <label class="col-md-2 control-label">Address</label>
-                                        <div class="col-md-6">
-                                          <textarea type="text" name="address" placeholder="Address" class="form-control">{{ old('address') }}</textarea>
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Contact No</label>
-                                        <div class="col-md-6">
-                                          <div class="input-group m-b">
-                                            <span class="input-group-addon">+92</span>
-                                            <input type="text" name="phone" value="{{ old('phone') }}" placeholder="Contact No" class="form-control" data-mask="9999999999"/>
+                            @can('employee.add')
+                              <div id="tab-11" class="tab-pane fade add-employee">
+                                  <div class="panel-body">
+                                    <h2> Employee Registration </h2>
+                                    <div class="hr-line-dashed"></div>
+                                      <form id="tchr_rgstr" method="post" action="{{ URL('employee/add') }}" class="form-horizontal" enctype="multipart/form-data">
+                                        {{ csrf_field() }}
+                                        <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
+                                            @if ($errors->has('name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                          @if ($errors->has('phone'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('phone') }}</strong>
-                                              </span>
-                                          @endif
                                         </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('salary'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Salary</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="salary" value="{{ old('salary') }}" placeholder="Salary" class="form-control"/>
-                                          @if ($errors->has('salary'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('salary') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('relegion'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Relegion</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="relegion" placeholder="Relegion" value="{{ old('relegion') }}" class="form-control"/>
+                                            @if ($errors->has('relegion'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('relegion') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
-
-                                </div>
-                            </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('img'))? ' has-error' : '' }}">
+                                          <div class="col-md-2">
+                                            <span class="btn btn-default btn-block btn-file">
+                                              <input type="file" name="img" accept="image/*" id="imginp" />
+                                                <span class="fa fa-image"></span>
+                                                Upload Image
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" />
+                                            @if ($errors->has('img'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('gender'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Gender</label>
+                                          <div class="col-md-6">
+                                            <select class="form-control" name="gender">
+                                              <option></option>
+                                              <option>Male</option>
+                                              <option>Female</option>
+                                            </select>
+                                            @if ($errors->has('gender'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gender') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">E-Mail</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="email" placeholder="E-Mail" value="{{ old('email') }}" class="form-control"/>
+                                            @if ($errors->has('email'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('role'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Employee Role</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="role" placeholder="Employee Role" value="{{ old('role') }}" class="form-control"/>
+                                            @if ($errors->has('role'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('role') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('qualification'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Qualification</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="qualification" placeholder="Qualification" value="{{ old('qualification') }}" class="form-control"/>
+                                            @if ($errors->has('qualification'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('qualification') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                          <label class="col-md-2 control-label">Address</label>
+                                          <div class="col-md-6">
+                                            <textarea type="text" name="address" placeholder="Address" class="form-control">{{ old('address') }}</textarea>
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Contact No</label>
+                                          <div class="col-md-6">
+                                            <div class="input-group m-b">
+                                              <span class="input-group-addon">+92</span>
+                                              <input type="text" name="phone" value="{{ old('phone') }}" placeholder="Contact No" class="form-control" data-mask="9999999999"/>
+                                            </div>
+                                            @if ($errors->has('phone'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('phone') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('salary'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Salary</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="salary" value="{{ old('salary') }}" placeholder="Salary" class="form-control"/>
+                                            @if ($errors->has('salary'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('salary') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -281,15 +274,16 @@
     }
 
     function loadOptions(data, type, full, meta) {
+        opthtm = '';
+        @can('employee.profile')
         opthtm = '<a href="{{ URL('employee/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn '+ ((full.user_id != null)? ((full.active == 1)? 'btn-info' : 'btn-primary') : 'btn-default') +' btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
-
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
-          opthtm += '<a href="{{ URL('employee/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
-
-        if(full.user_id != null){
-          opthtm += '<a href="{{ URL('users/edit') }}/'+full.user_id+'" data-toggle="tooltip" title="Edit User" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        }
+        @endcan
+        @can('employee.edit.post')
+        opthtm += '<a href="{{ URL('employee/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Profile" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
+        @can('users.update')
+        opthtm += '<a href="{{ URL('users/edit') }}/'+full.user_id+'" data-toggle="tooltip" title="Edit User" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
 
         return opthtm;
     }
@@ -404,16 +398,6 @@
       $("#imginp").change(function(){
           readURL(this);
       });
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-employee').hide();
-      @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-employee').hide();
-      @endif
-
-
       });
     </script>
 

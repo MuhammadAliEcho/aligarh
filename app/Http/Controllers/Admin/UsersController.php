@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\UserPrivilege;
-use App\AdminContent;
 use App\Employee;
 use App\Teacher;
 use App\User;
@@ -14,91 +12,41 @@ use Auth;
 
 class UsersController extends Controller
 {
+    public function index(Request $request)
+    {
+      if ($request->ajax()) {
+         $query = User::with('roles')->select('id', 'name', 'email', 'foreign_id', 'user_type', 'active')->NotDeveloper()->staff();
 
-    protected $data, $User, $Request;
-
-    public function __Construct($Routes, Request $Request){
-      $this->data['root'] = $Routes;
-      $this->Request = $Request;
-    }
-
-    protected function PostValidate(){
-      $this->validate($this->Request, [
-          'name'  =>  'sometimes|required|unique:users,name'. (($this->data['root']['option'] !== '')? ','.$this->User->id : ''),
-          'email' =>  'sometimes|required|email|unique:users,email'. (($this->data['root']['option'] !== '')? ','.$this->User->id : ''),
-          'status'  =>  'required',
-          'allow_session'  =>  'required',
-          'password' =>  'sometimes|nullable|between:6,12',
-          're_password'  =>  'sometimes|nullable|between:6,12|same:password',
-      ]);
-    }
-
-    public function GetUsers(){
-
-      if ($this->Request->ajax()) {
-        return Datatables::eloquent(User::select('id', 'name', 'email', 'role', 'foreign_id', 'user_type', 'active')->Staff())->make(true);
+        return DataTables::eloquent($query)
+            ->addColumn('roles', function (User $user) {
+                return $user->roles->pluck('name')->join(', ');
+            })
+            ->make(true);
       }
-
-      $this->Content();
-      return view('admin.users', $this->data);
+      return view('admin.users');
     }
 
-    public function EditUser(){
-      $this->Content();
-      $this->data['user'] = User::where('id', $this->data['root']['option'])->Staff()->firstOrFail();
-      return view('admin.edit_user', $this->data);
-    }
 
-    public function PostEditUser(Request $request){
-
-      $this->Request = $request;
-      $this->User =  User::where('id', $this->data['root']['option'])->Staff()->firstOrFail();;
-        if($this->User->created_by == 0 && Auth::user()->id != 1){
-        return redirect('users')->with([
-        'toastrmsg' => [
-          'type' => 'warning', 
-          'title'  =>  'Users Registration',
-          'msg' =>  '"'.$this->User->name.'" User Can\'t be Editable'
-          ]
-        ]);
-        }
-
-      $this->PostValidate();
-      $this->SetAttributes();
-      if (Auth::user()->getprivileges->privileges->{$this->data['root']['content']['id']}->editpwd && !empty($this->Request->input('password'))) {
-        $this->User->password = bcrypt($this->Request->input('password'));
-      }
-
-      $this->User->updated_by  = Auth::user()->id;
-      $this->User->save();
-
-      $this->SetPrivileges();
-
-      return redirect('users')->with([
-        'toastrmsg' => [
-          'type' => 'success', 
-          'title'  =>  'Users Registration',
-          'msg' =>  'Save Changes Successfull'
-          ]
+    public function create(Request $request)
+    {
+      $request->validate([
+          'name'            =>  'required|unique:users,name',
+          'email'           =>  'required|email|unique:users,email',
+          'status'          =>  'required',
+          'allow_session'   =>  'required',
+          'password'        =>  'required|between:6,12',
+          're_password'     =>  'required|between:6,12|same:password',
       ]);
-    }
 
-    public function AddUser(Request $request){
-
-      $this->Request = $request;
-      $this->User = new User;
-
-      switch ($this->Request->input('type')) {
-        case 'teacher':
-          $data = Teacher::findOrfail($this->Request->input('teacher'));
-          $this->User->user_type = 'teacher';
-          $this->User->role = 'Teacher';
+      switch ($request->input('type')) {
+        case 'employee':
+          $data = Employee::findOrfail($request->input('employee'));
+          $role_id = 3;
           break;
 
-        case 'employee':
-          $data = Employee::findOrfail($this->Request->input('employee'));
-          $this->User->user_type = 'employee';
-          $this->User->role = $data->role;
+        case 'teacher':
+          $data = Teacher::findOrfail($request->input('teacher'));
+          $role_id = 4; 
           break;
 
         default:
@@ -109,21 +57,22 @@ class UsersController extends Controller
           break;
       }
 
-      $this->User->foreign_id = $data->id;
-      $this->User->contact_no = $data->phone;
+      $User = User::create([
+        'name'              => $request->input('name'),
+        'email'             => $request->input('email'),
+        'password'          => bcrypt($request->input('password')),
+        'active'            => $request->input('status'),
+        'academic_session'  => Auth::user()->academic_session,
+        'allow_session'   =>  $request->input('allow_session'),
+        'settings'          => Auth::user()->settings,
+        'foreign_id'        => $data->id,
+        'contact_no'        => $data->phone,
+        'user_type'         => $request->input('type'),
+      ]);
 
-      $this->PostValidate();
-      $this->SetAttributes();
-      $this->User->name = $this->Request->input('name');
-      $this->User->email = $this->Request->input('email');
-      $this->User->password = bcrypt($this->Request->input('password'));
-      $this->User->created_by  = Auth::user()->id;
-      $this->User->save();
-
-      $data->user_id = $this->User->id;
+      $User->assignRole($role_id);
+      $data->user_id = $User->id;
       $data->save();
-
-      $this->SetPrivileges();
 
       return redirect('users')->with([
         'toastrmsg' => [
@@ -132,52 +81,43 @@ class UsersController extends Controller
           'msg' =>  'Registration Successfull'
           ]
       ]);
-
     }
 
-    protected function SetAttributes(){
-
-      $this->User->active = $this->Request->input('status');
-      $this->User->allow_content = "Admin";
-      $this->User->academic_session = Auth::user()->academic_session;
-      $this->User->settings   = Auth::user()->settings;
-
+    public function edit($id){
+      $data['user'] = User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
+      return view('admin.edit_user', $data);
     }
 
-    protected function SetPrivileges(){
-      $privileges = config('privileges');
-      if ($this->Request->has('privileges')) {
-        foreach($this->Request->input('privileges') as $key => $value) {
-          $privileges[$key]['default']  = (Auth::user()->getprivileges->privileges->$key->default)? 1 : 0;
-          if (isset($value['options'])) {
-            foreach ($value['options'] as $v) {
-                $privileges[$key][$v] = (Auth::user()->getprivileges->privileges->$key->$v)? 1 : 0;
-            }
-          }
-        }
+
+    public function update(Request $request, $id){
+      $User =  User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
+      $validatedData  = $request->validate([
+          'status'          =>  'required',
+          'allow_session'   =>  'required',
+          'password'        =>  'sometimes|nullable|between:6,12',
+          're_password'     =>  'sometimes|nullable|between:6,12|same:password',
+      ]);
+
+
+      // if (Auth::user()->getprivileges->privileges->{$this->data['root']['content']['id']}->editpwd
+      if (isset($validatedData['password'])) {
+          $validatedData['password'] = Hash::make($validatedData['password']);
       }
 
-        UserPrivilege::updateOrCreate(
-            ['user_id' => $this->User->id],
-            [
-              'privileges' => $privileges,
-              'allow_session' => $this->Request->input('allow_session')
-            ]
-          );
+      $User->update([
+        'active'            =>  $validatedData['status'],
+        'allow_session'     =>  $validatedData['allow_session'],
+        'password'          =>  $validatedData['password'],
+        'academic_session'  =>  Auth::user()->academic_session,
+        'settings'          =>  Auth::user()->settings,
+      ]);
+
+      return redirect('users')->with([
+        'toastrmsg' => [
+          'type' => 'success', 
+          'title'  =>  'Users Registration',
+          'msg' =>  'Save Changes Successfull'
+          ]
+      ]);
     }
-
-
-    protected function Content(){
-      $content = AdminContent::select('id','label', 'options')
-                                ->where('type', 'parent-content')
-                                ->Orwhere('type', 'child-content')
-//                                ->orderBy('order_no')
-                                ->get();
-      foreach ($content as $key => $value) {
-        if(Auth::user()->getprivileges->NavPrivileges($value->id, 'default')) {
-          $this->data['content'][]  = $value;
-        }
-      }
-    }
-
 }

@@ -21,9 +21,11 @@
 									<h2>Settings</h2>
 									<ol class="breadcrumb">
 										<li>Home</li>
+										@can('exam-grades.update')
 											<li Class="active">
-													<a>Exam Grades</a>
+												<a>Exam Grades</a>
 											</li>
+										@endcan
 									</ol>
 							</div>
 							<div class="col-lg-4 col-md-6">
@@ -39,11 +41,14 @@
 								<div class="col-lg-12">
 										<div class="tabs-container">
 												<ul class="nav nav-tabs">
+													@can('exam-grades.update')
 														<li class="active">
 															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Exam Grades</a>
 														</li>
+													@endcan
 												</ul>
 												<div class="tab-content">
+													@can('exam-grades.update')
 														<div id="tab-11" class="tab-pane fade fade in active add-guardian">
 																<div class="panel-body">
 																	
@@ -98,6 +103,7 @@
 
 																</div>
 														</div>
+													@endcan
 												</div>
 										</div>
 								</div>

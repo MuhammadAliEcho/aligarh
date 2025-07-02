@@ -27,9 +27,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -104,7 +106,8 @@
                                         </div>
                                       </div>
 
-                                      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->editpwd)
+                                      {{-- Permission will be applied later --}}
+                                      {{-- (Auth::user()->getprivileges->privileges->{$root['content']['id']}->editpwd) --}}
                                       <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
                                         <label class="col-md-2 control-label">Password</label>
                                         <div class="col-md-6">
@@ -128,43 +131,7 @@
                                           @endif
                                         </div>
                                       </div>
-                                      @endif
-
-                                      <div class="panel panel-success">
-                                        <div class="panel-heading">
-                                          Select Options To Allow User
-                                        </div>
-                                        <div class="panel-body">
-
-                                          @foreach(collect($content)->chunk(3) AS $chunks)
-                                            <div class="row">
-                                            @foreach($chunks AS $key => $chunk)
-                                              <div class="col-sm-4 col-md-4">
-                                                <div class="checkbox checkbox-success">
-                                                  <input id="checkbox_{{ $chunk->id }}" name="privileges[{{ $chunk->id }}][default]" value="1" type="checkbox">
-                                                  <label for="checkbox_{{ $chunk->id }}">
-                                                    {{ $chunk->label }}
-                                                  </label>
-                                                </div>
-                                                @if(COUNT($chunk->options) >= 1 )
-                                                <b>Option:</b>
-                                                <select class="select2 form-control" id="select_{{ $chunk->id }}" multiple="multiple" name="privileges[{{$chunk->id}}][options][]" style="width: 100%">
-                                                  @foreach($chunk->options AS $k => $option)
-                                                    @if(Auth::user()->getprivileges->privileges->{$chunk->id}->{$k})
-                                                      <option value="{{ $k }}">{{ $option }}</option>
-                                                    @endif
-                                                  @endforeach
-                                                </select>
-                                                @endif
-                                              </div>
-                                            @endforeach
-                                            </div>
-                                          @endforeach
-
-
-                                        </div>
-                                      </div>
-
+                                      {{-- endif --}}
                                       <div class="form-group">
                                           <div class="col-md-offset-2 col-md-6">
                                               <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Update </button>

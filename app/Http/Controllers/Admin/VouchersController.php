@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Carbon\Carbon;
@@ -16,16 +16,8 @@ use App\Http\Controllers\Controller;
 
 class VouchersController extends Controller
 {
-
-    protected $data, $Voucher, $Request;
-
-    public function __Construct($Routes, $request){
-      $this->data['root'] = $Routes;
-      $this->Request = $request;
-    }
-
-    protected function PostValidate(){
-      $this->validate($this->Request, [
+    protected function PostValidate($request){
+      $this->validate($request, [
           'vendor'  =>  'required',
           'voucher_no'  =>  'required',
           'voucher_date' =>  'required',
@@ -33,26 +25,26 @@ class VouchersController extends Controller
       ]);
     }
 
-    public function GetVoucher(){
-      if ($this->Request->ajax()) {
-      return Datatables::queryBuilder(DB::table('vouchers')
+    public function GetVoucher(Request $request){
+      if ($request->ajax()) {
+      return DataTables::queryBuilder(DB::table('vouchers')
                                         ->leftJoin('vendors', 'vouchers.vendor_id', '=', 'vendors.id')
                                         ->select('vouchers.id', 'vouchers.net_amount', 'vouchers.voucher_no', 'vouchers.voucher_date', 'vendors.v_name'))
                                         ->make(true);
       }
-    	$this->data['vendors']	=	Vendor::get();
-    	$this->data['items']	=	Item::get();
-    	return view('admin.voucher', $this->data);
+    	$data['vendors']	=	Vendor::get();
+    	$data['items']	=	Item::get();
+    	return view('admin.voucher', $data);
     }
 
-	public function GetDetails(){
-		$this->data['voucher']  = Voucher::findorfail($this->data['root']['option']);
-		return view('admin.voucher_detail', $this->data);
+	public function GetDetails($id){
+		$data['voucher']  = Voucher::findorfail($id);
+		return view('admin.voucher_detail', $data);
 	}
 
-    public function EditVoucher(){
+    public function EditVoucher($id){
 
-      if(Voucher::where('id', $this->data['root']['option'])->count() == 0){
+      if(Voucher::where('id', $id)->count() == 0){
       return  redirect('vouchers')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -61,18 +53,18 @@ class VouchersController extends Controller
           ]
       ]);
       }
-		$this->data['vendors']	=	Vendor::get();
-		$this->data['items']	=	Item::get();
-		$this->data['voucher'] = Voucher::find($this->data['root']['option']);
-		return view('admin.edit_voucher', $this->data);
+		$data['vendors']	=	Vendor::get();
+		$data['items']	=	Item::get();
+		$data['voucher'] = Voucher::find($id);
+		return view('admin.edit_voucher', $data);
     }
 
-    public function PostEditVoucher(Request $request){
+    public function PostEditVoucher(Request $request, $id){
 
-      $this->Request = $request;
-      $this->PostValidate();
+      $request = $request;
+      $this->PostValidate($request);
 
-      if(Voucher::where('id', $this->data['root']['option'])->count() == 0){
+      if(Voucher::where('id', $id)->count() == 0){
       return  redirect('vouchers')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -82,12 +74,12 @@ class VouchersController extends Controller
       ]);
       }
 
-      $this->Voucher = Voucher::find($this->data['root']['option']);
-      $this->SetAttributes();
-      $this->Voucher->updated_by = Auth::user()->id;
-      $this->Voucher->save();
+      $Voucher = Voucher::find($id);
+      $this->SetAttributes($Voucher, $request);
+      $Voucher->updated_by = Auth::user()->id;
+      $Voucher->save();
 
-      $this->UpdateItemDetails();
+      $this->UpdateItemDetails($Voucher, $request);
 
       return redirect('vouchers')->with([
         'toastrmsg' => [
@@ -100,14 +92,14 @@ class VouchersController extends Controller
 
     public function AddVoucher(Request $request){
 
-      $this->Request = $request;
-      $this->PostValidate();
-      $this->Voucher = new Voucher;
-      $this->SetAttributes();
-      $this->Voucher->created_by = Auth::user()->id;
-      $this->Voucher->save();
+      $request = $request;
+      $this->PostValidate($request);
+      $Voucher = new Voucher;
+      $this->SetAttributes($Voucher, $request);
+      $Voucher->created_by = Auth::user()->id;
+      $Voucher->save();
 
-      $this->UpdateItemDetails();
+      $this->UpdateItemDetails($Voucher, $request);
 
 
       return redirect('vouchers')->with([
@@ -120,29 +112,29 @@ class VouchersController extends Controller
 
     }
 
-    protected function SetAttributes(){
-      $this->Voucher->vendor_id = $this->Request->input('vendor');
-      $this->Voucher->voucher_no = $this->Request->input('voucher_no');
-      $this->Voucher->net_amount = $this->Request->input('net_amount');
-      $this->Voucher->voucher_date = Carbon::createFromFormat('d/m/Y', $this->Request->input('voucher_date'))->toDateString();
+    protected function SetAttributes($Voucher, $request){
+      $Voucher->vendor_id = $request->input('vendor');
+      $Voucher->voucher_no = $request->input('voucher_no');
+      $Voucher->net_amount = $request->input('net_amount');
+      $Voucher->voucher_date = Carbon::createFromFormat('d/m/Y', $request->input('voucher_date'))->toDateString();
     }
 
-	protected function UpdateItemDetails(){
+	protected function UpdateItemDetails($Voucher, $request){
 
-		foreach(VoucherDetail::where(['voucher_id' => $this->Voucher->id])->get() AS $d){
+		foreach(VoucherDetail::where(['voucher_id' => $Voucher->id])->get() AS $d){
 			$Item = Item::find($d->item_id);
 			$Item->qty 	=	$Item->qty	-	$d->qty;
 			$d->delete();
 			$Item->save();
 		}
 
-		if (COUNT($this->Request->input('items')) >= 1) {
-			foreach ($this->Request->input('items') as $key => $value) {
+		if (COUNT($request->input('items')) >= 1) {
+			foreach ($request->input('items') as $key => $value) {
 				$VoucherDetail = new VoucherDetail;
 				$Item = Item::find($value['id']);
 				$Item->qty 	+=	$value['qty'];
 				$Item->save();
-				$VoucherDetail->voucher_id = $this->Voucher->id;
+				$VoucherDetail->voucher_id = $Voucher->id;
 				$VoucherDetail->item_id = $value['id'];
 				$VoucherDetail->qty = $value['qty'];
 				$VoucherDetail->rate = $value['rate'];

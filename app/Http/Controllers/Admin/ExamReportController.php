@@ -19,26 +19,18 @@ use Validator;
 
 class ExamReportController extends Controller
 {
-
-	protected $data, $Request;
-
-	public function __Construct($Routes, $request){
-		$this->data['root'] = $Routes;
-		$this->Request 	=	$request;
-	}
-
 	public function Index(){
-		$this->data['exams'] = Exam::Active()->with('AcademicSession')->CurrentSession()->get();
-		$this->data['classes'] = Classe::select('id', 'name')->get();
-		$this->data['Subjects']	=	Subject::select('id', 'name', 'class_id')->get();
-		return view('admin.exam_report', $this->data);
+		$data['exams'] = Exam::Active()->with('AcademicSession')->CurrentSession()->get();
+		$data['classes'] = Classe::select('id', 'name')->get();
+		$data['Subjects']	=	Subject::select('id', 'name', 'class_id')->get();
+		return view('admin.exam_report', $data);
 	}
 
-	public function FindStudent(){
-		if ($this->Request->ajax()) {
+	public function FindStudent(Request $request){
+		if ($request->ajax()) {
 			$students = Student::select('students.id', 'students.gr_no', 'students.name')
-								->where('students.gr_no', 'LIKE', '%'.$this->Request->input('q').'%')
-								->orwhere('students.name', 'LIKE', '%'.$this->Request->input('q').'%')
+								->where('students.gr_no', 'LIKE', '%'.$request->input('q').'%')
+								->orwhere('students.name', 'LIKE', '%'.$request->input('q').'%')
 								->join('academic_session_history', function($join)
 									{
 										$join->on('students.id', '=', 'academic_session_history.student_id')
@@ -63,33 +55,33 @@ class ExamReportController extends Controller
 			'class'    	=>	'required',
 		]);
 
-		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->with('AcademicSession')->findOrFail($request->input('exam'));
-		$this->data['selected_class'] = Classe::findOrFail($request->input('class'));		
+		$data['selected_exam'] = Exam::Active()->CurrentSession()->with('AcademicSession')->findOrFail($request->input('exam'));
+		$data['selected_class'] = Classe::findOrFail($request->input('class'));		
 
-		$this->data['grades']	=	Grade::all();
+		$data['grades']	=	Grade::all();
 
-		$this->data['subject_result_attributes'] = SubjectResultAttribute::where([
-														'exam_id'	=>	$this->data['selected_exam']->id,
-														'class_id'	=>	$this->data['selected_class']->id
+		$data['subject_result_attributes'] = SubjectResultAttribute::where([
+														'exam_id'	=>	$data['selected_exam']->id,
+														'class_id'	=>	$data['selected_class']->id
 													])->with('Subject')->get();
 
-		$this->data['transcripts'] = ExamRemark::where([
-			'exam_id'	=>	$this->data['selected_exam']->id,
-			'class_id'	=>	$this->data['selected_class']->id,
-		])->with(['Student'	=>	function($qry){
+		$data['transcripts'] = ExamRemark::where([
+			'exam_id'	=>	$data['selected_exam']->id,
+			'class_id'	=>	$data['selected_class']->id,
+		])->with(['Student'	=>	function($qry) use ($data){
 			$qry->select('id', 'name', 'gr_no', 'father_name');
-			$qry->with(['StudentAttendance' => function ($qry){
+			$qry->with(['StudentAttendance' => function ($qry) use ($data){
 				$qry->select('id', 'student_id', 'status', 'date');
-				$qry->GetAttendanceForExam($this->data['selected_exam']);
+				$qry->GetAttendanceForExam($data['selected_exam']);
 			}]);
 		}])->with(['StudentResult'	=>	function($qry){
 			$qry->with('Subject')->with('SubjectResultAttribute')->orderBy('subject_result_attribute_id');
 		}])->get();
 
 
-//		dd($this->data['selected_exam']);
+//		dd($data['selected_exam']);
 
-		return view('admin.printable.exam_tabulation_sheet', $this->data);
+		return view('admin.printable.exam_tabulation_sheet', $data);
 
 	}
 
@@ -101,12 +93,12 @@ class ExamReportController extends Controller
 			'subject'	=>	'required',
 		]);
 
-		$this->data['selected_exam'] = Exam::Active()->CurrentSession()->with('AcademicSession')->findOrFail($request->input('exam'));
-		$this->data['selected_class'] = Classe::findOrFail($request->input('class'));
-		$this->data['selected_subject'] = Subject::findOrFail($request->input('subject'));
-		$this->data['grades']	=	Grade::all();
+		$data['selected_exam'] = Exam::Active()->CurrentSession()->with('AcademicSession')->findOrFail($request->input('exam'));
+		$data['selected_class'] = Classe::findOrFail($request->input('class'));
+		$data['selected_subject'] = Subject::findOrFail($request->input('subject'));
+		$data['grades']	=	Grade::all();
 
-		$this->data['result_attribute']	=	SubjectResultAttribute::where([
+		$data['result_attribute']	=	SubjectResultAttribute::where([
 											'exam_id'	=>	$request->input('exam'),
 											'subject_id'	=>	$request->input('subject'),
 											'class_id'	=>	$request->input('class'),
@@ -114,7 +106,7 @@ class ExamReportController extends Controller
 											$qry->with('Student');
 										}])->firstOrFail();
 
-		return view('admin.printable.exam_award_list', $this->data);
+		return view('admin.printable.exam_award_list', $data);
 
 	}
 
@@ -131,19 +123,19 @@ class ExamReportController extends Controller
 		];
 
 		if ($request->input('exam') == 1) {
-			$this->data['exam_title']	=	'1st Assessment / Half Year';
+			$data['exam_title']	=	'1st Assessment / Half Year';
 		} else {
-			$this->data['exam_title']	=	'2nd Assessment / Final Year';
+			$data['exam_title']	=	'2nd Assessment / Final Year';
 		}
 
-		$this->data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
-		$this->data['selected_class']	=	Classe::findOrFail($request->input('class'));
-		$this->data['grades']			=	Grade::all();
+		$data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
+		$data['selected_class']	=	Classe::findOrFail($request->input('class'));
+		$data['grades']			=	Grade::all();
 
-		foreach ($this->data['selected_exams'] as $key => $value) {
-			$this->data['results'][] = ExamRemark::where([
+		foreach ($data['selected_exams'] as $key => $value) {
+			$data['results'][] = ExamRemark::where([
 				'exam_id'	=>	$value->id,
-				'class_id'	=>	$this->data['selected_class']->id,
+				'class_id'	=>	$data['selected_class']->id,
 			])->with(['Student'	=>	function($qry){
 				$qry->select('id', 'name', 'gr_no', 'father_name');
 			}])->with(['StudentResult'	=>	function($qry){
@@ -151,7 +143,7 @@ class ExamReportController extends Controller
 			}])->orderBy('student_id')->get();
 		}
 
-		return view('admin.printable.exam_average_result', $this->data);
+		return view('admin.printable.exam_average_result', $data);
 
 	}
 
@@ -169,14 +161,14 @@ class ExamReportController extends Controller
 		];
 
 		if ($request->input('exam') == 1) {
-			$this->data['exam_title']	=	'1st Assessment / Half Year';
+			$data['exam_title']	=	'1st Assessment / Half Year';
 		} else {
-			$this->data['exam_title']	=	'2nd Assessment / Final Year';
+			$data['exam_title']	=	'2nd Assessment / Final Year';
 		}
 
-		$this->data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
+		$data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
 
-		if($this->data['selected_exams']->count() !== 2){
+		if($data['selected_exams']->count() !== 2){
 			return redirect('exam-reports')->with([
 				'toastrmsg' => [
 					'type' => 'error', 
@@ -186,21 +178,21 @@ class ExamReportController extends Controller
 			]);
 		}
 		
-		$this->data['student']			=	Student::findOrFail($request->input('student_id'));
-		$this->data['attendance']['total']		=	StudentAttendance::select('id', 'student_id', 'status', 'date')
-												->where('student_id', $this->data['student']->id)
-												->whereBetween('date', [$this->data['selected_exams'][0]->getOriginal('start_date'), $this->data['selected_exams'][1]->getOriginal('end_date')])
+		$data['student']			=	Student::findOrFail($request->input('student_id'));
+		$data['attendance']['total']		=	StudentAttendance::select('id', 'student_id', 'status', 'date')
+												->where('student_id', $data['student']->id)
+												->whereBetween('date', [$data['selected_exams'][0]->getOriginal('start_date'), $data['selected_exams'][1]->getOriginal('end_date')])
 //												->whereBetween('date', ['2018-04-01', '2019-03-31'])
 												->get();
-		$this->data['attendance']['first_exam']	=	StudentAttendance::select('id', 'student_id', 'status', 'date')
-													->where('student_id', $this->data['student']->id)
-													->whereBetween('date', [$this->data['selected_exams'][0]->getOriginal('start_date'), $this->data['selected_exams'][0]->getOriginal('end_date')])
+		$data['attendance']['first_exam']	=	StudentAttendance::select('id', 'student_id', 'status', 'date')
+													->where('student_id', $data['student']->id)
+													->whereBetween('date', [$data['selected_exams'][0]->getOriginal('start_date'), $data['selected_exams'][0]->getOriginal('end_date')])
 													->get();
-		$this->data['attendance']['second_exam']	=	StudentAttendance::select('id', 'student_id', 'status', 'date')
-														->where('student_id', $this->data['student']->id)
-														->whereBetween('date', [$this->data['selected_exams'][1]->getOriginal('start_date'), $this->data['selected_exams'][1]->getOriginal('end_date')])
+		$data['attendance']['second_exam']	=	StudentAttendance::select('id', 'student_id', 'status', 'date')
+														->where('student_id', $data['student']->id)
+														->whereBetween('date', [$data['selected_exams'][1]->getOriginal('start_date'), $data['selected_exams'][1]->getOriginal('end_date')])
 														->get();
-		$AcademicSessionHistory			=	AcademicSessionHistory::where('student_id', $this->data['student']->id)->CurrentSession()->with('classe')->first();
+		$AcademicSessionHistory			=	AcademicSessionHistory::where('student_id', $data['student']->id)->CurrentSession()->with('classe')->first();
 
 		if($AcademicSessionHistory == null){
 			return redirect('exam-reports')->with([
@@ -212,19 +204,19 @@ class ExamReportController extends Controller
 			]);
 		}
 
-		$this->data['student_class']	=	$AcademicSessionHistory->classe;
-		foreach ($this->data['selected_exams'] as $key => $value) {
-			$this->data['results'][]			=	ExamRemark::where([
+		$data['student_class']	=	$AcademicSessionHistory->classe;
+		foreach ($data['selected_exams'] as $key => $value) {
+			$data['results'][]			=	ExamRemark::where([
 													'exam_id'		=>	$value->id,
-													'student_id'	=>	$this->data['student']->id,
+													'student_id'	=>	$data['student']->id,
 												])->with(['StudentResult'	=>	function($qry){
 													$qry->with('Subject')->with('SubjectResultAttribute');
 													}]
 												)->with('Classe')->first();
 		}
 
-//		$this->data['selected_class']	=	Classe::findOrFail($request->input('class'));
-		if($this->data['results'][0] == null && $this->data['results'][1] == null){
+//		$data['selected_class']	=	Classe::findOrFail($request->input('class'));
+		if($data['results'][0] == null && $data['results'][1] == null){
 			return redirect('exam-reports')->with([
 				'toastrmsg' => [
 					'type' => 'warning', 
@@ -233,17 +225,17 @@ class ExamReportController extends Controller
 				]
 			]);
 		}
-		$this->data['grades']			=	Grade::all();
+		$data['grades']			=	Grade::all();
 
-		return view('admin.printable.exam_transcript', $this->data);
+		return view('admin.printable.exam_transcript', $data);
 
 	}
 
-	public function UpdateRank(){
+	public function UpdateRank(Request $request){
 
-		if($this->Request->ajax()){
+		if($request->ajax()){
 
-			$validator = Validator::make($this->Request->all(), [
+			$validator = Validator::make($request->all(), [
 				'rank' => 'required',
 			]);
 
@@ -255,7 +247,7 @@ class ExamReportController extends Controller
 				];
 			}
 
-			foreach ($this->Request->input('rank') as $id => $rank) {
+			foreach ($request->input('rank') as $id => $rank) {
 				ExamRemark::findOrFail($id)->update(['rank'	=>	$rank]);
 			}
 

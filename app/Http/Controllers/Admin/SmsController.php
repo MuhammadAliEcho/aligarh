@@ -38,19 +38,15 @@ class SmsController extends Controller
 		'emloyee' => 'Employee',
 	];
 
-	public function __Construct($Routes){
-		$this->data['root'] = $Routes;
-	}
-
 	public function Index(){
-		$this->data['Students']	=	Student::CurrentSession()->HaveCellNo()->active()->with('Guardian')->get();
-		$this->data['Teachers']	=	Teacher::HaveCellNo()->get();
-		$this->data['Employee']	=	Employee::HaveCellNo()->get();
-		$this->data['Classe']	=	Classe::all();
-		$this->data['availableSms']	=	config('systemInfo.available_sms');
-		$this->data['smsValidity']	=	config('systemInfo.sms_validity');
-		$this->data['ValidateExpireDate']	=	$this->ValidateExpireDate()? 1 : 0;
-	    return view('admin.sms_notifications', $this->data);
+		$data['Students']	=	Student::CurrentSession()->HaveCellNo()->active()->with('Guardian')->get();
+		$data['Teachers']	=	Teacher::HaveCellNo()->get();
+		$data['Employee']	=	Employee::HaveCellNo()->get();
+		$data['Classe']	=	Classe::all();
+		$data['availableSms']	=	config('systemInfo.available_sms');
+		$data['smsValidity']	=	config('systemInfo.sms_validity');
+		$data['ValidateExpireDate']	=	$this->ValidateExpireDate()? 1 : 0;
+	    return view('admin.sms_notifications', $data);
 	}
 
 	public function SendSms(Request $request){
@@ -118,9 +114,9 @@ class SmsController extends Controller
 						'type'	=> 'error', 
 						'title'	=>  'Invalid SMS',
 						'msg'	=>	$responseApi->messages[0]->error,
-//						'msg'	=>  'Contact service center'
+						//'msg'	=>  'Contact service center'
 					],
-//					[$request->all(), '0'.implode(',0', (array_pluck($request->input('phoneinfo'), 'no')))],
+					//[$request->all(), '0'.implode(',0', (array_pluck($request->input('phoneinfo'), 'no')))],
 				];
 			}
 
@@ -200,7 +196,7 @@ class SmsController extends Controller
 
 			SmsLog::create([
 				'phone_info'	=>	$phoneInfo,
-//				'phone_info'	=>	$request->input($request->input('bulk_to')),
+				//'phone_info'	=>	$request->input($request->input('bulk_to')),
 				'message'	=>	$request->input('message'),
 				'api_response'	=>	$responseApi,
 				'total_price'	=>	$totalprice,
@@ -214,9 +210,9 @@ class SmsController extends Controller
 						'type'	=> 'error', 
 						'title'	=>  'Invalid SMS',
 						'msg'	=>	$responseApi->messages[0]->error,
-//						'msg'	=>  'Contact service center'
+						// 'msg'	=>  'Contact service center'
 					],
-//					[$request->all(), '0'.implode(',0', $request->input($request->input('bulk_to')))],
+					//[$request->all(), '0'.implode(',0', $request->input($request->input('bulk_to')))],
 				];
 			}
 
@@ -228,8 +224,8 @@ class SmsController extends Controller
 					'msg'	=>  'Query Submitted'
 				],
 				'availableSms' => config('systemInfo.available_sms') - $totalprice,
-//				[implode(',', $request->input($request->input('bulk_to')))]
-//				[$request->all()]
+				//[implode(',', $request->input($request->input('bulk_to')))]
+				//[$request->all()]
 			];
 		}
 

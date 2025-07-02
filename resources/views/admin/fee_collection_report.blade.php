@@ -38,184 +38,172 @@
 
 				<div class="row ">
 					<div class="col-lg-12">
-						<div class="ibox">
-							<div class="ibox-title">
-									<h2>Fee Receipts Statment</h2>
+						@can('fee-collection-reports.fee.receipts.statment')
+							<div class="ibox">
+								<div class="ibox-title">
+										<h2>Fee Receipts Statment</h2>
+										<div class="hr-line-dashed"></div>
+								</div>
+								<div class="ibox-content">
+									<form id="fee_receipts_statment" method="POST" action="{{ URL('fee-collection-reports/fee-receipts-statment') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
+										<div class="form-group">
+											<label class="col-md-2 control-label">From</label>
+											<div class="col-md-6">
+												<div class="input-daterange input-group" id="datepicker">
+													<input type="text" class="input-sm form-control" name="start" value="" required="" readonly="" placeholder="From Month" />
+													<span class="input-group-addon">to</span>
+													<input type="text" class="input-sm form-control" name="end" value="" required="" readonly="" placeholder="To Month" />
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+													<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						@endcan
+						@can('fee-collection-reports.fee.receipts.statment')
+							<div class="ibox">
+								<div class="ibox-title">
+										<h2>Daily Fee Collection Report</h2>
+										<div class="hr-line-dashed"></div>
+								</div>
+								<div class="ibox-content">
+									<form id="daily_fee_collection" method="POST" action="{{ URL('fee-collection-reports/daily-fee-collection') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
+										<div class="form-group">
+											<label class="col-md-2 control-label">From</label>
+											<div class="col-md-6">
+												<div class="input-daterange input-group" id="datepicker1">
+													<input type="text" class="input-sm form-control" name="start" value="" required="" readonly="" placeholder="From Month" />
+													<span class="input-group-addon">to</span>
+													<input type="text" class="input-sm form-control" name="end" value="" required="" readonly="" placeholder="To Month" />
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+													<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						@endcan
+						@can('fee-collection-reports.free.ship.students')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>List Of Full/Half Freeship</h2>
 									<div class="hr-line-dashed"></div>
-							</div>
-
-							<div class="ibox-content">
-
-								<form id="fee_receipts_statment" method="POST" action="{{ URL('fee-collection-reports/fee-receipts-statment') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
-
-									<div class="form-group">
-										<label class="col-md-2 control-label">From</label>
-										<div class="col-md-6">
-											<div class="input-daterange input-group" id="datepicker">
-												<input type="text" class="input-sm form-control" name="start" value="" required="" readonly="" placeholder="From Month" />
-												<span class="input-group-addon">to</span>
-												<input type="text" class="input-sm form-control" name="end" value="" required="" readonly="" placeholder="To Month" />
+								</div>
+								<div class="ibox-content">
+									<form id="freship_students" method="POST" action="{{ URL('fee-collection-reports/freeship-students') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
 											</div>
 										</div>
-									</div>
-
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
-										</div>
-									</div>
-								</form>
-
+									</form>
+								</div>
 							</div>
-						</div>
-
-						<div class="ibox">
-							<div class="ibox-title">
-									<h2>Daily Fee Collection Report</h2>
+						@endcan
+						@can('fee-collection-reports.unpaid.fee.statment')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>Bill Remain Statment</h2>
 									<div class="hr-line-dashed"></div>
-							</div>
+								</div>
 
-							<div class="ibox-content">
+								<div class="ibox-content">
 
-								<form id="daily_fee_collection" method="POST" action="{{ URL('fee-collection-reports/daily-fee-collection') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
+									<form id="unpaid_fee_statment" method="POST" action="{{ URL('fee-collection-reports/unpaid-fee-statment') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
 
-									<div class="form-group">
-										<label class="col-md-2 control-label">From</label>
-										<div class="col-md-6">
-											<div class="input-daterange input-group" id="datepicker1">
-												<input type="text" class="input-sm form-control" name="start" value="" required="" readonly="" placeholder="From Month" />
-												<span class="input-group-addon">to</span>
-												<input type="text" class="input-sm form-control" name="end" value="" required="" readonly="" placeholder="To Month" />
+										<div class="form-group">
+											<label class="col-md-2 control-label"> Class </label>
+											<div class="col-md-6">
+												<select class="form-control select2" name="class" v-model="classe" required="true">
+													@foreach($classes AS $class)
+														<option value="{{ $class->id }}">{{ $class->name }}</option>
+													@endforeach
+												</select>
 											</div>
 										</div>
-									</div>
 
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
+										<div class="form-group hidden">
+											<label class="col-md-2 control-label"> Section </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="section">
+												<option value="">All</option>
+												<option v-for="section in sections" :value="section.id">@{{ section.name }}</option>
+											</select>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-2 control-label">End Month</label>
+											<div class="col-md-6">
+												<div class="input-group date" id="datepicker2">
+													<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="month" readonly="tue" required="true" class="form-control">
+												</div>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
 												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
-										</div>
-									</div>
-								</form>
-
-							</div>
-						</div>
-
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>List Of Full/Half Freeship</h2>
-								<div class="hr-line-dashed"></div>
-							</div>
-
-							<div class="ibox-content">
-
-								<form id="freship_students" method="POST" action="{{ URL('fee-collection-reports/freeship-students') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
-
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
-										</div>
-									</div>
-								</form>
-
-							</div>
-						</div>
-
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>Bill Remain Statment</h2>
-								<div class="hr-line-dashed"></div>
-							</div>
-
-							<div class="ibox-content">
-
-								<form id="unpaid_fee_statment" method="POST" action="{{ URL('fee-collection-reports/unpaid-fee-statment') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
-
-									<div class="form-group">
-										<label class="col-md-2 control-label"> Class </label>
-										<div class="col-md-6">
-											<select class="form-control select2" name="class" v-model="classe" required="true">
-												@foreach($classes AS $class)
-													<option value="{{ $class->id }}">{{ $class->name }}</option>
-												@endforeach
-											</select>
-										</div>
-									</div>
-
-									<div class="form-group hidden">
-										<label class="col-md-2 control-label"> Section </label>
-										<div class="col-md-6">
-										<select class="form-control select2" name="section">
-											<option value="">All</option>
-											<option v-for="section in sections" :value="section.id">@{{ section.name }}</option>
-										</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-md-2 control-label">End Month</label>
-										<div class="col-md-6">
-											<div class="input-group date" id="datepicker2">
-												<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="month" readonly="tue" required="true" class="form-control">
 											</div>
 										</div>
-									</div>
+									</form>
 
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+								</div>
+							</div>
+						@endcan
+						@can('fee-collection-reports.yearly.collection.statment')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>Yearly Collection Statment</h2>
+									<div class="hr-line-dashed"></div>
+								</div>
+
+								<div class="ibox-content">
+
+									<form id="yearly_fee_collection" method="POST" action="{{ URL('fee-collection-reports/yearly-collection-statment') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
+
+										<div class="form-group">
+											<label class="col-md-2 control-label"> Class </label>
+											<div class="col-md-6">
+												<select class="form-control select2" name="class" v-model="classe" required="true">
+													<option value="" disabled selected>Class</option>
+													@foreach($classes AS $class)
+														<option value="{{ $class->id }}">{{ $class->name }}</option>
+													@endforeach
+												</select>
+											</div>
 										</div>
-									</div>
-								</form>
-
-							</div>
-						</div>
-
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>Yearly Collection Statment</h2>
-								<div class="hr-line-dashed"></div>
-							</div>
-
-							<div class="ibox-content">
-
-								<form id="yearly_fee_collection" method="POST" action="{{ URL('fee-collection-reports/yearly-collection-statment') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
-
-									<div class="form-group">
-										<label class="col-md-2 control-label"> Class </label>
-										<div class="col-md-6">
-											<select class="form-control select2" name="class" v-model="classe" required="true">
-												<option value="" disabled selected>Class</option>
-												@foreach($classes AS $class)
-													<option value="{{ $class->id }}">{{ $class->name }}</option>
-												@endforeach
+										<div class="form-group hidden">
+											<label class="col-md-2 control-label"> Section </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="section" required="true">
+												<option v-for="section in sections" :value="section.id">@{{ section.name }}</option>
 											</select>
+											</div>
 										</div>
-									</div>
-
-									<div class="form-group hidden">
-										<label class="col-md-2 control-label"> Section </label>
-										<div class="col-md-6">
-										<select class="form-control select2" name="section" required="true">
-											<option v-for="section in sections" :value="section.id">@{{ section.name }}</option>
-										</select>
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
+											</div>
 										</div>
-									</div>
-
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Show </button>
-										</div>
-									</div>
-								</form>
-
+									</form>
+								</div>
 							</div>
-						</div>
-
+						@endcan
 					</div>
 				</div>
 

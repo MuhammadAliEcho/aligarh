@@ -3,24 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\User;
 use Auth;
 use Hash;
 use App\Http\Controllers\Controller;
 
 class UserSettingController extends Controller
 {
-  //  protected $Routes;
-    protected $data;
-
-    public function __Construct($Routes){
-  //    $this->Routes = $Routes;
-      $this->data['root'] = $Routes;
-    }
 
     public function GetUserSetting(){
-      return view('admin.user_settings', $this->data);
+      return view('admin.user_settings');
     }
 
 

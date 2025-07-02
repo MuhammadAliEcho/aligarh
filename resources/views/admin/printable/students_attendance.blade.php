@@ -59,7 +59,7 @@
 	<div class="col-md-4">
 		<h4>Attendance Of Class: {{ $selected_class->name.' '.$section_nick }} ({{ $input['date'] }})</h4>
 		<h4>No Of Students: {{ COUNT($students) }}</h3>
-		<h4>Teacher: {{ $selected_class->Teacher->name or '' }}</h3>
+		<h4>Teacher: {{ $selected_class->Teacher->name?? '' }}</h3>
 	</div>
 	<div class="col-md-4 pull-right">
 		<h4>Abbreviation</h4>

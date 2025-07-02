@@ -19,17 +19,10 @@ class FeeCollectionReportController extends Controller
 
 	use CalcMonths;
 
-	protected $data, $session, $Request;
-
-	public function __Construct($Routes, $Request){
-		$this->Request = $Request;
-		$this->data['root'] = $Routes;
-	}
-
 	public function Index(){
-		$this->data['classes'] = Classe::select('id', 'name')->get();
-		$this->data['sections']	= Section::select('id', 'class_id', 'name')->get();
-		return view('admin.fee_collection_report', $this->data);
+		$data['classes'] = Classe::select('id', 'name')->get();
+		$data['sections']	= Section::select('id', 'class_id', 'name')->get();
+		return view('admin.fee_collection_report', $data);
 	}
 
 
@@ -40,20 +33,20 @@ class FeeCollectionReportController extends Controller
 			'end'    	=>	'required',
 		]);
 
-		$this->data['betweendates']	=	['start' => $request->input('start'), 'end' => Carbon::createFromFormat('Y-m-d', $request->input('end'))->endOfMonth()->toDateString()];
-		$this->data['statments'] = InvoiceMaster::whereBetween('due_date', $this->data['betweendates'])->with(['Student' => function($qry){
+		$data['betweendates']	=	['start' => $request->input('start'), 'end' => Carbon::createFromFormat('Y-m-d', $request->input('end'))->endOfMonth()->toDateString()];
+		$data['statments'] = InvoiceMaster::whereBetween('due_date', $data['betweendates'])->with(['Student' => function($qry){
 				$qry->select('id', 'name', 'father_name', 'gr_no', 'class_id');
 				$qry->with(['StdClass' => function($qry){
 					$qry->select('id', 'name', 'numeric_name');
 				}]);
 		}])->with('InvoiceMonths')->get();
-/* 		$this->data['summary'] = DB::table('invoice_master')
+/* 		$data['summary'] = DB::table('invoice_master')
 								->select(DB::raw('sum(`paid_amount`) AS `paid_amount`, sum(`net_amount`) AS `net_amount`, `due_date`'))
 								->groupBy(DB::raw('YEAR(`due_date`), MONTH(`due_date`)'))
-								->whereBetween('due_date', $this->data['betweendates'])
+								->whereBetween('due_date', $data['betweendates'])
 								->orderBy('due_date')->get(); */
 
-		return view('admin.printable.fee_receipt_statment', $this->data);
+		return view('admin.printable.fee_receipt_statment', $data);
 	}
 
 	public function DailyFeeCollection(Request $request){
@@ -63,17 +56,17 @@ class FeeCollectionReportController extends Controller
 			'end'    	=>	'required',
 		]);
 
-		$this->data['betweendates']	=	['start' => $request->input('start'), 'end' => $request->input('end')];
-		$this->data['invoice_dates'] = DB::table('invoice_master')
+		$data['betweendates']	=	['start' => $request->input('start'), 'end' => $request->input('end')];
+		$data['invoice_dates'] = DB::table('invoice_master')
 											->select(DB::raw(" `date`, SUM(`discount`) AS `discount` "))
-											->whereBetween('date', $this->data['betweendates'])
+											->whereBetween('date', $data['betweendates'])
 											->groupBy('date')
 											->get();
 
-		$this->data['daily_fee_collection'] = [];
-		foreach ($this->data['invoice_dates'] as $key => $date) {
+		$data['daily_fee_collection'] = [];
+		foreach ($data['invoice_dates'] as $key => $date) {
 
-/*			$this->data['daily_fee_collection'][$date->date] = DB::table('invoice_master')
+/*			$data['daily_fee_collection'][$date->date] = DB::table('invoice_master')
 														->select(DB::raw('SUM(`invoice_details`.`amount`) AS amount, `invoice_details`.`fee_name`, `invoice_master`.`payment_type`'))
 														->leftJoin('invoice_details', 'invoice_master.id', '=', 'invoice_details.invoice_id')
 														->where(['date' => $date->date])
@@ -81,7 +74,7 @@ class FeeCollectionReportController extends Controller
 														->groupBy('invoice_master.payment_type')
 														->get();
 */
-			$this->data['daily_fee_collection'][$date->date] = DB::table('invoice_master')
+			$data['daily_fee_collection'][$date->date] = DB::table('invoice_master')
 														->select(DB::raw(" SUM(`invoice_details`.`amount`) AS `amount`,
 															SUM(CASE WHEN `invoice_master`.`payment_type` = 'Cash' THEN `invoice_details`.`amount` ELSE 0 END) AS `cash`,
 															SUM(CASE WHEN `invoice_master`.`payment_type` = 'Chalan' THEN `invoice_details`.`amount` ELSE 0 END) AS `chalan`, 
@@ -93,26 +86,26 @@ class FeeCollectionReportController extends Controller
 
 		}
 
-		$collectflatten =	collect($this->data['daily_fee_collection'])->flatten(1);
+		$collectflatten =	collect($data['daily_fee_collection'])->flatten(1);
 
-		$this->data['total_cash_amount']	=	$collectflatten->sum('cash');
-		$this->data['total_chalan_amount']	=	$collectflatten->Sum('chalan');
-		$this->data['total_discount_amount']	=	$this->data['invoice_dates']->sum('discount');
-		$this->data['net_total_amount']	=	($collectflatten->sum('amount') - $this->data['total_discount_amount']);
+		$data['total_cash_amount']	=	$collectflatten->sum('cash');
+		$data['total_chalan_amount']	=	$collectflatten->Sum('chalan');
+		$data['total_discount_amount']	=	$data['invoice_dates']->sum('discount');
+		$data['net_total_amount']	=	($collectflatten->sum('amount') - $data['total_discount_amount']);
 
 
-		return view('admin.printable.daily_fee_collection', $this->data);
+		return view('admin.printable.daily_fee_collection', $data);
 	}
 
 
 	public function FreeshipStudents(Request $Request){
-		$this->data['classes'] = Classe::with(['Section'	=>	function($qry){
+		$data['classes'] = Classe::with(['Section'	=>	function($qry){
 			$qry->with(['Students'	=>	function($qry){
 				$qry->WithDiscount()->Active()->OrderBy('name');
 			}]);
 		}])->get();
-//		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);
-		return view('admin.printable.list_freeship_students', $this->data);
+//		$data['session'] = AcademicSession::find(Auth::user()->academic_session);
+		return view('admin.printable.list_freeship_students', $data);
 	}
 
 
@@ -123,17 +116,17 @@ class FeeCollectionReportController extends Controller
 						'month' => 'required',
 						'class' => 'required',
 					]);
-		$this->data = $request->toArray();
+		$data = $request->toArray();
 
-		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);
+		$data['session'] = AcademicSession::find(Auth::user()->academic_session);
 
-		$this->data['betweendates']	=	[
-				'start'	=>	$this->data['session']->getOriginal('start'),
+		$data['betweendates']	=	[
+				'start'	=>	$data['session']->getOriginal('start'),
 //				'end'	=>	$request->input('month')
 				'end'	=>	Carbon::createFromFormat('Y-m-d', $request->input('month'))->endOfMonth()->toDateString()
 			];
 		
-		if($this->data['session']->getOriginal('end') < $this->data['betweendates']['end'] || $this->data['session']->getOriginal('start') > $this->data['betweendates']['end']){
+		if($data['session']->getOriginal('end') < $data['betweendates']['end'] || $data['session']->getOriginal('start') > $data['betweendates']['end']){
 			return redirect('student-attendance')->withInput()->with([
 				'toastrmsg' => [
 					'type' => 'error',
@@ -157,7 +150,7 @@ class FeeCollectionReportController extends Controller
 				$qry->Active();
 				$qry->WithOutFullDiscount();
 				$qry->with(['Invoices'	=>	function($qry){
-					$qry->whereBetween('payment_month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']]);
+					$qry->whereBetween('payment_month', [$data['betweendates']['start'], $data['betweendates']['end']]);
 				}]);
 				$qry->with(['AdditionalFee'	=>	function($qry){
 					$qry->Active();
@@ -174,18 +167,18 @@ class FeeCollectionReportController extends Controller
 										'academic_session_history.class_id' => $request->input('class'),
 										'academic_session_history.academic_session_id' => Auth::user()->academic_session
 										])
-									->where('students.date_of_enrolled', '<=', Carbon::createFromFormat('Y-m-d', $this->data['session']->getOriginal('start'))->endOfMonth()->toDateString())
+									->where('students.date_of_enrolled', '<=', Carbon::parse($data['session']->getOriginal('start'))->endOfMonth()->toDateString())
 									->Active()
 									->WithOutFullDiscount()
-									->with(['InvoiceMonths'	=>	function($qry){
-										$qry->whereBetween('month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']]);
+									->with(['InvoiceMonths'	=>	function($qry) use ($data){
+										$qry->whereBetween('month', [$data['betweendates']['start'], $data['betweendates']['end']]);
 									}])
 									->with(['AdditionalFee'	=>	function($qry){
 										$qry->Active();
 									}])
 									->get();
 
-		$this->data['unpaid_fee_statment'] = [];
+		$data['unpaid_fee_statment'] = [];
 //		foreach ($classes as $key => $class) {
 
 //			foreach ($class->Section as $k => $section) {
@@ -193,29 +186,29 @@ class FeeCollectionReportController extends Controller
 //				foreach ($section->Students as $key => $student) {
 				foreach ($Students as $key => $student) {
 
-					if ($student->getOriginal('date_of_enrolled') > $this->data['session']->getOriginal('start')) {
+					if ($student->getOriginal('date_of_enrolled') > $data['session']->getOriginal('start')) {
 						$month = Carbon::createFromFormat('Y-m-d', $student->getOriginal('date_of_enrolled'))->startOfMonth()->toDateString();
 					} else {
-						$month = $this->data['betweendates']['start'];
+						$month = $data['betweendates']['start'];
 					}
 					$repetStd = false;
-//					if($this->data['betweendates']['end'] > $student->getOriginal('date_of_leaving') && $student->getOriginal('date_of_leaving')){
+//					if($data['betweendates']['end'] > $student->getOriginal('date_of_leaving') && $student->getOriginal('date_of_leaving')){
 //						$endmonth = Carbon::createFromFormat('Y-m-d', $student->getOriginal('date_of_leaving'))->startOfMonth()->toDateString();
 //					} else {
-						$endmonth = $this->data['betweendates']['end'];
+						$endmonth = $data['betweendates']['end'];
 //					}
 					while ($month <= $endmonth) {
 
 						$invoice = $student->InvoiceMonths->where('month', Carbon::createFromFormat('Y-m-d', $month)->format('M-Y'));
-//						if (empty($this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name])) {
-						if (empty($this->data['unpaid_fee_statment'][$class->name])) {
-//							$this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name] = collect();
-							$this->data['unpaid_fee_statment'][$class->name] = collect();
+//						if (empty($data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name])) {
+						if (empty($data['unpaid_fee_statment'][$class->name])) {
+//							$data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name] = collect();
+							$data['unpaid_fee_statment'][$class->name] = collect();
 						}
 						if ($invoice->count()	<=	0) {
 
-//							$this->data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name]->push([
-							$this->data['unpaid_fee_statment'][$class->name]->push([
+//							$data['unpaid_fee_statment'][$class->name.'-'.$section->nick_name]->push([
+							$data['unpaid_fee_statment'][$class->name]->push([
 															'id'	=>	$student->id,
 															'gr_no'	=>	$student->gr_no,
 															'name'	=>	$student->name,
@@ -231,8 +224,8 @@ class FeeCollectionReportController extends Controller
 //			}
 //		}
 
-		$this->data['unpaid_fee_statment'] = collect($this->data['unpaid_fee_statment']);
-		return view('admin.printable.unpaid_fee_statment', $this->data);
+		$data['unpaid_fee_statment'] = collect($data['unpaid_fee_statment']);
+		return view('admin.printable.unpaid_fee_statment', $data);
 
 	}
 
@@ -255,26 +248,26 @@ class FeeCollectionReportController extends Controller
 			]);
 
 
-		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);
+		$data['session'] = AcademicSession::find(Auth::user()->academic_session);
 
-		$this->data['class'] = Classe::find($request->input('class'));
-//		$this->data['section'] = Section::find($request->input('section'));
+		$data['class'] = Classe::find($request->input('class'));
+//		$data['section'] = Section::find($request->input('section'));
 
-		$this->data['annualfeeses']	=	DB::table('invoice_details')
+		$data['annualfeeses']	=	DB::table('invoice_details')
 										->select(DB::raw("`invoice_master`.`student_id`, `invoice_details`.`fee_name`, `invoice_details`.`amount`, `invoice_master`.`payment_month`"))
 										->join('invoice_master', 'invoice_details.invoice_id', '=', 'invoice_master.id')
 										->join('students', 'invoice_master.student_id', '=', 'students.id')
 										->join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
 										->where('invoice_details.fee_name', 'LIKE', 'Annual%')
-										->whereBetween('invoice_master.payment_month', [$this->data['session']->getOriginal('start'), $this->data['session']->getOriginal('end')])
+										->whereBetween('invoice_master.payment_month', [$data['session']->getOriginal('start'), $data['session']->getOriginal('end')])
 										->where([
-											'academic_session_history.class_id' => $this->data['class']->id,
+											'academic_session_history.class_id' => $data['class']->id,
 											'academic_session_history.academic_session_id' => Auth::user()->academic_session
 											])
-//										->where('students.section_id', $this->data['section']->id)
+//										->where('students.section_id', $data['section']->id)
 										->get();
 
-		$this->data['statment']	= DB::table('students')
+		$data['statment']	= DB::table('students')
 									->select(DB::raw("
 											`students`.`id`,
 											`students`.`gr_no`,
@@ -296,19 +289,19 @@ class FeeCollectionReportController extends Controller
 										"))
 									->join('invoice_master', 'students.id', '=', 'invoice_master.student_id')
 									->join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
-									->whereBetween('invoice_master.due_date', [$this->data['session']->getOriginal('start'), $this->data['session']->getOriginal('end')])
+									->whereBetween('invoice_master.due_date', [$data['session']->getOriginal('start'), $data['session']->getOriginal('end')])
 									->where([
-											'academic_session_history.class_id' => $this->data['class']->id,
+											'academic_session_history.class_id' => $data['class']->id,
 											'academic_session_history.academic_session_id' => Auth::user()->academic_session
 											])
-//									->where('students.section_id', $this->data['section']->id)
+//									->where('students.section_id', $data['section']->id)
 									->groupBy('students.id')
 									->orderBy('students.name')
 									->get();
 
-		$this->data['months'] = $this->getMonthsFromSession($this->data['session']);
+		$data['months'] = $this->getMonthsFromSession($data['session']);
 
-		return view('admin.printable.yearly_collection_statment', $this->data);
+		return view('admin.printable.yearly_collection_statment', $data);
 
 	}
 

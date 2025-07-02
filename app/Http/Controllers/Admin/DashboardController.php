@@ -21,14 +21,6 @@ use App\InvoiceMonth;
 class DashboardController extends Controller
 {
 
-//  protected $Routes;
-	protected $data;
-
-	public function __Construct($Routes){
-//    $this->Routes = $Routes;
-		$this->data['root'] = $Routes;
-	}
-
 	public function GetDashboard(){
 
 /* 		InvoiceMaster::select('id', 'student_id', 'payment_month')->chunk(500, function($invoices){
@@ -47,11 +39,11 @@ class DashboardController extends Controller
  */		
 
 //		dd(Student::active()->count());
-		$this->data['no_of_student'] = Student::active()->count();
-		$this->data['no_of_teachers'] = Teacher::count();
-		$this->data['no_of_employee'] = Employee::count();
-		$this->data['student_attendance'] = StudentAttendance::where('date', Carbon::now()->toDateString())->where('status', 1)->count();
-		return view('admin.dashboard', $this->data);
+		$data['no_of_student'] = Student::active()->count();
+		$data['no_of_teachers'] = Teacher::count();
+		$data['no_of_employee'] = Employee::count();
+		$data['student_attendance'] = StudentAttendance::where('date', Carbon::now()->toDateString())->where('status', 1)->count();
+		return view('admin.dashboard', $data);
 	}
 
 	public function errors(){

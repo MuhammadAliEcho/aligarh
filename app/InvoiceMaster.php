@@ -18,21 +18,41 @@ class InvoiceMaster extends Model
 	];
 
 	public function getCreatedAtAttribute($date) {
-		return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d-m-Y');
+		if (!$date) return null;
+		try {
+			return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d-m-Y');
+		} catch (\Exception $e) {
+			return $date;
+		}
 	}
 
 	public function getDueDateAttribute($date) {
-		return Carbon::createFromFormat('Y-m-d', $date)->format('d-m-Y');
+		if (!$date) return null;
+		try {
+			return Carbon::createFromFormat('Y-m-d', $date)->format('d-m-Y');
+		} catch (\Exception $e) {
+			return $date;
+		}
 	}
 
 	public function getPaymentMonthAttribute($payment_month) {
-		return Carbon::createFromFormat('Y-m-d', $payment_month)->format('M-Y');
+		if (!$payment_month) return null;
+		try {
+			return Carbon::createFromFormat('Y-m-d', $payment_month)->format('M-Y');
+		} catch (\Exception $e) {
+			return $payment_month;
+		}
 	}
 
 	public function getUpdatedAtAttribute($date){
-		return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
-	}
+		if (!$date) return null;
+		try {
+			return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
+		} catch (\Exception $e) {
+			return $date;
+		}
 
+	}
 	public function InvoiceDetail(){
 		return $this->hasMany('App\InvoiceDetail', 'invoice_id', 'id');
 	}

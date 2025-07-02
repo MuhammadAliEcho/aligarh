@@ -20,9 +20,11 @@
                     </li>
                     </ol>
                 </div>
+				@can('user-settings.change.session')
                 <div class="col-lg-4 col-md-6">
                     @include('admin.includes.academic_session')
                 </div>
+				@endcan
             </div>
 
             <div class="wrapper wrapper-content animated fadeInRight">
@@ -260,7 +262,7 @@
 
 				to_class: {},
 
-				students:	{!! $students OR 'false' !!},
+				students:	{!! $students ?? 'false' !!},
 
 			},
 			computed: {

@@ -2,32 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-//use Illuminate\Http\Request;
-use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\NoticeBoard;
 use App\SmsLog;
 use App\BulkSms;
 use Auth;
 use Carbon\Carbon;
-use Request;
 use App\Http\Controllers\Controller;
 
 class NoticeBoardCtrl extends Controller
 {
-
-	//  protected $Routes;
-	protected $data, $NoticeBoard, $Request, $Input, $SmsLog;
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		// Illuminate\hTTP\Request;
-		$this->Request = $Request;
-		$this->Input = $Request->input();
-	}
-
 	public function Index(){
-
-/*
+		/*
 			$username = "alisweet04" ;
 			$password = "a_03132045991" ;
 			$url = "http://lifetimesms.com/credit?username=".$username."&password=".$password;
@@ -39,17 +25,17 @@ class NoticeBoardCtrl extends Controller
 			curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 			$response = curl_exec($ch);
 			curl_close($ch);
-			$this->data['smscredit'] = $response;
-*/
-		$this->data['notices'] = NoticeBoard::all();
-	    return view('admin.notice_board', $this->data);
+			$data['smscredit'] = $response;
+		*/
+		$data['notices'] = NoticeBoard::all();
+	    return view('admin.notice_board', $data);
 	}
 
-	public function CreateNotice(){
-		$this->PostValidate();
-		$this->NoticeBoard = new NoticeBoard;
-		$this->SetAttributes();
-		$this->NoticeBoard->save();
+	public function CreateNotice(Request $request){
+		$this->PostValidate($request);
+		$NoticeBoard = new NoticeBoard;
+		$this->SetAttributes($NoticeBoard, $request);
+		$NoticeBoard->save();
 
 		return redirect('noticeboard')->with([
 			'toastrmsg' => [
@@ -60,12 +46,12 @@ class NoticeBoardCtrl extends Controller
 		]);
 	}
 
-	public function DeleteNotice(){
+	public function DeleteNotice(Request $request){
 
-		$this->NoticeBoard = NoticeBoard::findOrfail($this->Input['id']);
-		$this->NoticeBoard->delete();
+		$NoticeBoard = NoticeBoard::findOrfail($request->input('id'));
+		$NoticeBoard->delete();
 
-		if (Request::ajax()) {
+		if ($request->ajax()) {
 			return  response(['type' => 'success','title'  =>  'Notice Board','msg' =>  'Notice Removed']);
 		} else { 
 			return redirect('routines')->with([
@@ -78,19 +64,19 @@ class NoticeBoardCtrl extends Controller
 		}
 	}
 
-	protected function PostValidate(){
-		$this->validate($this->Request, [
+	protected function PostValidate($request){
+		$this->validate($request, [
 			'title'  =>  'required',
 			'notice'  =>  'required',
 			'till_date' =>  'required',
 		]);
 	}
 
-	protected function SetAttributes(){
-		$this->NoticeBoard->title = $this->Input['title'];
-		$this->NoticeBoard->notice = $this->Input['notice'];
-		$this->NoticeBoard->till_date = Carbon::createFromFormat('d/m/Y', $this->Input['till_date'])->toDateString();
-		$this->NoticeBoard->user_id = Auth::user()->id;
+	protected function SetAttributes($NoticeBoard, $request){
+		$NoticeBoard->title = $request->input('title');
+		$NoticeBoard->notice = $request->input('notice');
+		$NoticeBoard->till_date = Carbon::createFromFormat('d/m/Y', $request->input('till_date'))->toDateString();
+		$NoticeBoard->user_id = Auth::user()->id;
 	}
 
 }
