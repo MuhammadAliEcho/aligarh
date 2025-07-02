@@ -98,6 +98,28 @@ class StudentsController extends Controller
 		return view('admin.students', $data);
 		}
 
+	public function Grid(Request $request)
+	{	
+		$Students = Student::with('StdClass:id,name'); 
+
+		if ($request->filled('search_students')) {
+			$search = $request->input('search_students');
+
+			$Students->where(fn($query) => 
+			$query->where('name', 'like', "%{$search}%")
+				->orWhere('gr_no', 'like', "%{$search}%")
+				->orWhere('gender', 'like', "%{$search}%")
+				->orWhereHas('StdClass', fn($q) => 
+					$q->where('name', 'like', "%{$search}%")
+				)
+			);
+		}
+
+		$Students = $request->filled('per_page') ? $Students->paginate($request->input('per_page')) : $Students->get();
+		
+		return response()->json($Students);
+	}
+
 	public function AddStudent(Request $request){
 
 		$this->PostValidate($request);
