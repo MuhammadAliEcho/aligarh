@@ -5,8 +5,8 @@ namespace App;
 //use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Auth;
 use App\AcademicSession;
+use Illuminate\Support\Facades\Auth;
 
 class Student extends Model {
 
@@ -128,6 +128,11 @@ class Student extends Model {
 
 	public function Certificates(){
 		return $this->hasMany('App\Certificate');
+	}
+
+	public function scopeSessionCurrent($query)
+	{
+		return $query->where('session_id', Auth::user()->academic_session);
 	}
 
 }

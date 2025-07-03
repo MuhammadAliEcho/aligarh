@@ -128,14 +128,16 @@
 		<div class="container-fluid">
 			<div class="w-100">
 				<div class="main-content">
-					@can('user-settings.change.session')
-						<div class="row">
+					<div class="row">
+						<div class="col-lg-4 col-md-6">
+							<h1 class="header">Dashboard</h1>
+						</div>	
+						@can('user-settings.change.session')
 							<div class="col-lg-4 col-md-6" style="float:right;">
 								@include('admin.includes.academic_session')
 							</div>
-						</div>
-					@endcan
-					<h1 class="header">Dashboard</h1>
+						@endcan
+					</div>
 					<div class="row">
 						<div class="col-md-3 col-sm-6">
 							<div class="stats-card text-center">
@@ -144,7 +146,7 @@
 										<i class="fa fa-users card-icon primary"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number primary">1,247</div>
+										<div class="stats-number primary">{{$no_of_students}}</div>
 										<div class="stats-label">Total Students</div>
 									</div>
 								</div>
@@ -157,7 +159,7 @@
 										<i class="fa fa-user-plus card-icon success"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number success">89</div>
+										<div class="stats-number success">{{$no_of_teachers}}</div>
 										<div class="stats-label">Total Teachers</div>
 									</div>
 								</div>
@@ -170,7 +172,7 @@
 										<i class="fa fa-briefcase card-icon info"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number info">156</div>
+										<div class="stats-number info">{{$no_of_employees}}</div>
 										<div class="stats-label">Total Employees</div>
 									</div>
 								</div>
@@ -183,7 +185,7 @@
 										<i class="fa fa-home card-icon warning"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number warning">892</div>
+										<div class="stats-number warning">{{$no_of_guardians}}</div>
 										<div class="stats-label">Total Guardians</div>
 									</div>
 								</div>
@@ -199,7 +201,7 @@
 										<i class="fa fa-building card-icon danger"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number danger">45</div>
+										<div class="stats-number danger">{{$no_of_classes}}</div>
 										<div class="stats-label">Total Classes</div>
 									</div>
 								</div>
@@ -212,7 +214,7 @@
 										<i class="fa fa-cube card-icon purple"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number purple">234</div>
+										<div class="stats-number purple">{{$no_of_items}}</div>
 										<div class="stats-label">Total Inventory</div>
 									</div>
 								</div>
@@ -225,7 +227,7 @@
 										<i class="fa fa-book card-icon orange"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number orange">2,156</div>
+										<div class="stats-number orange">{{$no_of_books}}</div>
 										<div class="stats-label">Library Books</div>
 									</div>
 								</div>
@@ -238,7 +240,7 @@
 										<i class="fa fa-users card-icon teal"></i>
 									</div>
 									<div class="col-xs-9 text-right">
-										<div class="stats-number teal">67</div>
+										<div class="stats-number teal">{{$no_of_users}}</div>
 										<div class="stats-label">Total Users</div>
 									</div>
 								</div>
@@ -248,16 +250,10 @@
 
 					<!-- Charts Section -->
 					<div class="row">
-						<div class="col-md-8">
+						<div class="col-md-12">
 							<div class="chart-container">
 								<h3 class="section-title"><i class="fa fa-line-chart"></i> Monthly Attendance Trends</h3>
 								<canvas id="attendanceChart" height="100"></canvas>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="chart-container">
-								<h3 class="section-title"><i class="fa fa-pie-chart"></i> Students by Grade</h3>
-								<canvas id="gradeChart" height="200"></canvas>
 							</div>
 						</div>
 					</div>
@@ -278,7 +274,7 @@
 					</div>
 
 					<!-- Quick Actions -->
-					<div class="row d-none">
+					{{-- <div class="row d-none">
 						<div class="col-md-8">
 							<div class="quick-actions">
 								<h3 class="section-title"><i class="fa fa-bolt"></i> Quick Actions</h3>
@@ -304,7 +300,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> --}}
 
 					<!-- Detailed Stats -->
 					<div class="row">
@@ -316,15 +312,15 @@
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-sm-4 text-center">
-											<h4 class="success">45</h4>
+											<h4 class="success">{{$no_of_vendors}}</h4>
 											<p>Vendors</p>
 										</div>
 										<div class="col-sm-4 text-center">
-											<h4 class="primary">234</h4>
+											<h4 class="primary">{{$no_of_items}}</h4>
 											<p>Items</p>
 										</div>
 										<div class="col-sm-4 text-center">
-											<h4 class="warning">67</h4>
+											<h4 class="warning">{{$no_of_vouchers}}</h4>
 											<p>Vouchers</p>
 										</div>
 									</div>
@@ -339,15 +335,15 @@
 								<div class="panel-body">
 									<div class="row">
 										<div class="col-sm-4 text-center">
-											<h4 class="success">94%</h4>
+											<h4 class="success">{{ $daily_attendance['student'] }}%</h4>
 											<p>Students</p>
 										</div>
 										<div class="col-sm-4 text-center">
-											<h4 class="info">98%</h4>
+											<h4 class="info">{{ $daily_attendance['teacher'] }}%</h4>
 											<p>Teachers</p>
 										</div>
 										<div class="col-sm-4 text-center">
-											<h4 class="primary">96%</h4>
+											<h4 class="primary">{{ $daily_attendance['employee'] }}%</h4>
 											<p>Employees</p>
 										</div>
 									</div>
@@ -363,139 +359,129 @@
 @section('script')
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"></script>
 	<script>
+		const studentAttendance = @json($student_attendance);
+		const teacherAttendance = @json($teacher_attendance);
+    	const employeeAttendance = @json($employee_attendance);
+	</script>
+	<script>
+		const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         // Attendance Trend Chart
         const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
-        new Chart(attendanceCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Students',
-                    data: [94, 92, 96, 93, 95, 97, 94, 96, 93, 95, 92, 94],
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    tension: 0.4
-                }, {
-                    label: 'Teachers',
-                    data: [98, 97, 99, 96, 98, 99, 97, 98, 96, 97, 95, 98],
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.4
-                }, {
-                    label: 'Employees',
-                    data: [96, 94, 97, 95, 96, 98, 95, 97, 94, 96, 93, 96],
-                    borderColor: '#17a2b8',
-                    backgroundColor: 'rgba(23, 162, 184, 0.1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 90,
-                        max: 100
-                    }
-                }
-            }
-        });
-
-        // Grade Distribution Chart
-        const gradeCtx = document.getElementById('gradeChart').getContext('2d');
-        new Chart(gradeCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Grade 1-3', 'Grade 4-6', 'Grade 7-9', 'Grade 10-12'],
-                datasets: [{
-                    data: [320, 285, 342, 300],
-                    backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
+    	new Chart(attendanceCtx, {
+        type: 'line',
+			data: {
+				labels: months,
+				datasets: [{
+					label: 'Students',
+					data: studentAttendance,
+					borderColor: '#007bff',
+					backgroundColor: 'rgba(0, 123, 255, 0.1)',
+					tension: 0.4
+				}, {
+					label: 'Teachers',
+					data: teacherAttendance,
+					borderColor: '#28a745',
+					backgroundColor: 'rgba(40, 167, 69, 0.1)',
+					tension: 0.4
+				}, {
+					label: 'Employees',
+					data: employeeAttendance,
+					borderColor: '#17a2b8',
+					backgroundColor: 'rgba(23, 162, 184, 0.1)',
+					tension: 0.4
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: {
+						position: 'top',
+					}
+				},
+				scales: {
+					y: {
+						beginAtZero: false,
+						min: 0,
+						suggestedMax: 100
+					}
+				}
+			}
+		});
 
         // Fee Collection Chart
-        const feeCtx = document.getElementById('feeChart').getContext('2d');
-        new Chart(feeCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Collected',
-                    data: [85000, 92000, 78000, 95000, 88000, 91000],
-                    backgroundColor: '#28a745'
-                }, {
-                    label: 'Pending',
-                    data: [15000, 8000, 22000, 5000, 12000, 9000],
-                    backgroundColor: '#dc3545'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        stacked: true
-                    }
-                }
-            }
-        });
+		const feeCtx = document.getElementById('feeChart').getContext('2d');
+		new Chart(feeCtx, {
+		type: 'bar',
+		data: {
+			labels: months,
+			datasets: [{
+				label: 'Collected',
+				data: @json($fee_collections['collected']),
+				backgroundColor: '#28a745'
+			}, {
+				label: 'Pending',
+				data: @json($fee_collections['pending']),
+				backgroundColor: '#dc3545'
+			}]
+		},
+		options: {
+			responsive: true,
+			scales: {
+				x: { stacked: true },
+				y: { stacked: true }
+			}
+		}
+		});
 
         // Expense Chart
         const expenseCtx = document.getElementById('expenseChart').getContext('2d');
-        new Chart(expenseCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Salary',
-                    data: [45000, 45000, 45000, 47000, 47000, 47000],
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    fill: true
-                }, {
-                    label: 'Utilities',
-                    data: [8000, 7500, 8200, 7800, 8500, 8100],
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    fill: true
-                }, {
-                    label: 'Maintenance',
-                    data: [5000, 3000, 7000, 4000, 6000, 5500],
-                    borderColor: '#ffc107',
-                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+		new Chart(expenseCtx, {
+			type: 'line',
+			data: {
+				labels: months,
+				datasets: [
+					{
+						label: 'Salary',
+						data: @json($expense['Salary']),
+						borderColor: '#007bff',
+						backgroundColor: 'rgba(0, 123, 255, 0.1)',
+						fill: true
+					},
+					{
+						label: 'Utilities',
+						data: @json($expense['Utilities']),
+						borderColor: '#28a745',
+						backgroundColor: 'rgba(40, 167, 69, 0.1)',
+						fill: true
+					},
+					{
+						label: 'Maintenance',
+						data: @json($expense['Maintenance']),
+						borderColor: '#ffc107',
+						backgroundColor: 'rgba(255, 193, 7, 0.1)',
+						fill: true
+					},
+					{
+						label: 'Others',
+						data: @json($expense['Others']),
+						borderColor: '#dc3545',
+						backgroundColor: 'rgba(220, 53, 69, 0.1)',
+						fill: true
+					}
+				]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: { position: 'top' }
+				},
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				}
+			}
+		});
 
         // Sidebar navigation
         $('.sidebar .nav-link').on('click', function(e) {
