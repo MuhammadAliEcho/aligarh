@@ -138,140 +138,148 @@
 							</div>
 						@endcan
 					</div>
-					<div class="row">
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-users card-icon primary"></i>
+					@can('dashboad.top_content')
+						<div class="row">
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-users card-icon primary"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number primary">{{$no_of_students}}</div>
+											<div class="stats-label">Total Students</div>
+										</div>
 									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number primary">{{$no_of_students}}</div>
-										<div class="stats-label">Total Students</div>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-user-plus card-icon success"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number success">{{$no_of_teachers}}</div>
+											<div class="stats-label">Total Teachers</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-briefcase card-icon info"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number info">{{$no_of_employees}}</div>
+											<div class="stats-label">Total Employees</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-home card-icon warning"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number warning">{{$no_of_guardians}}</div>
+											<div class="stats-label">Total Guardians</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-user-plus card-icon success"></i>
+						<div class="row">
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-building card-icon danger"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number danger">{{$no_of_classes}}</div>
+											<div class="stats-label">Total Classes</div>
+										</div>
 									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number success">{{$no_of_teachers}}</div>
-										<div class="stats-label">Total Teachers</div>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-cube card-icon purple"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number purple">{{$no_of_items}}</div>
+											<div class="stats-label">Total Inventory</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-book card-icon orange"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number orange">{{$no_of_books}}</div>
+											<div class="stats-label">Library Books</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="stats-card text-center">
+									<div class="row">
+										<div class="col-xs-3">
+											<i class="fa fa-users card-icon teal"></i>
+										</div>
+										<div class="col-xs-9 text-right">
+											<div class="stats-number teal">{{$no_of_users}}</div>
+											<div class="stats-label">Total Users</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-briefcase card-icon info"></i>
-									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number info">{{$no_of_employees}}</div>
-										<div class="stats-label">Total Employees</div>
-									</div>
+					@endcan
+					@can('dashboad.monthly_attendance')
+						<!-- Charts Section -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="chart-container">
+									<h3 class="section-title"><i class="fa fa-line-chart"></i> Monthly Attendance Trends</h3>
+									<canvas id="attendanceChart" height="100"></canvas>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-home card-icon warning"></i>
-									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number warning">{{$no_of_guardians}}</div>
-										<div class="stats-label">Total Guardians</div>
+					@endcan
+					@canany(['dashboad.fee_Collection','dashboad.monthly_expenses'])
+						<div class="row">
+							@can('dashboad.fee_Collection')
+								<div class="col-md-6">
+									<div class="chart-container">
+										<h3 class="section-title"><i class="fa fa-bar-chart"></i> Fee Collection Status</h3>
+										<canvas id="feeChart" height="150"></canvas>
 									</div>
 								</div>
-							</div>
-						</div>
-					</div>
+							@endcan
+							@can('dashboad.monthly_expenses')
+								<div class="col-md-6">
+									<div class="chart-container">
+										<h3 class="section-title"><i class="fa fa-area-chart"></i> Monthly Expenses</h3>
+										<canvas id="expenseChart" height="150"></canvas>
+									</div>
+								</div>
+							@endcan
 
-					<div class="row">
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-building card-icon danger"></i>
-									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number danger">{{$no_of_classes}}</div>
-										<div class="stats-label">Total Classes</div>
-									</div>
-								</div>
-							</div>
 						</div>
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-cube card-icon purple"></i>
-									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number purple">{{$no_of_items}}</div>
-										<div class="stats-label">Total Inventory</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-book card-icon orange"></i>
-									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number orange">{{$no_of_books}}</div>
-										<div class="stats-label">Library Books</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3 col-sm-6">
-							<div class="stats-card text-center">
-								<div class="row">
-									<div class="col-xs-3">
-										<i class="fa fa-users card-icon teal"></i>
-									</div>
-									<div class="col-xs-9 text-right">
-										<div class="stats-number teal">{{$no_of_users}}</div>
-										<div class="stats-label">Total Users</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Charts Section -->
-					<div class="row">
-						<div class="col-md-12">
-							<div class="chart-container">
-								<h3 class="section-title"><i class="fa fa-line-chart"></i> Monthly Attendance Trends</h3>
-								<canvas id="attendanceChart" height="100"></canvas>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-6">
-							<div class="chart-container">
-								<h3 class="section-title"><i class="fa fa-bar-chart"></i> Fee Collection Status</h3>
-								<canvas id="feeChart" height="150"></canvas>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="chart-container">
-								<h3 class="section-title"><i class="fa fa-area-chart"></i> Monthly Expenses</h3>
-								<canvas id="expenseChart" height="150"></canvas>
-							</div>
-						</div>
-					</div>
+					@endcan
 
 					<!-- Quick Actions -->
 					{{-- <div class="row d-none">
@@ -303,54 +311,60 @@
 					</div> --}}
 
 					<!-- Detailed Stats -->
-					<div class="row">
-						<div class="col-md-6">
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h3 class="panel-title"><i class="fa fa-list"></i> Inventory Summary</h3>
-								</div>
-								<div class="panel-body">
-									<div class="row">
-										<div class="col-sm-4 text-center">
-											<h4 class="success">{{$no_of_vendors}}</h4>
-											<p>Vendors</p>
+					@canany(['dashboad.inventory_summary', 'dashboad.daily_attendance'])
+						<div class="row">
+							@can('dashboad.inventory_summary')
+								<div class="col-md-6">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h3 class="panel-title"><i class="fa fa-list"></i> Inventory Summary</h3>
 										</div>
-										<div class="col-sm-4 text-center">
-											<h4 class="primary">{{$no_of_items}}</h4>
-											<p>Items</p>
-										</div>
-										<div class="col-sm-4 text-center">
-											<h4 class="warning">{{$no_of_vouchers}}</h4>
-											<p>Vouchers</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h3 class="panel-title"><i class="fa fa-check-circle"></i> Daily Attendance</h3>
-								</div>
-								<div class="panel-body">
-									<div class="row">
-										<div class="col-sm-4 text-center">
-											<h4 class="success">{{ $daily_attendance['student'] }}%</h4>
-											<p>Students</p>
-										</div>
-										<div class="col-sm-4 text-center">
-											<h4 class="info">{{ $daily_attendance['teacher'] }}%</h4>
-											<p>Teachers</p>
-										</div>
-										<div class="col-sm-4 text-center">
-											<h4 class="primary">{{ $daily_attendance['employee'] }}%</h4>
-											<p>Employees</p>
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-sm-4 text-center">
+													<h4 class="success">{{$no_of_vendors}}</h4>
+													<p>Vendors</p>
+												</div>
+												<div class="col-sm-4 text-center">
+													<h4 class="primary">{{$no_of_items}}</h4>
+													<p>Items</p>
+												</div>
+												<div class="col-sm-4 text-center">
+													<h4 class="warning">{{$no_of_vouchers}}</h4>
+													<p>Vouchers</p>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							@endcan
+							@can('dashboad.inventory_summary')
+								<div class="col-md-6">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h3 class="panel-title"><i class="fa fa-check-circle"></i> Daily Attendance</h3>
+										</div>
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-sm-4 text-center">
+													<h4 class="success">{{ $daily_attendance['student'] }}%</h4>
+													<p>Students</p>
+												</div>
+												<div class="col-sm-4 text-center">
+													<h4 class="info">{{ $daily_attendance['teacher'] }}%</h4>
+													<p>Teachers</p>
+												</div>
+												<div class="col-sm-4 text-center">
+													<h4 class="primary">{{ $daily_attendance['employee'] }}%</h4>
+													<p>Employees</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							@endcan
 						</div>
-					</div>
+					@endcan
 				</div>
 			</div>
 		</div>

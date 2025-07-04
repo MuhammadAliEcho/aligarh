@@ -18,15 +18,18 @@ class PermissionsUpdateSeeder extends Seeder
     public function run()
     {
         $ignored = config('permission.ignore_routes', []);
-
+        $default_permissions = config('DefaultPermissions') ?? [];
+        
         $Permissions = collect(Route::getRoutes())
             ->filter(fn ($route) => !is_null($route->getName()) && !in_array($route->getName(), $ignored))
-            ->map(fn ($route) => $route->getName());
+            ->map(fn ($route) => $route->getName())
+            ->toArray();
 
+        $mergedPermissions = array_unique(array_merge($default_permissions, $Permissions));
 
 
         // Insert or ignore permissions (to avoid duplicates)
-        foreach ($Permissions as $permission) {
+        foreach ($mergedPermissions as $permission) {
             Permission::updateOrCreate(['name' => $permission], ['guard_name' => 'web']);
         }
 
