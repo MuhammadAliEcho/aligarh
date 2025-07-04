@@ -18,7 +18,7 @@ class AcademicSession extends Model
 	}
 
 	public function scopeUserAllowSession($query, $allow_session = null){
-		return	$query->whereIn('id', $allow_session? $allow_session : Auth::user()->getprivileges->allow_session);
+		return	$query->whereIn('id', $allow_session? $allow_session : Auth::user()->allow_session);
 	}
 
 	public function Exam(){

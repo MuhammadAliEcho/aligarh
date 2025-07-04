@@ -18,7 +18,7 @@ class User extends Authenticatable
 	 * @var array
 	 */
 	protected $fillable = [
-		'name', 'email', 'password', 'foreign_id', 'user_type', 'active', 'academic_session', 'settings'
+		'name', 'email', 'password', 'foreign_id', 'user_type', 'active', 'academic_session', 'settings', 'allow_session'
 	];
 
 	/**
@@ -32,6 +32,7 @@ class User extends Authenticatable
 
 	protected $casts = [
 		'settings'      =>  'object',
+		'allow_session' => 	'array',
 	];
 
 	protected static function boot()
@@ -39,10 +40,15 @@ class User extends Authenticatable
         parent::boot();
 
         static::creating(function ($model) {
-            $model->created_by = Auth::user()->id??2;
+            $model->created_by 			= Auth::user()->id??2;
+            $model->academic_session  	=   Auth::user()->academic_session?? null;
+            $model->settings  			=   Auth::user()->settings?? '{"skin_config":{"nav_collapse":""}}';
+
         });
         static::updating(function ($model) {
-            $model->updated_by  =   Auth::user()->id??2;
+            $model->updated_by  		=   Auth::user()->id??2;
+            $model->academic_session  	=   Auth::user()->academic_session?? null;
+            $model->settings  			=   Auth::user()->settings?? '{"skin_config":{"nav_collapse":""}}';
         });
     }
 

@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Employee;
 use App\Teacher;
 use App\User;
-use Auth;
 
 class UsersController extends Controller
 {
@@ -58,16 +58,14 @@ class UsersController extends Controller
       }
 
       $User = User::create([
-        'name'              => $request->input('name'),
-        'email'             => $request->input('email'),
-        'password'          => bcrypt($request->input('password')),
-        'active'            => $request->input('status'),
-        'academic_session'  => Auth::user()->academic_session,
-        'allow_session'   =>  $request->input('allow_session'),
-        'settings'          => Auth::user()->settings,
-        'foreign_id'        => $data->id,
-        'contact_no'        => $data->phone,
-        'user_type'         => $request->input('type'),
+        'name'              =>  $request->input('name'),
+        'email'             =>  $request->input('email'),
+        'password'          =>  bcrypt($request->input('password')),
+        'active'            =>  $request->input('status'),
+        'allow_session'     =>  $request->input('allow_session'),
+        'foreign_id'        =>  $data->id,
+        'contact_no'        =>  $data->phone,
+        'user_type'         =>  $request->input('type'),
       ]);
 
       $User->assignRole($role_id);
@@ -92,25 +90,18 @@ class UsersController extends Controller
     public function update(Request $request, $id){
       $User =  User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
       $validatedData  = $request->validate([
-          'status'          =>  'required',
-          'allow_session'   =>  'required',
-          'password'        =>  'sometimes|nullable|between:6,12',
-          're_password'     =>  'sometimes|nullable|between:6,12|same:password',
+          'active'            =>  'required',
+          'allow_session'     =>  'sometimes|required',
+          'password'          =>  'nullable|between:6,12',
+          're_password'       =>  'nullable|between:6,12|same:password',
       ]);
-
-
-      // if (Auth::user()->getprivileges->privileges->{$this->data['root']['content']['id']}->editpwd
-      if (isset($validatedData['password'])) {
-          $validatedData['password'] = Hash::make($validatedData['password']);
+      if(Auth::user()->can('users.update.update_passoword') && !empty(isset($validatedData['password']))){
+        $validatedData['password'] = bcrypt($validatedData['password']);
+      } else {
+        unset($validatedData['password']);
       }
 
-      $User->update([
-        'active'            =>  $validatedData['status'],
-        'allow_session'     =>  $validatedData['allow_session'],
-        'password'          =>  $validatedData['password'],
-        'academic_session'  =>  Auth::user()->academic_session,
-        'settings'          =>  Auth::user()->settings,
-      ]);
+      $User->update($validatedData);
 
       return redirect('users')->with([
         'toastrmsg' => [
