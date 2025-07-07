@@ -180,24 +180,24 @@
 														@endif
 													</div>
 												</div>
-												{{-- Permission will be applied later --}}
-												{{-- @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->editclass) --}}
-												<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-													<label class="col-md-2 control-label">Class</label>
-													<div class="col-md-6 select2-div">
-														<select class="form-control select2" name="class">
-															<option value="" disabled selected>Class</option>
-															@foreach($classes AS $class)
-																<option value="{{ $class->id }}">{{ $class->name }}</option>
-															@endforeach
-														</select>
-														@if ($errors->has('class'))
-																<span class="help-block">
-																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-																</span>
-														@endif
+												@can('students.class_edit')
+													<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+														<label class="col-md-2 control-label">Class</label>
+														<div class="col-md-6 select2-div">
+															<select class="form-control select2" name="class">
+																<option value="" disabled selected>Class</option>
+																@foreach($classes AS $class)
+																	<option value="{{ $class->id }}">{{ $class->name }}</option>
+																@endforeach
+															</select>
+															@if ($errors->has('class'))
+																	<span class="help-block">
+																			<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+																	</span>
+															@endif
+														</div>
 													</div>
-												</div>
+												@endcan
 
 												<div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">Section</label>

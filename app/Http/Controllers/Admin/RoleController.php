@@ -143,7 +143,7 @@ class RoleController extends Controller
 				'users.create' => 'User Create',
 				'users.edit' => 'User Edit',
 				'users.update' => 'User Update',
-				'users.update.update_passoword' => 'Update Password (User Update)'
+				'users.update.update_password' => 'Update Password (User Update)'
 			],
 			'Roles' => [
 				'roles.index' => 'Role View',
@@ -155,6 +155,7 @@ class RoleController extends Controller
 				'students.index' => 'Students View',
 				'students.add' => 'Students Create',
 				'students.edit' => 'Students Edit',
+				'students.class_edit' => 'Edit Class',
 				'students.edit.post' => 'Students Update',
 				'students.profile' => 'Students Profile',
 				'students.image' => 'Students Image',

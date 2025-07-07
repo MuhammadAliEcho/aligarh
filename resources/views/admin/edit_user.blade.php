@@ -106,7 +106,7 @@
                                         </div>
                                       </div>
 
-                                      @can('users.update.update_passoword')
+                                      @can('users.update.update_password')
                                         <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
                                           <label class="col-md-2 control-label">Password</label>
                                           <div class="col-md-6">

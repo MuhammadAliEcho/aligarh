@@ -113,7 +113,6 @@
 
                                     </form>
 
-                                    {{--Permission will be applied later on controller --}}
                                     @if($root)
                                     <div class="row">
                                       <h3>Class: {{ $selected_class->name.' '.$section_nick }} ({{ $input['date'] }})</h3>

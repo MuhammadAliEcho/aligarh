@@ -95,7 +95,7 @@ class UsersController extends Controller
           'password'          =>  'nullable|between:6,12',
           're_password'       =>  'nullable|between:6,12|same:password',
       ]);
-      if(Auth::user()->can('users.update.update_passoword') && !empty(isset($validatedData['password']))){
+      if(Auth::user()->can('users.update.update_password') && !empty(isset($validatedData['password']))){
         $validatedData['password'] = bcrypt($validatedData['password']);
       } else {
         unset($validatedData['password']);

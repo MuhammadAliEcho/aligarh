@@ -408,11 +408,10 @@ class StudentsController extends Controller
 		$Student->father_name = $request->input('father_name');
 		$Student->gender = $request->input('gender');
 
-		//Permission will be applied later
-		// if($new || Auth::user()->getprivileges->privileges->{$this->data['root']['content']['id']}->editclass) {
+		if($new || Auth::user()->can('students.class_edit')) {
 			$Student->class_id = $request->input('class');
 			$Student->section_id = $request->input('section');
-		// }
+		}
 		if($new){
 			$Student->tuition_fee = $request->input('tuition_fee');
 			$Student->late_fee = $request->input('late_fee');

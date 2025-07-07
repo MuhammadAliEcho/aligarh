@@ -10,5 +10,8 @@ return [
     'dashboad.daily_attendance',
 
     //update Users password
-    'users.update.update_passoword'
+    'users.update.update_password',
+
+    //class
+    'students.class_edit',
 ];
