@@ -55,6 +55,27 @@ class TeacherController extends Controller
     return view('admin.teacher', $data);
   }
 
+  public function Grid(Request $request){
+
+    $Teachers = Teacher::query(); 
+
+		if ($request->filled('search_teachers')) {
+			$search = $request->input('search_teachers');
+
+			$Teachers->where(fn($query) => 
+			$query->where('name', 'like', "%{$search}%")
+				->orWhere('email', 'like', "%{$search}%")
+				->orWhere('phone', 'like', "%{$search}%")
+				->orWhere('gender', 'like', "%{$search}%")
+				->orWhere('qualification', 'like', "%{$search}%")
+			);
+		}
+
+		$Teachers = $request->filled('per_page') ? $Teachers->paginate($request->input('per_page')) : $Teachers->get();
+		
+		return response()->json($Teachers);
+  }
+
   public function FindTeacher(Request $request){
     if ($request->ajax()) {
       $teachers = Teacher::where('name', 'LIKE', '%'.$request->input('q').'%')

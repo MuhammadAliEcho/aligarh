@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::prefix('teacher')->name('teacher')->group(function(){
         Route::get('/', [TeacherController::class, 'GetTeacher'])->name('.index');
+        Route::get('/grid', [TeacherController::class, 'Grid'])->name('.grid');
         Route::get('/image/{id}', [TeacherController::class, 'GetImage'])->name('.image');
         Route::get('/find', [TeacherController::class, 'FindTeacher'])->name('.find');
         Route::get('/profile/{id}', [TeacherController::class, 'GetProfile'])->name('.profile');
