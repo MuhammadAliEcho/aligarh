@@ -61,8 +61,8 @@ class EmployeeController extends Controller
 
     $Employees = Employee::query(); 
 
-		if ($request->filled('search_Employees')) {
-			$search = $request->input('search_Employees');
+		if ($request->filled('search_employees')) {
+			$search = $request->input('search_employees');
 
 			$Employees->where(fn($query) => 
 			$query->where('name', 'like', "%{$search}%")

@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::prefix('guardians')->name('guardian')->group(function(){
         Route::get('/', [GuardiansController::class, 'GetGuardian'])->name('.index');
+        Route::get('/grid', [GuardiansController::class, 'Grid'])->name('.grid');
         Route::get('/profile/{id}', [GuardiansController::class, 'GetProfile'])->name('.profile');
         Route::get('/edit/{id}', [GuardiansController::class, 'EditGuardian'])->name('.edit');
         Route::post('/add', [GuardiansController::class, 'AddGuardian'])->name('.add');

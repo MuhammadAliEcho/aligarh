@@ -28,6 +28,31 @@ class GuardiansController extends Controller
       return view('admin.guardian');
     }
 
+
+    public function Grid(Request $request){
+
+    $Guardians = Guardian::query(); 
+
+		if ($request->filled('search_guardians')) {
+			$search = $request->input('search_guardians');
+
+			$Guardians->where(fn($query) => 
+			$query->where('name', 'like', "%{$search}%")
+				->orWhere('email', 'like', "%{$search}%")
+				->orWhere('phone', 'like', "%{$search}%")
+				->orWhere('income', 'like', "%{$search}%")
+				->orWhere('profession', 'like', "%{$search}%")
+			);
+		}
+
+		$Guardians = $request->filled('per_page') ? $Guardians->paginate($request->input('per_page')) : $Guardians->get();
+		
+		return response()->json($Guardians);
+  }
+
+
+
+
     public function GetProfile($id){
       $data['guardian']  = Guardian::findorfail($id);
       return view('admin.guardian_profile', $data);

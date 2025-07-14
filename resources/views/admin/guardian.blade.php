@@ -5,23 +5,308 @@
   @section('head')
   <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
   <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-  <style type="text/css">
-  .print-table {
-    width: 100%;
-  }
-  .print-table th,
-  .print-table td {
-    border: 1px solid black !important;
-    padding: 0px;
-  }   
+    <style type="text/css">
+      .print-table {
+        width: 100%;
+      }
+      .print-table th,
+      .print-table td {
+        border: 1px solid black !important;
+        padding: 0px;
+      }   
 
-  .print-table > tbody > tr > td {
-      padding: 1px;
-    }
-  .print-table > thead > tr > th {
-      padding: 3px;
-    }
-  </style>
+      .print-table > tbody > tr > td {
+          padding: 1px;
+        }
+      .print-table > thead > tr > th {
+          padding: 3px;
+      }
+    </style>
+    <style>
+      .guardian-card {
+          background: #ffffff;
+          border: none;
+          border-radius: 20px;
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          position: relative;
+          margin-bottom: 30px;
+      }
+
+      .guardian-card:hover {
+          transform: translateY(-10px) scale(1.02);
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+          background: linear-gradient(135deg, #009486 0%, #1ab394 100%);
+          height: 70px;
+          position: relative;
+          /* overflow: hidden; */
+      }
+
+      .card-header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      }
+
+      .profile-image-container {
+          position: absolute;
+          bottom: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          /* z-index: 10; */
+      }
+
+      .profile-image {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          border: 5px solid #ffffff;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          transition: all 0.3s ease;
+          object-fit: cover;
+      }
+
+      .guardian-card:hover .profile-image {
+          transform: scale(1.1);
+          box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-body {
+          padding: 60px 25px 25px;
+          text-align: center;
+      }
+
+      .guardian-name {
+          font-size: 24px;
+          font-weight: 700;
+          color: #2c3e50;
+          margin: 0 0 8px;
+          letter-spacing: -0.5px;
+      }
+
+      .status-badge {
+          display: inline-block;
+          padding: 6px 16px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 25px;
+      }
+
+      .status-active {
+          background: linear-gradient(135deg, #00b894, #00cec9);
+          color: white;
+      }
+
+      .status-inactive {
+          background: linear-gradient(135deg, #e17055, #fdcb6e);
+          color: white;
+      }
+
+      .info-divider {
+          border: none;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, #667eea, transparent);
+          margin: 0px 0;
+      }
+
+      .info-list {
+          text-align: left;
+          margin: 0;
+          padding: 0;
+      }
+
+      .info-item {
+          display: flex;
+          align-items: center;
+          padding: 7px 0;
+          border-bottom: 1px solid #f8f9fa;
+          transition: all 0.3s ease;
+      }
+
+      .info-item:last-child {
+          border-bottom: none;
+      }
+
+      .info-item:hover {
+          background: rgba(102, 126, 234, 0.05);
+          padding-left: 10px;
+          border-radius: 8px;
+      }
+
+      .info-icon {
+          width: 35px;
+          height: 35px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 15px;
+          font-size: 16px;
+          color: white;
+          flex-shrink: 0;
+      }
+
+      .icon-education { background: linear-gradient(135deg, #667eea, #764ba2); }
+      .icon-id { background: linear-gradient(135deg, #00cec9, #55a3ff); }
+      .icon-address { background: linear-gradient(135deg, #fd79a8, #fdcb6e); }
+      .icon-fee { background: linear-gradient(135deg, #00b894, #55efc4); }
+
+      .info-content {
+          flex: 1;
+      }
+
+      .info-label {
+          font-size: 12px;
+          color: #74b9ff;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 2px;
+      }
+
+      .info-value {
+          font-size: 15px;
+          color: #2d3436;
+          font-weight: 600;
+      }
+
+      .fee-amount {
+          color: #00b894;
+          font-weight: 700;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          .guardian-card {
+              margin: 0 10px 20px;
+          }
+          
+          .card-body {
+              padding: 50px 20px 20px;
+          }
+      }
+
+      .guardian-card {
+          animation: fadeInUp 0.6s ease-out;
+      }
+
+      .guardian-card {
+        width: 250px;
+      }
+
+      .profile-image {
+        width: 80px;
+        height: 80px;
+      }
+
+      .card-body {
+        padding: 25px 20px 10px;
+      }
+
+      .guardian-name {
+        font-size: 18px;
+      }
+
+      .info-value {
+        font-size: 10px;
+      }
+
+      .status-badge {
+        font-size: 10px;
+        padding: 4px 12px;
+      }
+
+      .m-2{
+        margin: 2rem;
+      }
+      .pagination nav {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+      }
+
+      .pagination{
+          display: inline !important;
+          padding-left: 0;
+          margin: 20px 0;
+          border-radius: 4px;
+      }
+
+      @keyframes fadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(30px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      /* ribbon */
+      .ribbon {
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        z-index: 1;
+        overflow: hidden;
+        width: 93px;
+        height: 93px;
+        text-align: right;
+      }
+
+      .ribbon span {
+        font-size: 0.8rem;
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: bold;
+        line-height: 32px;
+        transform: rotate(45deg);
+        width: 125px;
+        display: block;
+        background: linear-gradient(#ed5565 0%, #b75862 100%);
+        box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+        position: absolute;
+        top: 17px;
+        right: -29px;
+      }
+
+      .ribbon span::before {
+        content: '';
+        position: absolute;
+        left: 0px;
+        top: 100%;
+        z-index: -1;
+        border-left: 3px solid #b75862;
+        border-right: 3px solid transparent;
+        border-bottom: 3px solid transparent;
+        border-top: 3px solid #b75862;
+      }
+
+      .ribbon span::after {
+        content: '';
+        position: absolute;
+        right: 0%;
+        top: 100%;
+        z-index: -1;
+        border-right: 3px solid #b75862;
+        border-left: 3px solid transparent;
+        border-bottom: 3px solid transparent;
+        border-top: 3px solid #b75862;
+      }
+    </style>
   @endsection
 
   @section('content')
@@ -70,7 +355,125 @@
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
                                 <div class="panel-body">
-                                  <div class="table-responsive">
+                                  <div class="row" id="app">
+                                    <div class="col-md-2 col-md-offset-10">
+                                      <div class="form-group pull-right">
+                                        <div class="clearfix">
+                                          <label data-placement="top" data-toggle="tooltip" title="Grid Layout" class="control-label pull-left" style="margin-right: 10px; line-height: 34px;">
+                                            <span class="fa fa-th"></span>
+                                          </label>
+                                          <label class="switch pull-left" style="margin-top: 5px;">
+                                            <input type="checkbox" v-model="isGrid" @change="handleLayoutChange">
+                                            <span class="slider round"></span>
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="grid" id="gridLayout" v-show="layout === 'grid'">
+                                    <div class="row" style="margin-bottom: 20px;" id="app">
+                                      <div class="col-md-6">
+                                        <label>
+                                          Show
+                                          <select v-model="per_page" class="form-control input-sm" style="width: auto; display: inline-block;" @change="handleLayoutChange">
+                                            <option v-for="option in options" :key="option" :value="option">
+                                              @{{ option }}
+                                            </option>
+                                          </select>
+                                          entries
+                                        </label>
+                                      </div>
+                                      <div class="col-md-6 text-right">
+                                        <input type="text" v-model="search_guardians" @input="debouncedSearch" class="form-control input-sm" style="width: 200px; display: inline-block;" placeholder="Search...">
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <label>
+                                          Showing @{{from}} to @{{to}} of @{{total}} entries
+                                        </label>
+                                      </div>
+                                    </div>
+                                    <div class="" style="display: ruby">
+                                      <div class="m-2" v-for="guardian in guardians" :key="guardian.id">
+                                        <a :href="'{{ url('guardians/profile') }}/' + guardian.id" class="text-decoration-none">
+                                          <div class="panel guardian-card">
+                                              <div class="card-header">
+                                                  <div class="ribbon"><span>guardian</span></div>
+                                                  <div class="profile-image-container">
+                                                      <img :src="guardian.img_url || 'img/avatar.jpg'" alt="guardian Photo" class="profile-image">
+                                                  </div>
+                                              </div>
+                                              <div class="card-body">
+                                                  <h4 class="guardian-name">@{{ guardian.name }}</h4>
+                                                  <hr class="info-divider">
+                                                  <ul class="list-unstyled info-list">
+                                                      <li class="info-item">
+                                                          <div class="info-icon icon-education">
+                                                              <i class="fa fa-briefcase"></i>
+                                                          </div>
+                                                          <div class="info-content">
+                                                              <div class="info-label">Profession</div>
+                                                              <div class="info-value">@{{ guardian.profession }}</div>
+                                                          </div>
+                                                      </li>
+                                                      <li class="info-item">
+                                                          <div class="info-icon icon-id">
+                                                              <i class="fa fa-envelope-o"></i>
+                                                          </div>
+                                                          <div class="info-content">
+                                                              <div class="info-label">Email</div>
+                                                              <div class="info-value">@{{ guardian.email }}</div>
+                                                          </div>
+                                                      </li>
+                                                      <li class="info-item">
+                                                          <div class="info-icon icon-address">
+                                                              <i class="fa fa-address-card-o"></i>
+                                                          </div>
+                                                          <div class="info-content">
+                                                              <div class="info-label">Address</div>
+                                                              <div class="info-value" style="font-size: 9px !important">@{{ guardian.address }}</div>
+                                                          </div>
+                                                      </li>
+                                                      <li class="info-item">
+                                                          <div class="info-icon icon-fee">
+                                                              <i class="fa fa-money"></i>
+                                                          </div>
+                                                          <div class="info-content">
+                                                              <div class="info-label">Monthly Income</div>
+                                                              <div class="info-value fee-amount">PKR @{{ guardian.income }}</div>
+                                                          </div>
+                                                      </li>
+                                                  </ul>
+                                                  <div class="text-end mt-3">
+                                                      <a :href="'{{ url('guardians/edit') }}/' + guardian.id" class="btn btn-sm btn-outline-primary">
+                                                          <i class="fa fa-pencil"></i> Edit
+                                                      </a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                        </a>  
+                                      </div>
+                                    </div>
+                                    <div class="pagination" id="app">
+                                      <nav class="text-center">
+                                        <ul class="pagination">
+                                          <li
+                                            v-for="(link, index) in pagination_links"
+                                            :key="index" :class="['page-item', { active: link.active, disabled: !link.url }]"
+                                          >
+                                            <a
+                                              class="page-link"
+                                              href="#"
+                                              @click.prevent="goToPage(link)"
+                                              v-html="link.label"
+                                            ></a>
+                                          </li>
+                                        </ul>
+                                      </nav>
+                                    </div>
+                                  </div>
+                                  <div class="table-responsive" v-show="layout === 'list'">
                                     <table class="table table-striped table-bordered table-hover dataTables-teacher" width="100%">
                                       <thead>
                                         <tr>
@@ -332,5 +735,76 @@
       @endif
       });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script type="text/javascript">
+        var app = new Vue({
+          el: '#app',
+          data: { 
+            layout: 'grid',
+            options: [5,10, 25, 50, 100],
+            per_page: 10,
+            current_page: 1,
+            last_page: 1,
+            total: 0,
+            to: 0,
+            from: 0,
+            guardians: [],
+            pagination_links: [],
+            search_guardians: '',
+          },
+
+          methods: {
+            handleLayoutChange(page = 1) {
+              axios.get('/guardians/grid', {
+                params: {
+                  per_page: this.per_page,
+                  page: page,
+                  search_guardians: this.search_guardians,
+                }
+              })
+              .then(response => {
+                const res = response.data;
+                this.guardians = res.data;
+                this.current_page = res.current_page;
+                this.last_page = res.last_page;
+                this.to = res.to;
+                this.from = res.from;
+                this.total = res.total;
+                this.pagination_links = res.links;
+              })
+              .catch(error => {
+                console.error('Failed to fetch guardians:', error);
+              });
+            },
+            debouncedSearch(page = 1) {
+              clearTimeout(this.debounceTimeout);
+              this.debounceTimeout = setTimeout(() => {
+                this.handleLayoutChange(page);
+              }, 300);
+            },
+            goToPage(link) {
+              if (!link.url) return;
+              const url = new URL(link.url);
+              const page = url.searchParams.get('page');
+              this.handleLayoutChange(page);
+            }
+          },
+
+          computed: {
+            isGrid: {
+              get() {
+                return this.layout === 'grid';
+              },
+              set(val) {
+                this.layout = val ? 'grid' : 'list';
+              }
+            }
+          },
+          mounted: function() {
+            this.handleLayoutChange();
+          }
+        });
+      </script>
 
     @endsection
