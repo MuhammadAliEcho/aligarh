@@ -401,7 +401,7 @@
                                               <div class="card-header">
                                                   <div class="ribbon"><span>employee</span></div>
                                                   <div class="profile-image-container">
-                                                      <img :src="employee.image_url || 'img/avatar.jpg'" alt="employee Photo" class="profile-image">
+                                                      <img :src="employee.img_url || 'img/avatar.jpg'" alt="employee Photo" class="profile-image">
                                                   </div>
                                               </div>
                                               <div class="card-body">
