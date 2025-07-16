@@ -1533,7 +1533,7 @@ p{
 
 </section>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

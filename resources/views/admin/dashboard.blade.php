@@ -166,7 +166,7 @@
 			border-radius: 4px;
 		}
 
-		.timeline-modern::before {
+		/* .timeline-modern::before {
 			content: '';
 			position: absolute;
 			top: 18%;
@@ -175,7 +175,7 @@
 			width: 100%;
 			background: linear-gradient(to right, #007bff, #00c4ff);
 			z-index: 1;
-		}
+		} */
 
 		.timeline-node {
 			position: relative;
@@ -339,9 +339,19 @@
 								<div class="stats-card text-center">
 									<div class="row">
 										<div class="col-xs-3">
-											<i class="fa fa-users card-icon primary"></i>
-											<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Total Capacity" style="color: #007bff;">{{ $student_capacity }}</span>
-											<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Attendance" style="color: #007bffb5;">{{ $daily_attendance['student']['percent'] }}%</span>
+											<div>
+												<i class="fa fa-users card-icon primary"></i>
+											</div>
+											<div>
+												<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Total Capacity" style="color: #007bff;">
+													{{ $student_capacity }}
+												</span>
+											</div>
+											<div>
+												<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Attendance" style="color: #007bffb5;">
+													{{ $daily_attendance['student']['percent'] }}%
+												</span>
+											</div>
 										</div>
 										<div class="col-xs-9 text-right">
 											<div class="stats-number primary"><span data-placement="top" data-toggle="tooltip" title="Today Presents" style="color: #007bffb5;">{{$daily_attendance['student']['present']}}</span>/{{$no_of_students}}</div>
@@ -354,8 +364,12 @@
 								<div class="stats-card text-center">
 									<div class="row">
 										<div class="col-xs-3">
-											<i class="fa fa-user-plus card-icon success"></i>
-											<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Attendance" style="color: #28a7458f;">{{ $daily_attendance['teacher']['percent'] }}%</span>
+											<div class="mb-10">
+												<i class="fa fa-user-plus card-icon success"></i>
+											</div>
+											<div>
+												<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Attendance" style="color: #28a7458f;">{{ $daily_attendance['teacher']['percent'] }}%</span>
+											</div>
 										</div>
 										<div class="col-xs-9 text-right">
 											<div class="stats-number success"><span data-placement="top" data-toggle="tooltip" title="Today Presents" style="color: #28a7458f;">{{$daily_attendance['teacher']['present']}}</span>/{{$no_of_teachers}}</div>
@@ -368,7 +382,9 @@
 								<div class="stats-card text-center">
 									<div class="row">
 										<div class="col-xs-3">
-											<i class="fa fa-briefcase card-icon info"></i>
+											<div class="mb-10">
+												<i class="fa fa-briefcase card-icon info"></i>
+											</div>
 											<span class="text-lg" data-placement="right" data-toggle="tooltip" title="Attendance" style="color: #17a2b8ad;">{{ $daily_attendance['employee']['percent'] }}%</span>
 										</div>
 										<div class="col-xs-9 text-right">

@@ -479,7 +479,7 @@
 		  </div>
 
 
-		  @include('admin.includes.footercopyright')
+		  
 
 
 		</div>

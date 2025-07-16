@@ -241,7 +241,7 @@
 					</div>
 				</div>
 			</div>
-			@include('admin.includes.footercopyright')
+			
 
 		</div>
 

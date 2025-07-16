@@ -131,7 +131,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

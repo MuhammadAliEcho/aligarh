@@ -37,7 +37,8 @@
 	<div id="app">
 		@yield('content')
 	</div>
-  </div>
+		@include('admin.includes.footercopyright')
+	</div>
 
 	<!-- Mainly scripts -->
 	<script src="{{ URL::to('src/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>

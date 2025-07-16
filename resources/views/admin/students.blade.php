@@ -924,18 +924,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-
-            </div>
           </div>
-
-
-          @include('admin.includes.footercopyright')
-
-
         </div>
-
     @endsection
 
     @section('script')

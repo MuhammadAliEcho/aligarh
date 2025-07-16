@@ -57,6 +57,6 @@
         --}}
 
     </form>
-    <p class="m-t"> <small><b>Copyright</b> HASHMANAGEMENT &copy; 2018</small> </p>
+    <p class="m-t"> <small><b>Copyright</b> HASHMANAGEMENT &copy; {{ now()->year}}</small> </p>
 </div>
 @endsection
