@@ -31,6 +31,7 @@ class EmployeeController extends Controller
         'name'      =>  'required',
         //'subject'   =>  'required',
         'gender'    =>  'required',
+        'religion'    =>  'required',
         //'email' =>  'required|email|unique:employees,email'. (($this->data['root']['option'] !== '')? ','.$this->Employee->id : ''),
         //'email'     =>  'required|email',
         'role'      =>  'required',
@@ -187,7 +188,7 @@ class EmployeeController extends Controller
     $Employee->qualification = $request->input('qualification');
     $Employee->salary = $request->input('salary');
     $Employee->address = $request->input('address');
-    $Employee->relegion = $request->input('relegion');
+    $Employee->religion = $request->input('religion');
     $Employee->phone = $request->input('phone');
   }
 

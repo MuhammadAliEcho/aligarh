@@ -74,7 +74,7 @@
 										  <th>Discount</th>
 										  <th>Paid Amount</th>
 										  <th>Due Date</th>
-										  <th>Created At</th>
+										  <th>Issue Date</th>
 										  <th>Options</th>
 										</tr>
 									  </thead>

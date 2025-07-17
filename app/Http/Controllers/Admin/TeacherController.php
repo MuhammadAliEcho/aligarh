@@ -179,7 +179,7 @@ class TeacherController extends Controller
     $Teacher->gender = $request->input('gender');
     $Teacher->email = $request->input('email');
     $Teacher->qualification = $request->input('qualification');
-    $Teacher->relegion = $request->input('relegion');
+    $Teacher->religion = $request->input('religion');
     $Teacher->salary = $request->input('salary');
     $Teacher->address = $request->input('address');
     $Teacher->phone = $request->input('phone');

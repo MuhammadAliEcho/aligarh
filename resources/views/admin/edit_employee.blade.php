@@ -66,12 +66,12 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Relegion</label>
+                                        <label class="col-md-2 control-label">Religion</label>
                                         <div class="col-md-6">
-                                          <input type="text" name="relegion" placeholder="Relegion" value="{{ old('relegion', $employee['relegion']) }}" class="form-control"/>
-                                          @if ($errors->has('relegion'))
+                                          <input type="text" name="religion" placeholder="religion" value="{{ old('religion', $employee['religion']) }}" class="form-control"/>
+                                          @if ($errors->has('religion'))
                                               <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('relegion') }}</strong>
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('religion') }}</strong>
                                               </span>
                                           @endif
                                         </div>

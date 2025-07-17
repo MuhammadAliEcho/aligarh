@@ -72,8 +72,8 @@
                                         <td>{{ $employee->name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Relegion :</th>
-                                        <td>{{ $employee->relegion }}</td>
+                                        <th>Religion :</th>
+                                        <td>{{ $employee->religion }}</td>
                                     </tr>
                                     <tr>
                                         <th>Gender :</th>

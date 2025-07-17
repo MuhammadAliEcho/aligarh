@@ -25,8 +25,11 @@ class FeesController extends Controller
 	public function Index(array $data = [], $job = '', Request $request){
 
 		if ($request->ajax()) {
-			return DataTables::eloquent(InvoiceMaster::query())->make(true);
-
+			return DataTables::eloquent(InvoiceMaster::query())
+				->editColumn('created_at', function ($row) {
+					return Carbon::parse($row->created_at)->format('Y-m-d');
+				})
+				->make(true);
 		}
 		$data['year'] = Carbon::now()->year;
 		$data['root'] = $job;

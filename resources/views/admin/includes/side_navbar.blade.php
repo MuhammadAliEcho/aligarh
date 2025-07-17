@@ -56,7 +56,7 @@
             @endcan
             @canany(['manage-classes.index', 'manage-sections.index'])
                 <li class="{{ isActiveRoute(['manage-classes.*','manage-sections.*']) }}">
-                    <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label"></span><span
+                    <a><i class="fa fa-sitemap"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Class</a>
                     <ul class="nav nav-second-level collapse">
                         @can('manage-classes.index')
@@ -74,7 +74,7 @@
             @endcanany
             @canany(['vendors.index', 'items.index', 'vouchers.index'])
                 <li class="{{ isActiveRoute(['vendors.*', 'items.*', 'vouchers.*']) }}">
-                    <a href="#"><i class="fa fa-cubes"></i> <span class="nav-label"></span><span
+                    <a><i class="fa fa-cubes"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Inventory</a>
                     <ul class="nav nav-second-level collapse">
                         @can('vendors.index')
@@ -103,7 +103,7 @@
             @endcan
             @canany(['student-attendance.make.post', 'teacher-attendance.make.post', 'employee-attendance.make.post'])
                 <li class="{{ isActiveRoute(['student-attendance.*','teacher-attendance.*','employee-attendance.*']) }}">
-                    <a href="#"><i class="fa fa-bar-chart"></i> <span class="nav-label"></span><span
+                    <a><i class="fa fa-bar-chart"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Daily Attendance</a>
                     <ul class="nav nav-second-level collapse">
                         @can('student-attendance.make.post')
@@ -139,7 +139,7 @@
             @endcan
             @canany(['exam.index', 'manage-result.index'])
                 <li class="{{ isActiveRoute(['exam.*','manage-result.*']) }}">
-                    <a href="#"><i class="fa fa-graduation-cap"></i> <span class="nav-label"></span><span
+                    <a><i class="fa fa-graduation-cap"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Exam</a>
                     <ul class="nav nav-second-level collapse">
                         @can('exam.index')
@@ -169,7 +169,7 @@
             @endcan
             @canany(['fee.index', 'expense.index'])
                 <li class="{{ isActiveRoute(['fee.*', 'expense.*']) }}">
-                    <a href="#"><i class="entypo-suitcase"></i> <span class="nav-label"></span><span
+                    <a><i class="entypo-suitcase"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Accounting</a>
                     <ul class="nav nav-second-level collapse">
                         @can('fee.index')
@@ -193,7 +193,7 @@
             @endcan
             @canany(['seatsreport', 'fee-collection-reports.index', 'exam-reports.index'])
                 <li class="{{ isActiveRoute(['seatsreport', 'fee-collection-reports.*','exam-reports.*']) }}">
-                    <a href="#"><i class="fa fa-file"></i> <span class="nav-label"></span><span
+                    <a><i class="fa fa-file"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Report</a>
                     <ul class="nav nav-second-level collapse">
                         @can('seatsreport')
@@ -222,7 +222,7 @@
             @endrole
             @canany(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index'])
                 <li class="{{ isActiveRoute(['users.*', 'roles.*', 'system-setting.*', 'fee-scenario.*', 'exam-grades.*']) }}">
-                    <a href="#"><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span
+                    <a><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Administrative Tools</a>
                     <ul class="nav nav-second-level collapse">
                         @can('users.index')

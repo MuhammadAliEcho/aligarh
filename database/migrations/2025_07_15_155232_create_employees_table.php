@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('id', true);
             $table->integer('user_id')->nullable();
             $table->string('name');
-            $table->string('relegion', 512);
+            $table->string('religion', 512);
             $table->string('qualification', 1024)->nullable();
             $table->string('gender', 32);
             $table->string('address', 1024)->nullable();
