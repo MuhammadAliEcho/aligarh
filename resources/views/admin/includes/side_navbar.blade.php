@@ -214,6 +214,12 @@
                     </ul>
                 </li>
             @endcanany
+            @role('Developer')
+            <li class="{{ isActiveRoute('academic-sessions.*') }}">
+                <a href="{{ route('academic-sessions.index') }}"><i class="fa fa-paper-plane"></i>
+                    <span class="nav-label"></span>Academic Session</a>
+            </li>
+            @endrole
             @canany(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index'])
                 <li class="{{ isActiveRoute(['users.*', 'roles.*', 'system-setting.*', 'fee-scenario.*', 'exam-grades.*']) }}">
                     <a href="#"><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span

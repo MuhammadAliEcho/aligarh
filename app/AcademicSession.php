@@ -8,6 +8,8 @@ use Auth;
 
 class AcademicSession extends Model
 {
+	public $timestamps = false;
+	protected $fillable = ['title', 'start', 'end'];
 
 	protected function getStartAttribute($start){
 		return Carbon::createFromFormat('Y-m-d', $start)->format('d/m/Y');

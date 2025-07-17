@@ -51,17 +51,20 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-//        'auth' => \App\Http\Middleware\Authenticate::class,
+        //'auth'  => \App\Http\Middleware\Authenticate::class,
         'auth.active' => \App\Http\Middleware\AuthActive::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.basic'  => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'guest'   => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        'client'    =>  \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
-        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
-        'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
-        'route_has_permission' => \App\Http\Middleware\RouteNamePermissionsMiddleware::class
+        'client'      =>  \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        'scopes'  => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+        'scope'   => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+        'route_has_permission' => \App\Http\Middleware\RouteNamePermissionsMiddleware::class,
+        'role'  => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission'              => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission'      => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 }

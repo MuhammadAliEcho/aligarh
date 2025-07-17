@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\FeeScenarioController;
 use App\Http\Controllers\Admin\ExamGradesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\AcademicSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -270,6 +271,17 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/average-result', [ExamReportController::class, 'AverageResult'])->name('.average.result');
         Route::get('/findstu', [ExamReportController::class, 'FindStudent'])->name('.find.student');
         Route::post('/result-transcript', [ExamReportController::class, 'ResultTranscript'])->name('.result.transcript');
+    });
+
+
+    Route::middleware('role:Developer')->group(function(){
+        Route::prefix('academic-sessions')->name('academic-sessions')->group(function(){
+            Route::get('/', [AcademicSessionController::class, 'index'])->name('.index');
+            Route::post('/create', [AcademicSessionController::class, 'create'])->name('.create');
+            // Route::get('/edit/{id}', [AcademicSessionController::class, 'edit'])->name('.edit');
+            // Route::post('/update', [AcademicSessionController::class, 'update'])->name('.update');
+            // Route::post('/delete', [AcademicSessionController::class, 'create'])->name('.delete');
+        });
     });
 
     Route::prefix('users')->name('users')->group(function(){
