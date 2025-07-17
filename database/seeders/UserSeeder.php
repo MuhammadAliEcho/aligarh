@@ -28,6 +28,8 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('123456'),
                 'user_type' => 'employee',
                 'settings' => '{"skin_config":{"nav_collapse":""}}',
+                'allow_session' => json_encode(["1"]),
+                'academic_session' => 1,
                 'created_by' => 1,
             ]
         ]);
