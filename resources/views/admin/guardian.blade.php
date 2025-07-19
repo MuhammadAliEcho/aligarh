@@ -378,7 +378,7 @@
                                     </div>
                                     <div class="col-md-4 text-right pull-right">
                                       <div class="row">
-                                        <input v-show="layout === 'grid'" type="text" v-model="search_students" @input="debouncedSearch" class="form-control input-sm" style="width: 200px; display: inline-block;" placeholder="Search...">
+                                        <input v-show="layout === 'grid'" type="text" v-model="search_guardians" @input="debouncedSearch" class="form-control input-sm" style="width: 200px; display: inline-block;" placeholder="Search...">
                                         <div class="form-group pull-right">
                                           <label class="control-label" style="margin: 0 10px 0 20px; line-height: 34px;cursor: pointer;">
                                               <span 
