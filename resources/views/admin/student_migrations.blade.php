@@ -120,7 +120,7 @@
 
 								</form>
 
-								<form id="migrate_form" method="post" action="{{ URL('student-migrations/migrate') }}" class="form-horizontal" v-if="students">
+								<form id="migrate_form" method="post" action="{{ URL('student-migrations/create') }}" class="form-horizontal" v-if="students">
 									{{ csrf_field() }}
 
 									<input type="hidden" name="from_session" :value="from_session" />
