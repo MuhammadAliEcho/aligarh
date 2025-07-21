@@ -100,7 +100,7 @@ class StudentsController extends Controller
 
 	public function Grid(Request $request)
 	{	
-		$Students = Student::with('StdClass:id,name'); 
+		$Students = Student::with('StdClass:id,name', 'Guardian:id,name'); 
 
 		if ($request->filled('search_students')) {
 			$search = $request->input('search_students');

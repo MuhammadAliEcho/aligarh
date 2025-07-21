@@ -165,6 +165,7 @@
     .icon-id { background: linear-gradient(135deg, #00cec9, #55a3ff); }
     .icon-gender { background: linear-gradient(135deg, #fd79a8, #fdcb6e); }
     .icon-fee { background: linear-gradient(135deg, #00b894, #55efc4); }
+    .icon-guardian { background: linear-gradient(135deg, #f093fb, #f5576c);; }
 
     .info-content {
         flex: 1;
@@ -446,6 +447,30 @@
                                                               <div class="info-value">@{{ student.gender }}</div>
                                                           </div>
                                                       </li>
+                                                      @can('guardian.profile')
+                                                        <a :href="'{{ url('guardians/profile') }}/' + student.guardian.id" class="text-decoration-none">
+                                                          <li class="info-item">
+                                                              <div class="info-icon icon-guardian">
+                                                                  <i class="fa fa-money"></i>
+                                                              </div>
+                                                              <div class="info-content">
+                                                                  <div class="info-label">Guardian</div>
+                                                                  <div class="info-value info-value">@{{ student.guardian.name }}</div>
+                                                              </div>
+                                                          </li>
+                                                        </a>
+                                                      @endcan
+                                                      @cannot('guardian.profile')
+                                                          <li class="info-item">
+                                                              <div class="info-icon icon-guardian">
+                                                                  <i class="fa fa-money"></i>
+                                                              </div>
+                                                              <div class="info-content">
+                                                                  <div class="info-label">Guardian</div>
+                                                                  <div class="info-value info-value">@{{ student.guardian.name }}</div>
+                                                              </div>
+                                                          </li>
+                                                      @endcan
                                                       <li class="info-item">
                                                           <div class="info-icon icon-fee">
                                                               <i class="fa fa-money"></i>
