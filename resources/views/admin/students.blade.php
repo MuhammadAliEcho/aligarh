@@ -700,9 +700,9 @@
                                         </div>
 
                                         <div class="alert alert-warning ">
-                                          <h4>Carefully! </h4>
+                                          <h4>Note! </h4>
                                           <p>
-                                            Once set class it will not be editable until session end.
+                                            Once the class is set, it cannot be edited until the session ends.
                                           </p>
 
                                         <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
