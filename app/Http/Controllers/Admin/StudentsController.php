@@ -100,7 +100,11 @@ class StudentsController extends Controller
 
 	public function Grid(Request $request)
 	{	
-		$Students = Student::with('StdClass:id,name', 'Guardian:id,name'); 
+		$Students = Student::with([
+			'StdClass:id,name',
+			'Guardian:id,name',
+			'lastInvoice:id,student_id,paid_amount,date'
+		]); 
 
 		if ($request->filled('search_students')) {
 			$search = $request->input('search_students');
@@ -116,6 +120,18 @@ class StudentsController extends Controller
 		}
 
 		$Students = $request->filled('per_page') ? $Students->paginate($request->input('per_page')) : $Students->get();
+
+		$Students->each(function ($student) {
+			if ($student->lastInvoice && $student->lastInvoice->paid_amount > 0) {
+				$student->invoice_status = 'paid';
+			}
+			elseif ($student->lastInvoice && $student->lastInvoice->paid_amount == 0) {
+				$student->invoice_status = 'unpaid';
+			}
+			else {
+				$student->invoice_status = 'not_created';
+			}
+		});
 		
 		return response()->json($Students);
 	}

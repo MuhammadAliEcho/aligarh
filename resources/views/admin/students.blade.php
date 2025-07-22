@@ -259,6 +259,28 @@
         }
     }
 
+    .unpaid-badge {
+      background-color: #d9534f;
+      color: white;
+      padding: 5px;
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .paid-badge {
+      background-color: #5cb85c;
+      color: white;
+      margin-left: 8px;
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .not-created-badge {
+      background-color: #feee0a;
+      color: white;
+      margin-left: 8px;
+      font-size: 8px;
+      font-weight: 800;
+    }
+
     /* ribbon */
       .ribbon {
         position: absolute;
@@ -471,15 +493,51 @@
                                                               </div>
                                                           </li>
                                                       @endcan
-                                                      <li class="info-item">
-                                                          <div class="info-icon icon-fee">
+                                                      @can('fee.create.store')
+                                                          <li v-if="student.invoice_status === 'unpaid'" class="info-item">
+                                                            <div class="info-icon icon-fee">
                                                               <i class="fa fa-money"></i>
-                                                          </div>
-                                                          <div class="info-content">
+                                                            </div>
+                                                            <div class="info-content">
                                                               <div class="info-label">Monthly Fee</div>
                                                               <div class="info-value fee-amount">PKR @{{ student.tuition_fee }}</div>
-                                                          </div>
-                                                      </li>
+                                                              <span data-placement="right" data-toggle="tooltip" title="Please Pay Fee" class="badge unpaid-badge">Unpaid</span>
+                                                            </div>
+                                                          </li>
+
+                                                          <li v-else-if="student.invoice_status === 'paid'" class="info-item">
+                                                            <div class="info-icon icon-fee">
+                                                              <i class="fa fa-money"></i>
+                                                            </div>
+                                                            <div class="info-content">
+                                                              <div class="info-label">Monthly Fee</div>
+                                                              <div class="info-value fee-amount">PKR @{{ student.tuition_fee }}</div>
+                                                              <span data-placement="right" data-toggle="tooltip" title="Fee Paid" class="badge paid-badge">Paid</span>
+                                                            </div>
+                                                          </li>
+                                                          <a v-else-if="student.invoice_status === 'not_created'" :href="'{{ url('fee/create?gr_no=') }}' + student.id" class="text-decoration-none">
+                                                            <li class="info-item">
+                                                              <div class="info-icon icon-fee">
+                                                                <i class="fa fa-money"></i>
+                                                              </div>
+                                                              <div class="info-content">
+                                                                <div class="info-label">Monthly Fee</div>
+                                                                <div class="info-value fee-amount">PKR @{{ student.tuition_fee }}</div>
+                                                              </div>
+                                                            </li>
+                                                          </a>
+                                                      @endcan
+                                                      @cannot('fee.create.store')
+                                                        <li class="info-item">
+                                                            <div class="info-icon icon-fee">
+                                                                <i class="fa fa-money"></i>
+                                                            </div>
+                                                            <div class="info-content">
+                                                                <div class="info-label">Monthly Fee</div>
+                                                                <div class="info-value fee-amount">PKR @{{ student.tuition_fee }}</div>
+                                                            </div>
+                                                        </li>
+                                                      @endcan
                                                   </ul>
                                                   <div class="text-end mt-3">
                                                       @can('students.edit.post')

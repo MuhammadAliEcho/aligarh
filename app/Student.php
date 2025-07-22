@@ -135,4 +135,8 @@ class Student extends Model {
 		return $query->where('session_id', Auth::user()->academic_session);
 	}
 
+	public function lastInvoice()
+	{
+		return $this->hasOne('App\InvoiceMaster')->orderBy('id', 'desc');
+	}
 }
