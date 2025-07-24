@@ -20,6 +20,9 @@ class Classe extends Model
 		return $this->hasMany('App\Subject', 'class_id');
 	}
 
+	public function Students(){
+		return $this->hasMany('App\Student', 'class_id');
+	}
 /*
   public function teacher(){
     return $this->belongsTo('App\Teacher');

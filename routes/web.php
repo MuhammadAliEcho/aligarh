@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\ExamGradesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\AcademicSessionController;
+use App\Http\Controllers\Admin\NotificationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -273,6 +274,12 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/result-transcript', [ExamReportController::class, 'ResultTranscript'])->name('.result.transcript');
     });
 
+
+    Route::prefix('notifications')->name('notifications')->group(function(){
+        Route::get('/', [NotificationsController::class, 'index'])->name('.index');
+        Route::post('/get/data', [NotificationsController::class, 'getData'])->name('.get.data');
+        Route::post('/messsage-send', [NotificationsController::class, 'create'])->name('.send');
+    });
 
     Route::middleware('role:Developer')->group(function(){
         Route::prefix('academic-sessions')->name('academic-sessions')->group(function(){

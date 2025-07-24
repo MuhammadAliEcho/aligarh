@@ -214,6 +214,19 @@
                     </ul>
                 </li>
             @endcanany
+            {{-- @canany(['notifications.index']) --}}
+                <li class="{{ isActiveRoute(['notifications.*']) }}">
+                    <a><i class="fa fa-bell"></i> <span class="nav-label"></span><span
+                            class="fa arrow"></span>Notifications</a>
+                    <ul class="nav nav-second-level collapse">
+                        @can('seatsreport')
+                        <li class="{{ isActiveRoute('notifications') }}" data-show="">
+                            <a href="{{ route('notifications.index') }}">Send Message</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </li>
+            {{-- @endcanany --}}
             @canany(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index', 'exam-grades.index', 'academic-sessions.index'])
                 <li class="{{ isActiveRoute(['users.*', 'roles.*', 'system-setting.*', 'fee-scenario.*', 'exam-grades.*', 'academic-sessions.*']) }}">
                     <a><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span
