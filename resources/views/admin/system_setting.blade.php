@@ -135,7 +135,7 @@
 
                                                                 <div class="tab-content">
                                                                     <!-- General Tab -->
-                                                                    <div id="general" class="tab-pane fade">
+                                                                    <div id="general" class="tab-pane fade in active">
                                                                         {{-- <h2>General</h2>
                                                                         <div class="hr-line-dashed"></div> --}}
 
@@ -552,7 +552,7 @@
                                                                     </div>
 
                                                                     <!-- WhatsApp Tab -->
-                                                                    <div id="whatsapp" class="tab-pane fade in active">
+                                                                    <div id="whatsapp" class="tab-pane fade">
                                                                         <div
                                                                             class="form-group{{ $errors->has('whatsapp_provider') ? ' has-error' : '' }}">
                                                                             <label class="col-md-2 control-label">WhatsApp
