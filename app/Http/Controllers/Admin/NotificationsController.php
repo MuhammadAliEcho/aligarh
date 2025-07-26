@@ -10,7 +10,7 @@ use App\Employee;
 use App\Guardian;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Jobs\NotificationSendMsgJob;
+use App\Jobs\SendMsgJob;
 use Illuminate\Support\Facades\Validator;
 
 class NotificationsController extends Controller
@@ -122,7 +122,7 @@ class NotificationsController extends Controller
                     $tokens = $this->buildStudentTokens($student);
                     $personalMessage = $this->replaceTokens($message, $tokens);
 
-                    NotificationSendMsgJob::dispatch(
+                    SendMsgJob::dispatch(
                         optional($student->Guardian)->email,
                         optional($student->Guardian)->phone,
                         optional($student->Guardian)->phone,
@@ -145,7 +145,7 @@ class NotificationsController extends Controller
                     $tokens = $this->buildGuardianTokens($guardian);
                     $personalMessage = $this->replaceTokens($message, $tokens);
 
-                    NotificationSendMsgJob::dispatch(
+                    SendMsgJob::dispatch(
                         $guardian->email,
                         $guardian->phone,
                         $guardian->phone,
@@ -167,7 +167,7 @@ class NotificationsController extends Controller
                     $tokens = $this->buildTeacherTokens($teacher);
                     $personalMessage = $this->replaceTokens($message, $tokens);
 
-                    NotificationSendMsgJob::dispatch(
+                    SendMsgJob::dispatch(
                         $teacher->email,
                         $teacher->phone,
                         $teacher->phone,
@@ -188,7 +188,7 @@ class NotificationsController extends Controller
                     $tokens = $this->buildEmployeeTokens($employee);
                     $personalMessage = $this->replaceTokens($message, $tokens);
 
-                    NotificationSendMsgJob::dispatch(
+                    SendMsgJob::dispatch(
                         $employee->email,
                         $employee->phone,
                         $employee->phone,

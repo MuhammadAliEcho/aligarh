@@ -11,17 +11,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class NotificationSendMsgJob implements ShouldQueue
+class SendMsgJob implements ShouldQueue
 {
     public $type = 'mail';
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(public $email, public $sms_number, public $whatsapp_number, public $message)
     {
-        $this->email = $email;
-        $this->sms_number;
-        $this->whatsapp_number;
-        $this->message = $message;
+       
     }
 
     public function handle()
