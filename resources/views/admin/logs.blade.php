@@ -51,9 +51,6 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="tabs-container">
-                        <ul class="nav">
-                            <li><span class="fa fa-list"></span> Logs</li>
-                        </ul>
                         <div class="content">
                             <div class="panel-body">
                                 <div class="table-responsive">

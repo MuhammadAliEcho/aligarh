@@ -86,7 +86,7 @@ class SendSmsJob implements ShouldQueue
             'message' => $this->message,
             'phone' => $this->phone,
             'status_code' => $statusCode,
-            'response' => json_encode($response),
+            'response' => $response,
         ]);
     }
 }

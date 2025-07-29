@@ -49,7 +49,7 @@ class SendMailJob implements ShouldQueue
             'message' => $this->message,
             'email' => $this->email,
             'status_code' => $statusCode,
-            'response' => json_encode($response),
+            'response' => $response,
         ]);
     }
 }
