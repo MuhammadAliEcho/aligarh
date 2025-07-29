@@ -8,10 +8,12 @@ use App\Student;
 use App\Teacher;
 use App\Employee;
 use App\Guardian;
+use App\NotificationLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMsgJob;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class NotificationsController extends Controller
 {
@@ -213,6 +215,33 @@ class NotificationsController extends Controller
         }
     }
 
+
+    public function log(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = NotificationLog::with('user')->select(
+                'id',
+                'type',
+                'message',
+                'email',
+                'phone',
+                'status_code',
+                'response',
+                'created_by'
+            );
+
+            return DataTables::eloquent($query)
+                ->editColumn('response', function (NotificationLog $notificationLog) {
+                    return json_encode($notificationLog->response, JSON_PRETTY_PRINT);
+                })
+                ->addColumn('created_by_name', function (NotificationLog $notificationLog) {
+                    return $notificationLog->user?->name ?? 'Admin';
+                })
+                ->make(true);
+        }
+
+        return view('admin.logs');
+    }
 
     private function returnNotifications()
     {

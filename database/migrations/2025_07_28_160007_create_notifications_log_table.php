@@ -21,6 +21,7 @@ class CreateNotificationsLogTable extends Migration
             $table->string('phone')->nullable();
             $table->unsignedSmallInteger('status_code')->nullable();
             $table->json('response')->nullable();
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

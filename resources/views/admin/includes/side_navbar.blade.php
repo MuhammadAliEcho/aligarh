@@ -214,19 +214,26 @@
                     </ul>
                 </li>
             @endcanany
-            {{-- @canany(['notifications.index']) --}}
-                <li class="{{ isActiveRoute(['notifications.*']) }}">
+            @canany(['notifications.send', 'notifications.log'])
+                <li class="{{ isActiveRoute(['notifications.index', 'notifications.log']) }}">
                     <a><i class="fa fa-bell"></i> <span class="nav-label"></span><span
                             class="fa arrow"></span>Notifications</a>
                     <ul class="nav nav-second-level collapse">
-                        @can('seatsreport')
-                        <li class="{{ isActiveRoute('notifications') }}" data-show="">
-                            <a href="{{ route('notifications.index') }}">Send Message</a>
-                        </li>
+                        @can('notifications.send')
+                            <li class="{{ isActiveRoute('notifications.index') }}" data-show="">
+                                <a href="{{ route('notifications.index') }}">Send Message</a>
+                            </li>
+                        @endcan
+                    </ul>
+                    <ul class="nav nav-second-level collapse">
+                        @can('notifications.log')
+                            <li class="{{ isActiveRoute('notifications.log') }}" data-show="">
+                                <a href="{{ route('notifications.log') }}">Log</a>
+                            </li>
                         @endcan
                     </ul>
                 </li>
-            {{-- @endcanany --}}
+            @endcanany
             @canany(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index', 'exam-grades.index', 'academic-sessions.index'])
                 <li class="{{ isActiveRoute(['users.*', 'roles.*', 'system-setting.*', 'fee-scenario.*', 'exam-grades.*', 'academic-sessions.*']) }}">
                     <a><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span

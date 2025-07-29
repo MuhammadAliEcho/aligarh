@@ -279,6 +279,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/', [NotificationsController::class, 'index'])->name('.index');
         Route::post('/get/data', [NotificationsController::class, 'getData'])->name('.get.data');
         Route::post('/messsage-send', [NotificationsController::class, 'send'])->name('.send');
+        Route::get('/logs', [NotificationsController::class, 'log'])->name('.log');
     });
 
     Route::middleware('role:Developer')->group(function(){

@@ -300,6 +300,12 @@ class RoleController extends Controller
 				'smsnotifications.sendbulksms' => 'Send Bulk SMS',
 				'smsnotifications.history' => 'SMS History',
 			],
+			'Notifications' => [
+				'notifications.index' => 'View',
+				'notifications.get.data' => 'Get Data',
+				'notifications.send' => 'Messsage Send',
+				'notifications.log' => 'View Logs',
+			],
 			'Reports' => [
 				'seatsreport' => 'Seats Report',
 				'fee-collection-reports.index' => 'Fee Collection View',
@@ -321,6 +327,7 @@ class RoleController extends Controller
 				'system-setting.update' => 'System Settings Update',
 				'system-setting.print.invoice.history' => 'Print Invoice History',
 				'system-setting.history' => 'System History',
+				'system-setting.notification.settings' => 'Notification Settings',
 				'fee-scenario.index' => 'Fee Scenario View',
 				'fee-scenario.update.scenario' => 'Fee Scenario Update',
 				'exam-grades.index' => 'Exam Grades View',

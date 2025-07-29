@@ -792,7 +792,7 @@
                                     </div>
                                 </div>
                             @endcan
-                            @can('system-setting.print.invoice.history')
+                            @can('system-setting.notification.settings')
                                 <div id="tab-13" class="tab-pane fade fade in ">
                                     <div id= "app" class="panel-body">
                                         <h2> Notifications Configuration</h2>
