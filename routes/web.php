@@ -64,18 +64,10 @@ Route::group(['middleware' => 'guest'], function(){
 Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], function(){
 
     Route::get('/cmd', function () {
-
-        // require_once base_path('database/migrations/2025_07_30_111023_create_attendance_leaves_table.php');
-        // (new \CreateAttendanceLeavesTable)->up();
-
-        // require_once base_path('database/migrations/2025_07_31_103642_add_leave_id_to_multiple_tables.php');
-        // (new \AddLeaveIdToMultipleTables)->up();
-
-        Artisan::call('db:seed', [
-            '--class' => 'PermissionsUpdateSeeder',
-            '--force' => true,
-        ]);
-        return response('<h2> Done: Fresh migration, 2 specific migrations, and PermissionsUpdateSeeder ran successfully.</h2>');
+        
+        // Artisan::call('migrate', ['--force' => true]);
+        // Artisan::call('db:seed', ['--class' => 'PermissionsUpdateSeeder', '--force' => true, ]);
+        // return response('<h2>✅ Done: Migrations and PermissionsUpdateSeeder ran successfully.</h2>');
     });
 
     Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
@@ -311,14 +303,12 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/logs', [NotificationsController::class, 'log'])->name('.log');
     });
 
-    Route::middleware('role:Developer')->group(function(){
-        Route::prefix('academic-sessions')->name('academic-sessions')->group(function(){
-            Route::get('/', [AcademicSessionController::class, 'index'])->name('.index');
-            Route::post('/create', [AcademicSessionController::class, 'create'])->name('.create');
-            // Route::get('/edit/{id}', [AcademicSessionController::class, 'edit'])->name('.edit');
-            // Route::post('/update', [AcademicSessionController::class, 'update'])->name('.update');
-            // Route::post('/delete', [AcademicSessionController::class, 'create'])->name('.delete');
-        });
+    Route::group(['middleware' => 'role:Developer','prefix' => 'academic-sessions','as' => 'academic-sessions'], function () {
+        Route::get('/', [AcademicSessionController::class, 'index'])->name('.index');
+        Route::post('/create', [AcademicSessionController::class, 'create'])->name('.create');
+        // Route::get('/edit/{id}', [AcademicSessionController::class, 'edit'])->name('edit');
+        // Route::post('/update', [AcademicSessionController::class, 'update'])->name('update');
+        // Route::post('/delete', [AcademicSessionController::class, 'delete'])->name('delete');
     });
 
     Route::prefix('users')->name('users')->group(function(){
