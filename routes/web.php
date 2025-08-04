@@ -51,23 +51,6 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Route::get('/cmd', function () {
-    // if (!app()->isLocal()) {
-    //     abort(403, 'Forbidden');
-    // }
-
-    require_once base_path('database/migrations/2025_07_30_111023_create_attendance_leaves_table.php');
-    (new \CreateAttendanceLeavesTable)->up();
-
-    require_once base_path('database/migrations/2025_07_31_103642_add_leave_id_to_multiple_tables.php');
-    (new \AddLeaveIdToMultipleTables)->up();
-
-    Artisan::call('db:seed', [
-        '--class' => 'PermissionsUpdateSeeder',
-        '--force' => true,
-    ]);
-    return response('<h2> Done: Fresh migration, 2 specific migrations, and PermissionsUpdateSeeder ran successfully.</h2>');
-});
 
 
 
@@ -79,6 +62,21 @@ Route::group(['middleware' => 'guest'], function(){
 });
 
 Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], function(){
+
+    Route::get('/cmd', function () {
+
+        // require_once base_path('database/migrations/2025_07_30_111023_create_attendance_leaves_table.php');
+        // (new \CreateAttendanceLeavesTable)->up();
+
+        // require_once base_path('database/migrations/2025_07_31_103642_add_leave_id_to_multiple_tables.php');
+        // (new \AddLeaveIdToMultipleTables)->up();
+
+        Artisan::call('db:seed', [
+            '--class' => 'PermissionsUpdateSeeder',
+            '--force' => true,
+        ]);
+        return response('<h2> Done: Fresh migration, 2 specific migrations, and PermissionsUpdateSeeder ran successfully.</h2>');
+    });
 
     Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
     Route::get('/', [DashboardController::class, 'GetDashboard']);

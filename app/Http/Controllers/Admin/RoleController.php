@@ -244,6 +244,14 @@ class RoleController extends Controller
 				'employee-attendance.make.post' => 'Employee Attendance Make',
 				'employee-attendance.report' => 'Employee Attendance Report',
 			],
+			'Attendance Leave' => [
+				'attendance-leave.index' => 'Leave View',
+				'attendance-leave.get.data' => 'get Data',
+				'attendance-leave.make' => 'Leave Make',
+				'attendance-leave.edit' => 'Leave Edit',
+				'attendance-leave.update' => 'Leave Update',
+				'attendance-leave.delete' => 'Leave Delete',
+			],
 			'Student Migrations' => [
 				'student-migrations.index' => 'Migrations View',
 				'student-migrations.get' => 'Migrations Get',
@@ -322,6 +330,10 @@ class RoleController extends Controller
 				'exam-reports.find.student' => 'Find Student',
 				'exam-reports.result.transcript' => 'Result Transcript',
 			],
+			// 'Academic Sessions' => [
+			// 	'academic-sessions.index' => 'Sessions View',
+			// 	'academic-sessions.create' => 'Sessions create',
+			// ],
 			'System Settings' => [
 				'system-setting.index' => 'System Settings View',
 				'system-setting.update' => 'System Settings Update',
