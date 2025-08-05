@@ -9,9 +9,12 @@ use DB;
 use Carbon\Carbon;
 use Auth;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendAttendanceJob;
 
 class EmployeeAttendanceCtrl extends Controller
 {
+	public $notificationsSettingsName = 'employee_attendance';
+
 	public function Index(array $data = [], $job = ''){
 		$data['root'] = $job;
 		return view('admin.employees_attendance', $data);
@@ -45,7 +48,12 @@ class EmployeeAttendanceCtrl extends Controller
 												'employee_id' => $employee_id,
 												]);
 			$attendance = $att->get();
+			$forNotify = Employee::select('name', 'email', 'phone')->find($employee_id);
+
 			if ($attendance->isEmpty()) {
+
+				//SendAttendanceJob
+				SendAttendanceJob::dispatch($this->notificationsSettingsName, $forNotify->name, $forNotify->email, $forNotify->phone, $forNotify->phone);
 
 				$EmployeeAttendance->employee_id = $employee_id;
 				$EmployeeAttendance->date = $dbdate;

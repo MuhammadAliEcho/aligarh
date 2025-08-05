@@ -15,9 +15,12 @@ use Carbon\CarbonPeriod;
 use Auth;
 use App\Http\Controllers\Controller;
 use App\AcademicSession;
+use App\Jobs\SendAttendanceJob;
 
 class StudentAttendanceCtrl extends Controller
 {
+	public $notificationsSettingsName = 'student_attendance';
+
 
 	public function Index($data = null, $root = 0){
 		$data['classes'] = Classe::select('id', 'name')->get();
@@ -92,17 +95,35 @@ class StudentAttendanceCtrl extends Controller
 		$leave_ids = $request->input('student_leave');
 
 		if($request->has('student_id')){
-			foreach($request->input('student_id') as $index =>  $student_id) {
-				StudentAttendance::updateOrCreate(
-					[
-						'date'		 => $dbdate,
-						'student_id' => $student_id,
-					],
-					[
-						'status'	=>	($request->input('attendance'.$student_id) !== null)? 1 : 0,
-						'leave_id'	=>	$leave_ids[$index] ?? null,
-					]
-				);
+			foreach ($request->input('student_id') as $index => $student_id) {
+				$attendance = StudentAttendance::where('date', $dbdate)
+					->where('student_id', $student_id)
+					->first();
+
+				$isNewRecord = false;
+
+				if (!$attendance) {
+					// Create new attendance
+					$attendance = new StudentAttendance();
+					$attendance->date = $dbdate;
+					$attendance->student_id = $student_id;
+					$isNewRecord = true;
+				}
+
+				$attendance->status = ($request->input('attendance' . $student_id) !== null) ? 1 : 0;
+				$attendance->leave_id = $leave_ids[$index] ?? null;
+				$attendance->save();
+
+				if ($isNewRecord) {
+					$forNotify = Student::with(['Guardian:id,email,phone'])->find($student_id);
+					SendAttendanceJob::dispatch(
+						$this->notificationsSettingsName,
+						$forNotify->name,
+						$forNotify->Guardian->email,
+						$forNotify->Guardian->phone,
+						$forNotify->Guardian->phone
+					);
+				}
 			}
 		}
 		if($request->has('delete')){
