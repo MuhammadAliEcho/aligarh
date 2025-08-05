@@ -32,32 +32,32 @@
             @endcan
             @can('students.index')
             <li class="{{ isActiveRoute('students.*') }}">
-                <a href="{{ route('students.index') }}"><i
-                        class="fa fa-group"></i> <span class="nav-label"></span>Students</a>
+                <a href="{{ route('students.index') }}" data-root="students"><i
+                     class="fa fa-group"></i> <span class="nav-label">Students</span></a>
             </li>
             @endcan
             @can('teacher.index')
             <li class="{{ isActiveRoute('teacher.*') }}">
-                <a href="{{ route('teacher.index') }}"><i class="entypo-users"></i> <span
-                        class="nav-label"></span>Teachers</a>
+                <a href="{{ route('teacher.index') }}" data-root="teachers"><i class="entypo-users"></i> <span
+                        class="nav-label">Teachers</span></a>
             </li>
             @endcan
             @can('employee.index')
             <li class="{{ isActiveRoute('employee.*') }}">
-                <a href="{{ route('employee.index') }}"><i class="fa fa-user-circle-o"></i> <span
-                        class="nav-label"></span>Employees</a>
+                <a href="{{ route('employee.index') }}" data-root="employees"><i class="fa fa-user-circle-o"></i> <span
+                        class="nav-label">Employees</span></a>
             </li>
             @endcan
             @can('guardian.index')
             <li class="{{ isActiveRoute('guardian.*') }}">
-                <a href="{{ route('guardian.index') }}"><i class="fa fa-user"></i> <span
-                        class="nav-label"></span>Guardians</a>
+                <a href="{{ route('guardian.index') }}" data-root="guardians"><i class="fa fa-user"></i> <span
+                        class="nav-label">Guardians</span></a>
             </li>
             @endcan
             @canany(['manage-classes.index', 'manage-sections.index'])
                 <li class="{{ isActiveRoute(['manage-classes.*','manage-sections.*']) }}">
-                    <a><i class="fa fa-sitemap"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Class</a>
+                    <a data-root="classes"><i class="fa fa-sitemap"></i> <span class="nav-label">Class</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('manage-classes.index')
                         <li class="{{ isActiveRoute('manage-classes.*') }}" data-show="">
@@ -74,8 +74,8 @@
             @endcanany
             @canany(['vendors.index', 'items.index', 'vouchers.index'])
                 <li class="{{ isActiveRoute(['vendors.*', 'items.*', 'vouchers.*']) }}">
-                    <a><i class="fa fa-cubes"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Inventory</a>
+                    <a data-root="inventory"><i class="fa fa-cubes"></i> <span class="nav-label">Inventory</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('vendors.index')
                         <li class="{{ isActiveRoute('vendors.*') }}" data-show="">
@@ -97,14 +97,14 @@
             @endcanany
             @can('routines.index')
             <li class="{{ isActiveRoute('routines.*') }}">
-                <a href="{{ route('routines.index') }}"><i class="entypo-target"></i> <span
-                        class="nav-label"></span>Class Routine</a>
+                <a href="{{ route('routines.index') }}" data-root="routines"><i class="entypo-target"></i> <span
+                        class="nav-label">Class Routine</span></a>
             </li>
             @endcan
             @canany(['student-attendance.make.post', 'teacher-attendance.make.post', 'employee-attendance.make.post', 'attendance-leave.index'])
                 <li class="{{ isActiveRoute(['student-attendance.*','teacher-attendance.*','employee-attendance.*', 'attendance-leave.index']) }}">
-                    <a><i class="fa fa-bar-chart"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Daily Attendance</a>
+                    <a data-root="attendance"><i class="fa fa-bar-chart"></i> <span class="nav-label">Daily Attendance</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('student-attendance.make.post')
                             <li class="{{ isActiveRoute('student-attendance.*') }}">
@@ -131,14 +131,14 @@
             @endcanany
             @can('manage-subjects.index')
             <li class="{{ isActiveRoute('manage-subjects.*') }}">
-                <a href="{{ route('manage-subjects.index') }}"><i class="entypo-docs"></i> <span
-                        class="nav-label"></span>Subjects</a>
+                <a href="{{ route('manage-subjects.index') }}" data-root="subjects"><i class="entypo-docs"></i> <span
+                        class="nav-label">Subjects</span></a>
             </li>
             @endcan
             @canany(['exam.index', 'manage-result.index', 'student-migrations.index'])
                 <li class="{{ isActiveRoute(['exam.*','manage-result.*','student-migrations.*']) }}">
-                    <a><i class="fa fa-graduation-cap"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Exam</a>
+                    <a data-root="exam"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Exam</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('exam.index')
                         <li class="{{ isActiveRoute('exam.*') }}" data-show="">
@@ -162,20 +162,20 @@
             @endcanany
             @can('library.index')
             <li class="{{ isActiveRoute('library.*') }}">
-                <a href="{{ route('library.index') }}"><i class="fa fa-book"></i> <span
-                        class="nav-label"></span>Library</a>
+                <a href="{{ route('library.index') }}" data-root="library"><i class="fa fa-book"></i> <span
+                        class="nav-label">Library</span></a>
             </li>
             @endcan
             @can('noticeboard.index')
             <li class="{{ isActiveRoute('noticeboard.*') }}">
-                <a href="{{ route('noticeboard.index') }}"><i class="fa fa-clipboard"></i> <span
-                        class="nav-label"></span>Noticeboard</a>
+                <a href="{{ route('noticeboard.index') }}" data-root="noticeboard"><i class="fa fa-clipboard"></i> <span
+                        class="nav-label">Noticeboard</span></a>
             </li>
             @endcan
             @canany(['fee.index', 'expense.index'])
                 <li class="{{ isActiveRoute(['fee.*', 'expense.*']) }}">
-                    <a><i class="entypo-suitcase"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Accounting</a>
+                    <a data-root="accounting"><i class="entypo-suitcase"></i> <span class="nav-label">Accounting</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('fee.index')
                         <li class="{{ isActiveRoute('fee.*') }}" data-show="">
@@ -192,14 +192,14 @@
             @endcanany
             @can('smsnotifications.index')
             <li class="{{ isActiveRoute('smsnotifications.*') }}">
-                <a href="{{ route('smsnotifications.index') }}"><i class="fa fa-paper-plane"></i>
-                    <span class="nav-label"></span>SMS Notifications</a>
+                <a href="{{ route('smsnotifications.index') }}" data-root="sms"><i class="fa fa-paper-plane"></i>
+                    <span class="nav-label">SMS Notifications</span></a>
             </li>
             @endcan
             @canany(['seatsreport', 'fee-collection-reports.index', 'exam-reports.index'])
                 <li class="{{ isActiveRoute(['seatsreport', 'fee-collection-reports.*','exam-reports.*']) }}">
-                    <a><i class="fa fa-file"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Report</a>
+                    <a data-root="reports"><i class="fa fa-file"></i> <span class="nav-label">Report</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('seatsreport')
                         <li class="{{ isActiveRoute('seatsreport') }}" data-show="">
@@ -221,16 +221,14 @@
             @endcanany
             @canany(['notifications.send', 'notifications.log'])
                 <li class="{{ isActiveRoute(['notifications.index', 'notifications.log']) }}">
-                    <a><i class="fa fa-bell"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Notifications</a>
+                    <a data-root="notifications"><i class="fa fa-bell"></i> <span class="nav-label">Notifications</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('notifications.send')
                             <li class="{{ isActiveRoute('notifications.index') }}" data-show="">
                                 <a href="{{ route('notifications.index') }}">Send Message</a>
                             </li>
                         @endcan
-                    </ul>
-                    <ul class="nav nav-second-level collapse">
                         @can('notifications.log')
                             <li class="{{ isActiveRoute('notifications.log') }}" data-show="">
                                 <a href="{{ route('notifications.log') }}">Log</a>
@@ -241,8 +239,8 @@
             @endcanany
             @canany(['users.index', 'roles.index', 'system-setting.index', 'roles.index', 'system-setting.index', 'exam-grades.index', 'academic-sessions.index'])
                 <li class="{{ isActiveRoute(['users.*', 'roles.*', 'system-setting.*', 'fee-scenario.*', 'exam-grades.*', 'academic-sessions.*']) }}">
-                    <a><i class="fa fa-gear fa-spin"></i> <span class="nav-label"></span><span
-                            class="fa arrow"></span>Administrative Tools</a>
+                    <a data-root="admin"><i class="fa fa-gear fa-spin"></i> <span class="nav-label">Administrative Tools</span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         @can('users.index')
                         <li class="{{ isActiveRoute('users.*') }}">
@@ -257,7 +255,7 @@
                         @role('Developer')
                             <li class="{{ isActiveRoute('academic-sessions.*') }}">
                                 <a href="{{ route('academic-sessions.index') }}">
-                                    <span class="nav-label"></span>Academic Session</a>
+                                    <span class="nav-label">Academic Session</span></a>
                             </li>
                         @endrole
                         @can('fee-scenario.index')
