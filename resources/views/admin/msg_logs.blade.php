@@ -37,7 +37,7 @@
                 <h2>Notifications</h2>
                 <ol class="breadcrumb">
                     <li>Home</li>
-                    <li class="active"><a>Logs</a></li>
+                    <li class="active"><a>Message Logs</a></li>
                 </ol>
             </div>
             @can('user-settings.change.session')
@@ -57,8 +57,12 @@
                                     <table class="table table-striped table-bordered table-hover dataTables-log">
                                         <thead>
                                             <tr>
-                                                <th>Notification</th>
-                                                <th>Link</th>
+                                                <th>Type</th>
+                                                <th>Message</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Status Code</th>
+                                                <th>Response</th>
                                                 <th>Created By</th>
                                             </tr>
                                         </thead>
@@ -98,18 +102,22 @@
                             }
                         },
                         exportOptions: {
-                            columns: [0, 1, 2] 
+                            columns: [0, 1, 2, 3, 4, 5, 6] 
                         },
                         title: "Notifications | {{ config('systemInfo.general.title') }}"
                     }
                 ],
                 processing: true,
                 serverSide: true,
-                ajax: '{{ url('notifications/logs') }}',
+                ajax: '{{ url('notifications/msg/logs') }}',
                 columns: [
-                    { data: 'notification' },
-                    { data: 'link' },
-                    { data: 'created_by' }
+                    { data: 'type' },
+                    { data: 'message' },
+                    { data: 'email' },
+                    { data: 'phone' },
+                    { data: 'status_code' },
+                    { data: 'response' },
+                    { data: 'created_by_name' }
                 ]
             });
         });

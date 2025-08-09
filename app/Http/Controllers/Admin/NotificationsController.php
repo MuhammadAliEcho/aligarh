@@ -8,6 +8,7 @@ use App\Student;
 use App\Teacher;
 use App\Employee;
 use App\Guardian;
+use App\Notification;
 use App\NotificationLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -219,6 +220,26 @@ class NotificationsController extends Controller
     public function log(Request $request)
     {
         if ($request->ajax()) {
+            $query = Notification::with('user')->select(
+                'notification',
+                'user_id',
+                'link',
+            );
+
+            return DataTables::eloquent($query)
+                ->editColumn('created_by', function (Notification $notification) {
+                    return $notification->user->name;
+                })
+                ->make(true);
+        }
+
+        return view('admin.logs');
+    }
+
+
+    public function msgLog(Request $request)
+    {
+        if ($request->ajax()) {
             $query = NotificationLog::with('user')->select(
                 'id',
                 'type',
@@ -240,7 +261,7 @@ class NotificationsController extends Controller
                 ->make(true);
         }
 
-        return view('admin.logs');
+        return view('admin.msg_logs');
     }
 
     private function returnNotifications()

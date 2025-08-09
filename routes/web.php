@@ -302,6 +302,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/get/data', [NotificationsController::class, 'getData'])->name('.get.data');
         Route::post('/messsage-send', [NotificationsController::class, 'send'])->name('.send');
         Route::get('/logs', [NotificationsController::class, 'log'])->name('.log');
+        Route::get('/msg/logs', [NotificationsController::class, 'msgLog'])->name('.msg.log');
     });
 
     Route::group(['middleware' => 'role:Developer','prefix' => 'academic-sessions','as' => 'academic-sessions'], function () {
