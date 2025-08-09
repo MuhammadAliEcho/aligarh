@@ -832,11 +832,15 @@
                                             <div class="form-group{{ $errors->has('guardian') ? ' has-error' : '' }}">
                                                 <label class="col-md-2 control-label">Guardian</label>
                                                 <div class="col-md-6">
-                                                    <select class="form-control" name="guardian">
+                                                    <select class="form-control" name="guardian" id="guardian-select">
                                                         <option value="" disabled selected>Guardian</option>
                                                         @foreach ($guardians as $guardian)
-                                                            <option value="{{ $guardian->id }}">
-                                                                {{ $guardian->name . ' | ' . $guardian->email }}</option>
+                                                            <option 
+                                                                value="{{ $guardian->id }}"
+                                                                data-address="{{ e($guardian->address ?? '') }}"
+                                                                data-phone="{{ e($guardian->phone ?? '') }}">
+                                                                {{ $guardian->name . ' | ' . $guardian->email }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     @if ($errors->has('guardian'))
@@ -1415,6 +1419,15 @@
                 format: 'YYYY-MM-DD',
                 defaultDate: moment()
 
+            });
+
+            $('#guardian-select').on('change', function() {
+                var selected = $(this).find('option:selected');
+                var address = selected.data('address');
+                var phone = selected.data('phone');
+
+                $('textarea[name="address"]').val(address);
+                $('input[name="phone"]').val(phone);
             });
 
             /*    For Column Search  */

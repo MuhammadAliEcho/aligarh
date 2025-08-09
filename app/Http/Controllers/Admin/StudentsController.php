@@ -89,7 +89,7 @@ class StudentsController extends Controller
 				})
 				->make(true);
 		}
-		$data['guardians'] = Guardian::select('id', 'name', 'email')->get();
+		$data['guardians'] = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
 		$data['no_of_active_students'] = Student::active()->count();
 
 		foreach ($data['classes'] as $key => $class) {
@@ -100,7 +100,7 @@ class StudentsController extends Controller
 
 	public function getGuardians(Request $request)
 	{
-		$guardians = Guardian::select('id', 'name', 'email')->get();
+		$guardians = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
     	return response()->json($guardians);	
 	}	
 
