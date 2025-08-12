@@ -127,7 +127,7 @@ class FeeCollectionReportController extends Controller
 			];
 		
 		if($data['session']->getRawOriginal('end') < $data['betweendates']['end'] || $data['session']->getRawOriginal('start') > $data['betweendates']['end']){
-			return redirect('student-attendance')->withInput()->with([
+			return redirect('fee-collection-reports')->withInput()->with([
 				'toastrmsg' => [
 					'type' => 'error',
 					'title'  =>  'Student Unpaid Statment',

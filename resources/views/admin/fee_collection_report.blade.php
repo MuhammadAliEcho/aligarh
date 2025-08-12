@@ -115,7 +115,13 @@
 						@can('fee-collection-reports.unpaid.fee.statment')
 							<div class="ibox">
 								<div class="ibox-title">
-									<h2>Bill Remain Statment</h2>
+									<h2>Bill Remain Statment
+										<i 
+											class="fa fa-info-circle" aria-hidden="true"
+											style="margin-left: 10px" data-placement="right" data-toggle="tooltip" 
+											title="This report shows students who do not have any fee vouchers created yet. You need to generate bills for them.">
+										</i>
+									</h2>
 									<div class="hr-line-dashed"></div>
 								</div>
 
@@ -233,6 +239,8 @@
 
 
 			$(document).ready(function(){
+
+			$('[data-toggle="tooltip"]').tooltip();
 
 
 				$("#fee_receipts_statment").validate({

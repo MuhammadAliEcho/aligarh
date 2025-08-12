@@ -65,9 +65,11 @@
 		<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
 		<h4>Yearly Collection Statment</h4>
 		<h4>Session: 
-			{{ \Carbon\Carbon::createFromFormat('d/m/Y', $session->getRawOriginal('start'))->format('M-Y') }} 
+			{{ \Carbon\Carbon::parse($session->getRawOriginal('start'))->format('M-Y') }}
+			{{-- {{ \Carbon\Carbon::createFromFormat('d/m/Y', $session->getRawOriginal('start'))->format('M-Y') }}  --}}
 			TO 
-			{{ \Carbon\Carbon::createFromFormat('d/m/Y', $session->getRawOriginal('end'))->format('M-Y') }} 
+			{{ \Carbon\Carbon::parse($session->getRawOriginal('end'))->format('M-Y') }}
+			{{-- {{ \Carbon\Carbon::createFromFormat('d/m/Y', $session->getRawOriginal('end'))->format('M-Y') }}  --}}
 		</h4>
 		{{-- <h4>Session: {{ Carbon\Carbon::createFromFormat('Y-m-d', $session->getRawOriginal('start'))->Format('M-Y') }} TO {{ Carbon\Carbon::createFromFormat('Y-m-d', $session->getRawOriginal('end'))->Format('M-Y') }} </h4> --}}
 		<h4>Class: {{ $class->name }}</h4>
