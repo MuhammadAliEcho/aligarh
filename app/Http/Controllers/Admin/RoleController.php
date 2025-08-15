@@ -277,6 +277,9 @@ class RoleController extends Controller
 				'quizzes.edit' => 'Quiz Edit',
 				'quizzes.update' => 'Quiz Update',
 				'quizzes.delete' => 'Quiz Delete',
+
+				'quizresult.index' => 'Quiz Result View',
+				'quizresult.create' => 'Quiz Result Create',
 				// .....
 			],
 			'Library' => [

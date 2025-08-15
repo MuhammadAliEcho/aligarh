@@ -26,7 +26,7 @@ class QuizController extends Controller
 
     public function GetData(Request $request)
     {
-        $quizzes = Quiz::with('class:id,name', 'section:id,name', 'teacher:id,name')->SelfSession();
+        $quizzes = Quiz::with('class:id,name', 'section:id,name', 'teacher:id,name', 'quizResults')->SelfSession();
 
         if ($request->filled('search_quiz')) {
             $search = $request->input('search_quiz');

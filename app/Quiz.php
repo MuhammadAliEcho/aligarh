@@ -67,4 +67,9 @@ class Quiz extends Model
     {
         return $query->where('academic_session_id', auth()->user()->academic_session);
     }
+
+    public function quizResults()
+    {
+        return $this->hasMany(QuizResult::class);
+    }
 }

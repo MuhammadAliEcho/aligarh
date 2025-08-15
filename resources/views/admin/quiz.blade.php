@@ -225,6 +225,130 @@
             font-weight: 800;
         }
     </style>
+
+    {{-- quiz-result-model --}}
+    <style>
+        .quiz-result-model-card {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: quiz-result-model-fadeInUp 0.5s ease-out;
+        }
+
+        .quiz-result-model-card-header {
+            background: linear-gradient(135deg, #009486 0%, #1ab394 100%);
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+
+        .quiz-result-model-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .quiz-result-model-card-body {
+            padding: 20px;
+        }
+
+        .quiz-result-model-name {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .quiz-result-model-status-select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .quiz-result-model-info-divider {
+            border: none;
+            height: 2px;
+            background: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .quiz-result-model-form-group {
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .quiz-result-model-submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #009486 0%, #1ab394 100%);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .quiz-result-model-submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        @keyframes quiz-result-model-fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* override */
+        .modal-dialog {
+            width: 180vh !important;
+            margin: 30px auto;
+            height: 100vh !important;
+        }
+
+        .modal-body {
+            max-height: 100vh !important;
+        }
+
+        .modal-open .modal {
+            overflow-x: hidden !important;
+            overflow-y: hidden !important;
+            height: 97% !important;
+        }
+
+        /* Responsive inside modal */
+        @media (max-width: 768px) {
+            .quiz-result-model-card {
+                font-size: 14px;
+            }
+        }
+
+        .scrollable-table-wrapper thead th {
+            position: sticky;
+            top: 0;
+            background: #f9f9f9;
+            z-index: 1;
+        }
+
+        .scrollable-table-wrapper {
+            max-height: 58vh;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -329,6 +453,13 @@
                                                                 @click.prevent="deleteQuiz(quiz.id)" href="#"
                                                                 class="btn btn-sm btn-outline-danger">
                                                                 <i class="fa fa-trash"></i> Delete
+                                                            </a>
+                                                        @endcan
+                                                        @can('quizresult.index')
+                                                            <a data-placement="top" data-toggle="tooltip" title="Add Result"
+                                                                @click.prevent="getQuiz(quiz.id)" href="#"
+                                                                class="btn btn-sm btn-outline-danger">
+                                                                <i class="fa fa-trophy"></i> Add Result
                                                             </a>
                                                         @endcan
                                                     </div>
@@ -468,6 +599,55 @@
                                     </div>
                                 </div>
                             @endcan
+                            @can('quizresult.index')
+                                <!-- Modal -->
+                                <div class="modal fade" id="quizResultModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="quizResultModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="quizResultModalLabel">Add Result</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="quiz-result-model-card">
+                                                    <div class="quiz-result-model-card-header">
+                                                        <div class="quiz-result-model-title">Quiz Result</div>
+                                                    </div>
+                                                    <div class="quiz-result-model-card-body">
+                                                        <h3 class="quiz-result-model-name">Students Information</h3>
+                                                        <hr class="quiz-result-model-info-divider">
+                                                        <div class="scrollable-table-wrapper">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>GR Number</th>
+                                                                        <th>Obtained Marks</th>
+                                                                        <th>Present</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="studentResultsTable">
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        @can('quizresult.create')
+                                                            <div class="quiz-result-model-form-group" style="margin-top: 15px;">
+                                                                <button type="button" :disabled="isSubmitting"
+                                                                    id="quizResultModelSubmit" @click="createResult()"
+                                                                    class="quiz-result-model-submit-btn">Add Result</button>
+                                                            </div>
+                                                        @endcan
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -557,7 +737,8 @@
                 to: 0,
                 from: 0,
                 total: 0,
-                pagination_links: []
+                pagination_links: [],
+                isSubmitting: false
             },
             created() {
                 this.debouncedSearch = _.debounce(() => {
@@ -636,6 +817,74 @@
                             swal("Cancelled", "The record is safe :)", "error");
                         }
                     });
+                },
+                getQuiz(quizId) {
+                    $('#quizResultModal').modal('show');
+                    axios.get(`/quizresult/${quizId}`)
+                        .then(response => {
+                            const students = response.data;
+                            const tableBody = $('#studentResultsTable');
+                            tableBody.empty();
+                            const quizIdMarkInput =
+                                `<input type="hidden" name="quiz_id" id="quiz_id" value="${quizId}">`;
+                            tableBody.append(quizIdMarkInput);
+
+                            students.forEach(student => {
+                                const row = `
+                                <tr>
+                                    <td>${student.name}</td>
+                                    <td>${student.gr_no}</td>
+                                    <td><input type="number" class="form-control" name="marks[${student.id}]" value="" id="marks-${student.id}" /></td>
+                                    <td><input type="checkbox" class="form-check-input" name="present[${student.id}]" id="present-${student.id}" /></td>
+                                </tr>
+                            `;
+                                tableBody.append(row);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Failed to fetch records:', error);
+                        });
+                },
+                createResult() {
+                    this.isSubmitting = true;
+                    const rows = $('#studentResultsTable tr');
+                    const results = [];
+                    rows.each(function() {
+                        const studentId = $(this).find('input[type=number]').attr('id')?.split('-')[1];
+                        if (!studentId) return;
+
+                        const marks = $(this).find('input[type=number]').val();
+                        const present = $(this).find('input[type=checkbox]').is(':checked') ? 1 : 0;
+
+                        results.push({
+                            student_id: studentId,
+                            obtain_marks: marks,
+                            present: present
+                        });
+                    });
+
+                    axios.post('/quizresult/create', {
+                            quiz_id: $('#quiz_id').val(),
+                            results: results
+                        })
+                        .then(response => {
+                            toastr.success("Results added successfully");
+                            $('#quizResultModal').modal('hide');
+                        })
+                        .catch(error => {
+                            this.isSubmitting = false;
+                            if (error.response && error.response.status === 422) {
+                                const errors = error.response.data.errors;
+                                Object.keys(errors).forEach(field => {
+                                    errors[field].forEach(msg => {
+                                        toastr.error(msg, "Validation Error");
+                                    });
+                                });
+                            } else {
+                                toastr.error("Something went wrong. Please try again.");
+                                console.error('Error:', error);
+                            }
+                        });
                 }
             },
 
