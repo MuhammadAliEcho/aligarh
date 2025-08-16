@@ -81,13 +81,6 @@
                                             class="form-horizontal">
                                             {{ csrf_field() }}
 
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label">Title</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" id="title" readonly 
-                                                        value="" class="form-control" />
-                                                </div>
-                                            </div>
                                             <div class="form-group{{ $errors->has('start') ? ' has-error' : '' }}">
                                               <label class="col-md-2 control-label">Session Start</label>
                                               <div class="col-md-6">
@@ -103,6 +96,7 @@
                                                     @endif
                                               </div>
                                             </div>
+
                                             <div class="form-group{{ $errors->has('end') ? ' has-error' : '' }}">
                                               <label class="col-md-2 control-label">Session End</label>
                                               <div class="col-md-6">
@@ -118,6 +112,15 @@
                                                     @endif
                                               </div>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Title</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="title" readonly 
+                                                        value="" class="form-control" />
+                                                </div>
+                                            </div>
+
                                             <div class="form-group">
                                                 <div class="col-md-offset-2 col-md-6">
                                                     <button class="btn btn-primary" type="submit"><span
