@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -49,6 +50,11 @@ class User extends Authenticatable
             $model->settings  			=   Auth::user()->settings?? '{"skin_config":{"nav_collapse":""}}';
         });
     }
+
+	public function sendPasswordResetNotification($token)
+	{
+		$this->notify(new ResetPasswordNotification($token));
+	}
 
 	public function getprivileges(){
 		return $this->hasOne('App\UserPrivilege');

@@ -34,23 +34,55 @@
     <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <script type="text/javascript">
+        function toggle(form, reset_form) {
+            document.getElementById("form").style.display = form;
+            document.getElementById("reset_form").style.display = reset_form;
+        }
+
+
          $('document').ready(function(){
-             $("#form").validate({
-                 rules: {
-                     password: {
-                         required: true,
-                         minlength: 6,
-                         maxlength: 12
-                     },
-                     userid: {
-                       required: true
-                     }
-                 },
-                 messages: {
-                   password: { required: 'Password is required'},
-                   userid: 'UserID is required'
-                 }
-             });
+            $("#form").validate({
+                rules: {
+                    password: {
+                        required: true,
+                        minlength: 6,
+                        maxlength: 12
+                    },
+                    userid: {
+                    required: true
+                    }
+                },
+                messages: {
+                password: { required: 'Password is required'},
+                userid: 'UserID is required'
+                }
+            });
+
+            $("#reset-password-form").validate({
+                rules: {
+                    password: {
+                        required: true,
+                        minlength: 6,
+                        maxlength: 12
+                    },
+                    password_confirmation: {
+                        required: true,
+                        equalTo: "#password"
+                    }
+                },
+                messages: {
+                    password: {
+                        required: 'Password is required',
+                        minlength: 'Password must be at least 6 characters',
+                        maxlength: 'Password must not exceed 12 characters'
+                    },
+                    password_confirmation: {
+                        required: 'Please confirm your password',
+                        equalTo: 'Passwords do not match'
+                    }
+                }
+            });
+
         });
     </script>
 
