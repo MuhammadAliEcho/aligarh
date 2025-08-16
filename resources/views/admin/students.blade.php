@@ -1300,7 +1300,7 @@
                                                                             <input id="guardian_name" required type="name" class="guardian-model-form-control" placeholder="Enter Name">
                                                                         </div>
                                                                         <div class="guardian-model-form-group">
-                                                                            <label class="guardian-model-form-label">Email Address<span class="text-danger">*</span></label>
+                                                                            <label class="guardian-model-form-label">Email Address</label>
                                                                             <input id="guardian_email" required type="email" class="guardian-model-form-control" placeholder="Enter Email">
                                                                         </div>
                                                                     </div>
