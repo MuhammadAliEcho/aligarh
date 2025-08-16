@@ -27,6 +27,7 @@ Route::group(['prefix' => 'guardian', 'namespace'	=>	'Api\Guardian'], function()
 			Route::post('student-exams', 'ExamController@GetExams');
 			Route::get('routines', 'RoutineController@GetRoutines');
 			Route::get('noticeboard', 'NoticeBoardController@GetNotices');
+			Route::get('quiz/{student_id}', 'QuizController@GetQuiz');
 
 			Route::get('user', function(Request $request){
 //                return $request->user()->token()->id;
