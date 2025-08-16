@@ -362,7 +362,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @can('attendance-leave.create')
+                            @can('attendance-leave.make')
                                 <div id="tab-11" class="tab-pane fade make-attendance">
                                     <div class="panel-body" style="min-height: 400px">
                                         <h2> Make Attendance </h2>
