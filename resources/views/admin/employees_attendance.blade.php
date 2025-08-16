@@ -1,206 +1,245 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Employees Attendance |')
+@section('title', 'Employees Attendance |')
 
-  @section('head')
+@section('head')
     <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
     <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
-  @endsection
+@endsection
 
-  @section('content')
+@section('content')
 
-  @include('admin.includes.side_navbar')
+    @include('admin.includes.side_navbar')
 
-        <div id="page-wrapper" class="gray-bg">
+    <div id="page-wrapper" class="gray-bg">
 
-          @include('admin.includes.top_navbar')
+        @include('admin.includes.top_navbar')
 
-          <!-- Heading -->
-          <div class="row wrapper border-bottom white-bg page-heading">
-              <div class="col-lg-8 col-md-6">
-                  <h2>Employees Attendance</h2>
-                  <ol class="breadcrumb">
+        <!-- Heading -->
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-8 col-md-6">
+                <h2>Employees Attendance</h2>
+                <ol class="breadcrumb">
                     <li>Home</li>
-                      <li Class="active">
-                          <a>Employees Attendance</a>
-                      </li>
-                  </ol>
-              </div>
-              <div class="col-lg-4 col-md-6">
-                @include('admin.includes.academic_session')
-              </div>
-          </div>
+                    <li Class="active">
+                        <a>Employees Attendance</a>
+                    </li>
+                </ol>
+            </div>
+            @can('user-settings.change.session')
+                <div class="col-lg-4 col-md-6">
+                    @include('admin.includes.academic_session')
+                </div>
+            @endcan
+        </div>
 
-          <!-- main Section -->
+        <!-- main Section -->
 
-          <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="wrapper wrapper-content animated fadeInRight">
 
             <div class="row ">
                 <div class="col-lg-12">
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="make-attendance">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Attendance </a>
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Attendance </a>
                             </li>
-                            <li class="get-attendance">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Attendance Reports</a>
-                            </li>
+                            @can('employee-attendance.report')
+                                <li class="get-attendance">
+                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Attendance
+                                        Reports</a>
+                                </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade make-attendance">
                                 <div class="panel-body" style="min-height: 400px">
-                                  <h2> Make Attendance </h2>
-                                  <div class="hr-line-dashed"></div>
+                                    <h2> Make Attendance </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="mk_att_frm" method="GET" action="{{ URL('employee-attendance/make') }}" class="form-horizontal jumbotron" role="form" >
+                                    <form id="mk_att_frm" method="GET" action="{{ URL('employee-attendance/make') }}"
+                                        class="form-horizontal jumbotron" role="form">
 
-                                      <div class="form-group{{ ($errors->has('date'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label"> Date </label>
-                                        <div class="col-md-6">
-                                        <input id="datetimepicker4" type="text" name="date" class="form-control" placeholder="Date" value="{{ old('date') }}" required="true">
-                                          @if ($errors->has('date'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Make Attendance </button>
-                                          </div>
-                                      </div>
-
-                                    </form>
-
-                                    @if($root['job'] == 'make')
-                                    <div class="row">
-                                      <h3>Employees Attendance Date: ({{ $input['date'] }})</h3>
-                                      <div class="hr-line-dashed"></div>
-                                      <form action="{{ URL('employee-attendance/make') }}" method="POST">
-                                        {{ csrf_field() }}
-                                        <input type="hidden" name="date" value="{{ $input['date'] }}">
-                                        <table class="table table-striped table-bordered table-hover">
-                                          <thead>
-                                            <tr>
-                                              <th>ID</th>
-                                              <th>Name</th>
-                                              <th>
-                                                <div class="checkbox checkbox-success">
-                                                  <input class="select-all" id="checkbox" type="checkbox" />
-                                                  <label data-toggle="tooltip" title="select all" for="checkbox">
-                                                    <b>Attendance</b>
-                                                  </label>
-                                                </div>
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                          @foreach($employees as $employee)
-                                            <tr>
-                                              <td>{{ $employee->email }}</td>
-                                              <td>{{ $employee->name }}</td>
-                                              <td>
-                                                <input type="hidden" name="employee_id[{{ $employee->id }}]" value="{{ $employee->id }}">
-                                                <div class="checkbox checkbox-success">
-                                                  <input id="checkbox{{ $employee->id }}" class="selectAtt" type="checkbox" name="attendance{{ $employee->id }}" value="1" {{ (isset($attendance[$employee->id]->status) && $attendance[$employee->id]->status)? 'checked' : '' }} />
-                                                  <label for="checkbox{{ $employee->id }}">
-                                                  </label>
-                                                </div>
-                                              </td>
-                                            </tr>
-                                          @endforeach
-                                          </tbody>
-                                        </table>
-
-                                        <div class="form-group">
-                                            <div class="col-md-offset-4 col-md-4">
-                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Make Attendance </button>
+                                        <div class="form-group{{ $errors->has('date') ? ' has-error' : '' }}">
+                                            <label class="col-md-2 control-label"> Date </label>
+                                            <div class="col-md-6">
+                                                <input id="datetimepicker4" type="text" name="date"
+                                                    class="form-control" placeholder="Date" value="{{ old('date') }}"
+                                                    required="true">
+                                                @if ($errors->has('date'))
+                                                    <span class="help-block">
+                                                        <strong><span class="fa fa-exclamation-triangle"></span>
+                                                            {{ $errors->first('date') }}</strong>
+                                                    </span>
+                                                @endif
                                             </div>
                                         </div>
 
-                                      </form>
-                                    </div>
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span
+                                                        class="glyphicon glyphicon-save"></span> Make Attendance </button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                    @if ($root == 'make')
+                                        <div class="row">
+                                            <h3>Employees Attendance Date: ({{ $input['date'] }})</h3>
+                                            <div class="hr-line-dashed"></div>
+                                            <form action="{{ URL('employee-attendance/make') }}" method="POST">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="date" value="{{ $input['date'] }}">
+                                                <table class="table table-striped table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Name</th>
+                                                            <th>
+                                                                <div class="checkbox checkbox-success">
+                                                                    <input class="select-all" id="checkbox"
+                                                                        type="checkbox" />
+                                                                    <label data-toggle="tooltip" title="select all"
+                                                                        for="checkbox">
+                                                                        <b>Attendance</b>
+                                                                    </label>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($employees as $employee)
+                                                            <tr>
+                                                                <td>{{ $employee->email }}</td>
+                                                                <td>{{ $employee->name }}</td>
+                                                                <td>
+                                                                    <input type="hidden"
+                                                                        name="employee_id[{{ $employee->id }}]"
+                                                                        value="{{ $employee->id }}">
+                                                                    <input type="hidden"
+                                                                        name="employee_leave[{{ $employee->id }}]"
+                                                                        value="{{ $employee->leaveOnDate->id ?? null }}">
+                                                                    <div class="checkbox checkbox-success">
+                                                                        <input id="checkbox{{ $employee->id }}"
+                                                                            class="selectAtt" type="checkbox"
+                                                                            name="attendance{{ $employee->id }}"
+                                                                            value="1"
+                                                                            {{ isset($attendance[$employee->id]->status) && $attendance[$employee->id]->status ? 'checked' : '' }} />
+                                                                        <label for="checkbox{{ $employee->id }}">
+                                                                            @if ($employee->leaveOnDate ?? false)
+                                                                                <span title="Leave"
+                                                                                    style="color:rgb(243, 8, 0)"><b>L</b></span>
+                                                                            @endif
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+
+                                                <div class="form-group">
+                                                    <div class="col-md-offset-4 col-md-4">
+                                                        <button class="btn btn-primary" type="submit"><span
+                                                                class="glyphicon glyphicon-save"></span> Make Attendance
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
 
-                            <div id="tab-11" class="tab-pane fade get-attendance">
-                                <div class="panel-body" style="min-height: 400px">
-                                  <h2> Search Fields </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('employee-attendance.report')
+                                <div id="tab-11" class="tab-pane fade get-attendance">
+                                    <div class="panel-body" style="min-height: 400px">
+                                        <h2> Search Fields </h2>
+                                        <div class="hr-line-dashed"></div>
 
-                                    <form id="rpt_att_frm" method="GET" action="{{ URL('employee-attendance/report') }}" class="form-horizontal jumbotron" role="form" >
+                                        <form id="rpt_att_frm" method="GET" action="{{ URL('employee-attendance/report') }}"
+                                            class="form-horizontal jumbotron" role="form">
 
-                                      <div class="form-group{{ ($errors->has('date'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label"> Date Month </label>
-                                        <div class="col-md-6">
-                                        <input id="datetimepicker4r" type="text" name="date" class="form-control" placeholder="Date" value="{{ old('date') }}" required="true" autocomplete="off">
-                                          @if ($errors->has('date'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
+                                            <div class="form-group{{ $errors->has('date') ? ' has-error' : '' }}">
+                                                <label class="col-md-2 control-label"> Date Month </label>
+                                                <div class="col-md-6">
+                                                    <input id="datetimepicker4r" type="text" name="date"
+                                                        class="form-control" placeholder="Date" value="{{ old('date') }}"
+                                                        required="true" autocomplete="off">
+                                                    @if ($errors->has('date'))
+                                                        <span class="help-block">
+                                                            <strong><span class="fa fa-exclamation-triangle"></span>
+                                                                {{ $errors->first('date') }}</strong>
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
 
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="fa fa-list"></span> Show Report </button>
-                                          </div>
-                                      </div>
+                                            <div class="form-group">
+                                                <div class="col-md-offset-2 col-md-6">
+                                                    <button class="btn btn-primary" type="submit"><span
+                                                            class="fa fa-list"></span> Show Report </button>
+                                                </div>
+                                            </div>
 
-                                    </form>
+                                        </form>
 
-                                    @if($root['job'] == 'report')
-                                    <div class="row">
-                                    <h3>Employees Attendance Date: ({{ $input['date'] }})</h3>
-                                      <div class="hr-line-dashed"></div>
-                                        <div class="table-responsive">
-                                          <table id="rpt-att" class="table table-striped table-bordered table-hover">
-                                            <thead>
-                                              <tr>
-                                                <td style="text-align: center;">Employees<i class="entypo-down-thin"></i>|Date<i class="entypo-right-thin"></i></td>
-                                                @for($i=1; $i <= $dbdate['noofdays']; $i++)
-                                                  <th>{{ $i }}</th>
-                                                @endfor
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              @foreach($employees as $employee)
-                                              <tr>
-                                                <td>{{ $employee->name }}</td>
-                                                @for($i=1; $i <= $dbdate['noofdays']; $i++)
-                                                  <th class="tchr_{{ $employee->id }}_dat_{{ $i }}"></th>
-                                                @endfor
-                                              </tr>
-                                              @endforeach
-                                            </tbody>
-                                          </table>
-                                        </div>
+                                        @if ($root == 'report')
+                                            <div class="row">
+                                                <h3>Employees Attendance Date: ({{ $input['date'] }})</h3>
+                                                <div class="hr-line-dashed"></div>
+                                                <div class="table-responsive">
+                                                    <table id="rpt-att"
+                                                        class="table table-striped table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <td style="text-align: center;">Employees<i
+                                                                        class="entypo-down-thin"></i>|Date<i
+                                                                        class="entypo-right-thin"></i></td>
+                                                                @for ($i = 1; $i <= $dbdate['noofdays']; $i++)
+                                                                    <th>{{ $i }}</th>
+                                                                @endfor
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($employees as $employee)
+                                                                <tr>
+                                                                    <td>{{ $employee->name }}</td>
+                                                                    @for ($i = 1; $i <= $dbdate['noofdays']; $i++)
+                                                                        <th
+                                                                            class="tchr_{{ $employee->id }}_dat_{{ $i }}">
+                                                                        </th>
+                                                                    @endfor
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                     </div>
-                                    @endif
-
-                                  </div>
-                            </div>
+                                </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
             </div>
 
-          </div>
-
-
-          @include('admin.includes.footercopyright')
-
-
         </div>
 
-    @endsection
 
-    @section('script')
+
+
+
+    </div>
+
+@endsection
+
+@section('script')
 
     <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
@@ -209,93 +248,108 @@
     <script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
     <script type="text/javascript">
+        var tbl;
+        var attendancerpt;
+        $(document).ready(function() {
 
-    var tbl;
-    var attendancerpt;
-      $(document).ready(function(){
-      
-        $('[data-toggle="tooltip"]').tooltip();
-        $('div .checkbox').css('margin', '0px');
+            $('[data-toggle="tooltip"]').tooltip();
+            $('div .checkbox').css('margin', '0px');
 
-        $('.select-all').change(function(){
-          $('.selectAtt').prop('checked', $(this).prop("checked"));
-        });
+            $('.select-all').change(function() {
+                $('.selectAtt').prop('checked', $(this).prop("checked"));
+            });
 
-        @if($root['job'] == 'report')
-          $('#rpt_att_frm [name="date"]').val("{{ $input['date'] }}");
-        @elseif($root['job'] == 'make')
-          $('#mk_att_frm [name="date"]').val("{{ $input['date'] }}");
-        @endif
+            @if ($root == 'report')
+                $('#rpt_att_frm [name="date"]').val("{{ $input['date'] }}");
+            @elseif ($root == 'make')
+                $('#mk_att_frm [name="date"]').val("{{ $input['date'] }}");
+            @endif
 
-      @if($root['job'] == 'report')
-        attendancerpt = {!! json_encode($attendance) !!};
-        // console.log(attendancerpt);
-        $.each(attendancerpt, function(k, v){
-          $.each(v, function(i, d){
-            date = new Date(d.date);
-            day = date.getDate();
-/*            console.log(d);
-            alert(day);
-*/
-            prefix = (d.status)? 'P' : '<span class="text-danger">A</span>';
-            $('.tchr_'+k+'_dat_'+day).html(prefix);
-          });
-        });
-        $('.nav-tabs a[href="#tab-11"]').tab('show');
-      @else
-//        $('.nav-tabs a[href="#tab-11"]').tab('show');
-        $('.nav-tabs a[href="#tab-10"]').tab('show');
-      @endif
 
-        $('#datetimepicker4').datetimepicker({
-                 format: 'DD/MM/YYYY'
-           });
-        $('#datetimepicker4r').datetimepicker({
-                 format: 'MM/YYYY'
-           });
+            @if ($root == 'report')
+                attendancerpt = {!! json_encode($attendance) !!};
+                // console.log(attendancerpt);
+                $.each(attendancerpt, function(k, v) {
+                    $.each(v, function(i, d) {
+                        date = new Date(d.date);
+                        day = date.getDate();
+                        /*            console.log(d);
+                                    alert(day);
+                        */
+                        let prefix = '';
 
-        $('table#rpt-att').DataTable({
+                        // Check for leave first, then present, then absent
+                        if (d.leave_id && d.leave_id != null && d.leave_id != 0) {
+                            prefix = '<span class="text-info">L</span>';
+                        } else if (d.status == 1) {
+                            prefix = 'P';
+                        } else {
+                            prefix = '<span class="text-danger">A</span>';
+                        }
+
+                        $('.tchr_' + k + '_dat_' + day).html(prefix);
+                    });
+                });
+                $('.nav-tabs a[href="#tab-11"]').tab('show');
+            @else
+                //        $('.nav-tabs a[href="#tab-11"]').tab('show');
+                $('.nav-tabs a[href="#tab-10"]').tab('show');
+            @endif
+
+            $('#datetimepicker4').datetimepicker({
+                format: 'DD/MM/YYYY',
+                defaultDate: moment(),
+            });
+            $('#datetimepicker4r').datetimepicker({
+                format: 'MM/YYYY',
+                defaultDate: moment(),
+            });
+
+            $('table#rpt-att').DataTable({
                 dom: '<"html5buttons"B>lTfgitp',
-                bSort : false,
+                bSort: false,
                 searching: false,
                 paging: false,
-                buttons: [
-                    { extend: 'copy'},
-                    {extend: 'csv'},
-                    {extend: 'excel', title: 'Attendance Report'},
-                    {extend: 'pdfHtml5', title: 'Attendance Report', orientation: 'landscape'},
+                buttons: [{
+                        extend: 'copy'
+                    },
+                    {
+                        extend: 'csv'
+                    },
+                    {
+                        extend: 'excel',
+                        title: 'Attendance Report'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Attendance Report',
+                        orientation: 'landscape'
+                    },
 
 
-                    {extend: 'print',
-                      customize: function (win){
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
+                    {
+                        extend: 'print',
+                        customize: function(win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
 
-                        $(win.document.body).find('table')
+                            $(win.document.body).find('table')
                                 .addClass('compact')
                                 .css('font-size', 'inherit');
-                        $(win.document.body).find('table td')
+                            $(win.document.body).find('table td')
                                 .css('padding', '2px');
-                        $(win.document.body).find('table th')
+                            $(win.document.body).find('table th')
                                 .css('padding', '2px');
-                        $(win.document.body).find('h1')
+                            $(win.document.body).find('h1')
                                 .css('font-size', '20px');
 
-                      }
+                        }
                     }
                 ]
 
             });
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->make == 0)
-        $('.make-attendance').hide();
-      @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->report == 0)
-        $('.get-attendance').hide();
-      @endif
-
-      });
+        });
     </script>
 
-    @endsection
+@endsection

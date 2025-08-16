@@ -50,7 +50,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
 	<h4>SMS Reports</h4>
 	<h4>Between: ( {{ Carbon\Carbon::createFromFormat('Y-m-d', Request::input('start'))->Format('d-M-Y') }} TO {{ Carbon\Carbon::createFromFormat('Y-m-d', Request::input('end'))->Format('d-M-Y') }} )</h4>
 		<table id="rpt-att" class="table table-bordered">
@@ -116,7 +116,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

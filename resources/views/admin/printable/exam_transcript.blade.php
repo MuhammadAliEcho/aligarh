@@ -55,7 +55,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>	
+	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>	
 	<h4 class="text-center"><u>@{{ exam_title }}</u></h4>
 	<h4 class="text-center"><u>Session: @{{ selected_exams[0].academic_session.title }}</u></h4>
 	<h4 class="text-center">Transcript for: <u> @{{ student_class.name }} </u></h4>
@@ -222,7 +222,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

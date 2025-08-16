@@ -10,7 +10,7 @@ class SystemInvoice extends Model
 
 
 	public function getCreatedAtAttribute($date) {
-		return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d-m-Y');
+		return Carbon::parse($date)->format('d-m-Y');
 	}
 
 	public function getBillingMonthAttribute($payment_month) {
@@ -24,7 +24,7 @@ class SystemInvoice extends Model
 	}
 
 	public function getUpdatedAtAttribute($date){
-		return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
+		return Carbon::parse($date)->format('Y-m-d');
 	}
 
 

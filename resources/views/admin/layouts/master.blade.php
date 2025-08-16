@@ -30,63 +30,24 @@
   </head>
 
 <body class="pace-done md-skin {{ Auth::user()->settings->skin_config->nav_collapse }}">
-	@if( config('systemInfo.validity') < Carbon\Carbon::now()->toDateString())
+	@if( config('systemInfo.general.validity') < Carbon\Carbon::now()->toDateString())
 	<div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-warning-sign" ></span> <b> The System Is Expired!</b></div>
 	@endif
   <div id="wrapper">
 	<div id="app">
 		@yield('content')
 	</div>
-  </div>
+		@include('admin.includes.footercopyright')
+	</div>
 
 	<!-- Mainly scripts -->
 	<script src="{{ URL::to('src/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
 	<script src="{{ URL::to('src/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
 
-	<!-- Flot -->
-	<script src="{{ URL::to('src/js/plugins/flot/jquery.flot.js') }}"></script>
-	<script src="{{ URL::to('src/js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
-	<script src="{{ URL::to('src/js/plugins/flot/jquery.flot.spline.js') }}"></script>
-	<script src="{{ URL::to('src/js/plugins/flot/jquery.flot.resize.js') }}"></script>
-	<script src="{{ URL::to('src/js/plugins/flot/jquery.flot.pie.js') }}"></script>
-
-	<!-- Peity -->
-	<script src="{{ URL::to('src/js/plugins/peity/jquery.peity.min.js') }}"></script>
-	<script src="{{ URL::to('src/js/demo/peity-demo.js') }}"></script>
-
 	<!-- Custom and plugin javascript -->
 	<script src="{{ URL::to('src/js/custom.js') }}"></script>
 
-  {{--
-	<script type="text/javascript">
 
-	  // Append config box / Only for demo purpose
-	  // Uncomment on server mode to enable XHR calls
-	  $.get("{{ URL('/skin-config') }}", function (data) {
-		if (!$('body').hasClass('no-skin-config'))
-			$('body').append(data);
-	  });
-	</script>
-	--}}
-
-	<script src="{{ URL::to('src/js/plugins/pace/pace.min.js') }}"></script>
-
-	<!-- jQuery UI -->
-	<script src="{{ URL::to('src/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
-
-	<!-- GITTER -->
-	<script src="{{ URL::to('src/js/plugins/gritter/jquery.gritter.min.js') }}"></script>
-
-	<!-- Sparkline -->
-	<script src="{{ URL::to('src/js/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
-
-	<!-- Sparkline demo data  -->
-	<script src="{{ URL::to('src/js/demo/sparkline-demo.js') }}"></script>
-
-	<!-- ChartJS-->
-{{-- 	<script src="{{ URL::to('src/js/plugins/chartJs/Chart.min.js') }}"></script> --}}
-			<!-- ChartJS-->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 	<!-- Toastr -->
 	<script src="{{ URL::to('src/js/plugins/toastr/toastr.min.js') }}"></script>
 

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
-//use Illuminate\Http\Request;
-use App\Http\Requests;
-use Request;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Http\Request;
 use App\Expense;
 use Carbon\Carbon;
 use Auth;
@@ -13,18 +11,8 @@ use App\Http\Controllers\Controller;
 
 class ExpenseController extends Controller
 {
-
-//  protected $Routes;
-  protected $data, $Expense, $Request, $Input;
-
-  public function __Construct($Routes, $Request){
-    $this->data['root'] = $Routes;
-    $this->Request = $Request;
-    $this->Input = $Request->input();
-  }
-
-  protected function PostValidate(){
-    $this->validate($this->Request, [
+  protected function PostValidate($request){
+    $this->validate($request, [
         'type'  =>  'required',
         'description'  =>  'required',
         'amount' =>  'required|numeric',
@@ -32,28 +20,28 @@ class ExpenseController extends Controller
     ]);
   }
 
-  public function Index(){
+  public function Index(Request $request){
 
-  	if (Request::ajax()) {
-	    return Datatables::eloquent(Expense::query())->make(true);
+  	if ($request->ajax()) {
+	    return DataTables::eloquent(Expense::query())->make(true);
   	}
 
-    return view('admin.expense', $this->data);
+    return view('admin.expense');
   }
 
-  public function EditExpense(){
-    $this->data['expense'] = Expense::findOrfail($this->data['root']['option']);
-    return view('admin.edit_expense', $this->data);
+  public function EditExpense($id){
+    $data['expense'] = Expense::findOrfail($id);
+    return view('admin.edit_expense', $data);
   }
 
-  public function PostEditExpense(){
+  public function PostEditExpense(Request $request, $id){
 
-    $this->PostValidate();
+    $this->PostValidate($request);
 
-    $this->Expense = Expense::findOrfail($this->data['root']['option']);
-    $this->SetAttributes();
-    $this->Expense->updated_by = Auth::user()->id;
-    $this->Expense->save();
+    $Expense = Expense::findOrfail($id);
+    $this->SetAttributes($Expense, $request);
+    $Expense->updated_by = Auth::user()->id;
+    $Expense->save();
 
     return redirect('expense')->with([
         'toastrmsg' => [
@@ -64,13 +52,13 @@ class ExpenseController extends Controller
       ]);
   }
 
-  public function AddExpense(){
+  public function AddExpense(Request $request){
 
-    $this->PostValidate();
-    $this->Expense = new Expense;
-    $this->SetAttributes();
-    $this->Expense->created_by = Auth::user()->id;
-    $this->Expense->save();
+    $this->PostValidate($request);
+    $Expense = new Expense;
+    $this->SetAttributes($Expense, $request);
+    $Expense->created_by = Auth::user()->id;
+    $Expense->save();
 
     return redirect('expense')->with([
         'toastrmsg' => [
@@ -82,32 +70,32 @@ class ExpenseController extends Controller
 
   }
 
-  protected function SetAttributes(){
-    $this->Expense->type = $this->Input['type'];
-    $this->Expense->description = $this->Input['description'];
-    $this->Expense->amount = $this->Input['amount'];
-    $this->Expense->date = Carbon::createFromFormat('d/m/Y', $this->Input['date'])->toDateString();
+  protected function SetAttributes($Expense, $request){
+    $Expense->type = $request->input('type');
+    $Expense->description = $request->input('description');
+    $Expense->amount = $request->input('amount');
+    $Expense->date = Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
   }
 
-  public function Summary(){
+  public function Summary(Request $request){
 
-    if (Request::ajax() == 0) {
+    if ($request->ajax() == 0) {
       abort(404);
     }
 
-    $from_date = Carbon::createFromFormat('d/m/Y', $this->Input['from_date'])->toDateString();
-    $to_date = Carbon::createFromFormat('d/m/Y', $this->Input['to_date'])->toDateString();
+    $from_date = Carbon::createFromFormat('d/m/Y', $request->input('from_date'))->toDateString();
+    $to_date = Carbon::createFromFormat('d/m/Y', $request->input('to_date'))->toDateString();
     $Expense = Expense::whereBetween('date', [$from_date, $to_date]);
 
 
-    if($this->Request->has('description')){
+    if($request->has('description')){
 
-      $summary = $Expense->where('description', 'LIKE', '%'.$this->Input['description'].'%');
+      $summary = $Expense->where('description', 'LIKE', '%'.$request->input('description').'%');
 
     } 
-    if($this->Request->has('type')){
+    if($request->has('type')){
 
-      $summary = $Expense->where('type', '=', $this->Input['type']);
+      $summary = $Expense->where('type', '=', $request->input('type'));
 
     } else {
       
@@ -115,11 +103,11 @@ class ExpenseController extends Controller
       $sum['bills'] = Expense::whereBetween('date', [$from_date, $to_date])->where(['type' => 'bills']);
       $sum['maintenance'] = Expense::whereBetween('date', [$from_date, $to_date])->where(['type' => 'maintenance']);
       $sum['others'] = Expense::whereBetween('date', [$from_date, $to_date])->where(['type' => 'others']);
-      if($this->Request->has('description')){
-        $sum['salary'] = $sum['salary']->where('description', 'LIKE', '%'.$this->Input['description'].'%');
-        $sum['bills'] = $sum['bills']->where('description', 'LIKE', '%'.$this->Input['description'].'%');
-        $sum['maintenance'] = $sum['maintenance']->where('description', 'LIKE', '%'.$this->Input['description'].'%');
-        $sum['others'] = $sum['others']->where('description', 'LIKE', '%'.$this->Input['description'].'%');
+      if($request->has('description')){
+        $sum['salary'] = $sum['salary']->where('description', 'LIKE', '%'.$request->input('description').'%');
+        $sum['bills'] = $sum['bills']->where('description', 'LIKE', '%'.$request->input('description').'%');
+        $sum['maintenance'] = $sum['maintenance']->where('description', 'LIKE', '%'.$request->input('description').'%');
+        $sum['others'] = $sum['others']->where('description', 'LIKE', '%'.$request->input('description').'%');
       }
       $sum = [
           'salary' => $sum['salary']->sum('amount'),
@@ -134,7 +122,7 @@ class ExpenseController extends Controller
 
     return view('admin.ajax.expense_rpt', [
                           'summary' =>  $summary,
-                          'Input' => $this->Input,
+                          'Input' => $request->input(),
                           'sum_salary'  =>  isset($sum['salary'])? $sum['salary'] : 0,
                           'sum_bills' =>  isset($sum['bills'])? $sum['bills'] : 0,
                           'sum_maintenance' => isset($sum['maintenance'])? $sum['maintenance'] : 0,

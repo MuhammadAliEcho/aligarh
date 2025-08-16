@@ -28,9 +28,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -45,9 +47,11 @@
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Vouchers</a>
                             </li>
 
-                            <li class="add-voucher">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Vouchers</a>
-                            </li>
+                            @can('vouchers.add')
+                              <li class="add-voucher">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Vouchers</a>
+                              </li>
+                            @endcan
 
                         </ul>
                         <div class="tab-content">
@@ -78,117 +82,119 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-voucher">
-                                <div class="panel-body">
-                                  <h2> Add Voucher </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('vouchers.add')
+                              <div id="tab-11" class="tab-pane fade add-voucher">
+                                  <div class="panel-body">
+                                    <h2> Add Voucher </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="vchr_rgstr" method="post" action="{{ URL('vouchers/add') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
-                                      
-                                      <input type="hidden" name="net_amount">
+                                      <form id="vchr_rgstr" method="post" action="{{ URL('vouchers/add') }}" class="form-horizontal" >
+                                        {{ csrf_field() }}
+                                        
+                                        <input type="hidden" name="net_amount">
 
-                                      <div class="form-group{{ ($errors->has('vendor'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Vendor</label>
-                                        <div class="col-md-6">
-                                          <select class="form-control" name="vendor">
-                                            <option value="" disabled selected>Vendor</option>
-                                            @foreach($vendors as $vendor)
-                                              <option value="{{ $vendor->id }}">{{ $vendor->v_name.' | '.$vendor->email }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('vendor'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('vendor') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('voucher_date'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Voucher Date</label>
-                                        <div class="col-md-6">
-                                          <input type="text" id="datetimepicker4" name="voucher_date" placeholder="Voucher Date" value="{{ old('voucher_date') }}" class="form-control"/>
-                                          @if ($errors->has('voucher_date'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('voucher_date') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('voucher_no'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Voucher No</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="voucher_no" placeholder="Voucher No" value="{{ old('voucher_no') }}" class="form-control" />
-                                          @if ($errors->has('voucher_no'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('voucher_no') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                      <div class="panel panel-info">
-                                      <div class="panel-heading">
-                                        Items <a href="#" id="additemrow" data-toggle="tooltip" title="Add Items" style="color: #ffffff"><span class="fa fa-plus"></span></a>
-                                      </div>
-                                      <div class="panel-body">
-                                      <table id="additionalfeetbl" class="table table-bordered table-hover table-striped">
-                                        <thead>
-                                          <tr>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Qty</th>
-                                            <th>Rate</th>
-                                            <th>Remove</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                              <td>
-                                                <select class="form-control item" onchange="ItemChanged(this)" name="items[1][id]" required="true">
-                                                  <option value="" disabled selected>Items</option>
-                                                  @foreach($items as $item)
-                                                    <option value="{{ $item->id }}" category="{{ $item->category }}">{{ $item->name.' | '.$item->category }}</option>
-                                                  @endforeach
-                                                </select>
-                                              </td>
-                                              <td>
-                                                <input type="text" placeholder="Category" class="form-control category" disabled="true">
-                                              </td>
-                                              <td>
-                                                <input type="number" name="items[1][qty]" placeholder="Qty" onchange="Calc()" class="form-control qty" required="true">
-                                              </td>
-                                              <td>
-                                                <input type="number" name="items[1][rate]" placeholder="Rate" onchange="Calc()" class="form-control rate" required="true">
-                                              </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                          <tr>
-                                            <th>Total</th>
-                                            <th></th>
-                                            <th></th>
-                                            <th id="net_amount">{{ old('net_amount') }}</th>
-                                            <th></th>
-                                          </tr>
-                                        </tfoot>
-                                      </table>
-                                      </div>
-                                      </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-4">
-                                              <button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>
+                                        <div class="form-group{{ ($errors->has('vendor'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Vendor</label>
+                                          <div class="col-md-6">
+                                            <select class="form-control" name="vendor">
+                                              <option value="" disabled selected>Vendor</option>
+                                              @foreach($vendors as $vendor)
+                                                <option value="{{ $vendor->id }}">{{ $vendor->v_name.' | '.$vendor->email }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('vendor'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('vendor') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('voucher_date'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Voucher Date</label>
+                                          <div class="col-md-6">
+                                            <input type="text" id="datetimepicker4" name="voucher_date" placeholder="Voucher Date" value="{{ old('voucher_date') }}" class="form-control"/>
+                                            @if ($errors->has('voucher_date'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('voucher_date') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('voucher_no'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Voucher No</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="voucher_no" placeholder="Voucher No" value="{{ old('voucher_no') }}" class="form-control" />
+                                            @if ($errors->has('voucher_no'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('voucher_no') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                        <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                          Items <a href="#" id="additemrow" data-toggle="tooltip" title="Add Items" style="color: #ffffff"><span class="fa fa-plus"></span></a>
+                                        </div>
+                                        <div class="panel-body">
+                                        <table id="additionalfeetbl" class="table table-bordered table-hover table-striped">
+                                          <thead>
+                                            <tr>
+                                              <th>Name</th>
+                                              <th>Category</th>
+                                              <th>Qty</th>
+                                              <th>Rate</th>
+                                              <th>Remove</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                              <tr>
+                                                <td>
+                                                  <select class="form-control item" onchange="ItemChanged(this)" name="items[1][id]" required="true">
+                                                    <option value="" disabled selected>Items</option>
+                                                    @foreach($items as $item)
+                                                      <option value="{{ $item->id }}" category="{{ $item->category }}">{{ $item->name.' | '.$item->category }}</option>
+                                                    @endforeach
+                                                  </select>
+                                                </td>
+                                                <td>
+                                                  <input type="text" placeholder="Category" class="form-control category" disabled="true">
+                                                </td>
+                                                <td>
+                                                  <input type="number" name="items[1][qty]" placeholder="Qty" onchange="Calc()" class="form-control qty" required="true">
+                                                </td>
+                                                <td>
+                                                  <input type="number" name="items[1][rate]" placeholder="Rate" onchange="Calc()" class="form-control rate" required="true">
+                                                </td>
+                                              </tr>
+                                          </tbody>
+                                          <tfoot>
+                                            <tr>
+                                              <th>Total</th>
+                                              <th></th>
+                                              <th></th>
+                                              <th id="net_amount">{{ old('net_amount') }}</th>
+                                              <th></th>
+                                            </tr>
+                                          </tfoot>
+                                        </table>
+                                        </div>
+                                        </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-4">
+                                                <button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -198,7 +204,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>
@@ -247,12 +253,13 @@
     }
 
     function loadOptions(data, type, full, meta) {
-
-       opthtm = '<a href="{{ URL('vouchers/details') }}/'+full.id+'" data-toggle="tooltip" title="Detail" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-eye"></span></a>';
-
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
-          opthtm += '<a href="{{ URL('vouchers/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Voucher" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
+      opthtm = '';
+      @can('vouchers.detail')
+      opthtm = '<a href="{{ URL('vouchers/details') }}/'+full.id+'" data-toggle="tooltip" title="Detail" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-eye"></span></a>';
+      @endcan
+      @can('vouchers.edit.post')
+      opthtm += '<a href="{{ URL('vouchers/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Voucher" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+      @endcan
 
         return opthtm;
     }
@@ -391,13 +398,6 @@
       @else
         $('.nav-tabs a[href="#tab-10"]').tab('show');
       @endif
-
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-voucher').hide();
-      @endif
-
-
       });
     </script>
 

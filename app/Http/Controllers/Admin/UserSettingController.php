@@ -3,24 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\User;
 use Auth;
 use Hash;
 use App\Http\Controllers\Controller;
 
 class UserSettingController extends Controller
 {
-  //  protected $Routes;
-    protected $data;
-
-    public function __Construct($Routes){
-  //    $this->Routes = $Routes;
-      $this->data['root'] = $Routes;
-    }
 
     public function GetUserSetting(){
-      return view('admin.user_settings', $this->data);
+      return view('admin.user_settings');
     }
 
 
@@ -68,7 +59,7 @@ class UserSettingController extends Controller
 
     public function ChangeSession(Request $request){
 
-      if(in_array($request->input('current_session'), Auth::user()->getprivileges->allow_session)){
+      if(in_array($request->input('current_session'), Auth::user()->allow_session)){
         Auth::user()->academic_session = $request->input('current_session');
         Auth::user()->save();
         return redirect()->back()->with([

@@ -93,7 +93,7 @@
 			</div>
 		</div>
 
-		  @include('admin.includes.footercopyright')
+		  
 
 		</div>
 
@@ -153,7 +153,7 @@
 					}
 
 				},
-				@if($root['option'] == 'update')
+				@if($action == 'update')
 					update: true,
 					certificate: {!! json_encode($certificate, JSON_NUMERIC_CHECK) !!},
 					student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!}

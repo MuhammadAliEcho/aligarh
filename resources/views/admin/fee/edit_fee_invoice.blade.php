@@ -196,7 +196,7 @@
 
 		  </div>
 
-		  @include('admin.includes.footercopyright')
+		  
 
 		</div>
 
@@ -266,7 +266,7 @@
 	  var app = new Vue({
 		el: '#createfeeApp',
 		data: {
-			invoice_master: {!! json_encode($invoice_master->getOriginal(), JSON_NUMERIC_CHECK) !!},
+			invoice_master: {!! json_encode($invoice_master->getRawOriginal(), JSON_NUMERIC_CHECK) !!},
 			invoice_months: {!! json_encode($months, JSON_NUMERIC_CHECK) !!},
 			additionalfee: {!! json_encode($invoice_detail, JSON_NUMERIC_CHECK) !!},
 			months: {},

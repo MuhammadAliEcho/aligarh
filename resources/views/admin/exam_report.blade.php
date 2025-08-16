@@ -38,214 +38,210 @@
 
 				<div class="row ">
 					<div class="col-lg-12">
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>Generate Exam Tabulation Sheet</h2>
-								<div class="hr-line-dashed"></div>
+						@can('exam-reports.tabulation.sheet')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>Generate Exam Tabulation Sheet</h2>
+									<div class="hr-line-dashed"></div>
+								</div>
+								<div class="ibox-content">
+									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/tabulation-sheet') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
+										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Exam </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="exam" v-model="selected_exam" required="true">
+												<option value="" disabled selected>Exam</option>
+												<option v-for="exam in Exams" :value="exam.id">@{{ exam.name+' "'+exam.academic_session.title+'"' }}</option>
+											</select>
+											@if ($errors->has('exam'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('exam') }}</strong>
+												</span>
+											@endif
+											</div>
+										</div>
+										<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Class </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="class" v-model="selected_class" required="true">
+												<option value="" disabled selected>Class</option>
+												<option v-for="classe in Classes" :value="classe.id">@{{ classe.name }}</option>
+											</select>
+											@if ($errors->has('class'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+												</span>
+											@endif
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
+											</div>
+										</div>
+									</form>
+								</div>
 							</div>
+						@endcan
+						@can('exam-reports.award.list')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>Award List</h2>
+									<div class="hr-line-dashed"></div>
+								</div>
 
-							<div class="ibox-content">
+								<div class="ibox-content">
 
-								<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/tabulation-sheet') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
+									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/award-list') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
 
-									  <div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Exam </label>
-										<div class="col-md-6">
-										  <select class="form-control select2" name="exam" v-model="selected_exam" required="true">
-											<option value="" disabled selected>Exam</option>
-											<option v-for="exam in Exams" :value="exam.id">@{{ exam.name+' "'+exam.academic_session.title+'"' }}</option>
-										  </select>
-										  @if ($errors->has('exam'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('exam') }}</strong>
-											  </span>
-										  @endif
+										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Exam </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="exam" v-model="selected_exam" required="true">
+												<option value="" disabled selected>Exam</option>
+												<option v-for="exam in Exams" :value="exam.id">@{{ exam.name+' "'+exam.academic_session.title+'"' }}</option>
+											</select>
+											@if ($errors->has('exam'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('exam') }}</strong>
+												</span>
+											@endif
+											</div>
 										</div>
-									  </div>
 
-									  <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Class </label>
-										<div class="col-md-6">
-										  <select class="form-control select2" name="class" v-model="selected_class" required="true">
-											<option value="" disabled selected>Class</option>
-											<option v-for="classe in Classes" :value="classe.id">@{{ classe.name }}</option>
-										  </select>
-										  @if ($errors->has('class'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-											  </span>
-										  @endif
+										<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Class </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="class" v-model="selected_class" required="true">
+												<option value="" disabled selected>Class</option>
+												<option v-for="classe in Classes" :value="classe.id">@{{ classe.name }}</option>
+											</select>
+											@if ($errors->has('class'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+												</span>
+											@endif
+											</div>
 										</div>
-									  </div>
 
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
+										<div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Subject </label>
+											<div class="col-md-6">
+											<select class="form-control" name="subject" v-model="selected_subject" required="true">
+												<option value="" disabled selected>Subject</option>
+												<option v-for="subject in filtered_subjects" :value="subject.id">@{{ subject.name }}</option>
+											</select>
+											@if ($errors->has('subject'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('subject') }}</strong>
+												</span>
+											@endif
+											</div>
 										</div>
-									</div>
-								</form>
 
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
+											</div>
+										</div>
+									</form>
+
+								</div>
 							</div>
-						</div>
+						@endcan
+						@can('exam-reports.average.result')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>Average Result</h2>
+									<div class="hr-line-dashed"></div>
+								</div>
 
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>Award List</h2>
-								<div class="hr-line-dashed"></div>
+								<div class="ibox-content">
+
+									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/average-result') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
+
+										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Exam </label>
+											<div class="col-md-6">
+												<div class="i-checks"><label> <input type="radio" value="1" name="exam" required=""> <i></i> 1st Ass/Half Year </label></div>
+												<div class="i-checks"><label> <input type="radio" value="2" name="exam"> <i></i> 2nd Ass/Final Year </label></div>
+											</div>
+										</div>
+
+										<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Class </label>
+											<div class="col-md-6">
+											<select class="form-control select2" name="class" v-model="selected_class" required="true">
+												<option value="" disabled selected>Class</option>
+												<option v-for="classe in Classes" :value="classe.id">@{{ classe.name }}</option>
+											</select>
+											@if ($errors->has('class'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+												</span>
+											@endif
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
+											</div>
+										</div>
+									</form>
+
+								</div>
 							</div>
+						@endcan
+						@can('exam-reports.result.transcript')
+							<div class="ibox">
+								<div class="ibox-title">
+									<h2>Transcript Result</h2>
+									<div class="hr-line-dashed"></div>
+								</div>
 
-							<div class="ibox-content">
+								<div class="ibox-content">
 
-								<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/award-list') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
+									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/result-transcript') }}" class="form-horizontal" target="_blank">
+										{{ csrf_field() }}
 
-									  <div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Exam </label>
-										<div class="col-md-6">
-										  <select class="form-control select2" name="exam" v-model="selected_exam" required="true">
-											<option value="" disabled selected>Exam</option>
-											<option v-for="exam in Exams" :value="exam.id">@{{ exam.name+' "'+exam.academic_session.title+'"' }}</option>
-										  </select>
-										  @if ($errors->has('exam'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('exam') }}</strong>
-											  </span>
-										  @endif
+										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Exam </label>
+											<div class="col-md-6">
+												<div class="i-checks"><label> <input type="radio" value="1" name="exam" required=""> <i></i> 1st Ass/Half Year </label></div>
+												<div class="i-checks"><label> <input type="radio" value="2" name="exam"> <i></i> 2nd Ass/Final Year </label></div>
+											</div>
 										</div>
-									  </div>
 
-									  <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Class </label>
-										<div class="col-md-6">
-										  <select class="form-control select2" name="class" v-model="selected_class" required="true">
-											<option value="" disabled selected>Class</option>
-											<option v-for="classe in Classes" :value="classe.id">@{{ classe.name }}</option>
-										  </select>
-										  @if ($errors->has('class'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-											  </span>
-										  @endif
+										<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> GR-No </label>
+											<div class="col-md-6">
+											<select class="form-control" name="student_id" id="select2" required="true"></select>
+											@if ($errors->has('gr_no'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }} </strong>
+												</span>
+											@endif
+											</div>
 										</div>
-									  </div>
 
-									  <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Subject </label>
-										<div class="col-md-6">
-										  <select class="form-control" name="subject" v-model="selected_subject" required="true">
-											<option value="" disabled selected>Subject</option>
-											<option v-for="subject in filtered_subjects" :value="subject.id">@{{ subject.name }}</option>
-										  </select>
-										  @if ($errors->has('subject'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('subject') }}</strong>
-											  </span>
-										  @endif
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
+											</div>
 										</div>
-									  </div>
+									</form>
 
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
-										</div>
-									</div>
-								</form>
-
+								</div>
 							</div>
-						</div>
-
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>Average Result</h2>
-								<div class="hr-line-dashed"></div>
-							</div>
-
-							<div class="ibox-content">
-
-								<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/average-result') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
-
-									  <div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Exam </label>
-										<div class="col-md-6">
-											<div class="i-checks"><label> <input type="radio" value="1" name="exam" required=""> <i></i> 1st Ass/Half Year </label></div>
-	                                        <div class="i-checks"><label> <input type="radio" value="2" name="exam"> <i></i> 2nd Ass/Final Year </label></div>
-										</div>
-									  </div>
-
-									  <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Class </label>
-										<div class="col-md-6">
-										  <select class="form-control select2" name="class" v-model="selected_class" required="true">
-											<option value="" disabled selected>Class</option>
-											<option v-for="classe in Classes" :value="classe.id">@{{ classe.name }}</option>
-										  </select>
-										  @if ($errors->has('class'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-											  </span>
-										  @endif
-										</div>
-									  </div>
-
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
-										</div>
-									</div>
-								</form>
-
-							</div>
-						</div>
-
-						<div class="ibox">
-							<div class="ibox-title">
-								<h2>Transcript Result</h2>
-								<div class="hr-line-dashed"></div>
-							</div>
-
-							<div class="ibox-content">
-
-								<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/result-transcript') }}" class="form-horizontal" target="_blank">
-									{{ csrf_field() }}
-
-									  <div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> Exam </label>
-										<div class="col-md-6">
-											<div class="i-checks"><label> <input type="radio" value="1" name="exam" required=""> <i></i> 1st Ass/Half Year </label></div>
-	                                        <div class="i-checks"><label> <input type="radio" value="2" name="exam"> <i></i> 2nd Ass/Final Year </label></div>
-										</div>
-									  </div>
-
-									  <div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> GR-No </label>
-										<div class="col-md-6">
-										  <select class="form-control" name="student_id" id="select2" required="true"></select>
-										  @if ($errors->has('gr_no'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }} </strong>
-											  </span>
-										  @endif
-										</div>
-									  </div>
-
-									<div class="form-group">
-										<div class="col-md-offset-2 col-md-6">
-											<button class="btn btn-primary btn-block" type="submit"><span class="fa fa-file"></span> Generate </button>
-										</div>
-									</div>
-								</form>
-
-							</div>
-						</div>
-
+						@endcan	
 					</div>
 				</div>
-
 			</div>
-
-			@include('admin.includes.footercopyright')
+			
 
 		</div>
 
@@ -314,7 +310,7 @@
 				data: {
 					Exams: {!! json_encode($exams) !!},
 					Classes: {!! json_encode($classes) !!},
-					Subjects: {!! json_encode($Subjects) !!},
+					Subjects: {!! json_encode($subjects ?? '') !!},
 					filtered_subjects: [],
 					selected_class: '',
 					selected_exam: '',

@@ -29,9 +29,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -70,8 +72,8 @@
                                         <td>{{ $employee->name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Relegion :</th>
-                                        <td>{{ $employee->relegion }}</td>
+                                        <th>Religion :</th>
+                                        <td>{{ $employee->religion }}</td>
                                     </tr>
                                     <tr>
                                         <th>Gender :</th>
@@ -111,7 +113,7 @@
             </div>
         </div>
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>

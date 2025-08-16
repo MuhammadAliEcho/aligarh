@@ -2,68 +2,68 @@
 
 namespace App\Http\Controllers\Admin;
 
-//use Illuminate\Http\Request;
-
-use Request;
-use App\Http\Requests;
-
+use Illuminate\Http\Request;
 use App\Employee;
 use App\EmployeeAttendance;
 use DB;
 use Carbon\Carbon;
 use Auth;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendAttendanceJob;
 
 class EmployeeAttendanceCtrl extends Controller
 {
+	public $notificationsSettingsName = 'employee_attendance';
 
-	//  protected $Routes;
-	protected $data, $Attendance, $Request;
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
+	public function Index(array $data = [], $job = ''){
+		$data['root'] = $job;
+		return view('admin.employees_attendance', $data);
 	}
 
-	public function Index(){
-		return view('admin.employees_attendance', $this->data);
-	}
-
-	public function MakeAttendance(){
-		$this->validate($this->Request, [
+	public function MakeAttendance(Request $request){
+		$this->validate($request, [
 	        'date'  	=>  'required',
     	]);
-		$dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
-		$this->data['employees']	=	Employee::all();
-		foreach ($this->data['employees'] as $k => $row) {
-			$this->data['attendance'][$row->id] =	EmployeeAttendance::select('id as attendance_id', 'status')->where(['employee_id' => $row->id, 'date' => $dbdate])->first();
+		$dbdate =	Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
+		$data['employees']	=	Employee::withLeaveOn($dbdate)->NotDeveloper()->get();
+		foreach ($data['employees'] as $k => $row) {
+			$data['attendance'][$row->id] =	EmployeeAttendance::select('id as attendance_id', 'status')->where(['employee_id' => $row->id, 'date' => $dbdate])->first();
 		}
-		$this->data['input'] = $this->Request->input();
-		return $this->Index();
+		$data['input'] = $request->input();
+		$job = 'make';
+		return $this->Index($data, $job);
 	}
 
-	public function UpdateAttendance(){
-		$this->validate($this->Request, [
+	public function UpdateAttendance(Request $request){
+		$this->validate($request, [
 			'date'  	=>  'required',
 		]);
-		$dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
-		foreach($this->Request->input('employee_id') as $employee_id) {
+		$dbdate =	Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
+		$leave_ids = $request->input('employee_leave');
+
+		foreach($request->input('employee_id') as $index => $employee_id) {
 			$EmployeeAttendance = new EmployeeAttendance;
 			$att = $EmployeeAttendance->where([
 												'date' => $dbdate,
 												'employee_id' => $employee_id,
 												]);
 			$attendance = $att->get();
+			$forNotify = Employee::select('name', 'email', 'phone')->find($employee_id);
+
 			if ($attendance->isEmpty()) {
+
+				//SendAttendanceJob
+				SendAttendanceJob::dispatch($this->notificationsSettingsName, $forNotify->name, $forNotify->email, $forNotify->phone, $forNotify->phone);
 
 				$EmployeeAttendance->employee_id = $employee_id;
 				$EmployeeAttendance->date = $dbdate;
-				$EmployeeAttendance->status = ($this->Request->input('attendance'.$employee_id) !== null)? 1 : 0;
+				$EmployeeAttendance->status = ($request->input('attendance'.$employee_id) !== null)? 1 : 0;
 				$EmployeeAttendance->user_id	=	Auth::user()->id;
+        		$EmployeeAttendance->leave_id = $leave_ids[$index] ?? null;
 				$EmployeeAttendance->save();
 
 			} else {
-				$att->update(['status' => ($this->Request->input('attendance'.$employee_id) !== null)? 1 : 0]);
+				$att->update(['status' => ($request->input('attendance'.$employee_id) !== null)? 1 : 0]);
 			}
 		}
 		return redirect('employee-attendance')->with([
@@ -75,16 +75,16 @@ class EmployeeAttendanceCtrl extends Controller
 								]); 
 	}
 
-	public function AttendanceReport(){
-		$this->validate($this->Request, [
+	public function AttendanceReport(Request $request){
+		$this->validate($request, [
 			'date'  	=>  'required',
 		]);
 
-		$dbdate =	Carbon::createFromFormat('d/m/Y', '1/'.$this->Request->input('date'));
+		$dbdate =	Carbon::createFromFormat('d/m/Y', '1/'.$request->input('date'));
 
-		$this->data['employees']	=	Employee::all();
-		foreach ($this->data['employees'] as $k => $row) {
-			$this->data['attendance'][$row->id] =	EmployeeAttendance::select('id as attendance_id', 'date', 'status')
+		$data['employees']	=	Employee::all();
+		foreach ($data['employees'] as $k => $row) {
+			$data['attendance'][$row->id] =	EmployeeAttendance::select('id as attendance_id', 'date', 'status', 'leave_id')
 												->where(['employee_id' => $row->id])
 												->where('date', '>=', $dbdate->startOfMonth()->toDateString())
 												->where('date', '<=', $dbdate->endOfMonth()->toDateString())
@@ -92,10 +92,11 @@ class EmployeeAttendanceCtrl extends Controller
 												->get();
 		}
 
-		$this->data['input'] = $this->Request->input();
-		$this->data['dbdate']['noofdays'] = $dbdate->endOfMonth()->day;
-//		return response($this->data['attendance']);
-		return $this->Index();
+		$data['input'] = $request->input();
+		$data['dbdate']['noofdays'] = $dbdate->endOfMonth()->day;
+//		return response($data['attendance']);
+		$job = 'report';
+		return $this->Index($data, $job);
 	}
 
 }

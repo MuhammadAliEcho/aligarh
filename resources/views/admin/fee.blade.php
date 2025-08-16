@@ -45,19 +45,21 @@
 							<li class="">
 								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Invoice</a>
 							</li>
-							<li class="make-fee">
-								<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
-							</li>
-							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)
-							<li class="collect-invocie">
-								<a data-toggle="tab" href="#tab-12"><span class="fa fa-sticky-note-o"></span> Invoice Collect</a>
-							</li>
-							@endif
-							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)
+							@can('fee.create.store')
+								<li class="make-fee">
+									<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
+								</li>
+							@endcan
+							@can('fee.collect.store')
+								<li class="collect-invocie">
+									<a data-toggle="tab" href="#tab-12"><span class="fa fa-sticky-note-o"></span> Invoice Collect</a>
+								</li>
+							@endcan
+							@can('fee.update')
 							<li class="">
 								<a data-toggle="tab" href="#tab-13"><span class="fa fa-edit"></span> Update Fee</a>
 							</li>
-							@endif
+							@endcan
 						</ul>
 						<div class="tab-content">
 							<div id="tab-10" class="tab-pane fade">
@@ -72,7 +74,7 @@
 										  <th>Discount</th>
 										  <th>Paid Amount</th>
 										  <th>Due Date</th>
-										  <th>Created At</th>
+										  <th>Issue Date</th>
 										  <th>Options</th>
 										</tr>
 									  </thead>
@@ -81,394 +83,394 @@
 
 								</div>
 							</div>
-							<div id="tab-11" class="tab-pane fade make-fee">
-								<div id="createfeeApp" class="panel-body">
-								  <h2> Create Invoice </h2>
-								  <div class="hr-line-dashed"></div>
-
-									<form id="crt_invoice_frm" method="GET" action="{{ URL('fee/create') }}" class="form-horizontal jumbotron" role="form" >
-
-									  <div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> GR-No </label>
-										<div class="col-md-6">
-										  <select class="form-control select2_grno" name="gr_no" required="true"></select>
-										  @if ($errors->has('gr_no'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }} </strong>
-											  </span>
-										  @endif
-										</div>
-									  </div>
-
-									  <div class="form-group">
-										  <div class="col-md-offset-2 col-md-6">
-											  <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
-										  </div>
-									  </div>
-
-									</form>
-
-									@if($root['job'] == 'create')
-									<div class="row">
-									<h3>Student Name: <span class="bg-info"> {{ $student->name }} | {{ $student->gr_no }} </span></h3>
-
-									  <form action="{{ URL('fee/create/'.$student->id) }}" method="POST" class="form-horizontal">
-										{{ csrf_field() }}
-										<input type="hidden" name="student_id" value="{{ $student->id }}" required="true">
-										<input type="hidden" name="arrears" :value="arrears" required="true">
-										<input type="hidden" name="total_amount" :value="total_amount" required="true">
-										<input type="hidden" name="net_amount" :value="net_amount" required="true">
-
-										<div class="container-fluid form-group">
-										<select class="select2 form-control" multiple="multiple" name="months[]" required="true" style="width: 100%">
-											@foreach($months as $month)
-											<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
-											@endforeach
-										</select>
-										  @if ($errors->has('months'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('months') }} </strong>
-											  </span>
-										  @endif
-										</div>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label">Issue Date:</label>
-											<div class="col-md-6">
-												<input type="text" name="issue_date" placeholder="Issue Date" required="true" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" />
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label">Due Date:</label>
-											<div class="col-md-6">
-												<input type="text" name="due_date" placeholder="Due Date" required="true" value="{{ Carbon\Carbon::now()->addDays(14)->toDateString() }}" class="form-control datepicker" readonly="true" />
-										  @if ($errors->has('due_date'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('due_date') }} </strong>
-											  </span>
-										  @endif
-											</div>
-										</div>
-
-										<table class="table table-striped table-bordered table-hover">
-										  <thead>
-											<tr>
-											  <th>Fees Name</th>
-											  <th>Amount</th>
-											</tr>
-										  </thead>
-										  <tbody>
-											<tr>
-											  <td>Tuition Fee @{{ '('+fee.tuition_fee+'*'+NoOfMonths+')' }}</td>
-											  <td><input type="number" class="form-control" v-model="total_tuition_fee" name="total_tuition_fee"></td>
-											</tr>
-											<tr v-for="additionalfe in additionalfee" v-if="additionalfe.active">
-											  <td>@{{ additionalfe.fee_name +' ('+ additionalfe.amount +'*'+ ((additionalfe.onetime)? 1 : NoOfMonths) +')' }}</td>
-											  <td>@{{ additionalfe.sumamount }}</td>
-											</tr>
-
-											<tr>
-												<th>Total Amount</th>
-												<th>@{{ total_amount }}</th>
-											</tr>
-
-											<tr>
-												<td>Total Arears</td>
-												<td>@{{ arrears }}</td>
-											</tr>
-
-											<tr>
-											  <th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th>
-											  <th><input type="number" class="form-control" name="discount" v-model="total_discount" required="true"></th>
-											</tr>
-										  </tbody>
-
-										  <tfoot>
-											<tr class="success">
-											  <th>Net Total</th>
-											  <th>@{{ net_amount }}</th>
-											</tr>
-											<tr>
-											  <td>Late Fee (Payable after due date)<input type="number" class="form-control" name="late_fee" v-model="fee.late_fee" required="true"></td>
-											  <td>@{{ (Number(fee.late_fee)+net_amount) }}</td>
-											</tr>
-										  </tfoot>
-										</table>
-
-										<div class="form-group" v-if="NoOfMonths">
-											<div class="col-md-offset-4 col-md-4">
-												<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Create Invoice </button>
-											</div>
-										</div>
-
-										</form>
-
-									</div>
-									@endif
-
-								</div>
-							</div>
-
-							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)
-							<div id="tab-12" class="tab-pane fade make-fee">
-								<div id="collectfeeApp" class="panel-body">
-									<h2> Invoice Collect </h2>
+							@can('fee.create.store')
+								<div id="tab-11" class="tab-pane fade make-fee">
+									<div id="createfeeApp" class="panel-body">
+									<h2> Create Invoice </h2>
 									<div class="hr-line-dashed"></div>
 
-									<form id="invoice_collect_form" method="GET" class="form-horizontal" v-on:submit.prevent="invoiceCollectForm($event)" action="{{ URL('fee/collect') }}">
+										<form id="crt_invoice_frm" method="GET" action="{{ URL('fee/create') }}" class="form-horizontal jumbotron" role="form" >
 
-										<div class="form-group">
-											<label class="col-md-2 control-label"> Invoice No </label>
+										<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> GR-No </label>
 											<div class="col-md-6">
-												<input type="number" class="form-control" v-model="invoice_no" name="invoice_no" required="true"/>
-												@if ($errors->has('invoice_no'))
-													<span class="help-block">
-														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('invoice_no') }} </strong>
-													</span>
-												@endif
+											<select class="form-control select2_grno" name="gr_no" required="true"></select>
+											@if ($errors->has('gr_no'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }} </strong>
+												</span>
+											@endif
 											</div>
 										</div>
 
 										<div class="form-group">
 											<div class="col-md-offset-2 col-md-6">
-											<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-											<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
-											</div>
-										</div>
-
-									</form>
-	
-
-									<div v-show="Invoice.id" class="row">
-										<div class="hr-line-dashed"></div>
-									<h3>Student Name: <span class="bg-info"> @{{ Student.name }} | @{{ Invoice.gr_no }} </span></h3>
-
-									  <form action="{{ URL('fee/collect') }}" id="invoice_post_collect_form" method="POST" class="form-horizontal" v-on:submit.prevent="invoiceCollectForm($event)">
-										{{ csrf_field() }}
-										<input type="hidden" name="invoice_no" :value="Invoice.id" required="true">
-
-										<div class="container-fluid form-group">
-											<label class="col-md-2 control-label">Months:</label>
-											<div class="col-md-6">
-												<select class="form-control" multiple="multiple" readonly>
-													<option selected v-for="month in Invoice.invoice_months" :value="month">@{{ month.month }}</option>
-												</select>
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label">Issue Date:</label>
-											<div class="col-md-6">
-												<input type="text" placeholder="Issue Date"  :value="Invoice.created_at" class="form-control" readonly="true" />
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label">Due Date:</label>
-											<div class="col-md-6">
-												<input type="text" placeholder="Due Date" :value="Invoice.due_date" class="form-control" readonly="true" />
-											</div>
-										</div>
-
-										<table class="table table-striped table-bordered table-hover">
-										  <thead>
-											<tr>
-											  <th>Fees Name</th>
-											  <th>Amount</th>
-											</tr>
-										  </thead>
-										  <tbody>
-
-											<tr v-for="additionalfee in Invoice.invoice_detail">
-											  <td>@{{ additionalfee.fee_name }}</td>
-											  <td>@{{ additionalfee.amount }}</td>
-											</tr>
-
-											<tr>
-											  <th>Discount</th>
-											  <th>@{{ Invoice.discount }}</th>
-											</tr>
-										  </tbody>
-										  <tfoot>
-											<tr class="success">
-											  <th>Total</th>
-											  <th>@{{ Invoice.net_amount }}</th>
-											</tr>
-											<tr>
-											  <td>Late Fee (Payable after due date)</td>
-											  <td>@{{ (Invoice.late_fee + Invoice.net_amount) }}</td>
-											</tr>
-										  </tfoot>
-										</table>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label">Date of payment:</label>
-											<div class="col-md-6">
-												<input type="text" name="date_of_payment" placeholder="date of payment" required="true" :value="date_of_payment" class="form-control datepicker" onChange="feeCollectApp.date_of_payment = this.value" readonly  />
-											</div>
-										</div>
-
-										<div v-if="Invoice.due_date >= date_of_payment" class="form-group">
-											<label class="col-md-2 control-label">Paid Amount:</label>
-											<div class="col-md-6">
-												<input type="number" name="paid_amount" placeholder="Paid Amount" required="true" :value="Invoice.net_amount" :max="Invoice.net_amount" class="form-control" />
-											</div>
-										</div>
-
-										<div v-else class="form-group">
-											<label class="col-md-2 control-label">Paid Amount:</label>
-											<div class="col-md-6">
-												<input type="number" name="paid_amount" placeholder="Paid Amount" required="true" :value="Invoice.net_amount + Invoice.late_fee" :min="Invoice.net_amount + Invoice.late_fee" :max="Invoice.net_amount + Invoice.late_fee" class="form-control" />
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-md-2 control-label">Payment Mode</label>
-											<div class="col-md-6">
-												<select class="form-control" name="payment_type" required="true">
-													<option>Chalan</option>
-													<option>Cash</option>
-												</select>
-											</div>
-										</div>
-
-										<div class="form-group">
-											<div class="col-md-offset-4 col-md-4">
-												<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-												<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Collect Invoice </button>
+												<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
 											</div>
 										</div>
 
 										</form>
 
-									</div>
+										@if($root == 'create')
+										<div class="row">
+										<h3>Student Name: <span class="bg-info"> {{ $student->name }} | {{ $student->gr_no }} </span></h3>
 
-								</div>
-							</div>
-							@endif
+										<form action="{{ URL('fee/create/'.$student->id) }}" method="POST" class="form-horizontal">
+											{{ csrf_field() }}
+											<input type="hidden" name="student_id" value="{{ $student->id }}" required="true">
+											<input type="hidden" name="arrears" :value="arrears" required="true">
+											<input type="hidden" name="total_amount" :value="total_amount" required="true">
+											<input type="hidden" name="net_amount" :value="net_amount" required="true">
 
-							@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)
-							<div id="tab-13" class="tab-pane fade">
-								<div id="updatefeeApp" class="panel-body">
-								  <h2> Update Fee </h2>
-								  <div class="hr-line-dashed"></div>
-									<form id="GetStdFee" method="GET" v-on:submit.prevent="formSubmit($event)" action="{{ URL('fee/update') }}" class="form-horizontal jumbotron" role="form" >
+											<div class="container-fluid form-group">
+											<select class="select2 form-control" multiple="multiple" name="months[]" required="true" style="width: 100%">
+												@foreach($months as $month)
+												<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
+												@endforeach
+											</select>
+											@if ($errors->has('months'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('months') }} </strong>
+												</span>
+											@endif
+											</div>
 
-									  <div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label"> GR-No </label>
-										<div class="col-md-6">
-										  <select class="form-control select2_grno" name="gr_no" required="true"></select>
-										  @if ($errors->has('gr_no'))
-											  <span class="help-block">
-												  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }} </strong>
-											  </span>
-										  @endif
-										</div>
-									  </div>
-
-									  <div class="form-group">
-										  <div class="col-md-offset-2 col-md-6">
-											<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-											<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
-										  </div>
-									  </div>
-
-									</form>
-
-									<form id="UpdateFee" v-if="fee.feedata" class="form-horizontal" v-on:submit.prevent="formSubmit($event)" method="POST" action="{{ URL('fee/update') }}" >
-										{{ csrf_field() }}
-										<input type="hidden" name="id" v-model="std.id">
-										<h2>@{{ std.name }}. (GR No. @{{ std.gr_no }})</h2>
-										<div class="hr-line-dashed"></div>
-										<div class="col-lg-8">
-											<div class="panel panel-info">
-												<div class="panel-heading">
-													Additional Feeses <a id="addfee" data-toggle="tooltip" title="Add Fee" @click="addAdditionalFee()" style="color: #ffffff"><span class="fa fa-plus"></span></a>
-												</div>
-												<div class="panel-body">
-													<table id="additionalfeetbl" class="table table-bordered table-hover table-striped">
-														<thead>
-															<tr>
-																<th width="40%">Name</th>
-																<th width="40%">Amount</th>
-																<th width="20%">Action</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td>Tuition Fee</td>
-																<td>
-																	<input type="number" name="tuition_fee" v-model.number="fee.tuition_fee" placeholder="Tuition Fee" class="form-control"/>
-																</td>
-																<td></td>
-															</tr>
-
-															<tr v-for="(fee, k) in fee.additionalfee">
-																<td>
-																	<input type="hidden" :name="'fee['+k+'][id]'" v-model="fee.id" >
-																	<input type="text" :name="'fee['+ k +'][fee_name]'" class="form-control" required="true" v-model="fee.fee_name">
-																</td>
-																<td>
-																	<input type="number" :name="'fee['+ k +'][amount]'" class="form-control additfeeamount" required="true" min="0" v-model.number="fee.amount">
-																</td>
-																<td>
-																	<div class="input-group">
-																		<span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
-																			<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" v-model="fee.onetime">
-																		</span>
-																		<span class="input-group-addon" data-toggle="tooltip" title="Active">
-																			<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" v-model="fee.active">
-																		</span>
-																		<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove">
-																			<span class="fa fa-trash"></span>
-																		</a>
-																	</div>
-																</td>
-															</tr>
-
-														</tbody>
-														<tfoot>
-															<tr>
-																<th>Total</th>
-																<th>@{{ total_amount }}</th>
-																<th></th>
-															</tr>
-															<tr>
-																<td>Discount</td>
-																<td><input type="number" name="discount" class="form-control" placeholder="Discount" min="0" v-model.number="fee.discount"></td>
-																<td></td>
-															</tr>
-															<tr>
-																<th>Net Amount</th>
-																<th>@{{ net_amount }}</th>
-																<th></th>
-															</tr>
-															<tr>
-																<td>Late Fee</td>
-																<td>
-																	<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" class="form-control"/>
-																</td>
-																<td title="leave it '0' if not apply">Apply After Due Date.</td>
-															</tr>
-														</tfoot>
-													</table>
+											<div class="form-group">
+												<label class="col-md-2 control-label">Issue Date:</label>
+												<div class="col-md-6">
+													<input type="text" name="issue_date" placeholder="Issue Date" required="true" value="{{ Carbon\Carbon::now()->toDateString() }}" class="form-control datepicker" readonly="true" />
 												</div>
 											</div>
+
+											<div class="form-group">
+												<label class="col-md-2 control-label">Due Date:</label>
+												<div class="col-md-6">
+													<input type="text" name="due_date" placeholder="Due Date" required="true" value="{{ Carbon\Carbon::now()->addDays(14)->toDateString() }}" class="form-control datepicker" readonly="true" />
+											@if ($errors->has('due_date'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('due_date') }} </strong>
+												</span>
+											@endif
+												</div>
+											</div>
+
+											<table class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+												<th>Fees Name</th>
+												<th>Amount</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+												<td>Tuition Fee @{{ '('+fee.tuition_fee+'*'+NoOfMonths+')' }}</td>
+												<td><input type="number" class="form-control" v-model="total_tuition_fee" name="total_tuition_fee"></td>
+												</tr>
+												<tr v-for="additionalfe in additionalfee" v-if="additionalfe.active">
+												<td>@{{ additionalfe.fee_name +' ('+ additionalfe.amount +'*'+ ((additionalfe.onetime)? 1 : NoOfMonths) +')' }}</td>
+												<td>@{{ additionalfe.sumamount }}</td>
+												</tr>
+
+												<tr>
+													<th>Total Amount</th>
+													<th>@{{ total_amount }}</th>
+												</tr>
+
+												<tr>
+													<td>Total Arears</td>
+													<td>@{{ arrears }}</td>
+												</tr>
+
+												<tr>
+												<th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th>
+												<th><input type="number" class="form-control" name="discount" v-model="total_discount" required="true"></th>
+												</tr>
+											</tbody>
+
+											<tfoot>
+												<tr class="success">
+												<th>Net Total</th>
+												<th>@{{ net_amount }}</th>
+												</tr>
+												<tr>
+												<td>Late Fee (Payable after due date)<input type="number" class="form-control" name="late_fee" v-model="fee.late_fee" required="true"></td>
+												<td>@{{ (Number(fee.late_fee)+net_amount) }}</td>
+												</tr>
+											</tfoot>
+											</table>
+
+											<div class="form-group" v-if="NoOfMonths">
+												<div class="col-md-offset-4 col-md-4">
+													<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Create Invoice </button>
+												</div>
+											</div>
+
+											</form>
+
 										</div>
-										<input type="hidden" name="net_amount" v-model="net_amount">
-										<input type="hidden" name="total_amount" v-model="total_amount">
+										@endif
+
+									</div>
+								</div>
+							@endcan
+							@can('fee.collect.store')
+								<div id="tab-12" class="tab-pane fade make-fee">
+									<div id="collectfeeApp" class="panel-body">
+										<h2> Invoice Collect </h2>
+										<div class="hr-line-dashed"></div>
+
+										<form id="invoice_collect_form" method="GET" class="form-horizontal" v-on:submit.prevent="invoiceCollectForm($event)" action="{{ URL('fee/collect') }}">
+
+											<div class="form-group">
+												<label class="col-md-2 control-label"> Invoice No </label>
+												<div class="col-md-6">
+													<input type="number" class="form-control" v-model="invoice_no" name="invoice_no" required="true"/>
+													@if ($errors->has('invoice_no'))
+														<span class="help-block">
+															<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('invoice_no') }} </strong>
+														</span>
+													@endif
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+												<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+												<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
+												</div>
+											</div>
+
+										</form>
+		
+
+										<div v-show="Invoice.id" class="row">
+											<div class="hr-line-dashed"></div>
+										<h3>Student Name: <span class="bg-info"> @{{ Student.name }} | @{{ Invoice.gr_no }} </span></h3>
+
+										<form action="{{ URL('fee/collect') }}" id="invoice_post_collect_form" method="POST" class="form-horizontal" v-on:submit.prevent="invoiceCollectForm($event)">
+											{{ csrf_field() }}
+											<input type="hidden" name="invoice_no" :value="Invoice.id" required="true">
+
+											<div class="container-fluid form-group">
+												<label class="col-md-2 control-label">Months:</label>
+												<div class="col-md-6">
+													<select class="form-control" multiple="multiple" readonly>
+														<option selected v-for="month in Invoice.invoice_months" :value="month">@{{ month.month }}</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label class="col-md-2 control-label">Issue Date:</label>
+												<div class="col-md-6">
+													<input type="text" placeholder="Issue Date"  :value="Invoice.created_at" class="form-control" readonly="true" />
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label class="col-md-2 control-label">Due Date:</label>
+												<div class="col-md-6">
+													<input type="text" placeholder="Due Date" :value="Invoice.due_date" class="form-control" readonly="true" />
+												</div>
+											</div>
+
+											<table class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+												<th>Fees Name</th>
+												<th>Amount</th>
+												</tr>
+											</thead>
+											<tbody>
+
+												<tr v-for="additionalfee in Invoice.invoice_detail">
+												<td>@{{ additionalfee.fee_name }}</td>
+												<td>@{{ additionalfee.amount }}</td>
+												</tr>
+
+												<tr>
+												<th>Discount</th>
+												<th>@{{ Invoice.discount }}</th>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr class="success">
+												<th>Total</th>
+												<th>@{{ Invoice.net_amount }}</th>
+												</tr>
+												<tr>
+												<td>Late Fee (Payable after due date)</td>
+												<td>@{{ (Invoice.late_fee + Invoice.net_amount) }}</td>
+												</tr>
+											</tfoot>
+											</table>
+
+											<div class="form-group">
+												<label class="col-md-2 control-label">Date of payment:</label>
+												<div class="col-md-6">
+													<input type="text" name="date_of_payment" placeholder="date of payment" required="true" :value="date_of_payment" class="form-control datepicker" onChange="feeCollectApp.date_of_payment = this.value" readonly  />
+												</div>
+											</div>
+
+											<div v-if="Invoice.due_date >= date_of_payment" class="form-group">
+												<label class="col-md-2 control-label">Paid Amount:</label>
+												<div class="col-md-6">
+													<input type="number" name="paid_amount" placeholder="Paid Amount" required="true" :value="Invoice.net_amount" :max="Invoice.net_amount" class="form-control" />
+												</div>
+											</div>
+
+											<div v-else class="form-group">
+												<label class="col-md-2 control-label">Paid Amount:</label>
+												<div class="col-md-6">
+													<input type="number" name="paid_amount" placeholder="Paid Amount" required="true" :value="Invoice.net_amount + Invoice.late_fee" :min="Invoice.net_amount + Invoice.late_fee" :max="Invoice.net_amount + Invoice.late_fee" class="form-control" />
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label class="col-md-2 control-label">Payment Mode</label>
+												<div class="col-md-6">
+													<select class="form-control" name="payment_type" required="true">
+														<option>Chalan</option>
+														<option>Cash</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-offset-4 col-md-4">
+													<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+													<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Collect Invoice </button>
+												</div>
+											</div>
+
+											</form>
+
+										</div>
+
+									</div>
+								</div>
+							@endcan
+							@can('fee.update')
+								<div id="tab-13" class="tab-pane fade">
+									<div id="updatefeeApp" class="panel-body">
+									<h2> Update Fee </h2>
+									<div class="hr-line-dashed"></div>
+										<form id="GetStdFee" method="GET" v-on:submit.prevent="formSubmit($event)" action="{{ URL('fee/update') }}" class="form-horizontal jumbotron" role="form" >
+
+										<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> GR-No </label>
+											<div class="col-md-6">
+											<select class="form-control select2_grno" name="gr_no" required="true"></select>
+											@if ($errors->has('gr_no'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('gr_no') }} </strong>
+												</span>
+											@endif
+											</div>
+										</div>
 
 										<div class="form-group">
 											<div class="col-md-offset-2 col-md-6">
 												<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-												<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Update Fee </button>
+												<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-search"></span> Search </button>
 											</div>
 										</div>
-									</form>
+
+										</form>
+
+										<form id="UpdateFee" v-if="fee.feedata" class="form-horizontal" v-on:submit.prevent="formSubmit($event)" method="POST" action="{{ URL('fee/update') }}" >
+											{{ csrf_field() }}
+											<input type="hidden" name="id" v-model="std.id">
+											<h2>@{{ std.name }}. (GR No. @{{ std.gr_no }})</h2>
+											<div class="hr-line-dashed"></div>
+											<div class="col-lg-8">
+												<div class="panel panel-info">
+													<div class="panel-heading">
+														Additional Feeses <a id="addfee" data-toggle="tooltip" title="Add Fee" @click="addAdditionalFee()" style="color: #ffffff"><span class="fa fa-plus"></span></a>
+													</div>
+													<div class="panel-body">
+														<table id="additionalfeetbl" class="table table-bordered table-hover table-striped">
+															<thead>
+																<tr>
+																	<th width="40%">Name</th>
+																	<th width="40%">Amount</th>
+																	<th width="20%">Action</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>Tuition Fee</td>
+																	<td>
+																		<input type="number" name="tuition_fee" v-model.number="fee.tuition_fee" placeholder="Tuition Fee" class="form-control"/>
+																	</td>
+																	<td></td>
+																</tr>
+
+																<tr v-for="(fee, k) in fee.additionalfee">
+																	<td>
+																		<input type="hidden" :name="'fee['+k+'][id]'" v-model="fee.id" >
+																		<input type="text" :name="'fee['+ k +'][fee_name]'" class="form-control" required="true" v-model="fee.fee_name">
+																	</td>
+																	<td>
+																		<input type="number" :name="'fee['+ k +'][amount]'" class="form-control additfeeamount" required="true" min="0" v-model.number="fee.amount">
+																	</td>
+																	<td>
+																		<div class="input-group">
+																			<span class="input-group-addon" data-toggle="tooltip" title="select if onetime charge">
+																				<input type="checkbox" :name="'fee['+ k +'][onetime]'" value="1" v-model="fee.onetime">
+																			</span>
+																			<span class="input-group-addon" data-toggle="tooltip" title="Active">
+																				<input type="checkbox" :name="'fee['+ k +'][active]'" value="1" v-model="fee.active">
+																			</span>
+																			<a href="javascript:void(0);" class="btn btn-default text-danger removefee" data-toggle="tooltip" @click="removeAdditionalFee(k)" title="Remove">
+																				<span class="fa fa-trash"></span>
+																			</a>
+																		</div>
+																	</td>
+																</tr>
+
+															</tbody>
+															<tfoot>
+																<tr>
+																	<th>Total</th>
+																	<th>@{{ total_amount }}</th>
+																	<th></th>
+																</tr>
+																<tr>
+																	<td>Discount</td>
+																	<td><input type="number" name="discount" class="form-control" placeholder="Discount" min="0" v-model.number="fee.discount"></td>
+																	<td></td>
+																</tr>
+																<tr>
+																	<th>Net Amount</th>
+																	<th>@{{ net_amount }}</th>
+																	<th></th>
+																</tr>
+																<tr>
+																	<td>Late Fee</td>
+																	<td>
+																		<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" class="form-control"/>
+																	</td>
+																	<td title="leave it '0' if not apply">Apply After Due Date.</td>
+																</tr>
+															</tfoot>
+														</table>
+													</div>
+												</div>
+											</div>
+											<input type="hidden" name="net_amount" v-model="net_amount">
+											<input type="hidden" name="total_amount" v-model="total_amount">
+
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+													<button v-if="loading" class="btn btn-primary btn-block" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
+													<button v-else class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Update Fee </button>
+												</div>
+											</div>
+										</form>
+									</div>
 								</div>
-							</div>
-							@endif
+							@endcan
 						</div>
 					</div>
 				</div>
@@ -477,7 +479,7 @@
 		  </div>
 
 
-		  @include('admin.includes.footercopyright')
+		  
 
 
 		</div>
@@ -518,7 +520,7 @@
 
 	  $(document).ready(function(){
 
-	  @if((COUNT($errors) >= 1 && !$errors->has('toastrmsg')) || $root['job'] == 'create')
+	  @if((COUNT($errors) >= 1 && !$errors->has('toastrmsg')) || $root == 'create')
 		$('a[href="#tab-11"]').tab('show');
 		@if(isset($Input))
 		  $('[name="gr_no"').val('{{ $Input['gr_no'] }}');
@@ -527,10 +529,16 @@
 		$('a[href="#tab-10"]').tab('show');
 	  @endif
 
-		opthtm = '<a data-toggle="tooltip" target="_new" title="View" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-file-pdf-o"></span></a>';
-		@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->{'edit-invoice'})
+		opthtm = '';
+		@can('fee.chalan.print')
+		opthtm += '<a data-toggle="tooltip" target="_new" title="View" class="btn btn-default btn-circle btn-xs edit-option"><span class="fa fa-file-pdf-o"></span></a>';
+		@endcan
+		@can('fee.invoice.print')
+		opthtm += '<a data-toggle="tooltip" target="_new" title="Print Invoice" class="btn btn-default btn-circle btn-xs print-invoice"><span class="fa fa-print"></span></a>';
+		@endcan
+		@can('fee.edit.invoice.post')
 		opthtm += '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-invoice"><span class="fa fa-edit"></span></a>';
-		@endif
+		@endcan
 		tbl = $('.dataTables-teacher').DataTable({
 		  dom: '<"html5buttons"B>lTfgitp',
 		  buttons: [
@@ -568,6 +576,10 @@
 
 	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-option', function () {
 		$(this).attr('href','{{ URL('fee/chalan/') }}/'+tbl.row( $(this).parents('tr') ).data().id);
+		$(this).tooltip('show');
+	  });
+	  $('.dataTables-teacher tbody').on( 'mouseenter', '.print-invoice', function () {
+		$(this).attr('href','{{ URL('fee/invoice/') }}/'+tbl.row( $(this).parents('tr') ).data().id);
 		$(this).tooltip('show');
 	  });
 	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-invoice', function () {
@@ -625,11 +637,6 @@
 		window.open('{{ URL('fee/chalan/'.Session::get('invoice_created')) }}', '_new');
 	  @endif
 
-	  @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->create == 0)
-		$('.make-fee').hide();
-	  @endif
-
-
 	  });
 	</script>
 
@@ -640,7 +647,7 @@
 	<!-- Select2 -->
 	<script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
-	@if($root['job'] == 'create')
+	@if($root == 'create')
 	<script type="text/javascript">
 	  var app = new Vue({
 		el: '#createfeeApp',
@@ -649,11 +656,11 @@
 			NoOfMonths:0,
 			fee: {
 				additionalfee: {!! json_encode($student->AdditionalFee, JSON_NUMERIC_CHECK) !!},
-				tuition_fee: {{ $student->tuition_fee or 0 }},
-				late_fee: {{ $student->late_fee or 0 }},
-				discount:  {{ $student->discount or 0 }},
+				tuition_fee: {{ $student->tuition_fee ?? 0 }},
+				late_fee: {{ $student->late_fee ?? 0 }},
+				discount:  {{ $student->discount ?? 0 }},
 			},
-			arrears: {{ $arrears or 0 }},
+			arrears: {{ $arrears ?? 0 }},
 			chalan_no: '',
 			payment_type: '',
 			total_tuition_fee: 0,
@@ -714,8 +721,7 @@
 	  });
 	</script>
 	@endif
-
-	@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->update)
+	@can('fee.update')
 	<script type="text/javascript">
 		var feeApp = new Vue({
 			el: '#updatefeeApp',
@@ -808,9 +814,8 @@
 
 		});
 	</script>
-	@endif
-
-	@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->collect)
+	@endcan
+	@can('fee.collect.store')
 		<script type="text/javascript">
 		var feeCollectApp = new Vue({
 			el: '#collectfeeApp',
@@ -866,6 +871,5 @@
 			}
 		});
 		</script>
-	@endif
-
+		@endcan
 	@endsection

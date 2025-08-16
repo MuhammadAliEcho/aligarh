@@ -48,7 +48,7 @@
 
 <body>
   <div id="app">
-  	@if( config('systemInfo.validity') < Carbon\Carbon::now()->toDateString())
+  	@if( config('systemInfo.general.validity') < Carbon\Carbon::now()->toDateString())
       <img src="{{ URL::to('img/expired-stamp.png') }}" style="opacity: 0.5; width: -webkit-fill-available; position: absolute" id="expired-stamp" >
     @endif
   
@@ -76,7 +76,7 @@
 
     <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
 
-  	@if( config('systemInfo.validity') < Carbon\Carbon::now()->toDateString())
+  	@if( config('systemInfo.general.validity') < Carbon\Carbon::now()->toDateString())
     <script>
       $( document ).ready(function() {
         const expiredStampsHeight = ($("#expired-stamp").height());

@@ -27,9 +27,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -43,11 +45,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Classes</a>
                             </li>
-
-                            <li class="add-class">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Classes</a>
-                            </li>
-
+                            @can('manage-classes.add')
+                              <li class="add-class">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Classes</a>
+                              </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane">
@@ -67,76 +69,78 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane add-class">
-                                <div class="panel-body">
-                                  <h2> Class Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('manage-classes.add')
+                              <div id="tab-11" class="tab-pane add-class">
+                                  <div class="panel-body">
+                                    <h2> Class Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('manage-classes/add') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
+                                      <form id="tchr_rgstr" method="post" action="{{ URL('manage-classes/add') }}" class="form-horizontal" >
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
-                                          @if ($errors->has('name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('numeric_name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Name Numeric</label>
-                                        <div class="col-md-6">
-                                          <input type="number" name="numeric_name" placeholder="Numeric Name" value="{{ old('numeric_name') }}" class="form-control"/>
-                                          @if ($errors->has('numeric_name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('numeric_name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('prifix'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Prifix</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="prifix" placeholder="Prifix" value="{{ old('prifix') }}" class="form-control" required="true" />
-                                          @if ($errors->has('prifix'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('prifix') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Teacher</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="teacher">
-                                            <option></option>
-                                            @foreach($teachers AS $teacher)
-                                              <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('teacher'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
+                                            @if ($errors->has('name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('numeric_name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Name Numeric</label>
+                                          <div class="col-md-6">
+                                            <input type="number" name="numeric_name" placeholder="Numeric Name" value="{{ old('numeric_name') }}" class="form-control"/>
+                                            @if ($errors->has('numeric_name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('numeric_name') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('prifix'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Prifix</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="prifix" placeholder="Prifix" value="{{ old('prifix') }}" class="form-control" required="true" />
+                                            @if ($errors->has('prifix'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('prifix') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Teacher</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="teacher">
+                                              <option></option>
+                                              @foreach($teachers AS $teacher)
+                                                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('teacher'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -145,7 +149,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>
@@ -170,10 +174,9 @@
     function loadOptions(data, type, full, meta) {
 
         opthtm = '';
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
-          opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Class" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
-
+        @can('manage-classes.edit.post')
+        opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Class" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        @endcan
         return opthtm;
     }
 
@@ -243,17 +246,6 @@
       @else
         $('a[href="#tab-10"]').tab("show");
       @endif
-
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-class').hide();
-      @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-class').hide();
-      @endif
-
-
       });
     </script>
 

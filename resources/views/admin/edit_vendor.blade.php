@@ -28,9 +28,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -47,7 +49,7 @@
 
                     <div class="ibox-content">
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('vendors/edit/'.$vendor['id']) }}" class="form-horizontal" >
+                                    <form id="tchr_rgstr" method="post" action="{{ URL('vendors/edit/'.$vendor->id) }}" class="form-horizontal" >
                                       {{ csrf_field() }}
 
                                       <div class="form-group{{ ($errors->has('v_name'))? ' has-error' : '' }}">
@@ -120,7 +122,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>

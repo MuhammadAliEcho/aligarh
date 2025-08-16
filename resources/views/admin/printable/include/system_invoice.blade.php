@@ -1,7 +1,7 @@
 <div class="container">
 
 	<div class="row">
-		<h2>Payment history of {{ config('systemInfo.title') }}</h3>
+		<h2>Payment history of {{ config('systemInfo.general.title') }}</h3>
 			<hr>
 
 		<h4 class="text-right"><u>Date: {{ Carbon\Carbon::now()->format('d-M-Y') }}</u></h4>

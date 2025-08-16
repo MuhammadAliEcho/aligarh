@@ -111,11 +111,11 @@
 										{{ csrf_field() }}
 										<input type="hidden" name="id" v-model="student.id">
 										<div class="alert alert-warning ">
-											<h4><span class="fa fa-exclamation-triangle"></span> Carefully! </h4>
+											<h4><span class="fa fa-exclamation-triangle"></span> Important </h4>
 											<p>
-												Once Set Date of Leaving its means the student is leave or Inactive,
+												Once the Date of Leaving is set, the student becomes inactive and cannot be reactivated.
 												<br>
-												<b>Remember</b> IT will not rechange to active again.
+												<b>To rejoin,</b> a new registration form is required.
 											</p>
 										</div>
 										<div class="form-group">
@@ -153,10 +153,10 @@
 									<th>Name</th>
 								</thead>
 								<tbody>
-									<tr v-for="(std, k) in siblings">
-										<td>@{{k+1}}</td>
-										<td>@{{std.gr_no}}</td>
-										<td>@{{std.name}}</td>
+									<tr v-for="(std, k) in siblings" :key="std.id">
+										<td><a :href="'/students/profile/' + std.id">@{{ k + 1 }}</a></td>
+										<td><a :href="'/students/profile/' + std.id">@{{ std.gr_no }}</a></td>
+										<td><a :href="'/students/profile/' + std.id">@{{ std.name }}</a></td>
 									</tr>
 								</tbody>
 								
@@ -180,15 +180,19 @@
 									<tr v-for="certificate in student.certificates">
 										<td>@{{ certificate.title }}</td>
 										<td>
+											@can('students.certificate.create')
 											<a :href="URL+'/students/certificate/update?certificate_id='+certificate.id" title="view" data-toggle="tooltip"><span class="fa fa-file-pdf-o"></span></a>
+											@endcan
 										</td>
 									</tr>
 								</tbody>
 							</table>
+							@can('students.certificate.create')
 							<form :action="URL+'/students/certificate/new'" method="get">
 								<input type="hidden" name="student_id" v-model="student.id">
 								<button class="btn btn-primary btn-block">Create Certificate</button>
 							</form>
+							@endcan
 						</div>
 					</div>
 
@@ -289,8 +293,9 @@
 									</tr>
 								</tbody>
 							</table>
-
+							@can('students.interview.update.create')
 							<a :href="URL+'/students/interview/'+student.id" class=" btn btn-primary btn-block"><span class="fa fa-podcast"></span> Parent Interview</a>
+							@endcan
 
 						</div>
 					</div>
@@ -299,7 +304,7 @@
 			</div>
 		</div>
 
-		  @include('admin.includes.footercopyright')
+		  
 
 		</div>
 
@@ -325,8 +330,8 @@
 				student: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
 				leavingfrm: false,
 				loading: false,
-				allow_user_leave: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->leave }},
-				allow_user_certificate: {{ Auth::user()->getprivileges->privileges->{$root['content']['id']}->certificate }}
+				allow_user_leave: {{ Auth::user()->hasPermissionTo('students.leave') ? 'true' : 'false' }},
+				allow_user_certificate: {{ Auth::user()->hasPermissionTo('students.certificate.get') ? 'true' : 'false' }},
 			},
 			mounted: function(){
 				$("[data-toggle='tooltip']").on('mouseenter', function(){

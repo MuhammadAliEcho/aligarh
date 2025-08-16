@@ -12,46 +12,39 @@ use App\AcademicSessionHistory;
 
 class StudentMigrationsController extends Controller
 {
+    public function Index($students = null){
 
-	protected $data, $Student, $Request, $Input;
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
-    }
-    
-    public function Index(){
-
-        $this->data['academic_session'] =    AcademicSession::UserAllowSession()->get();
-        $this->data['classes'] =    Classe::all();
-		return view('admin.student_migrations', $this->data);
+        $data['academic_session'] =    AcademicSession::UserAllowSession()->get();
+        $data['classes'] =    Classe::all();
+        $data['students'] = $students;
+		return view('admin.student_migrations', $data);
     }
 
-    public function GetStudents(){
-        $this->validate($this->Request, [
+    public function GetStudents(Request $request){
+        $this->validate($request, [
             'from_session'  =>  'required|integer',
             'to_session'  =>  'required|integer',
             'from_class'  =>  'required|integer',
             'to_class'  =>  'required|integer|different:from_class'
         ]);
 /*
-		$this->data['students'] = Student::join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
+		$data['students'] = Student::join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
 									->select('students.id', 'students.name', 'students.gr_no', 'academic_session_history.class_id AS session_history_class_id', 'students.class_id AS current_class_id')
 									->where([
-										'academic_session_history.class_id' => $this->Request->input('from_class'),
-										'academic_session_history.academic_session_id' => $this->Request->input('from_session')
+										'academic_session_history.class_id' => $request->input('from_class'),
+										'academic_session_history.academic_session_id' => $request->input('from_session')
                                         ])
                                     ->Active()
                                     ->get()->toJson();
 */
-		$this->data['students'] = Student::select('students.id', 'students.name', 'students.gr_no')
+		$data['students'] = Student::select('students.id', 'students.name', 'students.gr_no')
 									->where([
-										'class_id' => $this->Request->input('from_class'),
-										'session_id' => $this->Request->input('from_session')
+										'class_id' => $request->input('from_class'),
+										'session_id' => $request->input('from_session')
                                         ])
                                     ->Active()
                                     ->get();
-        if($this->data['students']->count() == 0){
+        if($data['students']->count() == 0){
             return redirect('student-migrations')->with([
                                         'toastrmsg' => [
                                             'type'	=> 'error', 
@@ -60,33 +53,33 @@ class StudentMigrationsController extends Controller
                                         ]
                                     ]);
         }
-        return $this->Index();
+        return $this->Index($data['students']);
     }
 
-    public function PostMigration(Request $Request){
-        $this->validate($this->Request, [
+    public function PostMigration(Request $request){
+        $this->validate($request, [
             'from_session'  =>  'required|integer',
             'to_session'  =>  'required|integer',
             'from_class'  =>  'required|integer',
             'to_class'  =>  'required',
         ]);
-        $classes = Classe::whereIn('id', $Request->input('to_class'))->with('Section')->get();
-        $students = Student::whereIn('id', array_keys($Request->input('to_class')))->get();
+        $classes = Classe::whereIn('id', $request->input('to_class'))->with('Section')->get();
+        $students = Student::whereIn('id', array_keys($request->input('to_class')))->get();
 
-        foreach ($Request->input('to_class') as $id => $class_id) {
+        foreach ($request->input('to_class') as $id => $class_id) {
             $class = $classes->where('id', $class_id)->first();
             $student = $students->where('id', $id)->first();
             if($student){
                 $student->gr_no = $class->prifix . $class->section[0]->nick_name ."-" . (explode('-', $student->gr_no))[1];
                 $student->class_id      =   $class->id;
                 $student->section_id    =   $class->section[0]->id;
-                $student->session_id    =    $Request->input('to_session');
+                $student->session_id    =    $request->input('to_session');
                 $student->save();
             }
             AcademicSessionHistory::firstOrCreate(
                 [
                     'student_id' => $id,
-                    'academic_session_id' => $Request->input('to_session'),
+                    'academic_session_id' => $request->input('to_session'),
                 ],
                 [
                     'class_id'	=>	$class_id,

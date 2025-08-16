@@ -51,7 +51,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
 	<h4 class="text-center"><u>@{{ selected_exam.name }}</u></h4>
 	<h4 class="text-center"><u>Session: @{{ selected_exam.academic_session.title }}, Class @{{ selected_class.name }}</u></h4>
 	<h4 class="text-right"><u>Date: {{ Carbon\Carbon::now()->format('d-M-Y') }}</u></h4>
@@ -117,7 +117,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

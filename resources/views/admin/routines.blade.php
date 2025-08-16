@@ -10,8 +10,8 @@
   <!-- Sweet Alert -->
   <link href="{{ URL::to('src/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
     <script type="text/javascript">
-      var sections = {!! json_encode($sections) !!};
-      var subjects = {!! json_encode($subjects) !!};
+      var sections = {!! json_encode($sections ?? '') !!};
+      var subjects = {!! json_encode($subjects ?? '') !!};
     </script>
   @endsection
 
@@ -35,9 +35,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -51,9 +53,11 @@
                             <li class="active">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Routines</a>
                             </li>
-                            <li class="add-routine-tab">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Routine</a>
-                            </li>
+                            @can('routines.add')
+                              <li class="add-routine-tab">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Routine</a>
+                              </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade in active">
@@ -63,9 +67,11 @@
                                       <div class="ibox-title back-change">
                                         <h5 class="collapse-link">Class: {{ $class->name }}</h5>
                                         <div class="ibox-tools">
+                                          @can('routines.add')
                                           <a class-id="{{ $class->id }}" data-type="class" class="add-routine">
                                             <span class="fa fa-plus" data-toggle="tooltip" title="Add Routine"></span>
                                           </a>
+                                          @endcan
                                           <a class="collapse-link">
                                             <i data-toggle="tooltip" title="Collapse" class="fa fa-chevron-up"></i>
                                           </a>
@@ -106,15 +112,20 @@
                                                               {{ $routin->subject_name.' ( '.$routin->from_time.'-'.$routin->to_time.' ) ' }}
                                                               <span class="caret"></span></button>
                                                               <ul class="dropdown-menu">
+                                                                @can('routines.edit.post')
                                                                 <li class="edit-routine"><a href="{{ URL('routines/edit/'.$routin->id) }}"><span class="fa fa-edit"></span> Edit</a></li>
+                                                                @endcan
+                                                                @can('routines.delete')
                                                                 <li class="delete-routine"><a routine-id="{{ $routin->id }}" href="#" class="delete-btn" ><span class="fa fa-trash"></span> Delete</a></li>
+                                                                @endcan
                                                               </ul>
                                                             </div>
                                                           @endforeach
-
+                                                          @can('routines.add')
                                                           <a data-toggle="tooltip" title="Add Routine" class-id="{{ $class->id }}" section-id="{{ $section->id }}" day="{{ $day }}" data-type="day" class="add-routine pull-right">
                                                             <span class="fa fa-plus"></span>
                                                           </a>
+                                                          @endcan
 
                                                         </td>
                                                       </tr>
@@ -133,124 +144,126 @@
                                   @endforeach
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-routine-tab">
-                                <div class="panel-body">
-                                  <h2> Routine Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('routines.add')
+                              <div id="tab-11" class="tab-pane fade add-routine-tab">
+                                  <div class="panel-body">
+                                    <h2> Routine Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('routines/add') }}" class="form-horizontal">
-                                      {{ csrf_field() }}
+                                      <form id="tchr_rgstr" method="post" action="{{ URL('routines/add') }}" class="form-horizontal">
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Class</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="class">
-                                            <option></option>
-                                            @foreach($classes AS $class)
-                                              <option value="{{ $class->id }}">{{ $class->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('class'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Section</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="section">
-                                          </select>
-                                          @if ($errors->has('section'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('section') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Subject</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="subject">
-                                          </select>
-                                          @if ($errors->has('subject'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('subject') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Teacher</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="teacher">
-                                            <option></option>
-                                            @foreach($teachers AS $teacher)
-                                              <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('teacher'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('day'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Day</label>
-                                        <div class="col-md-6 select2-div">
-                                          <select class="form-control select2" name="day">
-                                            <option></option>
-                                            @foreach($days AS $day)
-                                              <option value="{{ $day }}">{{ $day }}</option>
-                                            @endforeach
-                                          </select>
-                                          @if ($errors->has('day'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('day') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('from_time'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Start At</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="from_time" placeholder="Time" value="{{ old('from_time') }}" class="form-control timepicker"/>
-                                          @if ($errors->has('from_time'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('from_time') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('to_time'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">End At</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="to_time" placeholder="Time" value="{{ old('to_time') }}" class="form-control timepicker"/>
-                                          @if ($errors->has('to_time'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('to_time') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Class</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="class">
+                                              <option></option>
+                                              @foreach($classes AS $class)
+                                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('class'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Section</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="section">
+                                            </select>
+                                            @if ($errors->has('section'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('section') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Subject</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="subject">
+                                            </select>
+                                            @if ($errors->has('subject'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('subject') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Teacher</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="teacher">
+                                              <option></option>
+                                              @foreach($teachers AS $teacher)
+                                                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('teacher'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('day'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Day</label>
+                                          <div class="col-md-6 select2-div">
+                                            <select class="form-control select2" name="day">
+                                              <option></option>
+                                              @foreach($days AS $day)
+                                                <option value="{{ $day }}">{{ $day }}</option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('day'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('day') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('from_time'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Start At</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="from_time" placeholder="Time" value="{{ old('from_time') }}" class="form-control timepicker"/>
+                                            @if ($errors->has('from_time'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('from_time') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('to_time'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">End At</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="to_time" placeholder="Time" value="{{ old('to_time') }}" class="form-control timepicker"/>
+                                            @if ($errors->has('to_time'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('to_time') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -259,7 +272,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>
@@ -418,17 +431,17 @@
         $('a[href="#tab-11"]').tab('show');
       @endif
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-routine-tab').hide();
-      @endif
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)"
+        // $('.add-routine-tab').hide();
+      // "endif"
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-routine').hide();
-      @endif
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)"
+        // $('.edit-routine').hide();
+      // "endif"
 
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)
-        $('.delete-routine').hide();
-      @endif
+      // "if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->delete == 0)"
+        // $('.delete-routine').hide();
+      // "endif"
 
 
       });

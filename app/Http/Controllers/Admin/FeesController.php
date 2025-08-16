@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-//use Illuminate\Http\Request;
-use Yajra\Datatables\Facades\Datatables;
-use App\Http\Requests;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 use App\InvoiceMaster;
 use App\InvoiceDetail;
 use App\InvoiceMonth;
 use Auth;
 use Carbon\Carbon;
-use Request;
 use App\Student;
 use App\AdditionalFee;
 use DB;
@@ -22,45 +20,27 @@ use Larapack\ConfigWriter\Repository as ConfigWriter;
 
 class FeesController extends Controller
 {
+	protected $mons = [], $InvoiceMaster;
 
-	//  protected $Routes;
-	protected $data, $InvoiceMaster, $Request, $Input, $AuthUser, $Student, $AdditionalFee;
+	public function Index(Request $request, array $data = [], $job = ''){
 
-	protected $mons = [];
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		// Illuminate\hTTP\Request;
-		$this->Request = $Request;
-		$this->Input = $Request->input();
-		$this->data['months']	=	[];
-	}
-
-	public function Index(){
-/*		echo "<pre>";
-		print_r($this->Input);
-		echo "</pre>";*/
-
-		if (Request::ajax()) {
-			return Datatables::eloquent(InvoiceMaster::query())->make(true);
-/*			return Datatables::eloquent(InvoiceMaster::select(['invoice_master.*', 'students.name'])
-				->join('students', 'invoice_master.student_id', '=', 'students.id'))
+		if ($request->ajax()) {
+			return DataTables::eloquent(InvoiceMaster::query())
+				->editColumn('created_at', function ($row) {
+					return Carbon::parse($row->created_at)->format('Y-m-d');
+				})
 				->make(true);
-*/
-/*			return Datatables::queryBuilder(DB::table('invoice_master')
-				->select(['invoice_master.*', 'invoice_master.id AS invoice_id', 'students.name'])
-				->leftjoin('students', 'invoice_master.student_id', '=', 'students.id'))
-				->make(true);
-*/
 		}
-		$this->data['year'] = Carbon::now()->year;
-	    return view('admin.fee', $this->data);
+		$data['year'] = Carbon::now()->year;
+		$data['root'] = $job;
+
+	    return view('admin.fee', $data);
 	}
 
-	public function FindStudent(){
-		if (Request::ajax()) {
-			$students = Student::where('gr_no', 'LIKE', '%'.$this->Input['q'].'%')
-								->orwhere('name', 'LIKE', '%'.$this->Input['q'].'%')
+	public function FindStudent(Request $request){
+		if ($request->ajax()) {
+			$students = Student::where('gr_no', 'LIKE', '%'.$request->Input('q').'%')
+								->orwhere('name', 'LIKE', '%'.$request->Input('q').'%')
 									->get();
 			foreach ($students as $k=>$student) {
 				$data[$k]['id'] = $student->id;
@@ -73,23 +53,23 @@ class FeesController extends Controller
 		return abort(404);
 	}
 
-	public function FindInvoice(){
-		$this->validate($this->Request, [
+	public function FindInvoice(Request $request){
+		$this->validate($request, [
 			'gr_no'  	=>  'required',
-//			'month'  	=>  'required',
+			//'month'  	=>  'required',
     	]);
 
-		$this->data['student'] = Student::find($this->Request->input('gr_no'));
+		$data['student'] = Student::find($request->input('gr_no'));
 
-		if (empty($this->data['student'])) {
+		if (empty($data['student'])) {
 			return redirect()->back()->withInput()->withErrors(['gr_no' => 'GR No Not Found!']);
 		}
 
-		$invoice =	InvoiceMaster::where('student_id', $this->data['student']->id)->orderBy('id', 'desc')->first();
+		$invoice =	InvoiceMaster::where('student_id', $data['student']->id)->orderBy('id', 'desc')->first();
 
 		if($invoice){
 
-			if($invoice->getOriginal('due_date') >= Carbon::now()->toDateString()){
+			if($invoice->getRawOriginal('due_date') >= Carbon::now()->toDateString()){
 				return redirect('fee')->withInput()->withErrors(['gr_no' => "Invoice# $invoice->id already created"])->with([
 					'toastrmsg' => [
 						'type' => 'info', 
@@ -99,54 +79,54 @@ class FeesController extends Controller
 				]);
 			}
 
-			if($invoice->getOriginal('data_of_payment') >= $invoice->getOriginal('due_date')){
-				$this->data['arrears']	=	($invoice->net_amount+$invoice->late_fee) - $invoice->paid_amount;
+			if($invoice->getRawOriginal('data_of_payment') >= $invoice->getRawOriginal('due_date')){
+				$data['arrears']	=	($invoice->net_amount+$invoice->late_fee) - $invoice->paid_amount;
 			} else {
-				$this->data['arrears']	=	$invoice->net_amount - $invoice->paid_amount;
+				$data['arrears']	=	$invoice->net_amount - $invoice->paid_amount;
 			}
 		}
 
-		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);
+		$data['session'] = AcademicSession::find(Auth::user()->academic_session);
 
-		$this->data['Input'] = $this->Request->input();
+		$data['Input'] = $request->input();
 
-		$this->FetchMonths();
-
-		return $this->Index();
+		$data =	$this->FetchMonths($data);
+		$job = 'create';
+		return $this->Index($request, $data, $job);
 	}
 
-	public function GetEditInvoice(){
+	public function GetEditInvoice(Request $request){
 
-		$this->validate($this->Request, [
+		$this->validate($request, [
 			'id'  			=>  'required',
 		]);
 
-		$this->data['invoice_master'] = InvoiceMaster::findOrfail($this->Request->input('id'));
-		$this->data['invoice_detail']	=	$this->data['invoice_master']->InvoiceDetail;
-		$this->data['invoice_months']	=	$this->data['invoice_master']->InvoiceMonths;
-		$this->data['student']	=	$this->data['invoice_master']->Student;
+		$data['invoice_master'] = InvoiceMaster::findOrfail($request->input('id'));
+		$data['invoice_detail']	=	$data['invoice_master']->InvoiceDetail;
+		$data['invoice_months']	=	$data['invoice_master']->InvoiceMonths;
+		$data['student']	=	$data['invoice_master']->Student;
 
-		$this->data['session'] = AcademicSession::find(Auth::user()->academic_session);
+		$data['session'] = AcademicSession::find(Auth::user()->academic_session);
 
-		$this->data['Input'] = $this->Request->input();
+		$data['Input'] = $request->input();
 
-		$this->FetchMonths();
+		$this->FetchMonths($data);
 
-		foreach ($this->data['invoice_months'] as $key => $invoice_month) {
-			$this->data['months'][] = [
+		foreach ($data['invoice_months'] as $key => $invoice_month) {
+			$data['months'][] = [
 				'selected' => true,
-				'title' => Carbon::createFromFormat('Y-m-d', $invoice_month->getOriginal('month'))->Format('M-Y'),
-				'value' => Carbon::createFromFormat('Y-m-d', $invoice_month->getOriginal('month'))->Format('Y-m-d')
+				'title' => Carbon::createFromFormat('Y-m-d', $invoice_month->getRawOriginal('month'))->format('M-Y'),
+				'value' => Carbon::createFromFormat('Y-m-d', $invoice_month->getRawOriginal('month'))->Format('Y-m-d')
 			];
 		}
 
-	    return view('admin.fee.edit_fee_invoice', $this->data);
+	    return view('admin.fee.edit_fee_invoice', $data);
 
 	}
 
-	public function PostEditInvoice(){
+	public function PostEditInvoice(Request $request){
 
-		$this->validate($this->Request, [
+		$this->validate($request, [
 			'invoice_id'		=>	'required',
 			'months'  			=>  'required',
 			'issue_date'		=>	'required|date',
@@ -157,33 +137,34 @@ class FeesController extends Controller
 			'payment_type'	=>	'sometimes|required'
 		]);
 
-		$this->InvoiceMaster = InvoiceMaster::findOrfail($this->Request->input('invoice_id'));
+		$InvoiceMaster = InvoiceMaster::findOrfail($request->input('invoice_id'));
 
-//		dd($this->Request->all());
+		//dd($request->all());
 
-		$this->InvoiceMaster->fill([
+		$InvoiceMaster->fill([
 
-			'created_at'	=>	$this->Request->input('issue_date'),
-			'due_date'	=>	$this->Request->input('due_date'),
+			'created_at'	=>	$request->input('issue_date'),
+			'date'			=>	$request->input('issue_date'),
+			'due_date'	=>	$request->input('due_date'),
 
-			'total_amount'	=>	$this->Request->input('total_amount'),
-			'discount' => $this->Request->input('discount'),
-			'net_amount'	=>	$this->Request->input('net_amount'),
-			'late_fee'	=>	$this->Request->input('late_fee'),
+			'total_amount'	=>	$request->input('total_amount'),
+			'discount' => $request->input('discount'),
+			'net_amount'	=>	$request->input('net_amount'),
+			'late_fee'	=>	$request->input('late_fee'),
 
-			'date_of_payment'	=> $this->Request->input('paid')? $this->Request->input('date_of_payment') : '0000-00-00',
-			'paid_amount'	=> $this->Request->input('paid')? $this->Request->input('paid_amount') :	0,
-			'payment_type'	=> $this->Request->input('paid')? $this->Request->input('payment_type') :	'',
+			'date_of_payment'	=> $request->input('paid')? $request->input('date_of_payment') : '0000-00-00',
+			'paid_amount'	=> $request->input('paid')? $request->input('paid_amount') :	0,
+			'payment_type'	=> $request->input('paid')? $request->input('payment_type') :	'',
 
 		])->save();
 
-			InvoiceDetail::where('invoice_id', $this->InvoiceMaster->id)->delete();
+			InvoiceDetail::where('invoice_id', $InvoiceMaster->id)->delete();
 
-		foreach ($this->Request->input('additionalfee') as $key => $fee) {
+		foreach ($request->input('additionalfee') as $key => $fee) {
 
 			InvoiceDetail::create(
 				[
-					'invoice_id'	=>	$this->InvoiceMaster->id,
+					'invoice_id'	=>	$InvoiceMaster->id,
 					'fee_name'		=>	$fee['fee_name'],
 					'amount'	=>	$fee['amount'],
 				]
@@ -191,19 +172,19 @@ class FeesController extends Controller
 
 		}
 
-		InvoiceMonth::where('invoice_id', $this->InvoiceMaster->id)->delete();
+		InvoiceMonth::where('invoice_id', $InvoiceMaster->id)->delete();
 
-		foreach ($this->Request->input('months') as $month) {
+		foreach ($request->input('months') as $month) {
 			InvoiceMonth::create(
 				[
-					'invoice_id' => $this->InvoiceMaster->id,
+					'invoice_id' => $InvoiceMaster->id,
 					'month' => $month,
-					'student_id' => $this->InvoiceMaster->student_id,
+					'student_id' => $InvoiceMaster->student_id,
 				]
 			);
 		}
 
-//		dd($this->Request->all());
+		//dd($request->all());
 
 		return redirect('fee')->with([
 			'toastrmsg' => [
@@ -211,31 +192,31 @@ class FeesController extends Controller
 				'title'  =>  'Invoice',
 				'msg' =>  'Invoice Updated Successfull'
 			],
-			'invoice_created' => $this->InvoiceMaster->id,
+			'invoice_created' => $InvoiceMaster->id,
 		]);
 
 	}
 
-	protected function FetchMonths(){
-		$this->data['betweendates']	=	[
-//				'start'	=>	$this->data['session']->getOriginal('start'),
-//				'start'	=>	$this->data['student']->getOriginal('date_of_enrolled'),
-				'start'	=>	Carbon::createFromFormat('Y-m-d', $this->data['student']->getOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
-//				'end'	=>	$this->data['session']->getOriginal('end')
+	protected function FetchMonths($data){
+		$data['betweendates']	=	[
+//				'start'	=>	$data['session']->getRawOriginal('start'),
+//				'start'	=>	$data['student']->getRawOriginal('date_of_enrolled'),
+				'start'	=>	Carbon::createFromFormat('Y-m-d', $data['student']->getRawOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
+//				'end'	=>	$data['session']->getRawOriginal('end')
 				'end'	=> Carbon::now()->addYear()->startOfMonth()->toDateString()
 			];
 
-		$this->data['payment_months'] = InvoiceMonth::select('month')
-											->whereBetween('month', [$this->data['betweendates']['start'], $this->data['betweendates']['end']])
+		$data['payment_months'] = InvoiceMonth::select('month')
+											->whereBetween('month', [$data['betweendates']['start'], $data['betweendates']['end']])
 											->where([
-												'student_id' => $this->data['student']->id,
+												'student_id' => $data['student']->id,
 											])->get();
 
-		$month = $this->data['betweendates']['start'];
-		while ($month <= $this->data['betweendates']['end']) {
+		$month = $data['betweendates']['start'];
+		while ($month <= $data['betweendates']['end']) {
 
-			if ($this->data['payment_months']) {
-				if ($this->data['payment_months']->where('month', Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'))->count() === 0) {
+			if ($data['payment_months']) {
+				if ($data['payment_months']->where('month', Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'))->count() === 0) {
 					$this->mons[] = [
 							'selected'	=>	false,
 							'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
@@ -252,23 +233,23 @@ class FeesController extends Controller
 
 			$month = Carbon::createFromFormat('Y-m-d', $month)->addMonth()->format('Y-m-d');
 		}
-		$this->data['months'] = $this->mons;
+		$data['months'] = $this->mons;
+		return $data;
 	}
 
-	public function CreateInvoice(){
-
-		$this->validate($this->Request, [
+	public function CreateInvoice($id, Request $request){
+		$this->validate($request, [
 			'months'  			=>  'required',
 			'issue_date'		=>	'required|date',
 			'due_date'			=>	'required|date|after_or_equal:issue_date'
 		]);
 
 		
-		$this->Student = Student::findOrfail($this->data['root']['option']);
-		$this->AdditionalFee = $this->Student->AdditionalFee;
+		$Student = Student::findOrfail($id);
+		$AdditionalFee = $Student->AdditionalFee;
 		
-		$validateInvoiceMonth = InvoiceMonth::where('student_id', $this->Student->id)
-			->whereIn('month', $this->Request->input('months'))->get();
+		$validateInvoiceMonth = InvoiceMonth::where('student_id', $Student->id)
+			->whereIn('month', $request->input('months'))->get();
 
 		if($validateInvoiceMonth->count()){
 			return redirect()->back()->with([
@@ -280,11 +261,11 @@ class FeesController extends Controller
 			]);
 		}
 
-		$this->SaveInvoice();
-		$this->SaveDetails();
-		$this->SaveMonths();
+		$this->SaveInvoice($Student, $request);
+		$this->SaveDetails($request, $AdditionalFee, $Student);
+		$this->SaveMonths($request, $Student);
 		
-//		dd($this->Request->all());
+//		dd($request->all());
 		return redirect('fee')->with([
 			'toastrmsg' => [
 				'type' => 'success', 
@@ -295,9 +276,9 @@ class FeesController extends Controller
 		]);
 	}
 
-	public function CollectInvoice(){
+	public function CollectInvoice(Request $request){
 
-		if($this->Request->ajax() == false){
+		if($request->ajax() == false){
 			return redirect('fee')->with([
 				'toastrmsg' => [
 					'type'	=> 'warning', 
@@ -307,7 +288,7 @@ class FeesController extends Controller
 			]);
 		}
 
-        $validator = Validator::make($this->Request->all(), [
+        $validator = Validator::make($request->all(), [
 			'invoice_no'  	=>  'required|integer|exists:invoice_master,id',
 			'date_of_payment'	=>	'sometimes|required|date',
 			'paid_amount'	=>	'sometimes|required|integer',
@@ -322,10 +303,10 @@ class FeesController extends Controller
 			], 422);
         }
 
-		$invoice = InvoiceMaster::findOrfail($this->Request->input('invoice_no'));
-		$invoice->date_of_payment = $this->Request->input('date_of_payment');
-		$invoice->paid_amount = $this->Request->input('paid_amount');
-		$invoice->payment_type = $this->Request->input('payment_type');
+		$invoice = InvoiceMaster::findOrfail($request->input('invoice_no'));
+		$invoice->date_of_payment = $request->input('date_of_payment');
+		$invoice->paid_amount = $request->input('paid_amount');
+		$invoice->payment_type = $request->input('payment_type');
 		$invoice->save();
 
 		return response([
@@ -336,9 +317,9 @@ class FeesController extends Controller
 
 	}
 
-	public function GetInvoice(){
+	public function GetInvoice(Request $request){
 
-		if($this->Request->ajax() == false){
+		if($request->ajax() == false){
 			return redirect('fee')->with([
 				'toastrmsg' => [
 					'type'	=> 'warning', 
@@ -348,7 +329,7 @@ class FeesController extends Controller
 			]);
 		}
 
-        $validator = Validator::make($this->Request->all(), [
+        $validator = Validator::make($request->all(), [
 			'invoice_no'  	=>  'required|integer|exists:invoice_master,id',
         ]);
 
@@ -359,46 +340,46 @@ class FeesController extends Controller
 				'msg'	=>  'Invoice No not exists!'
 			], 422);
         }
-		$invoice = InvoiceMaster::findOrfail($this->Request->input('invoice_no'));
-		$this->data['invoice_detail'] = $invoice->InvoiceDetail;
-		$this->data['invoice_months'] = $invoice->InvoiceMonths;
+		$invoice = InvoiceMaster::findOrfail($request->input('invoice_no'));
+		$data['invoice_detail'] = $invoice->InvoiceDetail;
+		$data['invoice_months'] = $invoice->InvoiceMonths;
 
-		$this->data['invoice']	=	$invoice->getOriginal();
+		$data['invoice']	=	$invoice->getRawOriginal();
 
-		$this->data['student']	= Student::with('StdClass')->find($this->data['invoice']['student_id']);
+		$data['student']	= Student::with('StdClass')->find($data['invoice']['student_id']);
 
-        return response()->json($this->data, 200, ['Content-Type' => 'application/json'], JSON_NUMERIC_CHECK);
+        return response()->json($data, 200, ['Content-Type' => 'application/json'], JSON_NUMERIC_CHECK);
 	}
 
-	public function PrintInvoice(){
-		$this->data['invoice'] = InvoiceMaster::findOrfail($this->data['root']['option']);
-//		return PDF::loadView('admin.printable.view_invoice', $this->data)->stream();
-		return view('admin.printable.view_invoice', $this->data);
+	public function PrintInvoice($id){
+		$data['invoice'] = InvoiceMaster::findOrfail($id);
+//		return PDF::loadView('admin.printable.view_invoice', $data)->stream();
+		return view('admin.printable.view_invoice', $data);
 	}
 
-	public function PrintChalan(){
+	public function PrintChalan($id){
 
-		$this->data['invoice'] = InvoiceMaster::with('InvoiceDetail')->with('InvoiceMonths')->findOrfail($this->data['root']['option']);
-		$this->data['student']	= Student::find($this->data['invoice']->student_id);
-//		dd($this->data['invoice']->InvoiceMonths[0]->month);
-		return view('admin.printable.view_chalan', $this->data);
+		$data['invoice'] = InvoiceMaster::with('InvoiceDetail')->with('InvoiceMonths')->findOrfail($id);
+		$data['student']	= Student::find($data['invoice']->student_id);
+//		dd($data['invoice']->InvoiceMonths[0]->month);
+		return view('admin.printable.view_chalan', $data);
 	}
 
-	public function GetStudentFee(){
+	public function GetStudentFee(Request $request){
 
-		if($this->Request->ajax()){
+		if($request->ajax()){
 
-			$this->validate($this->Request, [
+			$this->validate($request, [
 				'gr_no'  	=>  'required',
 			]);
 
-			$this->data['student'] = Student::with('AdditionalFee')->find($this->Request->input('gr_no'));
+			$data['student'] = Student::with('AdditionalFee')->find($request->input('gr_no'));
 
-			if (empty($this->data['student'])) {
+			if (empty($data['student'])) {
 				return redirect('fee')->withErrors(['gr_no' => 'GR No Not Found!']);
 			}
 
-			return response()->json($this->data['student'], 
+			return response()->json($data['student'], 
 				200, 
 				['Content-Type' => 'application/json'],
 				JSON_NUMERIC_CHECK);
@@ -415,10 +396,10 @@ class FeesController extends Controller
 
 	}
 
-	public function UpdateFee(){
+	public function UpdateFee(Request $request){
 
-		if($this->Request->ajax()){
-			$validator = Validator::make($this->Request->all(), [
+		if($request->ajax()){
+			$validator = Validator::make($request->all(), [
 				'id' => 'required',
 				'tuition_fee' => 'required',
 				'fee'	=>	'sometimes|required'
@@ -433,14 +414,14 @@ class FeesController extends Controller
 			}
 
 
-			$this->Student = Student::findOrfail($this->Request->input('id'));
-			$this->Student->tuition_fee = $this->Request->input('tuition_fee');
-			$this->Student->late_fee = $this->Request->input('late_fee');
-			$this->Student->net_amount = $this->Request->input('net_amount');
-			$this->Student->discount = $this->Request->input('discount');
-			$this->Student->total_amount = $this->Request->input('total_amount');
-			$this->Student->save();
-			$this->UpdateAdditionalFee();
+			$Student = Student::findOrfail($request->input('id'));
+			$Student->tuition_fee = $request->input('tuition_fee');
+			$Student->late_fee = $request->input('late_fee');
+			$Student->net_amount = $request->input('net_amount');
+			$Student->discount = $request->input('discount');
+			$Student->total_amount = $request->input('total_amount');
+			$Student->save();
+			$this->UpdateAdditionalFee($Student, $request);
 		
 			return	[
 				'type'	=> 'success', 
@@ -458,13 +439,13 @@ class FeesController extends Controller
 								]);
 	}
 
-	protected function UpdateAdditionalFee(){
-		AdditionalFee::where(['student_id' => $this->Student->id])->delete();
-		if (COUNT($this->Request->input('fee')) >= 1) {
-			foreach ($this->Input['fee'] as $key => $value) {
+	protected function UpdateAdditionalFee($Student, $request){
+		AdditionalFee::where(['student_id' => $Student->id])->delete();
+		if (COUNT($request->input('fee')) >= 1) {
+			foreach ($request->input('fee') as $key => $value) {
 				$AdditionalFee = new AdditionalFee;
 				$AdditionalFee->id = $value['id'];
-				$AdditionalFee->student_id = $this->Student->id;
+				$AdditionalFee->student_id = $Student->id;
 				$AdditionalFee->fee_name = $value['fee_name'];
 				$AdditionalFee->amount = $value['amount'];
 				$AdditionalFee->onetime = isset($value['onetime'])? 1 : 0;
@@ -474,36 +455,37 @@ class FeesController extends Controller
 		}
 	}
 
-	protected function SaveInvoice(){
+	protected function SaveInvoice($Student, $request){
 		$this->InvoiceMaster	=	InvoiceMaster::create(
 					[
-						'student_id' => $this->Student->id,
-						'gr_no' => $this->Student->gr_no,
+						'student_id' => $Student->id,
+						'gr_no' => $Student->gr_no,
 
-						'late_fee'	=>	$this->Request->input('late_fee'),
-						'created_at'	=>	$this->Request->input('issue_date'),
-						'due_date'	=>	$this->Request->input('due_date'),
+						'late_fee'	=>	$request->input('late_fee'),
+						'created_at'	=>	$request->input('issue_date'),
+						'date'			=>	$request->input('issue_date'),
+						'due_date'	=>	$request->input('due_date'),
 
-						'total_amount'	=>	($this->Request->input('total_amount') + $this->Request->input('arrears')),
-						'discount' => $this->Request->input('discount'),
-						'net_amount'	=>	$this->Request->input('net_amount'),
+						'total_amount'	=>	($request->input('total_amount') + $request->input('arrears')),
+						'discount' => $request->input('discount'),
+						'net_amount'	=>	$request->input('net_amount'),
 
-/* 						'payment_type' => $this->Request->input('payment_type'),
-						'chalan_no' => ($this->Request->input('payment_type') == 'Chalan')? $this->Request->input('chalan_no') : null,
-						'date' => $this->Request->input('date'), */
+/* 						'payment_type' => $request->input('payment_type'),
+						'chalan_no' => ($request->input('payment_type') == 'Chalan')? $request->input('chalan_no') : null,
+						'date' => $request->input('date'), */
 					]
 				);
 	}
 
-	protected function SaveDetails(){
+	protected function SaveDetails($request, $AdditionalFee, $Student){
 		InvoiceDetail::updateOrCreate(
 			[
 				'invoice_id'	=>	$this->InvoiceMaster->id,
 				'fee_name'		=>	'Tuition Fee'
 			],
 			[
-//				'amount'	=>	($this->Student->tuition_fee * COUNT($this->Request->input('months')))
-				'amount'	=>	$this->Request->input('total_tuition_fee'),
+//				'amount'	=>	($this->Student->tuition_fee * COUNT($request->input('months')))
+				'amount'	=>	$request->input('total_tuition_fee'),
 			]
 		);
 
@@ -513,11 +495,11 @@ class FeesController extends Controller
 				'fee_name'		=>	'Arrears'
 			],
 			[
-				'amount'	=>	$this->Request->input('arrears')
+				'amount'	=>	$request->input('arrears')
 			]
 		);
 
-		foreach ($this->AdditionalFee as $row) {
+		foreach ($AdditionalFee as $row) {
 			if($row->active){
 				InvoiceDetail::updateOrCreate(
 					[
@@ -525,31 +507,31 @@ class FeesController extends Controller
 						'fee_name'		=>	$row->fee_name
 					],
 					[
-						'amount'	=>	($row->onetime)? $row->amount : ($row->amount * COUNT($this->Request->input('months')))
+						'amount'	=>	($row->onetime)? $row->amount : ($row->amount * COUNT($request->input('months')))
 					]
 				);
 				if($row->onetime){
 					$row->active = 0;
 					$row->save();
 
-					$this->Student->total_amount	-=	$row->amount;
-					$this->Student->net_amount	-=	$row->amount;
-					$this->Student->save();
+					$Student->total_amount	-=	$row->amount;
+					$Student->net_amount	-=	$row->amount;
+					$Student->save();
 
 				}
 			}
 		}
 	}
 
-	protected function SaveMonths(){
-		foreach ($this->Request->input('months') as $month) {
+	protected function SaveMonths($request, $Student){
+		foreach ($request->input('months') as $month) {
 			InvoiceMonth::updateOrCreate(
 				[
 					'invoice_id' => $this->InvoiceMaster->id,
 					'month' => $month,
 				],
 				[
-					'student_id' => $this->Student->id,
+					'student_id' => $Student->id,
 				]
 			);
 		}

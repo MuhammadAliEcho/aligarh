@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-//use Illuminate\Http\Request;
-
-use Request;
-use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Teacher;
 use App\TeacherAttendance;
 use App\Classe;
@@ -14,57 +11,59 @@ use DB;
 use Carbon\Carbon;
 use Auth;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendAttendanceJob;
 
 class TeacherAttendanceCtrl extends Controller
 {
-
-	//  protected $Routes;
-	protected $data, $Attendance, $Request;
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
+	public $notificationsSettingsName = 'teacher_attendance';
+	public function Index(array $data = [], $job = ''){
+		$data['root'] = $job;
+		return view('admin.teachers_attendance', $data);
 	}
 
-	public function Index(){
-		return view('admin.teachers_attendance', $this->data);
-	}
-
-	public function MakeAttendance(){
-		$this->validate($this->Request, [
+	public function MakeAttendance(Request $request){
+		$this->validate($request, [
 	        'date'  	=>  'required',
     	]);
-		$dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
-		$this->data['teachers']	=	Teacher::all();
-		foreach ($this->data['teachers'] as $k => $row) {
-			$this->data['attendance'][$row->id] =	TeacherAttendance::select('id as attendance_id', 'status')->where(['teacher_id' => $row->id, 'date' => $dbdate])->first();
+		$dbdate =	Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
+		$data['teachers'] = Teacher::withLeaveOn($dbdate)->get();
+
+		foreach ($data['teachers'] as $k => $row) {
+			$data['attendance'][$row->id] =	TeacherAttendance::select('id as attendance_id', 'status')->where(['teacher_id' => $row->id, 'date' => $dbdate])->first();
 		}
-		$this->data['input'] = $this->Request->input();
-		return $this->Index();
+		$data['input'] = $request->input();
+		$job = 'make';
+		return $this->Index($data, $job);
 	}
 
-	public function UpdateAttendance(){
-		$this->validate($this->Request, [
+	public function UpdateAttendance(Request $request){
+		$this->validate($request, [
 			'date'  	=>  'required',
 		]);
-		$dbdate =	Carbon::createFromFormat('d/m/Y', $this->Request->input('date'))->toDateString();
-		foreach($this->Request->input('teacher_id') as $teacher_id) {
+		$dbdate =	Carbon::createFromFormat('d/m/Y', $request->input('date'))->toDateString();
+		$leave_ids = $request->input('teacher_leave');
+		foreach($request->input('teacher_id') as $index => $teacher_id) {
 			$TeacherAttendance = new TeacherAttendance;
 			$att = $TeacherAttendance->where([
 												'date' => $dbdate,
 												'teacher_id' => $teacher_id,
 												]);
 			$attendance = $att->get();
+			$forNotify = Teacher::select('name', 'email', 'phone')->find($teacher_id);
+
 			if ($attendance->isEmpty()) {
+				//SendAttendanceJob
+				SendAttendanceJob::dispatch($this->notificationsSettingsName, $forNotify->name, $forNotify->email, $forNotify->phone, $forNotify->phone);
 
 				$TeacherAttendance->teacher_id = $teacher_id;
 				$TeacherAttendance->date = $dbdate;
-				$TeacherAttendance->status = ($this->Request->input('attendance'.$teacher_id) !== null)? 1 : 0;
+				$TeacherAttendance->status = ($request->input('attendance'.$teacher_id) !== null)? 1 : 0;
 				$TeacherAttendance->user_id	=	Auth::user()->id;
+        		$TeacherAttendance->leave_id = $leave_ids[$index] ?? null;
 				$TeacherAttendance->save();
 
 			} else {
-				$att->update(['status' => ($this->Request->input('attendance'.$teacher_id) !== null)? 1 : 0]);
+				$att->update(['status' => ($request->input('attendance'.$teacher_id) !== null)? 1 : 0]);
 			}
 		}
 		return redirect('teacher-attendance')->with([
@@ -76,16 +75,16 @@ class TeacherAttendanceCtrl extends Controller
 								]); 
 	}
 
-	public function AttendanceReport(){
-		$this->validate($this->Request, [
+	public function AttendanceReport(Request $request){
+		$this->validate($request, [
 			'date'  	=>  'required',
 		]);
 
-		$dbdate =	Carbon::createFromFormat('d/m/Y', '1/'.$this->Request->input('date'));
+		$dbdate =	Carbon::createFromFormat('d/m/Y', '1/'.$request->input('date'));
 
-		$this->data['teachers']	=	Teacher::all();
-		foreach ($this->data['teachers'] as $k => $row) {
-			$this->data['attendance'][$row->id] =	TeacherAttendance::select('id as attendance_id', 'date', 'status')
+		$data['teachers']	=	Teacher::all();
+		foreach ($data['teachers'] as $k => $row) {
+			$data['attendance'][$row->id] =	TeacherAttendance::select('id as attendance_id', 'date', 'status', 'leave_id')
 												->where(['teacher_id' => $row->id])
 												->where('date', '>=', $dbdate->startOfMonth()->toDateString())
 												->where('date', '<=', $dbdate->endOfMonth()->toDateString())
@@ -93,10 +92,11 @@ class TeacherAttendanceCtrl extends Controller
 												->get();
 		}
 
-		$this->data['input'] = $this->Request->input();
-		$this->data['dbdate']['noofdays'] = $dbdate->endOfMonth()->day;
-//		return response($this->data['attendance']);
-		return $this->Index();
+		$data['input'] = $request->input();
+		$data['dbdate']['noofdays'] = $dbdate->endOfMonth()->day;
+//		return response($data['attendance']);
+		$job = 'report';
+		return $this->Index($data, $job);
 	}
 
 }

@@ -42,9 +42,11 @@
 							<li class="">
 								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Exam List</a>
 							</li>
-							<li class="add-exam">
-								<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Exam</a>
-							</li>
+							@can('exam.add')
+								<li class="add-exam">
+									<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Exam</a>
+								</li>
+							@endcan
 						</ul>
 						<div class="tab-content">
 							<div id="tab-10" class="tab-pane fade">
@@ -64,99 +66,100 @@
 
 								</div>
 							</div>
-							<div id="tab-11" class="tab-pane fade add-exam">
-								<div class="panel-body">
-									<h2> Create Exam </h2>
-									<div class="hr-line-dashed"></div>
+							@can('exam.add')
+								<div id="tab-11" class="tab-pane fade add-exam">
+									<div class="panel-body">
+										<h2> Create Exam </h2>
+										<div class="hr-line-dashed"></div>
 
-									<form id="tchr_rgstr" method="post" action="{{ URL('exam/add') }}" class="form-horizontal" >
-										{{ csrf_field() }}
+										<form id="tchr_rgstr" method="post" action="{{ URL('exam/add') }}" class="form-horizontal" >
+											{{ csrf_field() }}
 
-										<div class="form-group{{ ($errors->has('exam_category'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label">Select Category</label>
-										<div class="col-md-6">
-											<select name="exam_category" class="form-control">
-												@foreach(config('examcategories') AS $k=>$exam)
-												<option value="{{ $k }}">{{ $exam }}</option>
-												@endforeach
-											</select>
-											@if ($errors->has('name'))
-												<span class="help-block">
-													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-												</span>
-											@endif
-										</div>
-										</div>
-										
-
-										<div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label">Title</label>
-										<div class="col-md-6">
-										<input type="text" name="name" class="form-control" placeholder="Title" value="{{ old('name') }}">
-											@if ($errors->has('name'))
-												<span class="help-block">
-													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-												</span>
-											@endif
-										</div>
-										</div>
-
-										<div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label">Description</label>
-										<div class="col-md-6">
-											<textarea type="text" name="description" placeholder="Description" class="form-control" required="true">{{ old('description') }}</textarea>
-											@if ($errors->has('description'))
-												<span class="help-block">
-													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>
-												</span>
-											@endif
-										</div>
-										</div>
-
-										<div class="form-group{{ ($errors->has('start_date'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label">Start Date</label>
-										<div class="col-md-6">
-											<input type="text" name="start_date" value="{{ old('start_date') }}" placeholder="Start Date" class="form-control datetimepicker" required="true" />
-											@if ($errors->has('start_date'))
-												<span class="help-block">
-													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('start_date') }}</strong>
-												</span>
-											@endif
-										</div>
-										</div>
-
-										<div class="form-group{{ ($errors->has('end_date'))? ' has-error' : '' }}">
-										<label class="col-md-2 control-label">End Date</label>
-										<div class="col-md-6">
-											<input type="text" name="end_date" value="{{ old('end_date') }}" placeholder="End Date" class="form-control datetimepicker" required="true" />
-											@if ($errors->has('end_date'))
-												<span class="help-block">
-													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('end_date') }}</strong>
-												</span>
-											@endif
-										</div>
-										</div>
-
-										<div class="form-group{{ ($errors->has('active'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label">Status</label>
+											<div class="form-group{{ ($errors->has('exam_category'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Select Category</label>
 											<div class="col-md-6">
-												<select name="active" class="form-control">
-													<option value="0">Inactive</option>
-													<option value="1">Active</option>
+												<select name="exam_category" class="form-control">
+													@foreach(config('examcategories') AS $k=>$exam)
+													<option value="{{ $k }}">{{ $exam }}</option>
+													@endforeach
 												</select>
+												@if ($errors->has('name'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+													</span>
+												@endif
 											</div>
-										</div>
-
-										<div class="form-group">
-											<div class="col-md-offset-2 col-md-6">
-												<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>
 											</div>
-										</div>
-									</form>
+											
 
+											<div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Title</label>
+											<div class="col-md-6">
+											<input type="text" name="name" class="form-control" placeholder="Title" value="{{ old('name') }}">
+												@if ($errors->has('name'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+													</span>
+												@endif
+											</div>
+											</div>
+
+											<div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Description</label>
+											<div class="col-md-6">
+												<textarea type="text" name="description" placeholder="Description" class="form-control" required="true">{{ old('description') }}</textarea>
+												@if ($errors->has('description'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>
+													</span>
+												@endif
+											</div>
+											</div>
+
+											<div class="form-group{{ ($errors->has('start_date'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Start Date</label>
+											<div class="col-md-6">
+												<input type="text" name="start_date" value="{{ old('start_date') }}" placeholder="Start Date" class="form-control datetimepicker" required="true" />
+												@if ($errors->has('start_date'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('start_date') }}</strong>
+													</span>
+												@endif
+											</div>
+											</div>
+
+											<div class="form-group{{ ($errors->has('end_date'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">End Date</label>
+											<div class="col-md-6">
+												<input type="text" name="end_date" value="{{ old('end_date') }}" placeholder="End Date" class="form-control datetimepicker" required="true" />
+												@if ($errors->has('end_date'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('end_date') }}</strong>
+													</span>
+												@endif
+											</div>
+											</div>
+
+											<div class="form-group{{ ($errors->has('active'))? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">Status</label>
+												<div class="col-md-6">
+													<select name="active" class="form-control">
+														<option value="0">Inactive</option>
+														<option value="1">Active</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+													<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Save </button>
+												</div>
+											</div>
+										</form>
+
+									</div>
 								</div>
-							</div>
-
+							@endcan
 						</div>
 					</div>
 				</div>
@@ -165,7 +168,7 @@
 			</div>
 
 
-			@include('admin.includes.footercopyright')
+			
 
 
 		</div>
@@ -187,7 +190,10 @@
 	var tbl;
 
     function loadOptions(data, type, full, meta) {
+		opthtm = '';
+		@can('exam.edit.post')
 		opthtm = '<a data-toggle="tooltip" title="Edit" class="btn btn-'+((full.active == 1)? 'default' : 'danger') +' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+		@endcan
 		return opthtm;
 	}
 
@@ -294,15 +300,6 @@
 				}
 			},
 		});
-
-		@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-		$('.add-exam').hide();
-		@endif
-
-		@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-		$('.edit-exam').hide();
-		@endif
-
 		});
 	</script>
 

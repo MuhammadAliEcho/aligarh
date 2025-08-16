@@ -2,8 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");
 /*
  *
- *   INSPINIA - Responsive Admin Theme
- *   version 2.7.1
+ *   Responsive Admin Theme
  *
 */
 
@@ -2525,7 +2524,7 @@ label.error {
   margin-bottom: 20px;
 }
 /* Notifie */
-.cg-notify-message.inspinia-notify {
+/* .cg-notify-message.inspinia-notify {
   background: #fff;
   padding: 0;
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -2546,7 +2545,7 @@ label.error {
 }
 .inspinia-notify.alert-info {
   border-left: 6px solid #1ab394;
-}
+} */
 /* Image cropper style */
 .img-container,
 .img-preview {
@@ -6813,8 +6812,7 @@ body.body-small .vote-icon {
 }
 /*
  *
- *   INSPINIA Landing Page - Responsive Admin Theme
- *   Copyright 2014 Webapplayers.com
+ *   Responsive Admin Theme
  *
 */
 /* GLOBAL STYLES
@@ -7752,7 +7750,7 @@ body.rtls.top-navigation .footer.fixed {
 }
 /*
  *
- *   SKIN 1 - INSPINIA - Responsive Admin Theme
+ *   SKIN 1 Admin Theme
  *   NAME - Blue light
  *
 */
@@ -7858,8 +7856,7 @@ body.skin-1 {
 }
 /*
  *
- *   SKIN 2 - INSPINIA - Responsive Admin Theme
- *   NAME - Inspinia Ultra
+ *   SKIN 2 Responsive Admin Theme
  *
 */
 body.skin-2 {
@@ -8008,7 +8005,7 @@ body.skin-2 #wrapper {
 }
 /*
  *
- *   SKIN 3 - INSPINIA - Responsive Admin Theme
+ *   Responsive Admin Theme
  *   NAME - Yellow/purple
  *
 */

@@ -5,10 +5,12 @@ namespace App;
 //use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Auth;
 use App\AcademicSession;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\HasLeave;
 
 class Student extends Model {
+	use HasLeave;
 
 /*
 	protected static function boot() {
@@ -30,20 +32,20 @@ class Student extends Model {
 
 	public function scopeNewAdmission($query, $academic_session){
 //		return $query->where('date_of_admission', '>=', Carbon::now()->toDateString());
-//		return $query->where('date_of_admission', '>=', AcademicSession::find(Auth::user()->academic_session)->getOriginal('start'));
-		return $query->where('date_of_admission', '>=', $academic_session->getOriginal('start'));
+//		return $query->where('date_of_admission', '>=', AcademicSession::find(Auth::user()->academic_session)->getRawOriginal('start'));
+		return $query->where('date_of_admission', '>=', $academic_session->getRawOriginal('start'));
 //		return $query->where('date_of_admission', '>=', '2018-04-01');
 	}
 
 	public function scopeOldAdmission($query, $academic_session){
 //		return $query->where('date_of_admission', '<=', Carbon::now()->toDateString());
-//		return $query->where('date_of_admission', '<=', AcademicSession::find(Auth::user()->academic_session)->getOriginal('start'));
-		return $query->where('date_of_admission', '<=', $academic_session->getOriginal('start'));
+//		return $query->where('date_of_admission', '<=', AcademicSession::find(Auth::user()->academic_session)->getRawOriginal('start'));
+		return $query->where('date_of_admission', '<=', $academic_session->getRawOriginal('start'));
 //		return $query->where('date_of_admission', '<=', '2018-04-01');
 	}
 
 	public function scopeInActiveOnSelectedSession($query, $academic_session){
-		return $query->InActive()->whereBetween('date_of_leaving', [$academic_session->getOriginal('start'), $academic_session->getOriginal('end')]);
+		return $query->InActive()->whereBetween('date_of_leaving', [$academic_session->getRawOriginal('start'), $academic_session->getRawOriginal('end')]);
 	}
 
 	public function scopeActive($query){
@@ -102,8 +104,24 @@ class Student extends Model {
 		return Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');
 	}
 
-	public function setDateOfBirthInwordsAttribute($date){
-		$this->attributes['date_of_birth_inwords']	=	Carbon::createFromFormat('Y-m-d', $date)->format('l jS \\of F Y');
+	public function setDateOfBirthInwordsAttribute($date)
+	{
+		try {
+			// Try Y-m-d (raw DB format)
+			$parsed = Carbon::createFromFormat('Y-m-d', $date);
+		} catch (\Exception $e1) {
+			try {
+				// Try d/m/Y (formatted version)
+				$parsed = Carbon::createFromFormat('d/m/Y', $date);
+			} catch (\Exception $e2) {
+				// If both fail, fallback or throw
+				$parsed = null;
+			}
+		}
+
+		$this->attributes['date_of_birth_inwords'] = $parsed
+			? $parsed->format('l jS \\of F Y')
+			: null;
 	}
 
 	public function AdditionalFee(){
@@ -130,4 +148,18 @@ class Student extends Model {
 		return $this->hasMany('App\Certificate');
 	}
 
+	public function scopeSessionCurrent($query)
+	{
+		return $query->where('session_id', Auth::user()->academic_session);
+	}
+
+	public function lastInvoice()
+	{
+		return $this->hasOne('App\InvoiceMaster')->orderBy('id', 'desc');
+	}
+
+	public function attendances()
+	{
+		return $this->hasMany(StudentAttendance::class);
+	}
 }

@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-//use Request;
-use App\Http\Requests;
 use App\Teacher;
-use App\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Auth;
@@ -17,19 +14,11 @@ use App\Http\Controllers\Controller;
 class TeacherController extends Controller
 {
 
-//  protected $Routes;
-  protected $data, $Teacher, $Request;
-
-  public function __Construct($Routes, Request $Request){
-    $this->Request  = $Request;
-    $this->data['root'] = $Routes;
-  }
-
-  public function GetImage(){
-    $teacher  = Teacher::findorfail($this->data['root']['option']);
+  public function GetImage($id){
+    $teacher  = Teacher::findorfail($id);
     //$image = Storage::get($teacher->image_dir);
-//    $image = Storage::disk('public/studnets')->get('1.jpg');
-//    return Response($image, 200);
+    //$image = Storage::disk('public/studnets')->get('1.jpg');
+    //return Response($image, 200);
     if(Storage::exists($teacher->image_dir)){
       return Response(Storage::get($teacher->image_dir), 200)->header('Content-Type', 'image');
     }
@@ -38,39 +27,59 @@ class TeacherController extends Controller
   
   }
 
-  public function GetProfile(){
-    $this->data['teacher']  = Teacher::findorfail($this->data['root']['option']);
-    return view('admin.teacher_profile', $this->data);
+  public function GetProfile($id){
+    $data['teacher']  = Teacher::findorfail($id);
+    return view('admin.teacher_profile', $data);
   }
 
-  protected function PostValidate(){
-    $this->validate($this->Request, [
+  protected function PostValidate($request){
+    $this->validate($request, [
         'name'      =>  'required',
-//        'subject'   =>  'required',
+        //'subject'   =>  'required',
         'gender'    =>  'required',
-//        'email'     =>  'required|email',
+        //'email'     =>  'required|email',
         'qualification'  =>  'required',
         'salary'      =>  'required|numeric',
-        'img'         =>  'image|mimes:jpeg,png,jpg|max:4096'
+        'img'       => 	'image|mimes:jpg,jpeg|max:2048'
     ]);
   }
 
-  public function GetTeacher(){
-    //$this->data['teachers'] = Teacher::select('name', 'email', 'address', 'id', 'phone')->get();
-
-    if($this->Request->ajax()){
-      return Datatables::queryBuilder(DB::table('teachers')
+  public function GetTeacher(Request $request){
+    $data['teachers'] = Teacher::select('name', 'email', 'address', 'id', 'phone')->get();
+    if($request->ajax()){
+      return DataTables::queryBuilder(DB::table('teachers')
                                           ->leftJoin('users', 'teachers.user_id', '=', 'users.id')
                                           ->select('teachers.name', 'teachers.email', 'teachers.address', 'teachers.id', 'teachers.phone', 'users.active', 'users.id AS user_id'))->make(true);
     }
     
-    return view('admin.teacher', $this->data);
+    return view('admin.teacher', $data);
   }
 
-  public function FindTeacher(){
-    if ($this->Request->ajax()) {
-      $teachers = Teacher::where('name', 'LIKE', '%'.$this->Request->input('q').'%')
-                ->orwhere('email', 'LIKE', '%'.$this->Request->input('q').'%')
+  public function Grid(Request $request){
+
+    $Teachers = Teacher::query(); 
+
+		if ($request->filled('search_teachers')) {
+			$search = $request->input('search_teachers');
+
+			$Teachers->where(fn($query) => 
+			$query->where('name', 'like', "%{$search}%")
+				->orWhere('email', 'like', "%{$search}%")
+				->orWhere('phone', 'like', "%{$search}%")
+				->orWhere('gender', 'like', "%{$search}%")
+				->orWhere('qualification', 'like', "%{$search}%")
+			);
+		}
+
+		$Teachers = $request->filled('per_page') ? $Teachers->paginate($request->input('per_page')) : $Teachers->get();
+		
+		return response()->json($Teachers);
+  }
+
+  public function FindTeacher(Request $request){
+    if ($request->ajax()) {
+      $teachers = Teacher::where('name', 'LIKE', '%'.$request->input('q').'%')
+                ->orwhere('email', 'LIKE', '%'.$request->input('q').'%')
                   ->get();
                   $k=0;
       foreach ($teachers as $teacher) {
@@ -80,8 +89,8 @@ class TeacherController extends Controller
           $data[$k]['email']  = $teacher->email;
           $data[$k]['name']  = $teacher->name;
           $data[$k]['role']  = "Teacher";
-  /*        $data[$k]['htm1'] = '<span class="text-danger">';
-          $data[$k]['htm2'] = '</span>';*/
+          // $data[$k]['htm1'] = '<span class="text-danger">';
+          // $data[$k]['htm2'] = '</span>';
           $k++;
         }
       }
@@ -90,8 +99,8 @@ class TeacherController extends Controller
     return abort(404);
   }
 
-  public function EditTeacher(){
-    if(Teacher::where('id', $this->data['root']['option'])->count() == 0){
+  public function EditTeacher($id){
+    if(Teacher::where('id', $id)->count() == 0){
     return  redirect('teacher')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -101,15 +110,13 @@ class TeacherController extends Controller
       ]);
     }
 
-    $this->data['teacher'] = Teacher::find($this->data['root']['option']);
-    return view('admin.edit_teacher', $this->data);
+    $data['teacher'] = Teacher::find($id);
+    return view('admin.edit_teacher', $data);
   }
 
-  public function PostEditTeacher(Request $request){
+  public function PostEditTeacher(Request $request, $id){
 
-    $this->Request = $request;
-
-    if(Teacher::where('id', $this->data['root']['option'])->count() == 0){
+    if(Teacher::where('id', $id)->count() == 0){
     return  redirect('teacher')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -119,18 +126,18 @@ class TeacherController extends Controller
       ]);
     }
 
-    $this->Teacher = Teacher::find($this->data['root']['option']);
-    $this->PostValidate();
-    $this->SetAttributes();
-    if($this->Request->hasFile('img')){
-      $this->SaveImage();
+    $Teacher = Teacher::find($id);
+    $this->PostValidate($request);
+    $this->SetAttributes($Teacher, $request);
+    if($request->hasFile('img')){
+      $this->SaveImage($Teacher, $request);
     }
-    $this->Teacher->updated_by  = Auth::user()->id;
-    $this->Teacher->save();
-    if ($this->Teacher->User) {
-      $this->Teacher->User->email   =  $this->Teacher->email;
-      $this->Teacher->User->contact_no   =  $this->Teacher->phone;
-      $this->Teacher->User->save();
+    $Teacher->updated_by  = Auth::user()->id;
+    $Teacher->save();
+    if ($Teacher->User) {
+      $Teacher->User->email   =  $Teacher->email;
+      $Teacher->User->contact_no   =  $Teacher->phone;
+      $Teacher->User->save();
     }
 
     return redirect('teacher')->with([
@@ -143,17 +150,16 @@ class TeacherController extends Controller
   }
 
   public function AddTeacher(Request $request){
-    $this->Request = $request;
-    $this->PostValidate();
-    $this->Teacher = new Teacher;
-    $this->SetAttributes();
-    $this->Teacher->created_by  = Auth::user()->id;
-    $this->Teacher->save();
-    if($this->Request->hasFile('img')){
-      $this->SaveImage();
+    $this->PostValidate($request);
+    $Teacher = new Teacher;
+    $this->SetAttributes($Teacher, $request);
+    $Teacher->created_by  = Auth::user()->id;
+    $Teacher->save();
+    if($request->hasFile('img')){
+      $this->SaveImage($Teacher, $request);
     }
 
-    $this->Teacher->save();
+    $Teacher->save();
 
     return redirect('teacher')->with([
         'toastrmsg' => [
@@ -165,29 +171,29 @@ class TeacherController extends Controller
 
   }
 
-  protected function SetAttributes(){
-    $this->Teacher->name = $this->Request->input('name');
-    $this->Teacher->f_name = $this->Request->input('f_name');
-    $this->Teacher->husband_name = $this->Request->input('husband_name');
-    $this->Teacher->subject = $this->Request->input('subject');
-    $this->Teacher->gender = $this->Request->input('gender');
-    $this->Teacher->email = $this->Request->input('email');
-    $this->Teacher->qualification = $this->Request->input('qualification');
-    $this->Teacher->relegion = $this->Request->input('relegion');
-    $this->Teacher->salary = $this->Request->input('salary');
-    $this->Teacher->address = $this->Request->input('address');
-    $this->Teacher->phone = $this->Request->input('phone');
+  protected function SetAttributes($Teacher, $request){
+    $Teacher->name = $request->input('name');
+    $Teacher->f_name = $request->input('f_name');
+    $Teacher->husband_name = $request->input('husband_name');
+    $Teacher->subject = $request->input('subject');
+    $Teacher->gender = $request->input('gender');
+    $Teacher->email = $request->input('email');
+    $Teacher->qualification = $request->input('qualification');
+    $Teacher->religion = $request->input('religion');
+    $Teacher->salary = $request->input('salary');
+    $Teacher->address = $request->input('address');
+    $Teacher->phone = $request->input('phone');
   }
 
 
-  protected function SaveImage(){
-    $file = $this->Request->file('img');
-    Storage::delete($this->Teacher->image_dir);
+  protected function SaveImage($Teacher, $request){
+    $file = $request->file('img');
+    Storage::delete($Teacher->image_dir);
     $extension = $file->getClientOriginalExtension();
-    Storage::disk('public')->put('teachers/'.$this->Teacher->id.'.'.$extension,  File::get($file));
-//    $file = $this->Request->file('img')->storePubliclyAs('images/teachers', $this->Teacher->id.'.'.$file->getClientOriginalExtension(), 'public');
-    $this->Teacher->image_dir = 'public/teachers/'.$this->Teacher->id.'.'.$extension;
-    $this->Teacher->image_url = 'teacher/image/'.$this->Teacher->id;
+    Storage::disk('public')->put('teachers/'.$Teacher->id.'.'.$extension,  File::get($file));
+    //$file = $request->file('img')->storePubliclyAs('images/teachers', $Teacher->id.'.'.$file->getClientOriginalExtension(), 'public');
+    $Teacher->image_dir = 'public/teachers/'.$Teacher->id.'.'.$extension;
+    $Teacher->image_url = 'teacher/image/'.$Teacher->id;
   }
 
 }

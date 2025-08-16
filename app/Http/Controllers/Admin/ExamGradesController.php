@@ -8,23 +8,13 @@ use App\Grade;
 
 class ExamGradesController extends Controller
 {
-
-	protected $data, $request, $feeses;
-
-	public function __Construct($Routes){
-		$this->data['root'] = $Routes;
-	}
-
 	public function Index(){
-		$this->data['grades']	=	Grade::all();
-		return view('admin.exam_grades', $this->data);
+		$data['grades']	=	Grade::all();
+		return view('admin.exam_grades', $data);
 	}
 
 
 	public function UpdateGrade(Request $request){
-
-		$this->request = $request;
-
 		$this->validate($request, [
 			'grades'  =>  'required',
 		]);
@@ -41,6 +31,4 @@ class ExamGradesController extends Controller
 			]
 		]);
 	}
-
-
 }

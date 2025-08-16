@@ -8,7 +8,7 @@
 	<link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
 	<link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
 	<script type="text/javascript">
-			var sections = {!! json_encode($sections) !!};
+			var sections = {!! json_encode($sections ?? '') !!};
 	</script>
 	@endsection
 
@@ -180,24 +180,24 @@
 														@endif
 													</div>
 												</div>
-
-												@if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->editclass)
-												<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-													<label class="col-md-2 control-label">Class</label>
-													<div class="col-md-6 select2-div">
-														<select class="form-control select2" name="class">
-															<option value="" disabled selected>Class</option>
-															@foreach($classes AS $class)
-																<option value="{{ $class->id }}">{{ $class->name }}</option>
-															@endforeach
-														</select>
-														@if ($errors->has('class'))
-																<span class="help-block">
-																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
-																</span>
-														@endif
+												@can('students.class_edit')
+													<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+														<label class="col-md-2 control-label">Class</label>
+														<div class="col-md-6 select2-div">
+															<select class="form-control select2" name="class">
+																<option value="" disabled selected>Class</option>
+																@foreach($classes AS $class)
+																	<option value="{{ $class->id }}">{{ $class->name }}</option>
+																@endforeach
+															</select>
+															@if ($errors->has('class'))
+																	<span class="help-block">
+																			<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class') }}</strong>
+																	</span>
+															@endif
+														</div>
 													</div>
-												</div>
+												@endcan
 
 												<div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">Section</label>
@@ -211,7 +211,7 @@
 														@endif
 													</div>
 												</div>
-												@endif
+												{{-- @endif --}}
 
 												<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">GR No</label>
@@ -326,7 +326,7 @@
 					</div>
 
 
-					@include('admin.includes.footercopyright')
+					
 
 
 				</div>

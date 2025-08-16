@@ -57,7 +57,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
 	<h4>List Of Full/Half Freeship Students</h4>
 	<h4>AS ON: {{ Carbon\Carbon::now()->Format('M-Y') }}</h3>
 
@@ -98,7 +98,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

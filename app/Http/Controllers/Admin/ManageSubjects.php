@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Teacher;
@@ -14,33 +14,25 @@ use App\Http\Controllers\Controller;
 
 class ManageSubjects extends Controller
 {
-
-	//  protected $Routes;
-	protected $data, $Classes, $Subjects, $Request;
-
-	public function __Construct($Routes){
-		$this->data['root'] = $Routes;
-	}
-
 	public function GetSubject(){
 
-		$this->data['teachers'] = Teacher::select('name', 'id')->get();
-		$this->data['classes'] = Classe::select('name', 'id')->get();
+		$data['teachers'] = Teacher::select('name', 'id')->get();
+		$data['classes'] = Classe::select('name', 'id')->get();
 		
-		foreach ($this->data['classes'] as $key => $class) {
-		$this->data['subjects']['class_'.$class->id] = DB::table('subjects')
+		foreach ($data['classes'] as $key => $class) {
+		$data['subjects']['class_'.$class->id] = DB::table('subjects')
 			->leftjoin('teachers', 'subjects.teacher_id', '=', 'teachers.id')
 			->select('subjects.name', 'subjects.book', 'subjects.id', 'subjects.examinable', 'teachers.name AS teacher_name')
 			->where('subjects.class_id', '=', $class->id)
 			->get();
 		}
 
-		return view('admin.subjects', $this->data);
+		return view('admin.subjects', $data);
 
 	}
 
-	public function EditSubject(){
-		if(Subject::where('id', $this->data['root']['option'])->count() == 0){
+	public function EditSubject($id){
+		if(Subject::where('id', $id)->count() == 0){
 		return  redirect('manage-subjects')->with([
 				'toastrmsg' => [
 					'type' => 'warning', 
@@ -49,21 +41,20 @@ class ManageSubjects extends Controller
 					]
 			]);
 		}
-		$this->data['classes'] = Classe::select('name', 'id')->get();
-		$this->data['teachers'] = Teacher::select('name', 'id')->get();
-		$this->data['subject'] = Subject::find($this->data['root']['option']);
+		$data['classes'] = Classe::select('name', 'id')->get();
+		$data['teachers'] = Teacher::select('name', 'id')->get();
+		$data['subject'] = Subject::find($id);
 
-		return view('admin.edit_subject', $this->data);
+		return view('admin.edit_subject', $data);
 	}
 
 	public function AddSubject(Request $request){
 
-		$this->Request = $request;
-		$this->PostValidate();
-		$this->Subjects = new Subject;
-		$this->SetAttributes();
-		$this->Subjects->created_by = Auth::user()->id;
-		$this->Subjects->save();
+		$this->PostValidate($request);
+		$Subjects = new Subject;
+		$this->SetAttributes($Subjects, $request);
+		$Subjects->created_by = Auth::user()->id;
+		$Subjects->save();
 
 		return redirect('manage-subjects')->with([
 				'toastrmsg' => [
@@ -75,12 +66,11 @@ class ManageSubjects extends Controller
 
 	}
 
-	public function PostEditSubject(Request $request){
+	public function PostEditSubject(Request $request, $id){
 
-		$this->Request = $request;
-		$this->PostValidate();
+		$this->PostValidate($request);
 
-		if(Subject::where('id', $this->data['root']['option'])->count() == 0){
+		if(Subject::where('id', $id)->count() == 0){
 		return  redirect('manage-subjects')->with([
 				'toastrmsg' => [
 					'type' => 'warning',
@@ -90,11 +80,11 @@ class ManageSubjects extends Controller
 			]);
 		}
 
-		$this->Subjects = Subject::find($this->data['root']['option']);
+		$Subjects = Subject::find($id);
 
-		$this->SetAttributes();
-		$this->Subjects->updated_by = Auth::user()->id;
-		$this->Subjects->save();
+		$this->SetAttributes($Subjects, $request);
+		$Subjects->updated_by = Auth::user()->id;
+		$Subjects->save();
 
 		return redirect('manage-subjects')->with([
 				'toastrmsg' => [
@@ -105,8 +95,8 @@ class ManageSubjects extends Controller
 			]);
 	}
 
-	protected function PostValidate(){
-		$this->validate($this->Request, [
+	protected function PostValidate($request){
+		$this->validate($request, [
 				'name'  =>  'required',
 				'book'  =>  'required',
 //        'teacher' =>  'required',
@@ -114,12 +104,12 @@ class ManageSubjects extends Controller
 		]);
 	}
 
-	protected function SetAttributes(){
-		$this->Subjects->name = $this->Request->input('name');
-		$this->Subjects->book = $this->Request->input('book');
-		$this->Subjects->examinable	=	$this->Request->input('examinable');
-		$this->Subjects->teacher_id = $this->Request->input('teacher');
-		$this->Subjects->class_id = $this->Request->input('class');
+	protected function SetAttributes($Subjects, $request){
+		$Subjects->name = $request->input('name');
+		$Subjects->book = $request->input('book');
+		$Subjects->examinable	=	$request->input('examinable');
+		$Subjects->teacher_id = $request->input('teacher');
+		$Subjects->class_id = $request->input('class');
 	}
 
 }

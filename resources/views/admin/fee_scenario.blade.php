@@ -21,9 +21,11 @@
 									<h2>Settings</h2>
 									<ol class="breadcrumb">
 										<li>Home</li>
+										@can('fee-scenario.update.scenario')
 											<li Class="active">
 													<a>Fee Scenario</a>
 											</li>
+										@endcan
 									</ol>
 							</div>
 							<div class="col-lg-4 col-md-6">
@@ -39,12 +41,15 @@
 								<div class="col-lg-12">
 										<div class="tabs-container">
 												<ul class="nav nav-tabs">
-														<li class="active">
+													<li class="active">
+														@can('fee-scenario.update.scenario')
 															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Fee Scenario</a>
-														</li>
+														@endcan
+													</li>
 												</ul>
 												<div class="tab-content">
-														<div id="tab-11" class="tab-pane fade fade in active add-guardian">
+													@can('fee-scenario.update.scenario')
+														<div id="tab-10" class="tab-pane fade fade in active add-guardian">
 																<div class="panel-body">
 																	
 																	<div class="alert alert-info ">
@@ -138,6 +143,7 @@
 
 																</div>
 														</div>
+													@endcan
 												</div>
 										</div>
 								</div>
@@ -146,7 +152,7 @@
 					</div>
 
 
-					@include('admin.includes.footercopyright')
+					
 
 
 				</div>

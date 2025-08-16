@@ -2,40 +2,32 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Vendor;
 use Auth;
 use App\Http\Controllers\Controller;
 
 class VendorsController extends Controller
 {
-    protected $data, $Vendor, $Request;
-
-    public function __Construct($Routes, $request){
-      $this->data['root'] = $Routes;
-      $this->Request = $request;
-    }
-
-    protected function PostValidate(){
-      $this->validate($this->Request, [
+    protected function PostValidate($request){
+      $this->validate($request, [
           'v_name'  =>  'required',
           'c_name'  =>  'required',
           'email' =>  'sometimes|email',
       ]);
     }
 
-    public function GetVendor(){
-      if ($this->Request->ajax()) {
-        return Datatables::eloquent(Vendor::select('v_name', 'c_name', 'email', 'id', 'phone', 'address'))->make(true);
+    public function GetVendor(Request $request){
+      if ($request->ajax()) {
+        return DataTables::eloquent(Vendor::select('v_name', 'c_name', 'email', 'id', 'phone', 'address'))->make(true);
       }
-      return view('admin.vendor', $this->data);
+      return view('admin.vendor');
     }
 
-    public function EditVendor(){
+    public function EditVendor($id){
 
-      if(Vendor::where('id', $this->data['root']['option'])->count() == 0){
+      if(Vendor::where('id', $id)->count() == 0){
       return  redirect('vendors')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -45,16 +37,15 @@ class VendorsController extends Controller
       ]);
       }
 
-      $this->data['vendor'] = Vendor::find($this->data['root']['option']);
-      return view('admin.edit_vendor', $this->data);
+      $data['vendor'] = Vendor::find($id);
+      return view('admin.edit_vendor', $data);
     }
 
-    public function PostEditVendor(Request $request){
+    public function PostEditVendor(Request $request, $id){
 
-      $this->Request = $request;
-      $this->PostValidate();
+      $this->PostValidate($request);
 
-      if(Vendor::where('id', $this->data['root']['option'])->count() == 0){
+      if(Vendor::where('id', $id)->count() == 0){
       return  redirect('vendors')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -64,10 +55,10 @@ class VendorsController extends Controller
       ]);
       }
 
-      $this->Vendor = Vendor::find($this->data['root']['option']);
-      $this->SetAttributes();
-      $this->Vendor->updated_by = Auth::user()->id;
-      $this->Vendor->save();
+      $Vendor = Vendor::find($id);
+      $this->SetAttributes($Vendor, $request);
+      $Vendor->updated_by = Auth::user()->id;
+      $Vendor->save();
 
       return redirect('vendors')->with([
         'toastrmsg' => [
@@ -79,13 +70,11 @@ class VendorsController extends Controller
     }
 
     public function AddVendor(Request $request){
-
-      $this->Request = $request;
-      $this->PostValidate();
-      $this->Vendor = new Vendor;
-      $this->SetAttributes();
-      $this->Vendor->created_by = Auth::user()->id;
-      $this->Vendor->save();
+      $this->PostValidate($request);
+      $Vendor = new Vendor;
+      $this->SetAttributes($Vendor, $request);
+      $Vendor->created_by = Auth::user()->id;
+      $Vendor->save();
 
       return redirect('vendors')->with([
         'toastrmsg' => [
@@ -97,11 +86,11 @@ class VendorsController extends Controller
 
     }
 
-    protected function SetAttributes(){
-      $this->Vendor->v_name = $this->Request->input('v_name');
-      $this->Vendor->c_name = $this->Request->input('c_name');
-      $this->Vendor->email = $this->Request->input('email');
-      $this->Vendor->phone = $this->Request->input('phone');
-      $this->Vendor->address = $this->Request->input('address');
+    protected function SetAttributes($Vendor, $request){
+      $Vendor->v_name = $request->input('v_name');
+      $Vendor->c_name = $request->input('c_name');
+      $Vendor->email = $request->input('email');
+      $Vendor->phone = $request->input('phone');
+      $Vendor->address = $request->input('address');
     }
 }

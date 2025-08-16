@@ -2,103 +2,99 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\UserPrivilege;
-use App\AdminContent;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Employee;
+use App\Role;
 use App\Teacher;
 use App\User;
-use Auth;
 
 class UsersController extends Controller
 {
+    public function index(Request $request)
+    {
+      $Roles = Role::notDeveloper()->select('id', 'name')->get();
+      if ($request->ajax()) {
 
-    protected $data, $User, $Request;
+        $query = User::with('roles')->select('id', 'name', 'email', 'foreign_id', 'user_type', 'active')->NotDeveloper()->staff();
 
-    public function __Construct($Routes, Request $Request){
-      $this->data['root'] = $Routes;
-      $this->Request = $Request;
+        return DataTables::eloquent($query)
+            ->addColumn('roles', function (User $user) {
+                return $user->roles->pluck('name')->join(', ');
+            })
+            ->make(true);
+      }
+      return view('admin.users', compact('Roles'));
     }
 
-    protected function PostValidate(){
-      $this->validate($this->Request, [
-          'name'  =>  'sometimes|required|unique:users,name'. (($this->data['root']['option'] !== '')? ','.$this->User->id : ''),
-          'email' =>  'sometimes|required|email|unique:users,email'. (($this->data['root']['option'] !== '')? ','.$this->User->id : ''),
-          'status'  =>  'required',
-          'allow_session'  =>  'required',
-          'password' =>  'sometimes|nullable|between:6,12',
-          're_password'  =>  'sometimes|nullable|between:6,12|same:password',
-      ]);
-    }
 
-    public function GetUsers(){
+    public function create(Request $request)
+    {
 
-      if ($this->Request->ajax()) {
-        return Datatables::eloquent(User::select('id', 'name', 'email', 'role', 'foreign_id', 'user_type', 'active')->Staff())->make(true);
+      $validator = Validator::make(
+      $request->all(),
+        [
+          'name' => 'required|unique:users,name',
+          'type' => 'required|in:teacher,employee',
+          'email' => 'required|email|unique:users,email',
+          'status' => 'required|in:0,1',
+          'allow_session' => 'required',
+          'password' => 'required|between:6,12',
+          're_password' => 'required|between:6,12|same:password',
+          'role' => 'required|exists:roles,id',
+        ],
+        [
+          'name.required' => 'The name field is required.',
+          'name.unique' => 'This name is already taken.',
+
+          'type.required' => 'Type is required.',
+          'type.in' => 'Type must be teacher or employee.',
+
+          'email.required' => 'Email is required.',
+          'email.email' => 'Please enter a valid email address.',
+          'email.unique' => 'This email is already registered.',
+
+          'status.required' => 'Status is required.',
+          'status.in' => 'Status must be 0 (inactive) or 1 (active).',
+
+          'allow_session.required' => 'Allow session selection is required.',
+
+          'password.required' => 'Password is required.',
+          'password.between' => 'Password must be between 6 and 12 characters.',
+
+          're_password.required' => 'Re-entering the password is required.',
+          're_password.between' => 'Re-entered password must be between 6 and 12 characters.',
+          're_password.same' => 'Passwords do not match.',
+
+          'role.required' => 'Role is required.',
+          'role.exists' => 'Selected role is invalid.',
+        ]
+
+      );
+
+      if ($validator->fails()){
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput()
+            ->with([
+                'toastrmsg' => [
+                    'type' => 'error', 
+                    'title' => 'Users',
+                    'msg' => 'There was an issue while Creating User'
+                ]
+            ]);
       }
 
-      $this->Content();
-      return view('admin.users', $this->data);
-    }
-
-    public function EditUser(){
-      $this->Content();
-      $this->data['user'] = User::where('id', $this->data['root']['option'])->Staff()->firstOrFail();
-      return view('admin.edit_user', $this->data);
-    }
-
-    public function PostEditUser(Request $request){
-
-      $this->Request = $request;
-      $this->User =  User::where('id', $this->data['root']['option'])->Staff()->firstOrFail();;
-        if($this->User->created_by == 0 && Auth::user()->id != 1){
-        return redirect('users')->with([
-        'toastrmsg' => [
-          'type' => 'warning', 
-          'title'  =>  'Users Registration',
-          'msg' =>  '"'.$this->User->name.'" User Can\'t be Editable'
-          ]
-        ]);
-        }
-
-      $this->PostValidate();
-      $this->SetAttributes();
-      if (Auth::user()->getprivileges->privileges->{$this->data['root']['content']['id']}->editpwd && !empty($this->Request->input('password'))) {
-        $this->User->password = bcrypt($this->Request->input('password'));
-      }
-
-      $this->User->updated_by  = Auth::user()->id;
-      $this->User->save();
-
-      $this->SetPrivileges();
-
-      return redirect('users')->with([
-        'toastrmsg' => [
-          'type' => 'success', 
-          'title'  =>  'Users Registration',
-          'msg' =>  'Save Changes Successfull'
-          ]
-      ]);
-    }
-
-    public function AddUser(Request $request){
-
-      $this->Request = $request;
-      $this->User = new User;
-
-      switch ($this->Request->input('type')) {
-        case 'teacher':
-          $data = Teacher::findOrfail($this->Request->input('teacher'));
-          $this->User->user_type = 'teacher';
-          $this->User->role = 'Teacher';
+      switch ($request->input('type')) {
+        case 'employee':
+          $data = Employee::findOrfail($request->input('employee'));
           break;
 
-        case 'employee':
-          $data = Employee::findOrfail($this->Request->input('employee'));
-          $this->User->user_type = 'employee';
-          $this->User->role = $data->role;
+        case 'teacher':
+          $data = Teacher::findOrfail($request->input('teacher'));
           break;
 
         default:
@@ -109,21 +105,21 @@ class UsersController extends Controller
           break;
       }
 
-      $this->User->foreign_id = $data->id;
-      $this->User->contact_no = $data->phone;
+      $User = User::create([
+        'name'              =>  $request->input('name'),
+        'email'             =>  $request->input('email'),
+        'password'          =>  bcrypt($request->input('password')),
+        'active'            =>  $request->input('status'),
+        'allow_session'     =>  $request->input('allow_session'),
+        'foreign_id'        =>  $data->id,
+        'contact_no'        =>  $data->phone,
+        'user_type'         =>  $request->input('type'),
+      ]);
 
-      $this->PostValidate();
-      $this->SetAttributes();
-      $this->User->name = $this->Request->input('name');
-      $this->User->email = $this->Request->input('email');
-      $this->User->password = bcrypt($this->Request->input('password'));
-      $this->User->created_by  = Auth::user()->id;
-      $this->User->save();
-
-      $data->user_id = $this->User->id;
+      $Role = Role::findOrfail($request->input('role'));
+      $User->assignRole($Role->name);
+      $data->user_id = $User->id;
       $data->save();
-
-      $this->SetPrivileges();
 
       return redirect('users')->with([
         'toastrmsg' => [
@@ -132,52 +128,38 @@ class UsersController extends Controller
           'msg' =>  'Registration Successfull'
           ]
       ]);
-
     }
 
-    protected function SetAttributes(){
-
-      $this->User->active = $this->Request->input('status');
-      $this->User->allow_content = "Admin";
-      $this->User->academic_session = Auth::user()->academic_session;
-      $this->User->settings   = Auth::user()->settings;
-
+    public function edit($id){
+      $data['user'] = User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
+      return view('admin.edit_user', $data);
     }
 
-    protected function SetPrivileges(){
-      $privileges = config('privileges');
-      if ($this->Request->has('privileges')) {
-        foreach($this->Request->input('privileges') as $key => $value) {
-          $privileges[$key]['default']  = (Auth::user()->getprivileges->privileges->$key->default)? 1 : 0;
-          if (isset($value['options'])) {
-            foreach ($value['options'] as $v) {
-                $privileges[$key][$v] = (Auth::user()->getprivileges->privileges->$key->$v)? 1 : 0;
-            }
-          }
-        }
+
+    public function update(Request $request, $id){
+      $User =  User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
+      $validatedData  = $request->validate([
+          'active'            =>  'required',
+          'allow_session'     =>  'required|array',
+          'password'          =>  'nullable|between:6,12',
+          're_password'       =>  'nullable|between:6,12|same:password',
+      ]);
+      if(Auth::user()->can('users.update.update_password') && !empty(isset($validatedData['password']))){
+        $validatedData['password'] = bcrypt($validatedData['password']);
+      } else {
+        unset($validatedData['password']);
       }
 
-        UserPrivilege::updateOrCreate(
-            ['user_id' => $this->User->id],
-            [
-              'privileges' => $privileges,
-              'allow_session' => $this->Request->input('allow_session')
-            ]
-          );
+      $validatedData['academic_session'] = (int) collect($request->input('allow_session', []))->last();
+
+      $User->update($validatedData);
+
+      return redirect('users')->with([
+        'toastrmsg' => [
+          'type' => 'success', 
+          'title'  =>  'Users Registration',
+          'msg' =>  'Save Changes Successfull'
+          ]
+      ]);
     }
-
-
-    protected function Content(){
-      $content = AdminContent::select('id','label', 'options')
-                                ->where('type', 'parent-content')
-                                ->Orwhere('type', 'child-content')
-//                                ->orderBy('order_no')
-                                ->get();
-      foreach ($content as $key => $value) {
-        if(Auth::user()->getprivileges->NavPrivileges($value->id, 'default')) {
-          $this->data['content'][]  = $value;
-        }
-      }
-    }
-
 }

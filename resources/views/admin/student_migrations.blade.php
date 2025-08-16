@@ -20,9 +20,11 @@
                     </li>
                     </ol>
                 </div>
+				@can('user-settings.change.session')
                 <div class="col-lg-4 col-md-6">
                     @include('admin.includes.academic_session')
                 </div>
+				@endcan
             </div>
 
             <div class="wrapper wrapper-content animated fadeInRight">
@@ -118,7 +120,7 @@
 
 								</form>
 
-								<form id="migrate_form" method="post" action="{{ URL('student-migrations/migrate') }}" class="form-horizontal" v-if="students">
+								<form id="migrate_form" method="post" action="{{ URL('student-migrations/create') }}" class="form-horizontal" v-if="students">
 									{{ csrf_field() }}
 
 									<input type="hidden" name="from_session" :value="from_session" />
@@ -229,7 +231,7 @@
                 </div>
             </div>
 
-			@include('admin.includes.footercopyright')
+			
 
 		</div>
 
@@ -260,7 +262,7 @@
 
 				to_class: {},
 
-				students:	{!! $students OR 'false' !!},
+				students:	{!! $students ?? 'false' !!},
 
 			},
 			computed: {

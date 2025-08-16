@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use Throwable;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -27,10 +27,11 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return void
+     * @throws \Exception
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         parent::report($exception);
     }
@@ -39,24 +40,23 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return \Illuminate\Http\Response
+     * @throws \Throwable
      */
-
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
-        if ($exception instanceof \Illuminate\Session\TokenMismatchException)
-        {
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
             return redirect()
-                    ->back()
-                    ->withInput($request->except('password'))
-                    ->with([
-                        'toastrmsg' => [
-                                    'type' => 'warning', 
-                                    'title'  =>  'Warning',
-                                    'msg' =>  'TokenMismatchException'
-                                    ],
-                        ]);
+                ->back()
+                ->withInput($request->except('password'))
+                ->with([
+                    'toastrmsg' => [
+                        'type' => 'warning',
+                        'title' => 'Warning',
+                        'msg' => 'TokenMismatchException',
+                    ],
+                ]);
         }
         return parent::render($request, $exception);
     }
@@ -74,6 +74,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.', 'msg' => 'Unauthenticated'], 401);
         }
 
-        return redirect()->guest(route('login'))->with(['redirect' => URL()->full()]);
+        return redirect()->guest(route('login'))->with(['redirect' => url()->full()]);
     }
 }

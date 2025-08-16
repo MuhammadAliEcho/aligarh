@@ -26,9 +26,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -42,9 +44,11 @@
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Vendors</a>
                             </li>
-                            <li class="add-vendor">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Vendors</a>
-                            </li>
+                            @can('vendors.add')
+                              <li class="add-vendor">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Vendors</a>
+                              </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade ">
@@ -66,79 +70,81 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-vendor">
-                                <div class="panel-body">
-                                  <h2> Vendor Registration </h2>
-                                  <div class="hr-line-dashed"></div>
+                            @can('vendors.add')
+                              <div id="tab-11" class="tab-pane fade add-vendor">
+                                  <div class="panel-body">
+                                    <h2> Vendor Registration </h2>
+                                    <div class="hr-line-dashed"></div>
 
-                                    <form id="vdr_rgstr" method="post" action="{{ URL('vendors/add') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
+                                      <form id="vdr_rgstr" method="post" action="{{ URL('vendors/add') }}" class="form-horizontal" >
+                                        {{ csrf_field() }}
 
-                                      <div class="form-group{{ ($errors->has('v_name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Vendor Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="v_name" placeholder="V Name" value="{{ old('v_name') }}" class="form-control"/>
-                                          @if ($errors->has('v_name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('v_name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('c_name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Contact Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="c_name" placeholder="C Name" value="{{ old('c_name') }}" class="form-control"/>
-                                          @if ($errors->has('c_name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('c_name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">E-Mail</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="email" placeholder="E-Mail" value="{{ old('email') }}" class="form-control"/>
-                                          @if ($errors->has('email'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-
-                                      <div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Contact No</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="phone" value="{{ old('phone') }}" placeholder="Contact No" class="form-control" data-mask="(999) 999-9999"/>
-                                          @if ($errors->has('phone'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('phone') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                        <label class="col-md-2 control-label">Address</label>
-                                        <div class="col-md-6">
-                                          <textarea type="text" name="address" placeholder="Address" class="form-control">{{ old('address') }}</textarea>
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                        <div class="form-group{{ ($errors->has('v_name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Vendor Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="v_name" placeholder="V Name" value="{{ old('v_name') }}" class="form-control"/>
+                                            @if ($errors->has('v_name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('v_name') }}</strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
+                                        </div>
 
-                                </div>
-                            </div>
+                                        <div class="form-group{{ ($errors->has('c_name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Contact Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="c_name" placeholder="C Name" value="{{ old('c_name') }}" class="form-control"/>
+                                            @if ($errors->has('c_name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('c_name') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">E-Mail</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="email" placeholder="E-Mail" value="{{ old('email') }}" class="form-control"/>
+                                            @if ($errors->has('email'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+
+                                        <div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Contact No</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="phone" value="{{ old('phone') }}" placeholder="Contact No" class="form-control" data-mask="(999) 999-9999"/>
+                                            @if ($errors->has('phone'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('phone') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                          <label class="col-md-2 control-label">Address</label>
+                                          <div class="col-md-6">
+                                            <textarea type="text" name="address" placeholder="Address" class="form-control">{{ old('address') }}</textarea>
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -147,7 +153,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>
@@ -173,11 +179,10 @@
 
       //  opthtm = '<a href="{{ URL('vendors/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
       opthtm = '';
-        @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit)
-          opthtm += '<a href="{{ URL('vendors/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Vendor" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
-        @endif
-
-        return opthtm;
+      @can('vendors.edit.post')
+      opthtm += '<a href="{{ URL('vendors/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Vendor" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+      @endcan
+      return opthtm;
     }
 
 
@@ -241,12 +246,6 @@
       @else
         $('a[href="#tab-10"]').tab('show');
       @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-vendor').hide();
-      @endif
-
-
       });
     </script>
 

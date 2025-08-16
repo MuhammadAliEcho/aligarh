@@ -2,41 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Book;
 use Auth;
 use App\Http\Controllers\Controller;
 
 class LibraryController extends Controller
 {
-    protected $data, $Book, $Request;
-
-    public function __Construct($Routes, $request){
-      $this->data['root'] = $Routes;
-      $this->Request = $request;
-    }
-
-    protected function PostValidate(){
-      $this->validate($this->Request, [
+    protected function PostValidate($request){
+      $this->validate($request, [
           'title'  =>  'required',
           'qty'  =>  'required',
       ]);
     }
 
-    public function GetLibrary(){
+    public function GetLibrary(Request $request){
 
-      if ($this->Request->ajax()) {
-        return Datatables::eloquent(Book::select('id', 'title', 'author', 'edition', 'qty'))->make(true);
+      if ($request->ajax()) {
+        return DataTables::eloquent(Book::select('id', 'title', 'author', 'edition', 'qty'))->make(true);
       }
-      return view('admin.library', $this->data);
+      return view('admin.library');
 
     }
 
-    public function EditBook(){
+    public function EditBook($id){
 
-      if(Book::where('id', $this->data['root']['option'])->count() == 0){
+      if(Book::where('id', $id)->count() == 0){
       return  redirect('library')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -46,16 +38,16 @@ class LibraryController extends Controller
       ]);
       }
 
-      $this->data['book'] = Book::find($this->data['root']['option']);
-      return view('admin.edit_book', $this->data);
+      $data['book'] = Book::find($id);
+      return view('admin.edit_book', $data);
     }
 
-    public function PostEditBook(Request $request){
+    public function PostEditBook(Request $request, $id){
 
-      $this->Request = $request;
-      $this->PostValidate();
+      $request = $request;
+      $this->PostValidate($request);
 
-      if(Book::where('id', $this->data['root']['option'])->count() == 0){
+      if(Book::where('id', $id)->count() == 0){
       return  redirect('library')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -65,10 +57,10 @@ class LibraryController extends Controller
       ]);
       }
 
-      $this->Book = Book::find($this->data['root']['option']);
-      $this->SetAttributes();
-      $this->Book->updated_by = Auth::user()->id;
-      $this->Book->save();
+      $Book = Book::find($id);
+      $this->SetAttributes($Book, $request);
+      $Book->updated_by = Auth::user()->id;
+      $Book->save();
 
       return redirect('library')->with([
         'toastrmsg' => [
@@ -81,12 +73,12 @@ class LibraryController extends Controller
 
     public function AddBook(Request $request){
 
-      $this->Request = $request;
-      $this->PostValidate();
-      $this->Book = new Book;
-      $this->SetAttributes();
-      $this->Book->created_by = Auth::user()->id;
-      $this->Book->save();
+      $request = $request;
+      $this->PostValidate($request);
+      $Book = new Book;
+      $this->SetAttributes($Book, $request);
+      $Book->created_by = Auth::user()->id;
+      $Book->save();
 
       return redirect('library')->with([
         'toastrmsg' => [
@@ -98,13 +90,13 @@ class LibraryController extends Controller
 
     }
 
-    protected function SetAttributes(){
-      $this->Book->title = $this->Request->input('title');
-      $this->Book->author = $this->Request->input('author');
-      $this->Book->edition = $this->Request->input('edition');
-      $this->Book->publisher = $this->Request->input('publisher');
-      $this->Book->description = $this->Request->input('description');
-      $this->Book->qty = $this->Request->input('qty');
-      $this->Book->rate = $this->Request->input('rate');
+    protected function SetAttributes($Book, $request){
+      $Book->title = $request->input('title');
+      $Book->author = $request->input('author');
+      $Book->edition = $request->input('edition');
+      $Book->publisher = $request->input('publisher');
+      $Book->description = $request->input('description');
+      $Book->qty = $request->input('qty');
+      $Book->rate = $request->input('rate');
     }
 }

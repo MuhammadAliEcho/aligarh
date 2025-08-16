@@ -58,7 +58,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
 	<h4>Fee Receipts Statment</h4>
 	<h4>Between: ( {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['start'])->Format('M-Y') }} TO {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['end'])->Format('M-Y') }} )</h3>
 		<p>Filters:- 
@@ -134,7 +134,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

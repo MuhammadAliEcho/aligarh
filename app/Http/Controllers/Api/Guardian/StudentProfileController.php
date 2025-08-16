@@ -70,7 +70,7 @@ class StudentProfileController extends Controller
  
     protected function LoadShortAttendance(){
 
-//        $this->attendance = StudentAttendance::whereBetween('date', [$this->academic_session->getOriginal('start'), $this->academic_session->getOriginal('end')])
+//        $this->attendance = StudentAttendance::whereBetween('date', [$this->academic_session->getRawOriginal('start'), $this->academic_session->getRawOriginal('end')])
         $this->attendance = StudentAttendance::where('date', '>', '2018-01-01')
                             ->select('id', 'student_id', 'status', 'date')
                             ->where('student_id', $this->student->id)
@@ -105,7 +105,7 @@ class StudentProfileController extends Controller
     protected function LoadFeeCalculation(){
         $last_invoice = InvoiceMaster::where('student_id', $this->student->id)->orderBy('id', 'desc')->first();
         $betweendates	=	[
-            'start'	=>	Carbon::createFromFormat('Y-m-d', $last_invoice->getOriginal('payment_month'))->endOfMonth()->toDateString(),
+            'start'	=>	Carbon::createFromFormat('Y-m-d', $last_invoice->getRawOriginal('payment_month'))->endOfMonth()->toDateString(),
             'end'	=>	Carbon::now()->endOfMonth()->toDateString()
         ];
 

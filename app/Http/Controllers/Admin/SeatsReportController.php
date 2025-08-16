@@ -14,11 +14,11 @@ class SeatsReportController extends Controller
 
 
 	public function GetSeatsStatus(){
-		$this->data['classes']	=	Classe::orderBy('numeric_name')
+		$data['classes']	=	Classe::orderBy('numeric_name')
 									->with('Section')
 									->get();
-		$this->data['academic_session']	=	AcademicSession::find(Auth::user()->academic_session);
-		return view('admin.printable.seats_status_report', $this->data);
+		$data['academic_session']	=	AcademicSession::find(Auth::user()->academic_session);
+		return view('admin.printable.seats_status_report', $data);
 	}
 
 }

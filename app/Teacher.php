@@ -3,16 +3,24 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\HasLeave;
 
 class Teacher extends Model
 {
-  
-	public function User(){
+	use HasLeave;
+
+	public function User()
+	{
 		return $this->belongsTo('App\User');
 	}
 
-	public function scopeHaveCellNo($query){
+	public function scopeHaveCellNo($query)
+	{
 		return $query->where('phone', 'NOT LIKE', '21%')->whereRaw('LENGTH(phone) = 10');
 	}
 
+	public function attendances()
+	{
+		return $this->hasMany(TeacherAttendance::class);
+	}
 }

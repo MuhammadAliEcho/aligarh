@@ -27,9 +27,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -89,14 +91,14 @@
                                         </div>
                                       </div>
 
-                                      <div class="form-group{{ ($errors->has('status'))? ' has-error' : '' }}">
+                                      <div class="form-group{{ ($errors->has('active'))? ' has-error' : '' }}">
                                         <label class="col-md-2 control-label">Status</label>
                                         <div class="col-md-6">
-                                          <select name="status" id="status" class="form-control"/>
+                                          <select name="active" id="status" class="form-control"/>
                                             <option value="0">InActive</option>
                                             <option value="1">Active</option>
                                           </select>
-                                          @if ($errors->has('status'))
+                                          @if ($errors->has('active'))
                                               <span class="help-block">
                                                   <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('status') }}</strong>
                                               </span>
@@ -104,67 +106,30 @@
                                         </div>
                                       </div>
 
-                                      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->editpwd)
-                                      <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Password</label>
-                                        <div class="col-md-6">
-                                          <input type="password" id="password" name="password" placeholder="Password" value="{{ old('password') }}" class="form-control"/>
-                                          @if ($errors->has('password'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('password') }}</strong>
-                                              </span>
-                                          @endif
+                                      @can('users.update.update_password')
+                                        <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Password</label>
+                                          <div class="col-md-6">
+                                            <input type="password" id="password" name="password" placeholder="Password" value="{{ old('password') }}" class="form-control"/>
+                                            @if ($errors->has('password'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('password') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
                                         </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('re_password'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Confirm Password</label>
-                                        <div class="col-md-6">
-                                          <input type="password" name="re_password" placeholder="Confirm Password" value="{{ old('re_password') }}" class="form-control"/>
-                                          @if ($errors->has('re_password'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('re_password') }}</strong>
-                                              </span>
-                                          @endif
+                                        <div class="form-group{{ ($errors->has('re_password'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Confirm Password</label>
+                                          <div class="col-md-6">
+                                            <input type="password" name="re_password" placeholder="Confirm Password" value="{{ old('re_password') }}" class="form-control"/>
+                                            @if ($errors->has('re_password'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('re_password') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
                                         </div>
-                                      </div>
-                                      @endif
-
-                                      <div class="panel panel-success">
-                                        <div class="panel-heading">
-                                          Select Options To Allow User
-                                        </div>
-                                        <div class="panel-body">
-
-                                          @foreach(collect($content)->chunk(3) AS $chunks)
-                                            <div class="row">
-                                            @foreach($chunks AS $key => $chunk)
-                                              <div class="col-sm-4 col-md-4">
-                                                <div class="checkbox checkbox-success">
-                                                  <input id="checkbox_{{ $chunk->id }}" name="privileges[{{ $chunk->id }}][default]" value="1" type="checkbox">
-                                                  <label for="checkbox_{{ $chunk->id }}">
-                                                    {{ $chunk->label }}
-                                                  </label>
-                                                </div>
-                                                @if(COUNT($chunk->options) >= 1 )
-                                                <b>Option:</b>
-                                                <select class="select2 form-control" id="select_{{ $chunk->id }}" multiple="multiple" name="privileges[{{$chunk->id}}][options][]" style="width: 100%">
-                                                  @foreach($chunk->options AS $k => $option)
-                                                    @if(Auth::user()->getprivileges->privileges->{$chunk->id}->{$k})
-                                                      <option value="{{ $k }}">{{ $option }}</option>
-                                                    @endif
-                                                  @endforeach
-                                                </select>
-                                                @endif
-                                              </div>
-                                            @endforeach
-                                            </div>
-                                          @endforeach
-
-
-                                        </div>
-                                      </div>
-
+                                      @endcan
                                       <div class="form-group">
                                           <div class="col-md-offset-2 col-md-6">
                                               <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Update </button>
@@ -180,7 +145,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>
@@ -199,10 +164,17 @@
 
     <!-- Select2 -->
     <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+    @if ($errors->any())
+    <script>
+        @foreach ($errors->all() as $error)
+            toastr.error("{{ $error }}", "Validation Error");
+        @endforeach
+    </script>
+    @endif
 
     <script type="text/javascript">
-    var privileges = {!! json_encode($user->getprivileges->privileges) !!};
-    var allow_session = {!! json_encode($user->getprivileges->allow_session) !!};
+    // var privileges = 'json_encode($user->getprivileges->privileges)';
+    var allow_session = {!! json_encode($user->allow_session) !!};
 
       $(document).ready(function(){
 
@@ -230,12 +202,12 @@
 
         $("#status").val({{ $user->active }});
 
-        $.each(privileges, function(key, val){
-          $('#checkbox_'+key).prop('checked', val.default);
-          $.each(val, function(k, v){
-            $("#select_"+key+" option[value='"+k+"']").prop("selected", v);
-          });
-        });
+        // $.each(privileges, function(key, val){
+        //   $('#checkbox_'+key).prop('checked', val.default);
+        //   $.each(val, function(k, v){
+        //     $("#select_"+key+" option[value='"+k+"']").prop("selected", v);
+        //   });
+        // });
 
         $.each(allow_session, function(k, v){
           $("#allow_session option[value='"+v+"']").prop("selected", v);

@@ -11,22 +11,11 @@ use App\AdditionalFee;
 
 class FeeScenarioController extends Controller
 {
-
-	protected $data, $request, $feeses;
-
-
-	public function __Construct($Routes){
-		$this->data['root'] = $Routes;
-	}
-
-
 	public function Index(){
-		return view('admin.fee_scenario', $this->data);
+		return view('admin.fee_scenario');
 	}
 
 	public function UpdateScenario(Request $request){
-
-		$this->request = $request;
 
 		$this->validate($request, [
 			'type'	=>	'required',
@@ -37,7 +26,7 @@ class FeeScenarioController extends Controller
 		switch ($request->input('type')) {
 			case 1:
 				$ConfigWriter = new ConfigWriter('feeses');
-				$ConfigWriter->set($this->SetFeeses());
+				$ConfigWriter->set($this->SetFeeses($request));
 				$ConfigWriter->save();
 				return redirect('fee-scenario')->with([
 					'toastrmsg' => [
@@ -49,46 +38,46 @@ class FeeScenarioController extends Controller
 				break;
 			
 			case 2:
-				return $this->ApplyAllStudent();
+				return $this->ApplyAllStudent($request);
 				break;
 		}
 
 
 	}
 
-	protected function SetFeeses(){
-		$this->feeses = [
+	protected function SetFeeses($request){
+		$feeses = [
 				'compulsory'	=>	[
-					'tuition_fee'	=>	(int)$this->request->input('tuition_fee'),
-					'late_fee'		=>	(int)$this->request->input('late_fee')
+					'tuition_fee'	=>	(int)$request->input('tuition_fee'),
+					'late_fee'		=>	(int)$request->input('late_fee')
 				],
 			];
 
-		foreach ($this->request->input('fee') as $key => $value) {
-			$this->feeses['additional_fee'][$key]['fee_name']	=	$value['fee_name'];
-			$this->feeses['additional_fee'][$key]['amount']	=	(int)$value['amount'];
-			$this->feeses['additional_fee'][$key]['active']	=	isset($value['active'])? 1 : 0;
-			$this->feeses['additional_fee'][$key]['onetime']	=	isset($value['onetime'])? 1 : 0;
+		foreach ($request->input('fee') as $key => $value) {
+			$feeses['additional_fee'][$key]['fee_name']	=	$value['fee_name'];
+			$feeses['additional_fee'][$key]['amount']	=	(int)$value['amount'];
+			$feeses['additional_fee'][$key]['active']	=	isset($value['active'])? 1 : 0;
+			$feeses['additional_fee'][$key]['onetime']	=	isset($value['onetime'])? 1 : 0;
 		}
 
-		$this->feeses['additional_fee'] = json_encode($this->feeses['additional_fee']);
+		$feeses['additional_fee'] = json_encode($feeses['additional_fee']);
 
-		return $this->feeses;
+		return $feeses;
 	}
 
-	protected function ApplyAllStudent(){
+	protected function ApplyAllStudent($request){
 
-		Student::Active()->chunk(200, function($students){
+		Student::Active()->chunk(200, function($students) use ($request){
 			foreach ($students as $key => $student) {
-				$student->tuition_fee	=	$this->request->input('tuition_fee');
-				$student->total_amount	=	$this->request->input('total_amount');
-				$student->net_amount	=	($this->request->input('total_amount') - $student->discount);
-				$student->late_fee	=	$this->request->input('late_fee');
+				$student->tuition_fee	=	$request->input('tuition_fee');
+				$student->total_amount	=	$request->input('total_amount');
+				$student->net_amount	=	($request->input('total_amount') - $student->discount);
+				$student->late_fee	=	$request->input('late_fee');
 				$student->save();
 
 				$student->AdditionalFee()->delete();
-				if (COUNT($this->request->input('fee')) >= 1) {
-					foreach ($this->request->input('fee') as $key => $value) {
+				if (COUNT($request->input('fee')) >= 1) {
+					foreach ($request->input('fee') as $key => $value) {
 						$AdditionalFee = new AdditionalFee;
 						$AdditionalFee->student_id = $student->id;
 						$AdditionalFee->fee_name = $value['fee_name'];

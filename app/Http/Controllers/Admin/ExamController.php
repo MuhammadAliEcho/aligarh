@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-//use App\Http\Requests;
-//use Request;
 use App\Exam;
 use Carbon\Carbon;
 use Auth;
@@ -13,17 +11,8 @@ use App\Http\Controllers\Controller;
 
 class ExamController extends Controller
 {
-
-	protected $data, $Exam, $Request, $Input;
-
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
-		$this->Input = $Request->input();
-	}
-
-	protected function PostValidate(){
-		$this->validate($this->Request, [
+	protected function PostValidate($request){
+		$this->validate($request, [
 			'exam_category'	=>	'required',
 			'name'  =>  'required',
 			'description'  =>  'required',
@@ -32,29 +21,29 @@ class ExamController extends Controller
 		]);
 	}
 
-	public function Index(){
+	public function Index(Request $request){
 
-		if ($this->Request->ajax()) {
-			return Datatables::eloquent(Exam::query()->CurrentSession()->orderBy('id'))->make(true);
+		if ($request->ajax()) {
+			return DataTables::eloquent(Exam::query()->CurrentSession()->orderBy('id'))->make(true);
 		}
 
-		return view('admin.exam', $this->data);
+		return view('admin.exam');
 	}
 
-	public function EditExam(){
-		$this->data['exam'] = Exam::findOrfail($this->data['root']['option']);
-		return view('admin.edit_exam', $this->data);
+	public function EditExam($id){
+		$data['exam'] = Exam::findOrfail($id);
+		return view('admin.edit_exam', $data);
 	}
 
-	public function PostEditExam(Request $request){
+	public function PostEditExam(Request $request, $id){
 
-		$this->PostValidate();
+		$this->PostValidate($request);
 
-		$this->Exam = Exam::findOrfail($this->data['root']['option']);
-		$this->SetAttributes();
+		$Exam = Exam::findOrfail($id);
+		$this->SetAttributes($Exam, $request);
 //		dd($request->all());
-		$this->Exam->updated_by = Auth::user()->id;
-		$this->Exam->save();
+		$Exam->updated_by = Auth::user()->id;
+		$Exam->save();
 
 		return redirect('exam')->with([
 			'toastrmsg' => [
@@ -65,23 +54,23 @@ class ExamController extends Controller
 		]);
 	}
 
-	public function AddExam(){
+	public function AddExam(Request $request){
 
-		$this->PostValidate();
-		if($this->IsExamCreated()){
+		$this->PostValidate($request);
+		if($this->IsExamCreated($request)){
 			return redirect('exam')->withInput()->with([
 				'toastrmsg' => [
 					'type' => 'error',
 					'title'  =>  'Exam',
-					'msg' =>  'Exam "'.config('examcategories.'.$this->Input['exam_category']).'" already created'
+					'msg' =>  'Exam "'.config('examcategories.'.$request['exam_category']).'" already created'
 					]
 			]);
 		}
-		$this->Exam = new Exam;
-		$this->Exam->academic_session_id = Auth::user()->academic_session;
-		$this->SetAttributes();
-		$this->Exam->created_by = Auth::user()->id;
-		$this->Exam->save();
+		$Exam = new Exam;
+		$Exam->academic_session_id = Auth::user()->academic_session;
+		$this->SetAttributes($Exam, $request);
+		$Exam->created_by = Auth::user()->id;
+		$Exam->save();
 
 		return redirect('exam')->with([
 			'toastrmsg' => [
@@ -93,19 +82,19 @@ class ExamController extends Controller
 
 	}
 
-	protected function SetAttributes(){
-		$this->Exam->category_id	=	$this->Input['exam_category'];
-		$this->Exam->name			=	$this->Input['name'];
-		$this->Exam->active			=	$this->Input['active'];
-		$this->Exam->description 	=	$this->Input['description'];
-		$this->Exam->start_date 	=	Carbon::createFromFormat('d/m/Y', $this->Input['start_date'])->toDateString();
-		$this->Exam->end_date		=	Carbon::createFromFormat('d/m/Y', $this->Input['end_date'])->toDateString();
+	protected function SetAttributes($Exam, $request){
+		$Exam->category_id	=	$request['exam_category'];
+		$Exam->name			=	$request['name'];
+		$Exam->active			=	$request['active'];
+		$Exam->description 	=	$request['description'];
+		$Exam->start_date 	=	Carbon::createFromFormat('d/m/Y', $request['start_date'])->toDateString();
+		$Exam->end_date		=	Carbon::createFromFormat('d/m/Y', $request['end_date'])->toDateString();
 	}
 
-	protected function IsExamCreated(){
+	protected function IsExamCreated($request){
 		return Exam::where([
 			'academic_session_id'	=>	Auth::user()->academic_session,
-			'category_id'	=>	$this->Input['exam_category'],
+			'category_id'	=>	$request['exam_category'],
 		])->first();
 	}
 

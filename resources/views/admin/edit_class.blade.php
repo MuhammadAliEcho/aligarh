@@ -47,7 +47,7 @@
 
 										<div class="ibox-content">
 
-													<form id="tchr_rgstr" method="post" action="{{ URL('manage-classes/edit/'.$root['option']) }}" class="form-horizontal" >
+													<form id="tchr_rgstr" method="post" action="{{ URL('manage-classes/edit/'.$class->id) }}" class="form-horizontal" >
 														{{ csrf_field() }}
 
 														<div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
@@ -118,7 +118,7 @@
 					</div>
 
 
-					@include('admin.includes.footercopyright')
+					
 
 
 				</div>

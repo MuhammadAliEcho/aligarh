@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-//use Illuminate\Http\Request;
-use Request;
+use Illuminate\Http\Request;
 use App\Student;
 use App\Guardian;
 use App\Classe;
@@ -20,99 +19,134 @@ use App\Http\Controllers\Controller;
 use Validator;
 use App\Certificate;
 use App\ParentInterview;
-use Larapack\ConfigWriter\Repository as ConfigWriter;
 
 class StudentsController extends Controller 
 {
 
 //  protected $Routes;
-	protected $data, $Student, $Request, $Input;
+	// protected $data, $Student, $Request, $Input;
 
-	public function __Construct($Routes, $Request){
-		$this->data['root'] = $Routes;
-		$this->Request = $Request;
-		$this->Input  =    $Request->input();
-		//for session update temperory
-//		$this->UpdateStd();
-	}
+// 	public function __Construct($Routes, Request $Request){
+// 		$this->data['root'] = $Routes;
+// 		$this->Request = $Request;
+// 		$this->Input  =    $Request->input();
+// 		// for session update temperory
+// //		$this->UpdateStd();
+// 	}
 
-	public function GetImage(){
-		$student  = Student::findorfail($this->data['root']['option']);
+	public function GetImage($id){
+		$student  = Student::findorfail($id);
 		$image = Storage::get($student->image_dir);
-//    $image = Storage::disk('public/studnets')->get('1.jpg');
-//    return Response($image, 200);
 		return Response($image, 200)->header('Content-Type', 'image');
 	}
 
-	public function GetProfile() {
-		$this->data['student']  = Student::with('Certificates')
+	public function GetProfile($id) {
+		$student  = Student::with('Certificates')
 									->with('StdClass')
 									->with('Section')
-									->with(['Guardian'	=>	function($qry){
-										$qry->with(['Student'	=>	function($qry){
+									->with(['Guardian'	=>	function($qry) use ($id){
+										$qry->with(['Student'	=>	function($qry) use ($id){
 											$qry->select('id', 'guardian_id', 'name', 'gr_no');
-											$qry->where('id', '!=', $this->data['root']['option']);
+											$qry->where('id', '!=', $id);
 										}]);
 									}])
-									->findorfail($this->data['root']['option']);
-		$this->data['student']->date_of_birth_inwords = $this->data['student']->getOriginal('date_of_birth');
-		return view('admin.student_profile', $this->data);
+									->findorfail($id);
+		$student->date_of_birth_inwords = $student->date_of_birth;
+		return view('admin.student_profile', compact('student'));
 	}
 
-	protected function PostValidate(){
-		$this->validate($this->Request, [
+	protected function PostValidate($request,$id = null){
+		$this->validate($request, [
 				'name'    =>  'required',
 				'father_name'    =>  'required',
 				'gender'  =>  'required',
 				'class'   =>  'sometimes|required',
 				'section'  =>  'sometimes|required',
-				'gr_no'  =>  ($this->data['root']['job'] == 'edit')? 'required|unique:students,gr_no,'.$this->data['root']['option'] : 'required|unique:students',
+				'gr_no'  =>  'required|unique:students,gr_no,'.$id,
 				'guardian'    =>  'required',
 				'guardian_relation'  =>  'required',
-// 		    	'email'   =>  ($this->data['root']['job'] == 'edit')? 'email|unique:students,email,'.$this->data['root']['option'] : 'email|unique:students',
 				'tuition_fee'  =>  'sometimes|required|numeric',
 				'dob'       =>  'required',
 				'doa'       =>  'required',
 				'doe'       =>  'required',
-				'img'       =>  'image|mimes:jpeg,png,jpg|max:4096',
+				'img'       => 	'image|mimes:jpg,jpeg|max:2048',
 		]);
 	}
 
-	public function Index(){
-		//$this->data['teachers'] = Teacher::select('name', 'email', 'address', 'id', 'phone')->get();
-		$this->data['classes'] = Classe::select('id', 'name')->get();
-		if (Request::ajax()) {
-	/*
-			return Datatables::eloquent(Student::query())->make(true);
-	*/
-			return Datatables::of(DB::table('students')
+	public function Index(Request $request){
+		$data['classes'] = Classe::select('id', 'name')->get();
+		if ($request->ajax()) {
+			return DataTables::of(DB::table('students')
 				->join('academic_session_history', 'students.id', '=', 'academic_session_history.student_id')
 				->select('students.*', 'academic_session_history.class_id AS class')
 				->where([
 					'academic_session_history.academic_session_id' => Auth::user()->academic_session
 				])
 				)
-				->editColumn('class_name', function($students){
-				$html = ($this->data['classes']->where('id', $students->class)->first())->name;
+				->editColumn('class_name', function($students) use ($data){
+				$html = ($data['classes']->where('id', $students->class)->first())->name;
 				return $html;
 				})
 				->make(true);
-//      return Datatables::eloquent(Student::query()->CurrentSession())->make(true);
 		}
-		$this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
-		$this->data['no_of_active_students'] = Student::active()->count();
+		$data['guardians'] = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
+		$data['no_of_active_students'] = Student::active()->count();
 
-		foreach ($this->data['classes'] as $key => $class) {
-			$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
+		foreach ($data['classes'] as $key => $class) {
+			$data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
 		}
-		return view('admin.students', $this->data);
+		return view('admin.students', $data);
 		}
 
-	public function AddStudent(){
+	public function getGuardians(Request $request)
+	{
+		$guardians = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
+    	return response()->json($guardians);	
+	}	
 
-		$this->PostValidate();
+	public function Grid(Request $request)
+	{	
+		$Students = Student::with([
+			'StdClass:id,name',
+			'Guardian:id,name',
+			'lastInvoice:id,student_id,paid_amount,date'
+		]); 
 
-		if(Student::active()->count() >= config('systemInfo.student_capacity')){
+		if ($request->filled('search_students')) {
+			$search = $request->input('search_students');
+
+			$Students->where(fn($query) => 
+			$query->where('name', 'like', "%{$search}%")
+				->orWhere('gr_no', 'like', "%{$search}%")
+				->orWhere('gender', 'like', "%{$search}%")
+				->orWhereHas('StdClass', fn($q) => 
+					$q->where('name', 'like', "%{$search}%")
+				)
+			);
+		}
+
+		$Students = $request->filled('per_page') ? $Students->paginate($request->input('per_page')) : $Students->get();
+
+		$Students->each(function ($student) {
+			if ($student->lastInvoice && $student->lastInvoice->paid_amount > 0) {
+				$student->invoice_status = 'paid';
+			}
+			elseif ($student->lastInvoice && $student->lastInvoice->paid_amount == 0) {
+				$student->invoice_status = 'unpaid';
+			}
+			else {
+				$student->invoice_status = 'not_created';
+			}
+		});
+		
+		return response()->json($Students);
+	}
+
+	public function AddStudent(Request $request){
+
+		$this->PostValidate($request);
+
+		if(Student::active()->count() >= config('systemInfo.general.student_capacity')){
 			return redirect('students')->with([
 									'toastrmsg' => [
 										'type'	=> 'error', 
@@ -122,20 +156,20 @@ class StudentsController extends Controller
 								]);
 		}
 
-		$this->Student = new Student;
-		$this->SetAttributes();
-		$this->Student->created_by  = Auth::user()->id;
-		$this->Student->session_id  = Auth::user()->academic_session;
-		$this->UpdateGrNo();
-		$this->Student->save();
-		if($this->Request->hasFile('img')){
-			$this->SaveImage();
-			$this->Student->save();
+		$Student = new Student;
+		$this->SetAttributes($Student, $request);
+		$Student->created_by  = Auth::user()->id;
+		$Student->session_id  = Auth::user()->academic_session;
+		$this->UpdateGrNo($Student, $request);
+		$Student->save();
+		if($request->hasFile('img')){
+			$this->SaveImage($Student, $request);
+			$Student->save();
 		}
 
-		$this->UpdateAcademicSessionHistory();
+		$this->UpdateAcademicSessionHistory($Student);
 
-		$this->UpdateAdditionalFee();
+		$this->UpdateAdditionalFee($Student, $request);
 
 		return redirect('students')->with([
 				'toastrmsg' => [
@@ -147,36 +181,36 @@ class StudentsController extends Controller
 
 	}
 
-	public function EditStudent(){
+	public function EditStudent($id){
 
-		$this->data['guardians'] = Guardian::select('id', 'name', 'email')->get();
-		$this->data['classes'] = Classe::select('id', 'name')->get();
-		foreach ($this->data['classes'] as $key => $class) {
-			$this->data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
+		$data['guardians'] = Guardian::select('id', 'name', 'email')->get();
+		$data['classes'] = Classe::select('id', 'name')->get();
+		foreach ($data['classes'] as $key => $class) {
+			$data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
 		}
 
-		$this->data['student'] = Student::findorFail($this->data['root']['option']);
-		$this->data['additional_fee'] = $this->data['student']->AdditionalFee;
+		$data['student'] = Student::findorFail($id);
+		$data['additional_fee'] = $data['student']->AdditionalFee;
 
-		return view('admin.edit_student', $this->data);
+		return view('admin.edit_student', $data);
 	}
 
-	public function PostEditStudent(){
+	public function PostEditStudent(Request $request, $id){
 
-		$this->PostValidate();
-		$this->Student = Student::findorFail($this->data['root']['option']);
-		$this->SetAttributes(false);
+		$this->PostValidate($request, $id);
+		$Student = Student::findorFail($id);
+		$this->SetAttributes($Student, $request, false);
 
-		$this->UpdateGrNo();
+		$this->UpdateGrNo($Student, $request);
 
-		if($this->Request->hasFile('img')){
-			$this->SaveImage();
-		} else if($this->Request->input('removeImage')){
-			$this->DeleteImage();
+		if($request->hasFile('img')){
+			$this->SaveImage($Student, $request);
+		} else if($request->input('removeImage')){
+			$this->DeleteImage($Student);
 		}
 
-		$this->Student->updated_by  = Auth::user()->id;
-		$this->Student->save();
+		$Student->updated_by  = Auth::user()->id;
+		$Student->save();
 
 //		$this->UpdateAcademicSessionHistory();
 //		$this->UpdateAdditionalFee();
@@ -190,10 +224,10 @@ class StudentsController extends Controller
 			]);
 	}
 
-	public function PostLeaveStudent(){
+	public function PostLeaveStudent(Request $request, $id){
 
-		if($this->Request->ajax()){
-			$validator = Validator::make($this->Request->all(), [
+		if($request->ajax()){
+			$validator = Validator::make($request->all(), [
 				'id'				=>	'required|numeric',
 				'date_of_leaving'	=>	'required|date'
 				]);
@@ -209,9 +243,9 @@ class StudentsController extends Controller
 				];
 			}
 
-			$student =	Student::findorfail($this->Request->input('id'));
-			$student->date_of_leaving = $this->Request->input('date_of_leaving');
-			$student->cause_of_leaving = $this->Request->input('cause_of_leaving');
+			$student =	Student::findorfail($id);
+			$student->date_of_leaving = $request->input('date_of_leaving');
+			$student->cause_of_leaving = $request->input('cause_of_leaving');
 			$student->active = 0;
 			$student->save();
 
@@ -255,42 +289,42 @@ class StudentsController extends Controller
 
 	}
 
-	public function GetCertificate(){
-
-		switch ($this->data['root']['option']) {
+	public function GetCertificate($action, Request $request){
+		switch ($action) {
 			case 'new':
-				$this->CompileStudentForCertificate($this->Request->input('student_id'));
+				$data['student'] = $this->CompileStudentForCertificate($request->query('student_id'));
 				break;
 
 			case 'update':
-				$this->data['certificate']	= Certificate::findorfail($this->Request->input('certificate_id'));
-				$this->CompileStudentForCertificate($this->data['certificate']->student_id);
+				$data['certificate']	= Certificate::findorfail($request->input('certificate_id'));
+				$data['student'] = 	$this->CompileStudentForCertificate($data['certificate']->student_id);
 				break;
 			
 			default:
 				abort(404);
 				break;
 		}
-
-		return view('admin.student_certificate', $this->data);
-
+		$data['action'] = $action;
+		return view('admin.student_certificate', $data);
 	}
 
 	private function CompileStudentForCertificate($student_id){
-		$this->data['student']	= Student::findorfail($student_id);
-		$this->data['student']->date_of_birth_inwords = $this->data['student']->getOriginal('date_of_birth');
-		$this->data['student']['class_name']	=	Classe::select('name')->findorfail($this->data['student']->class_id)->name;
+		$data['student']	= Student::findorfail($student_id);
+		$data['student']->date_of_birth_inwords = $data['student']->getRawOriginal('date_of_birth');
+		$data['student']['class_name']	=	Classe::select('name')->findorfail($data['student']->class_id)->name;
+
+		return $data['student'];
 	}
 
 
-	public function PostCertificate(){
+	public function PostCertificate(Request $request){
 
 		$validate = [
 			'title'	=>	'required',
 			'certificate'	=>	'required',
 			'student_id'	=>	'required'
 		];
-		if($this->Request->has('id')){
+		if($request->has('id')){
 			$validate['id'] = 'required';
 		}
 /*		echo $this->Request->input('certificate');
@@ -300,29 +334,29 @@ class StudentsController extends Controller
 			]);
 		$ConfigWriter->save();
 		dd('');*/
-		$this->validate($this->Request, $validate);
-		$this->data['student']	= Student::findorfail($this->Request->input('student_id'));
+		$this->validate($request, $validate);
+		$data['student']	= Student::findorfail($request->input('student_id'));
 
-		if($this->Request->has('id')){
+		if($request->has('id')){
 			Certificate::updateOrCreate(
-				['id'	=>	$this->Request->input('id')],
+				['id'	=>	$request->input('id')],
 				[
 					'updated_by'	=>	Auth::user()->id,
-					'student_id'	=>	$this->Request->input('student_id'),
-					'title'	=>	$this->Request->input('title'),
-					'certificate'	=>	$this->Request->input('certificate')
+					'student_id'	=>	$request->input('student_id'),
+					'title'	=>	$request->input('title'),
+					'certificate'	=>	$request->input('certificate')
 				]
 			);
 		} else {
 			Certificate::create([
 				'created_by'	=> Auth::user()->id,
-				'student_id'	=>	$this->Request->input('student_id'),
-				'title'	=>	$this->Request->input('title'),
-				'certificate'	=>	$this->Request->input('certificate')
+				'student_id'	=>	$request->input('student_id'),
+				'title'	=>	$request->input('title'),
+				'certificate'	=>	$request->input('certificate')
 			]);
 		}
 
-		return redirect('students/profile/'.$this->Request->input('student_id'))->with([
+		return redirect('students/profile/'.$request->input('student_id'))->with([
 									'toastrmsg' => [
 										'type'	=> 'success', 
 										'title'	=>  'Students',
@@ -332,17 +366,18 @@ class StudentsController extends Controller
 
 	}
 
-	public function GetInterview(){
-		$this->data['student'] = Student::with('ParentInterview')->with(['StdClass' => function($qry){
+	public function GetInterview(Request $request, $id){
+
+		$data['student'] = Student::with('ParentInterview')->with(['StdClass' => function($qry){
 			$qry->select('id', 'name');
-		}])->findorFail($this->data['root']['option']);
-		return view('admin.parent_interview', $this->data);
+		}])->findorFail($id);
+		return view('admin.parent_interview', $data);
 	}
 
-	public function UpdateInterview(){
+	public function UpdateOrCreateInterview(Request $request, $id){
 
-		if($this->Request->ajax()){
-			$validator = Validator::make($this->Request->all(), [
+		if($request->ajax()){
+			$validator = Validator::make($request->all(), [
 				'student_id' => 'required'
 			]);
 
@@ -355,21 +390,21 @@ class StudentsController extends Controller
 			}
 
 			ParentInterview::updateOrCreate(
-				['student_id'	=>	$this->Request->input('student_id')],
+				['student_id'	=>	$request->input('student_id')],
 				[
-					'father_qualification'	=>	$this->Request->input('father_qualification'),
-					'mother_qualification'	=>	$this->Request->input('mother_qualification'),
-					'father_occupation'	=>	$this->Request->input('father_occupation'),
-					'mother_occupation'	=>	$this->Request->input('mother_occupation'),
-					'monthly_income'	=>	$this->Request->input('monthly_income'),
-					'other_job_father'	=>	$this->Request->input('other_job_father'),
-					'other_job_mother'	=>	$this->Request->input('other_job_mother'),
-					'family_structure'	=>	$this->Request->input('family_structure'),
-					'parents_living'	=>	$this->Request->input('parents_living'),
-					'no_of_children'	=>	$this->Request->input('no_of_children'),
-					'questions'			=>	$this->Request->input('questions'),
-					'questions_montessori'	=>	$this->Request->input('questions_montessori'),
-					'remarks'				=>	$this->Request->input('remarks'),
+					'father_qualification'	=>	$request->input('father_qualification'),
+					'mother_qualification'	=>	$request->input('mother_qualification'),
+					'father_occupation'	=>	$request->input('father_occupation'),
+					'mother_occupation'	=>	$request->input('mother_occupation'),
+					'monthly_income'	=>	$request->input('monthly_income'),
+					'other_job_father'	=>	$request->input('other_job_father'),
+					'other_job_mother'	=>	$request->input('other_job_mother'),
+					'family_structure'	=>	$request->input('family_structure'),
+					'parents_living'	=>	$request->input('parents_living'),
+					'no_of_children'	=>	$request->input('no_of_children'),
+					'questions'			=>	$request->input('questions'),
+					'questions_montessori'	=>	$request->input('questions_montessori'),
+					'remarks'				=>	$request->input('remarks'),
 				]
 			);
 			
@@ -390,46 +425,46 @@ class StudentsController extends Controller
 //		dd($this->Request);
 	}
 
-	protected function SetAttributes($new = true){
-		$this->Student->name = $this->Request->input('name');
-		$this->Student->father_name = $this->Request->input('father_name');
-		$this->Student->gender = $this->Request->input('gender');
+	protected function SetAttributes($Student, $request, $new = true){
+		$Student->name = $request->input('name');
+		$Student->father_name = $request->input('father_name');
+		$Student->gender = $request->input('gender');
 
-		if($new || Auth::user()->getprivileges->privileges->{$this->data['root']['content']['id']}->editclass) {
-			$this->Student->class_id = $this->Request->input('class');
-			$this->Student->section_id = $this->Request->input('section');
+		if($new || Auth::user()->can('students.class_edit')) {
+			$Student->class_id = $request->input('class');
+			$Student->section_id = $request->input('section');
 		}
 		if($new){
-			$this->Student->tuition_fee = $this->Request->input('tuition_fee');
-			$this->Student->late_fee = $this->Request->input('late_fee');
-			$this->Student->net_amount = $this->Request->input('net_amount');
-			$this->Student->discount = $this->Request->input('discount');
-			$this->Student->total_amount = $this->Request->input('total_amount');
+			$Student->tuition_fee = $request->input('tuition_fee');
+			$Student->late_fee = $request->input('late_fee');
+			$Student->net_amount = $request->input('net_amount');
+			$Student->discount = $request->input('discount');
+			$Student->total_amount = $request->input('total_amount');
 		}
 
-//		$this->Student->gr_no = $this->Request->input('gr_no');
-		$this->Student->guardian_id = $this->Request->input('guardian');
-		$this->Student->guardian_relation = $this->Request->input('guardian_relation');
-		$this->Student->email = $this->Request->input('email');
-		$this->Student->phone = $this->Request->input('phone');
-		$this->Student->address = $this->Request->input('address');
-		$this->Student->seeking_class = $this->Request->input('seeking_class');
-		$this->Student->date_of_birth   = Carbon::createFromFormat('d/m/Y', $this->Request->input('dob'))->toDateString();
-		$this->Student->date_of_admission   = Carbon::createFromFormat('d/m/Y', $this->Request->input('doa'))->toDateString();
-		$this->Student->date_of_enrolled   = $this->Request->input('doe');
-		$this->Student->place_of_birth  = $this->Request->input('place_of_birth');
-		$this->Student->religion  = $this->Request->input('religion');
-		$this->Student->last_school = $this->Request->input('last_school');
-		$this->Student->receipt_no = $this->Request->input('receipt_no');
+//		$Student->gr_no = $request->input('gr_no');
+		$Student->guardian_id = $request->input('guardian');
+		$Student->guardian_relation = $request->input('guardian_relation');
+		$Student->email = $request->input('email');
+		$Student->phone = $request->input('phone');
+		$Student->address = $request->input('address');
+		$Student->seeking_class = $request->input('seeking_class');
+		$Student->date_of_birth   = Carbon::createFromFormat('d/m/Y', $request->input('dob'))->toDateString();
+		$Student->date_of_admission   = Carbon::createFromFormat('d/m/Y', $request->input('doa'))->toDateString();
+		$Student->date_of_enrolled   = $request->input('doe');
+		$Student->place_of_birth  = $request->input('place_of_birth');
+		$Student->religion  = $request->input('religion');
+		$Student->last_school = $request->input('last_school');
+		$Student->receipt_no = $request->input('receipt_no');
 	}
 
-	protected function UpdateAdditionalFee(){
-		AdditionalFee::where(['student_id' => $this->Student->id])->delete();
-		if (COUNT($this->Request->input('fee')) >= 1) {
-			foreach ($this->Input['fee'] as $key => $value) {
+	protected function UpdateAdditionalFee($Student, $request){
+		AdditionalFee::where(['student_id' => $Student->id])->delete();
+		if (COUNT($request->input('fee')) >= 1) {
+			foreach ($request->input('fee') as $key => $value) {
 				$AdditionalFee = new AdditionalFee;
 				$AdditionalFee->id = $value['id'];
-				$AdditionalFee->student_id = $this->Student->id;
+				$AdditionalFee->student_id = $Student->id;
 				$AdditionalFee->fee_name = $value['fee_name'];
 				$AdditionalFee->amount = $value['amount'];
 				$AdditionalFee->onetime = isset($value['onetime'])? 1 : 0;
@@ -439,40 +474,40 @@ class StudentsController extends Controller
 		}
 	}
 
-	protected function UpdateGrNo(){
-		$class = Classe::find($this->Student->class_id);
-		$section = Section::find($this->Student->section_id);
-//    $this->Student->gr_no = $class->numeric_name . $section->nick_name ."-" . $this->Student->id;
-		$this->Student->gr_no = $class->prifix . $section->nick_name ."-" . $this->Request->input('gr_no');
+	protected function UpdateGrNo($Student, $request){
+		$class = Classe::find($Student->class_id);
+		$section = Section::find($Student->section_id);
+//    $Student->gr_no = $class->numeric_name . $section->nick_name ."-" . $Student->id;
+		$Student->gr_no = $class->prifix . $section->nick_name ."-" . $request->input('gr_no');
 	}
 
-	protected function UpdateAcademicSessionHistory(){
+	protected function UpdateAcademicSessionHistory($Student){
 		AcademicSessionHistory::updateOrCreate(
 			[
-				'student_id' => $this->Student->id,
-				'academic_session_id' => $this->Student->session_id
+				'student_id' => $Student->id,
+				'academic_session_id' => $Student->session_id
 			],
 			[
-				'class_id' => $this->Student->class_id
+				'class_id' => $Student->class_id
 			]
 		);
 	}
 
-	protected function SaveImage(){
-		$file = $this->Request->file('img');
-		Storage::delete($this->Student->image_dir);
+	protected function SaveImage($Student,$request){
+		$file = $request->file('img');
+		Storage::delete($Student->image_dir);
 		$extension = $file->getClientOriginalExtension();
-		Storage::disk('public')->put('students/'.$this->Student->id.'.'.$extension,  File::get($file));
-//    $file = $this->Request->file('img')->storePubliclyAs('images/students', $this->Student->id.'.'.$file->getClientOriginalExtension(), 'public');
-		$this->Student->image_dir = 'public/students/'.$this->Student->id.'.'.$extension;
-		$this->Student->image_url = 'students/image/'.$this->Student->id;
+		Storage::disk('public')->put('students/'.$Student->id.'.'.$extension,  File::get($file));
+//    $file = $request->file('img')->storePubliclyAs('images/students', $Student->id.'.'.$file->getClientOriginalExtension(), 'public');
+		$Student->image_dir = 'public/students/'.$Student->id.'.'.$extension;
+		$Student->image_url = 'students/image/'.$Student->id;
 	}
 
-	protected function DeleteImage(){
-		if($this->Student->image_dir){
-			Storage::delete($this->Student->image_dir);
-			$this->Student->image_dir = Null;
-			$this->Student->image_url = Null;
+	protected function DeleteImage($Student){
+		if($Student->image_dir){
+			Storage::delete($Student->image_dir);
+			$Student->image_dir = Null;
+			$Student->image_url = Null;
 		}
 	}
 

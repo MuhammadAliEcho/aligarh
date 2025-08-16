@@ -1,8 +1,8 @@
 <div class="container-fluid">
 
 	<div class="row">
-		<h2 class="text-center">{{ config('systemInfo.title') }}</h3>
-		<h4 class="text-center">{{ config('systemInfo.address') }}</h4>
+		<h2 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+		<h4 class="text-center">{{ config('systemInfo.general.address') }}</h4>
 		<h3 class="text-center"><u>Parent Interview Report</u></h4>
 		<hr>
 		<table class="table">

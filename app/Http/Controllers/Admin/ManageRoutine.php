@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-//use Illuminate\Http\Request;
-use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Teacher;
 use App\Classe;
 use App\Section;
 use App\Routine;
 use App\Subject;
 use DB;
-use Request;
 use Auth;
 use App\Http\Controllers\Controller;
 
 class ManageRoutine extends Controller
 {
-
-  //  protected $Routes;
-  protected $data, $Classes, $Sections, $Routines, $Request;
+  protected $data;
   public $days;
 
-  public function __Construct($Routes){
-    $this->data['root'] = $Routes;
+  public function __Construct(){
     $this->days	=	[
 				'monday'	=> 'Monday',
 				'tuesday'	=> 'Tuesday',
@@ -81,8 +76,8 @@ class ManageRoutine extends Controller
 
   }
 
-	public function EditRoutine(){
-		if(Routine::where('id', $this->data['root']['option'])->count() == 0){
+	public function EditRoutine($id){
+		if(Routine::where('id', $id)->count() == 0){
 		return  redirect('routines')->with([
 		    'toastrmsg' => [
 		      'type' => 'warning', 
@@ -92,7 +87,7 @@ class ManageRoutine extends Controller
 		  ]);
 		}
 
-		$this->data['routine'] = Routine::find($this->data['root']['option']);
+		$this->data['routine'] = Routine::find($id);
 		$this->data['classes'] = Classe::select('name', 'id')->get();
 		$this->data['teachers'] = Teacher::select('name', 'id')->get();
 
@@ -108,14 +103,14 @@ class ManageRoutine extends Controller
 		return view('admin.edit_routine', $this->data);
 	}
 
-  public function AddRoutine($request){
+  public function AddRoutine(Request $request){
 
-    $this->Request = $request;
-    $this->PostValidate();
-    $this->Routines = new Routine;
-    $this->SetAttributes();
-    $this->Routines->created_by = Auth::user()->id;
-    $this->Routines->save();
+    $request = $request;
+    $this->PostValidate($request);
+    $Routines = new Routine;
+    $this->SetAttributes($Routines, $request);
+    $Routines->created_by = Auth::user()->id;
+    $Routines->save();
 
     return redirect('routines')->with([
         'toastrmsg' => [
@@ -127,15 +122,13 @@ class ManageRoutine extends Controller
 
   }
 
-  public function DeleteRoutine($request){
-
+  public function DeleteRoutine(Request $request){
 //    echo "sdthdryh";
-    $this->Request = $request;
-    $this->Routines = Routine::find($this->Request->input('id'));
-//    $this->Routines->find($this->Request->input('id'));
-    $this->Routines->delete();
+    $Routines = Routine::find($request->input('id'));
+//    $Routines->find($request->input('id'));
+    $Routines->delete();
 
-    if (Request::ajax()) {
+    if ($request->ajax()) {
       return  response(['type' => 'success','title'  =>  'Routines Timtable','msg' =>  'Routine Deleted']);
     } else { 
     return redirect('routines')->with([
@@ -149,12 +142,12 @@ class ManageRoutine extends Controller
 
   }
 
-  public function PostEditRoutine($request){
+  public function PostEditRoutine(Request $request, $id){
 
-    $this->Request = $request;
-    $this->PostValidate();
+    $request = $request;
+    $this->PostValidate($request);
 
-    if(Routine::where('id', $this->data['root']['option'])->count() == 0){
+    if(Routine::where('id', $id)->count() == 0){
     return  redirect('routines')->with([
         'toastrmsg' => [
           'type' => 'warning', 
@@ -164,11 +157,11 @@ class ManageRoutine extends Controller
       ]);
     }
 
-    $this->Routines = Routine::find($this->data['root']['option']);
+    $Routines = Routine::find($id);
 
-    $this->SetAttributes();
-    $this->Routines->updated_by = Auth::user()->id;
-    $this->Routines->save();
+    $this->SetAttributes($Routines, $request);
+    $Routines->updated_by = Auth::user()->id;
+    $Routines->save();
 
     return redirect('routines')->with([
         'toastrmsg' => [
@@ -179,8 +172,8 @@ class ManageRoutine extends Controller
       ]);
   }
 
-  protected function PostValidate(){
-    $this->validate($this->Request, [
+  protected function PostValidate($request){
+    $this->validate($request, [
         'class'  =>  'required',
         'section'  =>  'required',
         'subject'  =>  'required',
@@ -191,14 +184,14 @@ class ManageRoutine extends Controller
     ]);
   }
 
-  protected function SetAttributes(){
-    $this->Routines->class_id = $this->Request->input('class');
-    $this->Routines->section_id = $this->Request->input('section');
-    $this->Routines->teacher_id = $this->Request->input('teacher');
-    $this->Routines->day = $this->Request->input('day');
-    $this->Routines->subject_id = $this->Request->input('subject');
-    $this->Routines->from_time = $this->Request->input('from_time');
-    $this->Routines->to_time = $this->Request->input('to_time');
+  protected function SetAttributes($Routines, $request){
+    $Routines->class_id = $request->input('class');
+    $Routines->section_id = $request->input('section');
+    $Routines->teacher_id = $request->input('teacher');
+    $Routines->day = $request->input('day');
+    $Routines->subject_id = $request->input('subject');
+    $Routines->from_time = $request->input('from_time');
+    $Routines->to_time = $request->input('to_time');
   }
 
 }

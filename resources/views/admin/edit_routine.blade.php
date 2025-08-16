@@ -7,8 +7,8 @@
   <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
   <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <script type="text/javascript">
-      var sections = {!! json_encode($sections) !!};
-      var subjects = {!! json_encode($subjects) !!};
+      var sections = {!! json_encode($sections ?? '') !!};
+      var subjects = {!! json_encode($subjects ?? '') !!};
     </script>
   @endsection
 
@@ -36,9 +36,11 @@
 
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -176,7 +178,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>

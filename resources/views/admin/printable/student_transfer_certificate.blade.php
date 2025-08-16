@@ -47,15 +47,15 @@
 <div class="container-fluid">
 
 	<div class="row">
-		<h3 class="text-center">{{ config('systemInfo.title') }}</h3>
+		<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
 		<h4>GR NO.__________________</h4>
 		<h3 class="text-center"><u>TRANSFER CERTIFICATE</u></h3>
 
 		<p>Full Name Of Student <u>@{{ student.name }}</u></p>
 		<p>Father Name <u>@{{ student.father_name }}</u></p>
 		<p>Religion <u>@{{ student.religion }}</u> Place Of Birth <u>@{{ student.place_of_birth }}</u></p>
-		<p>Date Of Birth <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $student->getOriginal('date_of_birth'))->format('l jS \\of F Y') }}</u></p>
-		<p>Date Of Admission <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $student->getOriginal('date_of_admission'))->format('d-M-Y') }}</u></p>
+		<p>Date Of Birth <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $student->getRawOriginal('date_of_birth'))->format('l jS \\of F Y') }}</u></p>
+		<p>Date Of Admission <u>{{ Carbon\Carbon::createFromFormat('Y-m-d', $student->getRawOriginal('date_of_admission'))->format('d-M-Y') }}</u></p>
 		<p>Previous School Attended <u>@{{ student.last_school }}</u></p>
 		<p>Class Attending Now <u>@{{ student.std_class.name }}</u></p>
 		<p>Progress______________________________________Conduct______________________________________</p>
@@ -79,7 +79,7 @@
 
 </div>
 
-@include('admin.includes.footercopyright')
+
 
 @endsection
 

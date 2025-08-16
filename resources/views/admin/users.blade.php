@@ -45,9 +45,11 @@
                       </li>
                   </ol>
               </div>
+              @can('user-settings.change.session')
               <div class="col-lg-4 col-md-6">
                 @include('admin.includes.academic_session')
               </div>
+              @endcan
           </div>
 
           <!-- main Section -->
@@ -59,11 +61,13 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Users</a>
+                              <a data-toggle="tab" onClick="drawTable()" href="#tab-10"><span class="fa fa-list"></span> Users</a>
                             </li>
-                            <li class="add-user">
-                              <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Users</a>
-                            </li>
+                            @can('users.create')
+                              <li class="add-user">
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Users</a>
+                              </li>
+                            @endcan
                         </ul>
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade">
@@ -83,201 +87,150 @@
 
                                 </div>
                             </div>
-                            <div id="tab-11" class="tab-pane fade add-user">
-                                <div class="panel-body">
-                                  <h2> User Registration </h2>
-                                  <div class="hr-line-dashed"></div>
-
-                                    <form id="tchr_rgstr" method="post" action="{{ URL('users/add') }}" class="form-horizontal" >
-                                      {{ csrf_field() }}
-
-                                      <div class="form-group">
-                                        <label class="col-md-2 control-label">Select Type</label>
-                                        <div class="col-md-6">
-                                          <select id="type" name="type" value="{{ old('type') }}" class="form-control" required="true" />
-                                            <option></option>
-                                            <option value="teacher">Teacher</option>
-                                            <option value="employee">Employee</option>
-                                          </select>
-                                          @if ($errors->has('type'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('type') }} </strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div id="teacher" class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}" style="display:none;">
-                                        <label class="col-md-2 control-label"> Teacher </label>
-                                        <div class="col-md-6">
-                                          <select class="form-control select" id="select2_teacher" name="teacher" required="true"></select>
-                                          @if ($errors->has('teacher'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }} </strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div id="employee" class="form-group{{ ($errors->has('employee'))? ' has-error' : '' }}" style="display:none;">
-                                        <label class="col-md-2 control-label"> Employee </label>
-                                        <div class="col-md-6">
-                                          <select class="form-control select" id="select2_employee" name="employee" required="true"></select>
-                                          @if ($errors->has('employee'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('employee') }} </strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">User Name</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="name" placeholder="User Name" value="{{ old('name') }}" class="form-control"/>
-                                          @if ($errors->has('name'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">E-Mail</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="email" placeholder="E-Mail" value="{{ old('email') }}" class="form-control"/>
-                                          @if ($errors->has('email'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Password</label>
-                                        <div class="col-md-6">
-                                          <input type="password" id="password" name="password" placeholder="Password" value="{{ old('password') }}" class="form-control"/>
-                                          @if ($errors->has('password'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('password') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('re_password'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Confirm Password</label>
-                                        <div class="col-md-6">
-                                          <input type="password" name="re_password" placeholder="Confirm Password" value="{{ old('re_password') }}" class="form-control"/>
-                                          @if ($errors->has('re_password'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('re_password') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-<!--                                       <div class="form-group{{ ($errors->has('contact_no'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Contact No</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="contact_no" value="{{ old('contact_no') }}" placeholder="Contact No" class="form-control" data-mask="(999) 999-9999"/>
-                                          @if ($errors->has('contact_no'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('contact_no') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('role'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">User Role</label>
-                                        <div class="col-md-6">
-                                          <input type="text" name="role" placeholder="User Role" value="{{ old('role') }}" class="form-control"/>
-                                          @if ($errors->has('role'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('role') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
- -->
-
-                                      <div class="form-group{{ ($errors->has('allow_session'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Allow Session</label>
-                                        <div class="col-md-6">
-                                          <select class="select2 form-control" multiple="multiple" name="allow_session[]" style="width: 100%">
-                                          @foreach(App\AcademicSession::UserAllowSession()->get() AS $session)
-                                              <option value="{{ $session->id }}">{{ $session->title }}</option>
-                                          @endforeach
-                                          </select>
-                                          @if ($errors->has('allow_session'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('allow_session') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group{{ ($errors->has('status'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Status</label>
-                                        <div class="col-md-6">
-                                          <select name="status" value="{{ old('status') }}" class="form-control"/>
-                                            <option value="0">InActive</option>
-                                            <option value="1">Active</option>
-                                          </select>
-                                          @if ($errors->has('status'))
-                                              <span class="help-block">
-                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('status') }}</strong>
-                                              </span>
-                                          @endif
-                                        </div>
-                                      </div>
-
-                                      <div class="panel panel-success">
-                                        <div class="panel-heading">
-                                          Select Options To Allow User
-                                        </div>
-                                        <div class="panel-body">
-
-                                          @foreach(collect($content)->chunk(3) AS $chunks)
-                                            <div class="row">
-                                            @foreach($chunks AS $key => $chunk)
-                                              <div class="col-sm-4 col-md-4">
-                                                <div class="checkbox checkbox-success">
-                                                  <input id="checkbox_{{ $chunk->id }}" name="privileges[{{ $chunk->id }}][default]" value="1" type="checkbox">
-                                                  <label for="checkbox_{{ $chunk->id }}">
-                                                    {{ $chunk->label }}
-                                                  </label>
-                                                </div>
-                                                @if(COUNT($chunk->options) >= 1 )
-                                                <b>Option:</b>
-                                                <select class="select2 form-control" multiple="multiple" name="privileges[{{$chunk->id}}][options][]" style="width: 100%">
-                                                  @foreach($chunk->options AS $k => $option)
-                                                    @if(Auth::user()->getprivileges->privileges->{$chunk->id}->{$k})
-                                                      <option value="{{ $k }}">{{ $option }}</option>
-                                                    @endif
-                                                  @endforeach
-                                                </select>
-                                                @endif
-                                              </div>
-                                            @endforeach
-                                            </div>
-                                          @endforeach
-
-                                        </div>
-                                      </div>
-
-                                      <div class="form-group">
-                                          <div class="col-md-offset-2 col-md-6">
-                                              <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                            @can('users.create')
+                              <div id="tab-11" class="tab-pane fade add-user">
+                                  <div class="panel-body">
+                                    <h2> User Registration </h2>
+                                    <div class="hr-line-dashed"></div>
+                                      <form id="tchr_rgstr" method="post" action="{{ URL('users/create') }}" class="form-horizontal" >
+                                        @csrf
+                                        <div class="form-group">
+                                          <label class="col-md-2 control-label">Type</label>
+                                          <div class="col-md-6">
+                                            <select id="type" name="type" value="{{ old('type') }}" class="form-control" required="true" />
+                                              <option></option>
+                                              <option value="teacher">Teacher</option>
+                                              <option value="employee">Employee</option>
+                                            </select>
+                                            @if ($errors->has('type'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('type') }} </strong>
+                                                </span>
+                                            @endif
                                           </div>
-                                      </div>
-                                    </form>
-
-                                </div>
-                            </div>
+                                        </div>
+                                        <div id="teacher" class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}" style="display:none;">
+                                          <label class="col-md-2 control-label"> Teacher </label>
+                                          <div class="col-md-6">
+                                            <select class="form-control select" id="select2_teacher" name="teacher" required="true"></select>
+                                            @if ($errors->has('teacher'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('teacher') }} </strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div id="employee" class="form-group{{ ($errors->has('employee'))? ' has-error' : '' }}" style="display:none;">
+                                          <label class="col-md-2 control-label"> Employee </label>
+                                          <div class="col-md-6">
+                                            <select class="form-control select" id="select2_employee" name="employee" required="true"></select>
+                                            @if ($errors->has('employee'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('employee') }} </strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">User Name</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="name" placeholder="User Name" value="{{ old('name') }}" class="form-control"/>
+                                            @if ($errors->has('name'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">E-Mail</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="email" placeholder="E-Mail" value="{{ old('email') }}" class="form-control"/>
+                                            @if ($errors->has('email'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('email') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('password'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Password</label>
+                                          <div class="col-md-6">
+                                            <input type="password" id="password" name="password" placeholder="Password" value="{{ old('password') }}" class="form-control"/>
+                                            @if ($errors->has('password'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('password') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('re_password'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Confirm Password</label>
+                                          <div class="col-md-6">
+                                            <input type="password" name="re_password" placeholder="Confirm Password" value="{{ old('re_password') }}" class="form-control"/>
+                                            @if ($errors->has('re_password'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('re_password') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('allow_session'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Allow Session</label>
+                                          <div class="col-md-6">
+                                            <select class="select2 form-control" multiple="multiple" name="allow_session[]" style="width: 100%">
+                                            @foreach(App\AcademicSession::UserAllowSession()->get() AS $session)
+                                                <option value="{{ $session->id }}">{{ $session->title }}</option>
+                                            @endforeach
+                                            </select>
+                                            @if ($errors->has('allow_session'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('allow_session') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group{{ ($errors->has('status'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Status</label>
+                                          <div class="col-md-6">
+                                            <select name="status" value="{{ old('status') }}" class="form-control"/>
+                                              <option value="0">InActive</option>
+                                              <option value="1">Active</option>
+                                            </select>
+                                            @if ($errors->has('status'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('status') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div id="role" class="form-group{{ ($errors->has('role'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Role</label>
+                                          <div class="col-md-6">
+                                            <select id="role" name="role" value="{{ old('role') }}" class="form-control" required="true">
+                                              <option></option>
+                                              @foreach ($Roles as  $role)
+                                                <option value="{{ $role->id }}" {{ old('role') == $role->id ? 'selected' : '' }}>
+                                                  {{ $role->name }}
+                                                </option>
+                                              @endforeach
+                                            </select>
+                                            @if ($errors->has('role'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('role') }} </strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-6">
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                            </div>
+                                        </div>
+                                      </form>
+                                  </div>
+                              </div>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -286,7 +239,7 @@
           </div>
 
 
-          @include('admin.includes.footercopyright')
+          
 
 
         </div>
@@ -308,6 +261,14 @@
     <!-- Select2 -->
     <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
+@if ($errors->any())
+    <script>
+        @foreach ($errors->all() as $error)
+            toastr.error("{{ $error }}", "Validation Error");
+        @endforeach
+    </script>
+@endif
+
     <script type="text/javascript">
     var tbl;
 
@@ -321,18 +282,24 @@
       };
 
     function loadOptions(data, type, full, meta) {
-
+        opthtm = '';
+        @can('users.update')
         opthtm = '<a href="{{ URL('users/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit" class="btn btn-';
         opthtm  +=   (full.active == 1)? 'default' : 'danger';
         opthtm  +=  ' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
+        @endcan
         
         switch(full.user_type) {
             case 'teacher':
+              @can('teacher.profile')
               opthtm += '<a href="{{ URL('teacher/profile') }}/'+full.foreign_id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
+              @endcan
                 break;
 
             case 'employee':
+              @can('teacher.profile')
               opthtm += '<a href="{{ URL('employee/profile') }}/'+full.foreign_id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
+              @endcan  
                 break;
 
             default:
@@ -342,46 +309,53 @@
         return opthtm;
     }
 
-      $(document).ready(function(){
+    function drawTable() {
+      if (tbl == null)
         tbl = $('.dataTables-user').DataTable({
-          dom: '<"html5buttons"B>lTfgitp',
-          buttons: [
-//            { extend: 'copy'},
-//            {extend: 'csv'},
-//            {extend: 'excel', title: 'ExampleFile'},
-//            {extend: 'pdf', title: 'ExampleFile'},
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+              {extend: 'print',
+                customize: function (win){
+                  $(win.document.body).addClass('white-bg');
+                  $(win.document.body).css('font-size', '12px');
 
-            {extend: 'print',
-              customize: function (win){
-                $(win.document.body).addClass('white-bg');
-                $(win.document.body).css('font-size', '12px');
+                  $(win.document.body).find('table')
+                  .addClass('print-table')
+                  .removeClass('table')
+                  .removeClass('table-striped')
+                  .removeClass('table-bordered')
+                  .removeClass('table-hover')
+                  .addClass('compact')
+                  .css('font-size', 'inherit');
+                },
+                exportOptions: {
+                  columns: [ 0, 1, 2]
+                },
+                title: "Users | {{ config('systemInfo.general.title') }}",
+              }
+            ],
+            Processing: true,
+            serverSide: true,
+            ajax: '{{ URL('users') }}',
+            columns: [
+              { data: 'name' },
+              { data: 'email' },
+              { data: 'roles', name: 'roles.name', orderable: false, searchable: false },
+              {render: loadOptions, className: 'hidden-print', "orderable": false},
+            ],
+          });
+      }
 
-                $(win.document.body).find('table')
-                .addClass('print-table')
-                .removeClass('table')
-                .removeClass('table-striped')
-                .removeClass('table-bordered')
-                .removeClass('table-hover')
-                .addClass('compact')
-                .css('font-size', 'inherit');
-              },
-              exportOptions: {
-                columns: [ 0, 1, 2]
-              },
-              title: "Users | {{ config('systemInfo.title') }}",
-            }
-          ],
-          Processing: true,
-          serverSide: true,
-          ajax: '{{ URL('users') }}',
-          columns: [
-            {data: 'name'},
-            {data: 'email'},
-            {data: 'role'},
-//            {"defaultContent": '<div class="btn-group"><button data-toggle="dropdown" class="btn btn-default btn-xs dropdown-toggle option" aria-expanded="true">Action <span class="caret"></span></button><ul class="dropdown-menu"><li><a href="#"><span class="fa fa-user"></span> Profile</a></li><li class="divider"></li><li><a data-original-title="Edit" class="edit-option"><span class="fa fa-edit"></span> Edit</a></li><li><a href="#"><span class="fa fa-trash"></span> Delete</a></li></ul></div>', className: 'hidden-print'},
-            {render: loadOptions, className: 'hidden-print', "orderable": false},
-          ],
-        });
+      $(document).ready(function(){
+        var tbl = null;
+
+        @if ($errors->any())
+            $('a[href="#tab-11"]').tab('show'); 
+            $('a[href="#tab-10"]').tab('hide');
+        @else    
+            $('a[href="#tab-10"]').tab('show');
+            drawTable();
+        @endif
 
 /*      $('.dataTables-user tbody').on( 'mouseenter', '.edit-option', function () {
         $(this).attr('href','{{ URL('users/edit') }}/'+tbl.row( $(this).parents('tr') ).data().id);
@@ -397,6 +371,9 @@
             ignore:":not(:visible)",
             rules: {
               type: {
+                required: true,
+              },
+              role: {
                 required: true,
               },
               teacher: {
@@ -517,21 +494,11 @@
         $(".select").change();
       });
 
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
-        $('a[href="#tab-11"]').tab('show');
-      @else
+      @if(collect($errors)->count() >= 1 && !$errors->has('toastrmsg'))
         $('a[href="#tab-10"]').tab('show');
+      @else
+        $('a[href="#tab-11"]').tab('show');
       @endif
-
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->add == 0)
-        $('.add-user').hide();
-      @endif
-
-      @if(Auth::user()->getprivileges->privileges->{$root['content']['id']}->edit == 0)
-        $('.edit-user').hide();
-      @endif
-
 
       });
     </script>
