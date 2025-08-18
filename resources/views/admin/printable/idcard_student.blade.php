@@ -3,1564 +3,1649 @@
 
 @section('head')
 
-	<style type="text/css">
-/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
-
-/**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
- */
-
-html {
-  font-family: sans-serif; /* 1 */
-  -ms-text-size-adjust: 100%; /* 2 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-}
-
-/**
- * Remove default margin.
- */
-
-body {
-  margin: 0;
-}
-
-/* HTML5 display definitions
-   ========================================================================== */
-
-/**
- * Correct `block` display not defined for any HTML5 element in IE 8/9.
- * Correct `block` display not defined for `details` or `summary` in IE 10/11
- * and Firefox.
- * Correct `block` display not defined for `main` in IE 11.
- */
-
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-main,
-menu,
-nav,
-section,
-summary {
-  display: block;
-}
-
-/**
- * 1. Correct `inline-block` display not defined in IE 8/9.
- * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
- */
-
-audio,
-canvas,
-progress,
-video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
-}
-
-/**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
-
-audio:not([controls]) {
-  display: none;
-  height: 0;
-}
-
-/**
- * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
- */
-
-[hidden],
-template {
-  display: none;
-}
-
-/* Links
-   ========================================================================== */
-
-/**
- * Remove the gray background color from active links in IE 10.
- */
-
-a {
-  background-color: transparent;
-}
-
-/**
- * Improve readability when focused and also mouse hovered in all browsers.
- */
-
-a:active,
-a:hover {
-  outline: 0;
-}
-
-/* Text-level semantics
-   ========================================================================== */
-
-/**
- * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
- */
-
-abbr[title] {
-  border-bottom: 1px dotted;
-}
-
-/**
- * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
- */
-
-b,
-strong {
-  font-weight: bold;
-}
-
-/**
- * Address styling not present in Safari and Chrome.
- */
-
-dfn {
-  font-style: italic;
-}
-
-/**
- * Address variable `h1` font-size and margin within `section` and `article`
- * contexts in Firefox 4+, Safari, and Chrome.
- */
-
-h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-}
-
-/**
- * Address styling not present in IE 8/9.
- */
-
-mark {
-  background: #ff0;
-  color:inherit;
-}
-
-/**
- * Address inconsistent and variable font size in all browsers.
- */
-
-small {
-  font-size: 80%;
-}
-
-/**
- * Prevent `sub` and `sup` affecting `line-height` in all browsers.
- */
-
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-
-sup {
-  top: -0.5em;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-/* Embedded content
-   ========================================================================== */
-
-/**
- * Remove border when inside `a` element in IE 8/9/10.
- */
-
-img {
-  border: 0;
-}
-
-/**
- * Correct overflow not hidden in IE 9/10/11.
- */
-
-svg:not(:root) {
-  overflow: hidden;
-}
-
-/* Grouping content
-   ========================================================================== */
-
-/**
- * Address margin not present in IE 8/9 and Safari.
- */
-
-figure {
-  margin: 1em 40px;
-}
-
-/**
- * Address differences between Firefox and other browsers.
- */
-
-hr {
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-}
-
-/**
- * Contain overflow in all browsers.
- */
-
-pre {
-  overflow: auto;
-}
-
-/**
- * Address odd `em`-unit font size rendering in all browsers.
- */
-
-code,
-kbd,
-pre,
-samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
-}
-
-/* Forms
-   ========================================================================== */
-
-/**
- * Known limitation: by default, Chrome and Safari on OS X allow very limited
- * styling of `select`, unless a `border` property is set.
- */
-
-/**
- * 1. Correct color not being inherited.
- *    Known issue: affects color of disabled elements.
- * 2. Correct font properties not being inherited.
- * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
- */
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  color: inherit; /* 1 */
-  font: inherit; /* 2 */
-  margin: 0; /* 3 */
-}
-
-/**
- * Address `overflow` set to `hidden` in IE 8/9/10/11.
- */
-
-button {
-  overflow: visible;
-}
-
-/**
- * Address inconsistent `text-transform` inheritance for `button` and `select`.
- * All other form control elements do not inherit `text-transform` values.
- * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
- * Correct `select` style inheritance in Firefox.
- */
-
-button,
-select {
-  text-transform: none;
-}
-
-/**
- * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
- *    and `video` controls.
- * 2. Correct inability to style clickable `input` types in iOS.
- * 3. Improve usability and consistency of cursor style between image-type
- *    `input` and others.
- */
-
-button,
-html input[type="button"], /* 1 */
-input[type="reset"],
-input[type="submit"] {
-  -webkit-appearance: button; /* 2 */
-  cursor: pointer; /* 3 */
-}
-
-/**
- * Re-set default cursor for disabled elements.
- */
-
-button[disabled],
-html input[disabled] {
-  cursor: default;
-}
-
-/**
- * Remove inner padding and border in Firefox 4+.
- */
-
-button::-moz-focus-inner,
-input::-moz-focus-inner {
-  border: 0;
-  padding: 0;
-}
-
-/**
- * Address Firefox 4+ setting `line-height` on `input` using `!important` in
- * the UA stylesheet.
- */
-
-input {
-  line-height: normal;
-}
-
-/**
- * It's recommended that you don't attempt to style these elements.
- * Firefox's implementation doesn't respect box-sizing, padding, or width.
- *
- * 1. Address box sizing set to `content-box` in IE 8/9/10.
- * 2. Remove excess padding in IE 8/9/10.
- */
-
-input[type="checkbox"],
-input[type="radio"] {
-  box-sizing: border-box; /* 1 */
-  padding: 0; /* 2 */
-}
-
-/**
- * Fix the cursor style for Chrome's increment/decrement buttons. For certain
- * `font-size` values of the `input`, it causes the cursor style of the
- * decrement button to change from `default` to `text`.
- */
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  height: auto;
-}
-
-/**
- * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
- *    (include `-moz` to future-proof).
- */
-
-input[type="search"] {
-  -webkit-appearance: textfield; /* 1 */
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box; /* 2 */
-  box-sizing: content-box;
-}
-
-/**
- * Remove inner padding and search cancel button in Safari and Chrome on OS X.
- * Safari (but not Chrome) clips the cancel button when the search input has
- * padding (and `textfield` appearance).
- */
-
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-
-/**
- * Define consistent border, margin, and padding.
- */
-
-fieldset {
-  border: 1px solid #c0c0c0;
-  margin: 0 2px;
-  padding: 0.35em 0.625em 0.75em;
-}
-
-/**
- * 1. Correct `color` not being inherited in IE 8/9/10/11.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
- */
-
-legend {
-  border: 0; /* 1 */
-  padding: 0; /* 2 */
-}
-
-/**
- * Remove default vertical scrollbar in IE 8/9/10/11.
- */
-
-textarea {
-  overflow: auto;
-}
-
-/**
- * Don't inherit the `font-weight` (applied by a rule above).
- * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
- */
-
-optgroup {
-  font-weight: bold;
-}
-
-/* Tables
-   ========================================================================== */
-
-/**
- * Remove most spacing between table cells.
- */
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-td,
-th {
-  padding: 0;
-}
-
-
-/*  SECTIONS  ============================================================================= */
-
-.section {
-	clear: both;
-	padding: 0px;
-	margin: 0px;
-}
-
-/*  GROUPING  ============================================================================= */
-
-.row {
-    zoom: 1; /* For IE 6/7 (trigger hasLayout) */
-}
-
-.row:before,
-.row:after {
-    content:"";
-    display:table;
-}
-.row:after {
-    clear:both;
-}
-
-/*  GRID COLUMN SETUP   ==================================================================== */
-
-.col {
-	display: block;
-	float:left;
-	margin: 1% 0 1% 1.6%;
-}
-
-.col:first-child { margin-left: 0; } /* all browsers except IE6 and lower */
-
-
-/*  REMOVE MARGINS AS ALL GO FULL WIDTH AT 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.col { 
-		/*margin: 1% 0 1% 0%;*/
-        margin: 0;
-	}
-}
-
-
-/*  GRID OF TWO   ============================================================================= */
-
-
-.span-2-of-2 {
-	width: 100%;
-}
-
-.span-1-of-2 {
-	width: 49.2%;
-}
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-2-of-2 {
-		width: 100%; 
-	}
-	.span-1-of-2 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF THREE   ============================================================================= */
-
-	
-.span-3-of-3 {
-	width: 100%; 
-}
-
-.span-2-of-3 {
-	width: 66.13%; 
-}
-
-.span-1-of-3 {
-	width: 32.26%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-3-of-3 {
-		width: 100%; 
-	}
-	.span-2-of-3 {
-		width: 100%; 
-	}
-	.span-1-of-3 {
-		width: 100%;
-	}
-}
-
-/*  GRID OF FOUR   ============================================================================= */
-
-	
-.span-4-of-4 {
-	width: 100%; 
-}
-
-.span-3-of-4 {
-	width: 74.6%; 
-}
-
-.span-2-of-4 {
-	width: 49.2%; 
-}
-
-.span-1-of-4 {
-	width: 23.8%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-4-of-4 {
-		width: 100%; 
-	}
-	.span-3-of-4 {
-		width: 100%; 
-	}
-	.span-2-of-4 {
-		width: 100%; 
-	}
-	.span-1-of-4 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF FIVE   ============================================================================= */
-
-	
-.span-5-of-5 {
-	width: 100%;
-}
-
-.span-4-of-5 {
-  	width: 79.68%; 
-}
-
-.span-3-of-5 {
-  	width: 59.36%; 
-}
-
-.span-2-of-5 {
-  	width: 39.04%;
-}
-
-.span-1-of-5 {
-  	width: 18.72%;
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-5-of-5 {
-		width: 100%; 
-	}
-	.span-4-of-5 {
-		width: 100%; 
-	}
-	.span-3-of-5 {
-		width: 100%; 
-	}
-	.span-2-of-5 {
-		width: 100%; 
-	}
-	.span-1-of-5 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF SIX   ============================================================================= */
-
-
-.span-6-of-6 {
-	width: 100%;
-}
-
-.span-5-of-6 {
-  	width: 83.06%;
-}
-
-.span-4-of-6 {
-  	width: 66.13%;
-}
-
-.span-3-of-6 {
-  	width: 49.2%;
-}
-
-.span-2-of-6 {
-  	width: 32.26%;
-}
-
-.span-1-of-6 {
-  	width: 15.33%;
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-6-of-6 {
-		width: 100%; 
-	}
-	.span-5-of-6 {
-		width: 100%; 
-	}
-	.span-4-of-6 {
-		width: 100%; 
-	}
-	.span-3-of-6 {
-		width: 100%; 
-	}
-	.span-2-of-6 {
-		width: 100%; 
-	}
-	.span-1-of-6 {
-		width: 100%; 
-	}
-}
-
-
-
-/*  GRID OF SEVEN   ============================================================================= */
-
-
-.span-7-of-7 {
-	width: 100%;
-}
-
-.span-6-of-7 {
-	width: 85.48%;
-}
-
-.span-5-of-7 {
-  	width: 70.97%;
-}
-
-.span-4-of-7 {
-  	width: 56.45%;
-}
-
-.span-3-of-7 {
-  	width: 41.94%;
-}
-
-.span-2-of-7 {
-  	width: 27.42%;
-}
-
-.span-1-of-7 {
-  	width: 12.91%;
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-7-of-7 {
-		width: 100%; 
-	}
-	.span-6-of-7 {
-		width: 100%; 
-	}
-	.span-5-of-7 {
-		width: 100%; 
-	}
-	.span-4-of-7 {
-		width: 100%; 
-	}
-	.span-3-of-7 {
-		width: 100%; 
-	}
-	.span-2-of-7 {
-		width: 100%; 
-	}
-	.span-1-of-7 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF EIGHT   ============================================================================= */
-
-	
-.span-8-of-8 {
-	width: 100%;
-}
-
-.span-7-of-8 {
-	width: 87.3%; 
-}
-
-.span-6-of-8 {
-	width: 74.6%; 
-}
-
-.span-5-of-8 {
-	width: 61.9%; 
-}
-
-.span-4-of-8 {
-	width: 49.2%; 
-}
-
-.span-3-of-8 {
-	width: 36.5%;
-}
-
-.span-2-of-8 {
-	width: 23.8%; 
-}
-
-.span-1-of-8 {
-	width: 11.1%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-8-of-8 {
-		width: 100%; 
-	}
-	.span-7-of-8 {
-		width: 100%; 
-	}
-	.span-6-of-8 {
-		width: 100%; 
-	}
-	.span-5-of-8 {
-		width: 100%; 
-	}
-	.span-4-of-8 {
-		width: 100%; 
-	}
-	.span-3-of-8 {
-		width: 100%; 
-	}
-	.span-2-of-8 {
-		width: 100%; 
-	}
-	.span-1-of-8 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF NINE   ============================================================================= */
-
-
-.span-9-of-9 {
-	width: 100%;
-}
-
-.span-8-of-9 {
-	width: 88.71%;
-}
-
-.span-7-of-9 {
-	width: 77.42%; 
-}
-
-.span-6-of-9 {
-	width: 66.13%; 
-}
-
-.span-5-of-9 {
-	width: 54.84%; 
-}
-
-.span-4-of-9 {
-	width: 43.55%; 
-}
-
-.span-3-of-9 {
-	width: 32.26%;
-}
-
-.span-2-of-9 {
-	width: 20.97%; 
-}
-
-.span-1-of-9 {
-	width: 9.68%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-9-of-9 {
-		width: 100%; 
-	}
-	.span-8-of-9 {
-		width: 100%; 
-	}
-	.span-7-of-9 {
-		width: 100%; 
-	}
-	.span-6-of-9 {
-		width: 100%; 
-	}
-	.span-5-of-9 {
-		width: 100%; 
-	}
-	.span-4-of-9 {
-		width: 100%; 
-	}
-	.span-3-of-9 {
-		width: 100%; 
-	}
-	.span-2-of-9 {
-		width: 100%; 
-	}
-	.span-1-of-9 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF TEN   ============================================================================= */
-
-
-.span-10-of-10 {
-	width: 100%;
-}
-
-.span-9-of-10 {
-	width: 89.84%;
-}
-
-.span-8-of-10 {
-	width: 79.68%;
-}
-
-.span-7-of-10 {
-	width: 69.52%; 
-}
-
-.span-6-of-10 {
-	width: 59.36%; 
-}
-
-.span-5-of-10 {
-	width: 49.2%; 
-}
-
-.span-4-of-10 {
-	width: 39.04%; 
-}
-
-.span-3-of-10 {
-	width: 28.88%;
-}
-
-.span-2-of-10 {
-	width: 18.72%; 
-}
-
-.span-1-of-10 {
-	width: 8.56%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-10-of-10 {
-		width: 100%; 
-	}
-	.span-9-of-10 {
-		width: 100%; 
-	}
-	.span-8-of-10 {
-		width: 100%; 
-	}
-	.span-7-of-10 {
-		width: 100%; 
-	}
-	.span-6-of-10 {
-		width: 100%; 
-	}
-	.span-5-of-10 {
-		width: 100%; 
-	}
-	.span-4-of-10 {
-		width: 100%; 
-	}
-	.span-3-of-10 {
-		width: 100%; 
-	}
-	.span-2-of-10 {
-		width: 100%; 
-	}
-	.span-1-of-10 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF ELEVEN   ============================================================================= */
-
-.span-11-of-11 {
-	width: 100%;
-}
-
-.span-10-of-11 {
-	width: 90.76%;
-}
-
-.span-9-of-11 {
-	width: 81.52%;
-}
-
-.span-8-of-11 {
-	width: 72.29%;
-}
-
-.span-7-of-11 {
-	width: 63.05%; 
-}
-
-.span-6-of-11 {
-	width: 53.81%; 
-}
-
-.span-5-of-11 {
-	width: 44.58%; 
-}
-
-.span-4-of-11 {
-	width: 35.34%; 
-}
-
-.span-3-of-11 {
-	width: 26.1%;
-}
-
-.span-2-of-11 {
-	width: 16.87%; 
-}
-
-.span-1-of-11 {
-	width: 7.63%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-11-of-11 {
-		width: 100%; 
-	}
-	.span-10-of-11 {
-		width: 100%; 
-	}
-	.span-9-of-11 {
-		width: 100%; 
-	}
-	.span-8-of-11 {
-		width: 100%; 
-	}
-	.span-7-of-11 {
-		width: 100%; 
-	}
-	.span-6-of-11 {
-		width: 100%; 
-	}
-	.span-5-of-11 {
-		width: 100%; 
-	}
-	.span-4-of-11 {
-		width: 100%; 
-	}
-	.span-3-of-11 {
-		width: 100%; 
-	}
-	.span-2-of-11 {
-		width: 100%; 
-	}
-	.span-1-of-11 {
-		width: 100%; 
-	}
-}
-
-
-/*  GRID OF TWELVE   ============================================================================= */
-
-.span-12-of-12 {
-	width: 100%;
-}
-
-.span-11-of-12 {
-	width: 91.53%;
-}
-
-.span-10-of-12 {
-	width: 83.06%;
-}
-
-.span-9-of-12 {
-	width: 74.6%;
-}
-
-.span-8-of-12 {
-	width: 66.13%;
-}
-
-.span-7-of-12 {
-	width: 57.66%; 
-}
-
-.span-6-of-12 {
-	width: 49.2%; 
-}
-
-.span-5-of-12 {
-	width: 40.73%; 
-}
-
-.span-4-of-12 {
-	width: 32.26%; 
-}
-
-.span-3-of-12 {
-	width: 23.8%;
-}
-
-.span-2-of-12 {
-	width: 15.33%; 
-}
-
-.span-1-of-12 {
-	width: 6.86%; 
-}
-
-
-/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
-
-@media only screen and (max-width: 480px) {
-	.span-12-of-12 {
-		width: 100%; 
-	}
-	.span-11-of-12 {
-		width: 100%; 
-	}
-	.span-10-of-12 {
-		width: 100%; 
-	}
-	.span-9-of-12 {
-		width: 100%; 
-	}
-	.span-8-of-12 {
-		width: 100%; 
-	}
-	.span-7-of-12 {
-		width: 100%; 
-	}
-	.span-6-of-12 {
-		width: 100%; 
-	}
-	.span-5-of-12 {
-		width: 100%; 
-	}
-	.span-4-of-12 {
-		width: 100%; 
-	}
-	.span-3-of-12 {
-		width: 100%; 
-	}
-	.span-2-of-12 {
-		width: 100%; 
-	}
-	.span-1-of-12 {
-		width: 100%; 
-	}
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    cursor:default;
-}
-
-@-ms-viewport{
-  width: device-width;
-}
-
-html{ scroll-behavior: smooth;}
-
-html,
-body {
-    position:relative;
-    background-color: #efefef;
-    color: black;
-    font-size: 6px;
-    text-rendering:optimizeLegibility;
-    overflow-x: hidden;
-    -webkit-transition: all 0.4s;
-    transition: all 0.4s;
-    will-change: background;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 600;
-    color: #3A447D;
-   
-}
-
-.clearfix {zoom: 1;}
-.clearfix:after {
-    content: '.';
-    clear: both;
-    display: block;
-    height: 0;
-    visibility: hidden;
-}
-/* ----------------------------------------------- */
-/* REUSABLE COMPONENTS */
-/* ----------------------------------------------- */
-
-
-.row {
-    max-width: 80%;
-    margin: 0 auto;
-}
-
-section {
-   padding: 2%;
-    overflow: hidden;
-    
-    
-}
-
-ul{
-    text-decoration: none;
-    
-}
-.text{
-    font-size: 120%;
-    padding: 0;
-    font-weight: 100;
-    letter-spacing: 2px;
-    text-transform: capitalize;
-}
-
-
-
-.title{
-    font-size: 150%;
-    padding: 5% 1%;
-    letter-spacing: 2px;
-    text-transform:capitalize;
-    text-align: left;
-    font-weight: 100;
-    line-height: 150% ;
-}
-.sub-title{
-    position: relative;
-    font-size: 140%;
-    padding: 2% 0;
-    letter-spacing: 2px;
-    text-transform:capitalize;
-    text-align: left;
-    font-weight: 600;
-    z-index: 10;
-    color:  #141D26;
-}
-
-.sometext{
-    position: relative;
-    display: block;
-    padding: 2% 0;
-    margin: 2% 0;
-    z-index: 10;
-    font-weight: 100;
-    
-}
-.sometext-1{
-    display: block;
-    padding: 2% 0;
-    margin: 5% -1%;
-    font-weight: 100;
-    
-}
-blockquote{
-    font-size: 180%;
-    text-align: left;
-    text-transform: capitalize;
-    line-height: 120%;
-    position: relative;
-    padding: 8% 0;
-    z-index: 10;
-    
-   
-}
-blockquote:before{
-     display: block;
-    content: "\201C";
-    font-size: 400%;
-    margin-top: -4%;
-    position: absolute;
-    color: #5CA0CC;
-    
-}
-.lol .somebackground{
-    background-color: white;
-    position: absolute;
-    padding: 1.8% 18%;
-    margin: -6.6% -0.2%; 
-    z-index: 2;
-    
-}
-
-.lol .somebackground-5{
-    opacity: 0.6;
-    background: #0072BB;
-    position: absolute;
-    padding: 1.8% 18%;
-    margin: -5.8% -0.5%; 
-    z-index: 1;
-    
-}
-.blahblahblah .somebackground{
-      background-color: white;
-    position: absolute;
-    padding: 0.9% 9%;
-    margin: -1.6% -0.2%; 
-    z-index: 2;
-    
-    
-}
-
-.blahblahblah .somebackground-5{
-    opacity: 0.6;
-    background: #0072BB;
-    position: absolute;
-    padding: 1% 9%;
-    margin: -1.4% -0.5%; 
-    z-index: 1;
-    
-}
-p{
-   
-    font-size: 120%;
-    line-height: 130%;
-    word-spacing: 10px;
-    z-index: 2;
-    font-weight: 100;
-    word-spacing: 5px;
-}
-
-.project-title{
-    font-size: 400%;
-    text-align: left;
-    text-transform: uppercase;
-    letter-spacing: 5px;
-    color: #141D26;
-    padding: 2% 2% 0;
-    font-weight: 100;
-    position: relative;
-    z-index: 10;
-    
-}.vertical-text{
-    font-size: 300%;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 5px;
-    color: #FFFFFF;
-    
-}
-.somebackground{
-    background-color: white;
-    position: absolute;
-    padding: 0.9% 7.1%;
-    margin: -1.6% -0.2%; 
-    z-index: 2;
-    
-}.somebackground-5{
-    opacity: 0.6;
-    background: #0072BB;
-    position: absolute;
-    padding: 1% 7%;
-    margin: -1.4% -0.5%; 
-    z-index: 1;
-    
-}
-
-
-    .somebackground-1 {
-      background: white;
-      display: inline-block;
-      height: 180px;
-      margin-left: 180px;
-      margin-top: 185px;
-      position: relative;
-      width: 390px;
-    }
-    .somebackground-1:before {
-     border-bottom: 135px solid white;
-      border-left: 150px solid transparent;
-      border-right: 150px solid white;
-      content: "";
-      height: 0;
-      left: 0;
-      position: absolute;
-      top: -135px;
-      width: 90px;
-    }
-
-.somebackground-2 {
-    opacity: 0.6;
-      background: #0072BB;
-      display: inline-block;
-      height: 180px;
-      margin-left: 180px;
-      margin-top: 185px;
-      position: relative;
-      width: 390px;
-    }
-    .somebackground-2:before {
-     border-bottom: 135px solid #0072BB;
-      border-left: 150px solid transparent;
-      border-right: 150px solid #0072BB;
-      content: "";
-      height: 0;
-      left: 0;
-      position: absolute;
-      top: -135px;
-      width: 90px;
-    }
-.anodabox{
-    position: absolute;
-    margin: -23% -3%;
-    z-index: 2;
-}
-.anodabox-2{
-    position: absolute;
-    margin: -23.4% -4%;
-    z-index: 1;
-}
-.logo img{
-    width: 100%;
-    height: 280px;
-    margin: ;
-}
-
-.system img{
-    display: block;
-    width: 700px;
-    height: 670px; 
-    margin: 5% -10%;
-    background-size:contain;
-    
-}
-
-.box{
-    background-color: white;
-    padding: 1%;
-    border: 3px solid black;
-    border-radius: 5%;
-    height: 200px;
-    width: 330px;
-    overflow: hidden;
-}
-
-.logo
-{
-
-    height: 60px;
-    width: 60px;
-    margin-top: -10%;
-}
-.text-1{
-    color: #06243E;
-    font-size: 280%;
-    text-align: center;
-}
-.text-2{
-    width: 80%;
-    text-align: center;
-    font-size: 170%;
-    text-transform: uppercase;
-    padding: 1% 0;
-    border-top: 3px solid #06243E;
-    border-bottom: 3px solid #06243E;
-    margin-left: 10%;
-    letter-spacing: 1px;
-    word-spacing: 6px;
-}
-
-
-	</style>
+    <style type="text/css">
+        /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
+
+        /**
+         * 1. Set default font family to sans-serif.
+         * 2. Prevent iOS text size adjust after orientation change, without disabling
+         *    user zoom.
+         */
+
+        html {
+            font-family: sans-serif;
+            /* 1 */
+            -ms-text-size-adjust: 100%;
+            /* 2 */
+            -webkit-text-size-adjust: 100%;
+            /* 2 */
+        }
+
+        /**
+         * Remove default margin.
+         */
+
+        body {
+            margin: 0;
+        }
+
+        /* HTML5 display definitions
+           ========================================================================== */
+
+        /**
+         * Correct `block` display not defined for any HTML5 element in IE 8/9.
+         * Correct `block` display not defined for `details` or `summary` in IE 10/11
+         * and Firefox.
+         * Correct `block` display not defined for `main` in IE 11.
+         */
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        hgroup,
+        main,
+        menu,
+        nav,
+        section,
+        summary {
+            display: block;
+        }
+
+        /**
+         * 1. Correct `inline-block` display not defined in IE 8/9.
+         * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+         */
+
+        audio,
+        canvas,
+        progress,
+        video {
+            display: inline-block;
+            /* 1 */
+            vertical-align: baseline;
+            /* 2 */
+        }
+
+        /**
+         * Prevent modern browsers from displaying `audio` without controls.
+         * Remove excess height in iOS 5 devices.
+         */
+
+        audio:not([controls]) {
+            display: none;
+            height: 0;
+        }
+
+        /**
+         * Address `[hidden]` styling not present in IE 8/9/10.
+         * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
+         */
+
+        [hidden],
+        template {
+            display: none;
+        }
+
+        /* Links
+           ========================================================================== */
+
+        /**
+         * Remove the gray background color from active links in IE 10.
+         */
+
+        a {
+            background-color: transparent;
+        }
+
+        /**
+         * Improve readability when focused and also mouse hovered in all browsers.
+         */
+
+        a:active,
+        a:hover {
+            outline: 0;
+        }
+
+        /* Text-level semantics
+           ========================================================================== */
+
+        /**
+         * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+         */
+
+        abbr[title] {
+            border-bottom: 1px dotted;
+        }
+
+        /**
+         * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+         */
+
+        b,
+        strong {
+            font-weight: bold;
+        }
+
+        /**
+         * Address styling not present in Safari and Chrome.
+         */
+
+        dfn {
+            font-style: italic;
+        }
+
+        /**
+         * Address variable `h1` font-size and margin within `section` and `article`
+         * contexts in Firefox 4+, Safari, and Chrome.
+         */
+
+        h1 {
+            font-size: 2em;
+            margin: 0.67em 0;
+        }
+
+        /**
+         * Address styling not present in IE 8/9.
+         */
+
+        mark {
+            background: #ff0;
+            color: inherit;
+        }
+
+        /**
+         * Address inconsistent and variable font size in all browsers.
+         */
+
+        small {
+            font-size: 80%;
+        }
+
+        /**
+         * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+         */
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+
+        sup {
+            top: -0.5em;
+        }
+
+        sub {
+            bottom: -0.25em;
+        }
+
+        /* Embedded content
+           ========================================================================== */
+
+        /**
+         * Remove border when inside `a` element in IE 8/9/10.
+         */
+
+        img {
+            border: 0;
+        }
+
+        /**
+         * Correct overflow not hidden in IE 9/10/11.
+         */
+
+        svg:not(:root) {
+            overflow: hidden;
+        }
+
+        /* Grouping content
+           ========================================================================== */
+
+        /**
+         * Address margin not present in IE 8/9 and Safari.
+         */
+
+        figure {
+            margin: 1em 40px;
+        }
+
+        /**
+         * Address differences between Firefox and other browsers.
+         */
+
+        hr {
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            height: 0;
+        }
+
+        /**
+         * Contain overflow in all browsers.
+         */
+
+        pre {
+            overflow: auto;
+        }
+
+        /**
+         * Address odd `em`-unit font size rendering in all browsers.
+         */
+
+        code,
+        kbd,
+        pre,
+        samp {
+            font-family: monospace, monospace;
+            font-size: 1em;
+        }
+
+        /* Forms
+           ========================================================================== */
+
+        /**
+         * Known limitation: by default, Chrome and Safari on OS X allow very limited
+         * styling of `select`, unless a `border` property is set.
+         */
+
+        /**
+         * 1. Correct color not being inherited.
+         *    Known issue: affects color of disabled elements.
+         * 2. Correct font properties not being inherited.
+         * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+         */
+
+        button,
+        input,
+        optgroup,
+        select,
+        textarea {
+            color: inherit;
+            /* 1 */
+            font: inherit;
+            /* 2 */
+            margin: 0;
+            /* 3 */
+        }
+
+        /**
+         * Address `overflow` set to `hidden` in IE 8/9/10/11.
+         */
+
+        button {
+            overflow: visible;
+        }
+
+        /**
+         * Address inconsistent `text-transform` inheritance for `button` and `select`.
+         * All other form control elements do not inherit `text-transform` values.
+         * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+         * Correct `select` style inheritance in Firefox.
+         */
+
+        button,
+        select {
+            text-transform: none;
+        }
+
+        /**
+         * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+         *    and `video` controls.
+         * 2. Correct inability to style clickable `input` types in iOS.
+         * 3. Improve usability and consistency of cursor style between image-type
+         *    `input` and others.
+         */
+
+        button,
+        html input[type="button"],
+        /* 1 */
+        input[type="reset"],
+        input[type="submit"] {
+            -webkit-appearance: button;
+            /* 2 */
+            cursor: pointer;
+            /* 3 */
+        }
+
+        /**
+         * Re-set default cursor for disabled elements.
+         */
+
+        button[disabled],
+        html input[disabled] {
+            cursor: default;
+        }
+
+        /**
+         * Remove inner padding and border in Firefox 4+.
+         */
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            border: 0;
+            padding: 0;
+        }
+
+        /**
+         * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+         * the UA stylesheet.
+         */
+
+        input {
+            line-height: normal;
+        }
+
+        /**
+         * It's recommended that you don't attempt to style these elements.
+         * Firefox's implementation doesn't respect box-sizing, padding, or width.
+         *
+         * 1. Address box sizing set to `content-box` in IE 8/9/10.
+         * 2. Remove excess padding in IE 8/9/10.
+         */
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            box-sizing: border-box;
+            /* 1 */
+            padding: 0;
+            /* 2 */
+        }
+
+        /**
+         * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+         * `font-size` values of the `input`, it causes the cursor style of the
+         * decrement button to change from `default` to `text`.
+         */
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            height: auto;
+        }
+
+        /**
+         * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+         * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
+         *    (include `-moz` to future-proof).
+         */
+
+        input[type="search"] {
+            -webkit-appearance: textfield;
+            /* 1 */
+            -moz-box-sizing: content-box;
+            -webkit-box-sizing: content-box;
+            /* 2 */
+            box-sizing: content-box;
+        }
+
+        /**
+         * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+         * Safari (but not Chrome) clips the cancel button when the search input has
+         * padding (and `textfield` appearance).
+         */
+
+        input[type="search"]::-webkit-search-cancel-button,
+        input[type="search"]::-webkit-search-decoration {
+            -webkit-appearance: none;
+        }
+
+        /**
+         * Define consistent border, margin, and padding.
+         */
+
+        fieldset {
+            border: 1px solid #c0c0c0;
+            margin: 0 2px;
+            padding: 0.35em 0.625em 0.75em;
+        }
+
+        /**
+         * 1. Correct `color` not being inherited in IE 8/9/10/11.
+         * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+         */
+
+        legend {
+            border: 0;
+            /* 1 */
+            padding: 0;
+            /* 2 */
+        }
+
+        /**
+         * Remove default vertical scrollbar in IE 8/9/10/11.
+         */
+
+        textarea {
+            overflow: auto;
+        }
+
+        /**
+         * Don't inherit the `font-weight` (applied by a rule above).
+         * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+         */
+
+        optgroup {
+            font-weight: bold;
+        }
+
+        /* Tables
+           ========================================================================== */
+
+        /**
+         * Remove most spacing between table cells.
+         */
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        td,
+        th {
+            padding: 0;
+        }
+
+
+        /*  SECTIONS  ============================================================================= */
+
+        .section {
+            clear: both;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        /*  GROUPING  ============================================================================= */
+
+        .row {
+            zoom: 1;
+            /* For IE 6/7 (trigger hasLayout) */
+        }
+
+        .row:before,
+        .row:after {
+            content: "";
+            display: table;
+        }
+
+        .row:after {
+            clear: both;
+        }
+
+        /*  GRID COLUMN SETUP   ==================================================================== */
+
+        .col {
+            display: block;
+            float: left;
+            margin: 1% 0 1% 1.6%;
+        }
+
+        .col:first-child {
+            margin-left: 0;
+        }
+
+        /* all browsers except IE6 and lower */
+
+
+        /*  REMOVE MARGINS AS ALL GO FULL WIDTH AT 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .col {
+                /*margin: 1% 0 1% 0%;*/
+                margin: 0;
+            }
+        }
+
+
+        /*  GRID OF TWO   ============================================================================= */
+
+
+        .span-2-of-2 {
+            width: 100%;
+        }
+
+        .span-1-of-2 {
+            width: 49.2%;
+        }
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-2-of-2 {
+                width: 100%;
+            }
+
+            .span-1-of-2 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF THREE   ============================================================================= */
+
+
+        .span-3-of-3 {
+            width: 100%;
+        }
+
+        .span-2-of-3 {
+            width: 66.13%;
+        }
+
+        .span-1-of-3 {
+            width: 32.26%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-3-of-3 {
+                width: 100%;
+            }
+
+            .span-2-of-3 {
+                width: 100%;
+            }
+
+            .span-1-of-3 {
+                width: 100%;
+            }
+        }
+
+        /*  GRID OF FOUR   ============================================================================= */
+
+
+        .span-4-of-4 {
+            width: 100%;
+        }
+
+        .span-3-of-4 {
+            width: 74.6%;
+        }
+
+        .span-2-of-4 {
+            width: 49.2%;
+        }
+
+        .span-1-of-4 {
+            width: 23.8%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-4-of-4 {
+                width: 100%;
+            }
+
+            .span-3-of-4 {
+                width: 100%;
+            }
+
+            .span-2-of-4 {
+                width: 100%;
+            }
+
+            .span-1-of-4 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF FIVE   ============================================================================= */
+
+
+        .span-5-of-5 {
+            width: 100%;
+        }
+
+        .span-4-of-5 {
+            width: 79.68%;
+        }
+
+        .span-3-of-5 {
+            width: 59.36%;
+        }
+
+        .span-2-of-5 {
+            width: 39.04%;
+        }
+
+        .span-1-of-5 {
+            width: 18.72%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-5-of-5 {
+                width: 100%;
+            }
+
+            .span-4-of-5 {
+                width: 100%;
+            }
+
+            .span-3-of-5 {
+                width: 100%;
+            }
+
+            .span-2-of-5 {
+                width: 100%;
+            }
+
+            .span-1-of-5 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF SIX   ============================================================================= */
+
+
+        .span-6-of-6 {
+            width: 100%;
+        }
+
+        .span-5-of-6 {
+            width: 83.06%;
+        }
+
+        .span-4-of-6 {
+            width: 66.13%;
+        }
+
+        .span-3-of-6 {
+            width: 49.2%;
+        }
+
+        .span-2-of-6 {
+            width: 32.26%;
+        }
+
+        .span-1-of-6 {
+            width: 15.33%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-6-of-6 {
+                width: 100%;
+            }
+
+            .span-5-of-6 {
+                width: 100%;
+            }
+
+            .span-4-of-6 {
+                width: 100%;
+            }
+
+            .span-3-of-6 {
+                width: 100%;
+            }
+
+            .span-2-of-6 {
+                width: 100%;
+            }
+
+            .span-1-of-6 {
+                width: 100%;
+            }
+        }
+
+
+
+        /*  GRID OF SEVEN   ============================================================================= */
+
+
+        .span-7-of-7 {
+            width: 100%;
+        }
+
+        .span-6-of-7 {
+            width: 85.48%;
+        }
+
+        .span-5-of-7 {
+            width: 70.97%;
+        }
+
+        .span-4-of-7 {
+            width: 56.45%;
+        }
+
+        .span-3-of-7 {
+            width: 41.94%;
+        }
+
+        .span-2-of-7 {
+            width: 27.42%;
+        }
+
+        .span-1-of-7 {
+            width: 12.91%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-7-of-7 {
+                width: 100%;
+            }
+
+            .span-6-of-7 {
+                width: 100%;
+            }
+
+            .span-5-of-7 {
+                width: 100%;
+            }
+
+            .span-4-of-7 {
+                width: 100%;
+            }
+
+            .span-3-of-7 {
+                width: 100%;
+            }
+
+            .span-2-of-7 {
+                width: 100%;
+            }
+
+            .span-1-of-7 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF EIGHT   ============================================================================= */
+
+
+        .span-8-of-8 {
+            width: 100%;
+        }
+
+        .span-7-of-8 {
+            width: 87.3%;
+        }
+
+        .span-6-of-8 {
+            width: 74.6%;
+        }
+
+        .span-5-of-8 {
+            width: 61.9%;
+        }
+
+        .span-4-of-8 {
+            width: 49.2%;
+        }
+
+        .span-3-of-8 {
+            width: 36.5%;
+        }
+
+        .span-2-of-8 {
+            width: 23.8%;
+        }
+
+        .span-1-of-8 {
+            width: 11.1%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-8-of-8 {
+                width: 100%;
+            }
+
+            .span-7-of-8 {
+                width: 100%;
+            }
+
+            .span-6-of-8 {
+                width: 100%;
+            }
+
+            .span-5-of-8 {
+                width: 100%;
+            }
+
+            .span-4-of-8 {
+                width: 100%;
+            }
+
+            .span-3-of-8 {
+                width: 100%;
+            }
+
+            .span-2-of-8 {
+                width: 100%;
+            }
+
+            .span-1-of-8 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF NINE   ============================================================================= */
+
+
+        .span-9-of-9 {
+            width: 100%;
+        }
+
+        .span-8-of-9 {
+            width: 88.71%;
+        }
+
+        .span-7-of-9 {
+            width: 77.42%;
+        }
+
+        .span-6-of-9 {
+            width: 66.13%;
+        }
+
+        .span-5-of-9 {
+            width: 54.84%;
+        }
+
+        .span-4-of-9 {
+            width: 43.55%;
+        }
+
+        .span-3-of-9 {
+            width: 32.26%;
+        }
+
+        .span-2-of-9 {
+            width: 20.97%;
+        }
+
+        .span-1-of-9 {
+            width: 9.68%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-9-of-9 {
+                width: 100%;
+            }
+
+            .span-8-of-9 {
+                width: 100%;
+            }
+
+            .span-7-of-9 {
+                width: 100%;
+            }
+
+            .span-6-of-9 {
+                width: 100%;
+            }
+
+            .span-5-of-9 {
+                width: 100%;
+            }
+
+            .span-4-of-9 {
+                width: 100%;
+            }
+
+            .span-3-of-9 {
+                width: 100%;
+            }
+
+            .span-2-of-9 {
+                width: 100%;
+            }
+
+            .span-1-of-9 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF TEN   ============================================================================= */
+
+
+        .span-10-of-10 {
+            width: 100%;
+        }
+
+        .span-9-of-10 {
+            width: 89.84%;
+        }
+
+        .span-8-of-10 {
+            width: 79.68%;
+        }
+
+        .span-7-of-10 {
+            width: 69.52%;
+        }
+
+        .span-6-of-10 {
+            width: 59.36%;
+        }
+
+        .span-5-of-10 {
+            width: 49.2%;
+        }
+
+        .span-4-of-10 {
+            width: 39.04%;
+        }
+
+        .span-3-of-10 {
+            width: 28.88%;
+        }
+
+        .span-2-of-10 {
+            width: 18.72%;
+        }
+
+        .span-1-of-10 {
+            width: 8.56%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-10-of-10 {
+                width: 100%;
+            }
+
+            .span-9-of-10 {
+                width: 100%;
+            }
+
+            .span-8-of-10 {
+                width: 100%;
+            }
+
+            .span-7-of-10 {
+                width: 100%;
+            }
+
+            .span-6-of-10 {
+                width: 100%;
+            }
+
+            .span-5-of-10 {
+                width: 100%;
+            }
+
+            .span-4-of-10 {
+                width: 100%;
+            }
+
+            .span-3-of-10 {
+                width: 100%;
+            }
+
+            .span-2-of-10 {
+                width: 100%;
+            }
+
+            .span-1-of-10 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF ELEVEN   ============================================================================= */
+
+        .span-11-of-11 {
+            width: 100%;
+        }
+
+        .span-10-of-11 {
+            width: 90.76%;
+        }
+
+        .span-9-of-11 {
+            width: 81.52%;
+        }
+
+        .span-8-of-11 {
+            width: 72.29%;
+        }
+
+        .span-7-of-11 {
+            width: 63.05%;
+        }
+
+        .span-6-of-11 {
+            width: 53.81%;
+        }
+
+        .span-5-of-11 {
+            width: 44.58%;
+        }
+
+        .span-4-of-11 {
+            width: 35.34%;
+        }
+
+        .span-3-of-11 {
+            width: 26.1%;
+        }
+
+        .span-2-of-11 {
+            width: 16.87%;
+        }
+
+        .span-1-of-11 {
+            width: 7.63%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-11-of-11 {
+                width: 100%;
+            }
+
+            .span-10-of-11 {
+                width: 100%;
+            }
+
+            .span-9-of-11 {
+                width: 100%;
+            }
+
+            .span-8-of-11 {
+                width: 100%;
+            }
+
+            .span-7-of-11 {
+                width: 100%;
+            }
+
+            .span-6-of-11 {
+                width: 100%;
+            }
+
+            .span-5-of-11 {
+                width: 100%;
+            }
+
+            .span-4-of-11 {
+                width: 100%;
+            }
+
+            .span-3-of-11 {
+                width: 100%;
+            }
+
+            .span-2-of-11 {
+                width: 100%;
+            }
+
+            .span-1-of-11 {
+                width: 100%;
+            }
+        }
+
+
+        /*  GRID OF TWELVE   ============================================================================= */
+
+        .span-12-of-12 {
+            width: 100%;
+        }
+
+        .span-11-of-12 {
+            width: 91.53%;
+        }
+
+        .span-10-of-12 {
+            width: 83.06%;
+        }
+
+        .span-9-of-12 {
+            width: 74.6%;
+        }
+
+        .span-8-of-12 {
+            width: 66.13%;
+        }
+
+        .span-7-of-12 {
+            width: 57.66%;
+        }
+
+        .span-6-of-12 {
+            width: 49.2%;
+        }
+
+        .span-5-of-12 {
+            width: 40.73%;
+        }
+
+        .span-4-of-12 {
+            width: 32.26%;
+        }
+
+        .span-3-of-12 {
+            width: 23.8%;
+        }
+
+        .span-2-of-12 {
+            width: 15.33%;
+        }
+
+        .span-1-of-12 {
+            width: 6.86%;
+        }
+
+
+        /*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+        @media only screen and (max-width: 480px) {
+            .span-12-of-12 {
+                width: 100%;
+            }
+
+            .span-11-of-12 {
+                width: 100%;
+            }
+
+            .span-10-of-12 {
+                width: 100%;
+            }
+
+            .span-9-of-12 {
+                width: 100%;
+            }
+
+            .span-8-of-12 {
+                width: 100%;
+            }
+
+            .span-7-of-12 {
+                width: 100%;
+            }
+
+            .span-6-of-12 {
+                width: 100%;
+            }
+
+            .span-5-of-12 {
+                width: 100%;
+            }
+
+            .span-4-of-12 {
+                width: 100%;
+            }
+
+            .span-3-of-12 {
+                width: 100%;
+            }
+
+            .span-2-of-12 {
+                width: 100%;
+            }
+
+            .span-1-of-12 {
+                width: 100%;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            cursor: default;
+        }
+
+        @-ms-viewport {
+            width: device-width;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        html,
+        body {
+            position: relative;
+            background-color: #efefef;
+            color: black;
+            font-size: 6px;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+            -webkit-transition: all 0.4s;
+            transition: all 0.4s;
+            will-change: background;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            color: #3A447D;
+
+        }
+
+        .clearfix {
+            zoom: 1;
+        }
+
+        .clearfix:after {
+            content: '.';
+            clear: both;
+            display: block;
+            height: 0;
+            visibility: hidden;
+        }
+
+        /* ----------------------------------------------- */
+        /* REUSABLE COMPONENTS */
+        /* ----------------------------------------------- */
+
+
+        .row {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 2%;
+            overflow: hidden;
+
+
+        }
+
+        ul {
+            text-decoration: none;
+
+        }
+
+        .text {
+            font-size: 120%;
+            padding: 0;
+            font-weight: 100;
+            letter-spacing: 2px;
+            text-transform: capitalize;
+        }
+
+
+
+        .title {
+            font-size: 150%;
+            padding: 5% 1%;
+            letter-spacing: 2px;
+            text-transform: capitalize;
+            text-align: left;
+            font-weight: 100;
+            line-height: 150%;
+        }
+
+        .sub-title {
+            position: relative;
+            font-size: 140%;
+            padding: 2% 0;
+            letter-spacing: 2px;
+            text-transform: capitalize;
+            text-align: left;
+            font-weight: 600;
+            z-index: 10;
+            color: #141D26;
+        }
+
+        .sometext {
+            position: relative;
+            display: block;
+            padding: 2% 0;
+            margin: 2% 0;
+            z-index: 10;
+            font-weight: 100;
+
+        }
+
+        .sometext-1 {
+            display: block;
+            padding: 2% 0;
+            margin: 5% -1%;
+            font-weight: 100;
+
+        }
+
+        blockquote {
+            font-size: 180%;
+            text-align: left;
+            text-transform: capitalize;
+            line-height: 120%;
+            position: relative;
+            padding: 8% 0;
+            z-index: 10;
+
+
+        }
+
+        blockquote:before {
+            display: block;
+            content: "\201C";
+            font-size: 400%;
+            margin-top: -4%;
+            position: absolute;
+            color: #5CA0CC;
+
+        }
+
+        .lol .somebackground {
+            background-color: white;
+            position: absolute;
+            padding: 1.8% 18%;
+            margin: -6.6% -0.2%;
+            z-index: 2;
+
+        }
+
+        .lol .somebackground-5 {
+            opacity: 0.6;
+            background: #0072BB;
+            position: absolute;
+            padding: 1.8% 18%;
+            margin: -5.8% -0.5%;
+            z-index: 1;
+
+        }
+
+        .blahblahblah .somebackground {
+            background-color: white;
+            position: absolute;
+            padding: 0.9% 9%;
+            margin: -1.6% -0.2%;
+            z-index: 2;
+
+
+        }
+
+        .blahblahblah .somebackground-5 {
+            opacity: 0.6;
+            background: #0072BB;
+            position: absolute;
+            padding: 1% 9%;
+            margin: -1.4% -0.5%;
+            z-index: 1;
+
+        }
+
+        p {
+
+            font-size: 120%;
+            line-height: 130%;
+            word-spacing: 10px;
+            z-index: 2;
+            font-weight: 100;
+            word-spacing: 5px;
+        }
+
+        .project-title {
+            font-size: 400%;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #141D26;
+            padding: 2% 2% 0;
+            font-weight: 100;
+            position: relative;
+            z-index: 10;
+
+        }
+
+        .vertical-text {
+            font-size: 300%;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #FFFFFF;
+
+        }
+
+        .somebackground {
+            background-color: white;
+            position: absolute;
+            padding: 0.9% 7.1%;
+            margin: -1.6% -0.2%;
+            z-index: 2;
+
+        }
+
+        .somebackground-5 {
+            opacity: 0.6;
+            background: #0072BB;
+            position: absolute;
+            padding: 1% 7%;
+            margin: -1.4% -0.5%;
+            z-index: 1;
+
+        }
+
+
+        .somebackground-1 {
+            background: white;
+            display: inline-block;
+            height: 180px;
+            margin-left: 180px;
+            margin-top: 185px;
+            position: relative;
+            width: 390px;
+        }
+
+        .somebackground-1:before {
+            border-bottom: 135px solid white;
+            border-left: 150px solid transparent;
+            border-right: 150px solid white;
+            content: "";
+            height: 0;
+            left: 0;
+            position: absolute;
+            top: -135px;
+            width: 90px;
+        }
+
+        .somebackground-2 {
+            opacity: 0.6;
+            background: #0072BB;
+            display: inline-block;
+            height: 180px;
+            margin-left: 180px;
+            margin-top: 185px;
+            position: relative;
+            width: 390px;
+        }
+
+        .somebackground-2:before {
+            border-bottom: 135px solid #0072BB;
+            border-left: 150px solid transparent;
+            border-right: 150px solid #0072BB;
+            content: "";
+            height: 0;
+            left: 0;
+            position: absolute;
+            top: -135px;
+            width: 90px;
+        }
+
+        .anodabox {
+            position: absolute;
+            margin: -23% -3%;
+            z-index: 2;
+        }
+
+        .anodabox-2 {
+            position: absolute;
+            margin: -23.4% -4%;
+            z-index: 1;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 280px;
+            margin: ;
+        }
+
+        .system img {
+            display: block;
+            width: 700px;
+            height: 670px;
+            margin: 5% -10%;
+            background-size: contain;
+
+        }
+
+        .box {
+            background-color: white;
+            padding: 1%;
+            border: 3px solid black;
+            border-radius: 5%;
+            height: 200px;
+            width: 330px;
+            overflow: hidden;
+        }
+
+        .logo {
+
+            height: 60px;
+            width: 60px;
+            margin-top: -10%;
+        }
+
+        .text-1 {
+            color: #06243E;
+            font-size: 280%;
+            text-align: center;
+        }
+
+        .text-2 {
+            width: 80%;
+            text-align: center;
+            font-size: 170%;
+            text-transform: uppercase;
+            padding: 1% 0;
+            border-top: 3px solid #06243E;
+            border-bottom: 3px solid #06243E;
+            margin-left: 10%;
+            letter-spacing: 1px;
+            word-spacing: 6px;
+        }
+    </style>
 
 @endsection
 
 @section('content')
-<section v-for="student in Students.data">
+    <div>
+        {{-- <section> --}}
         <div class="col span-1-of-2">
             <div class="box clearfix">
-            <div class="col span-2-of-2">
-                
-                <div class="col span-1-of-4">
-                <img src="{{ URL('/img/mwlogo.png') }}" class="logo">
-                </div>
-                <div class="col span-3-of-4" style="margin-top: -5px;">
-                <div class="span-2-of-2 text-1">ALIGARH</div>
-                <div class="span-2-of-2 text-2">montessori to matric</div>
-                </div>
-                
+                <div class="col span-2-of-2">
+
+                    <div class="col span-1-of-4">
+                        <img src="{{ URL('/img/mwlogo.png') }}" class="logo">
+                    </div>
+                    <div class="col span-3-of-4" style="margin-top: -5px;">
+                        <div class="span-2-of-2 text-1">{{ config('systemInfo.general.title') }}</div>
+                        <div class="span-2-of-2 text-2">montessori to matric</div>
+                    </div>
+
                 </div>
                 <div class="span-2-of-2">
-                    <div class="text-3" style="font-size: 130%;text-align: center;margin: -9px auto 0;display: block;"><span>Campus I : bunglow No. 88 ,Shahfaisal colony Karachi. Tel : 012********</span></div>
-                    
+                    <div class="text-3" style="font-size: 130%; text-align: center; margin: -9px auto 0; display: block;">
+                        <span>{{ config('systemInfo.general.title') }} : {{ config('systemInfo.general.address') }}. Tel :
+                            {{ config('systemInfo.general.contact_no') }}</span>
+                    </div>
                 </div>
                 <div class="col span-2-of-2" style="margin: 1% 0 1%;">
-                <span style="font-size: 200%;margin:0 auto; display: block; text-align: center;">IDENTITY CARD</span>
+                    <span style="font-size: 200%; margin: 0 auto; display: block; text-align: center;">IDENTITY CARD</span>
                 </div>
                 <div class="col span-2-of-2">
-                <div class="col span-3-of-4">
-                    <div class="span-2-of-2" style="margin:2% 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px;">Name :</span>
-                        <span style="font-size: 180%; margin-left: 20%;">@{{ student.name }}</span>
+                    <div class="col span-3-of-4">
+                        <div class="span-2-of-2" style="margin: 2% 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">Name :</span>
+                            <span style="font-size: 180%; margin-left: 20%;">{{ $student->name }}</span>
+                        </div>
+                        <div class="span-2-of-2" style="margin: 2% 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">GR No :</span>
+                            <span style="font-size: 180%; margin-left: 20%;">{{ $student->gr_no }}</span>
+                        </div>
+                        <div class="span-2-of-2" style="margin: 4% 0 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">Issuing Authority :</span>
+                            <span style="font-size: 180%; margin-left: 20%;"></span>
+                        </div>
                     </div>
-                    <div class="span-2-of-2" style="margin:2% 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px;">GR No :</span>
-                        <span style="font-size: 180%; margin-left: 20%;">@{{ student.gr_no }}</span>
-                    </div>
-                    <div class="span-2-of-2" style="margin:4% 0 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px; ">Issuing Authority :</span>
-                        <span style="font-size: 180%; margin-left: 20%;"></span>
-                    </div>
-                    </div>
-                <div class="col span-1-of-4">
-                    <img src="{{ URL('/img/pic-1.png') }}" style="margin-top: 0%; width: 65px;height: 70px;">
+                    <div class="col span-1-of-4">
+                        <img src="{{ URL('/img/pic-1.png') }}" style="margin-top: 0%; width: 65px; height: 70px;">
                     </div>
                 </div>
-                
             </div>
-            </div>
+        </div>
         <div class="col span-1-of-2">
             <div class="box">
                 <div class="col span-2-of-2">
-                <div class="col span-3-of-5">
-            <div class="span-2-of-2" style="margin:1% 0;">
-                <span style="font-size: 120%; letter-spacing: 1px;">Father Name :</span>
-                <span style="font-size: 180%; margin-left: 8.5%;">@{{ student.father_name }}</span>
-                </div>
-                    <div class="span-2-of-2" style="margin:2% 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px;">P.H No :</span>
-                        <span style="font-size: 180%; margin-left: 19.5%;"> 0332-xxxxxxx</span>
-                </div>
-                    <div class="span-2-of-2" style="margin:2% 0 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px; ">GR No</span>
-                        <span style="font-size: 180%; margin-left: 21.5%;">@{{ student.gr_no }}</span> 
-                </div>
-                    <div class="span-2-of-2" style="margin:1% 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px;">Session :</span>
-                        <span style="font-size: 180%; margin-left: 14%;">2019-2020</span>
-                </div>
-                <div class="span-2-of-2" style="margin:2% 0;">
-                    <span style="font-size: 120%; letter-spacing: 1px;">Issuing Date:</span>
-                    <span style="font-size: 180%; margin-left: 8.5%;">3-April-2018</span>
-                </div>
-                </div>
-                <div class="col span-2-of-5">
-                    <img :src="'http://chart.googleapis.com/chart?chs=200&cht=qr&chl=student-'+student.id" style="width: 100px; height: 100px; margin: 0px 0 0;">
+                    <div class="col span-3-of-5">
+                        <div class="span-2-of-2" style="margin: 1% 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">Father Name :</span>
+                            <span style="font-size: 180%; margin-left: 8.5%;">{{ $student->father_name }}</span>
+                        </div>
+                        <div class="span-2-of-2" style="margin: 2% 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">P.H No :</span>
+                            <span style="font-size: 180%; margin-left: 19.5%;">0332-xxxxxxx</span>
+                        </div>
+                        <div class="span-2-of-2" style="margin: 2% 0 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">GR No</span>
+                            <span style="font-size: 180%; margin-left: 21.5%;">{{ $student->gr_no }}</span>
+                        </div>
+                        <div class="span-2-of-2" style="margin: 1% 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">Session :</span>
+                            <span style="font-size: 180%; margin-left: 14%;">2019-2020</span>
+                        </div>
+                        <div class="span-2-of-2" style="margin: 2% 0;">
+                            <span style="font-size: 120%; letter-spacing: 1px;">Issuing Date:</span>
+                            <span style="font-size: 180%; margin-left: 8.5%;">3-April-2018</span>
+                        </div>
+                    </div>
+                    <div class="col span-2-of-5">
+                        <img src="http://chart.googleapis.com/chart?chs=200&cht=qr&chl=student-{{ $student->id }}"
+                            style="width: 100px; height: 100px; margin: 0px 0 0;">
                     </div>
                 </div>
 
-                    <div class="span-2-of-2" style="margin:2% 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px; ">Postal Address :</span>
-                        <span style="font-size: 180%; margin-left: 4%;">1/285 shah faisal colony</span> 
+                <div class="span-2-of-2" style="margin: 2% 0;">
+                    <span style="font-size: 120%; letter-spacing: 1px;">Postal Address :</span>
+                    <span style="font-size: 180%; margin-left: 4%;">1/285 shah faisal colony</span>
                 </div>
-                    <div class="span-2-of-2" style="margin:2% 0;">
-                        <span style="font-size: 120%; letter-spacing: 1px;">Student Signature</span>
-                        <span style="font-size: 180%; margin-left: 20%;"> </span>
+                <div class="span-2-of-2" style="margin: 2% 0;">
+                    <span style="font-size: 120%; letter-spacing: 1px;">Student Signature</span>
+                    <span style="font-size: 180%; margin-left: 20%;"> </span>
                 </div>
-                    <div class="span-2-of-2" style="margin:2% 0 1%;">
-                        <span style="font-size: 150%;margin: 0 auto; display: block; text-align: center; ">IF ANY PERSON FOUND THIS CARD PLEASE DROP IT TO THE NEAREST POST OFFICE</span>
-                         </div>
-                    
-                    
-            
+                <div class="span-2-of-2" style="margin: 2% 0 1%;">
+                    <span style="font-size: 150%; margin: 0 auto; display: block; text-align: center;">IF ANY PERSON FOUND
+                        THIS CARD PLEASE DROP IT TO THE NEAREST POST OFFICE</span>
+                </div>
             </div>
-            </div>
-
-</section>
-
-
-
+        </div>
+        {{-- </section> --}}
+    </div>
 @endsection
-
 
 @section('script')
-
-@endsection
-
-@section('vue')
-
-<script type="text/javascript">
-
-	var app = new Vue({
-		el: '#app',
-		data: { 
-			Students: {!! json_encode($student, JSON_NUMERIC_CHECK) !!},
-		},
-
-		mounted: function(){
-//			this.TotalStudents();
-//			window.print();
-		},
-
-		methods: {
-			
-		},
-	});
-</script>
-
 @endsection

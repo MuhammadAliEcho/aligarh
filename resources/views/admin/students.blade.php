@@ -730,6 +730,12 @@
                                                                         <i class="fa fa-pencil"></i> Edit
                                                                     </a>
                                                                 @endcan
+                                                                @can('students.card')
+                                                                    <a :href="'{{ url('students/id-card') }}/' + student.id"
+                                                                        class="btn btn-sm btn-outline-primary">
+                                                                        <i class="fa fa-id-card-o"></i> View Card
+                                                                    </a>
+                                                                @endcan
                                                             </div>
                                                         </div>
                                                     </div>

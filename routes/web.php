@@ -74,7 +74,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         // return response('<h2>✅ Done: Migrations and PermissionsUpdateSeeder ran successfully.</h2>');
     });
 
-    Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
+    // Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
     Route::get('/', [DashboardController::class, 'GetDashboard']);
     Route::get('/dashboard', [DashboardController::class, 'GetDashboard'])->name('dashboard');
 
@@ -98,6 +98,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/add', [StudentsController::class, 'AddStudent'])->name('.add');
         Route::post('/leave/{id}', [StudentsController::class, 'PostLeaveStudent'])->name('.leave');
         Route::post('/edit/{id}', [StudentsController::class, 'PostEditStudent'])->name('.edit.post');
+        Route::get('id-card/{id}', [IdcardController::class, 'StudentIdcard'])->name('.card');
     });
 
     Route::prefix('teacher')->name('teacher')->group(function(){
