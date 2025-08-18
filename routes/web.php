@@ -339,6 +339,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/create', [UsersController::class, 'create'])->name('.create');
         Route::get('/edit/{id}', [UsersController::class, 'edit'])->name('.edit');
         Route::post('/edit/{id}', [UsersController::class, 'update'])->name('.update');
+        Route::get('/login/{id}', [UsersController::class, 'loginAsUser'])->middleware('role:Developer');
     });
 
     Route::prefix('roles')->name('roles')->group(function(){

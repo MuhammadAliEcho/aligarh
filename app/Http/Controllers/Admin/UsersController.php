@@ -14,152 +14,161 @@ use App\User;
 
 class UsersController extends Controller
 {
-    public function index(Request $request)
-    {
-      $Roles = Role::notDeveloper()->select('id', 'name')->get();
-      if ($request->ajax()) {
+  public function index(Request $request)
+  {
+    $Roles = Role::notDeveloper()->select('id', 'name')->get();
+    if ($request->ajax()) {
 
-        $query = User::with('roles')->select('id', 'name', 'email', 'foreign_id', 'user_type', 'active')->NotDeveloper()->staff();
+      $query = User::with('roles')->select('id', 'name', 'email', 'foreign_id', 'user_type', 'active')->NotDeveloper()->staff();
 
-        return DataTables::eloquent($query)
-            ->addColumn('roles', function (User $user) {
-                return $user->roles->pluck('name')->join(', ');
-            })
-            ->make(true);
-      }
-      return view('admin.users', compact('Roles'));
+      return DataTables::eloquent($query)
+        ->addColumn('roles', function (User $user) {
+          return $user->roles->pluck('name')->join(', ');
+        })
+        ->make(true);
     }
+    return view('admin.users', compact('Roles'));
+  }
 
 
-    public function create(Request $request)
-    {
+  public function create(Request $request)
+  {
 
-      $validator = Validator::make(
+    $validator = Validator::make(
       $request->all(),
-        [
-          'name' => 'required|unique:users,name',
-          'type' => 'required|in:teacher,employee',
-          'email' => 'required|email|unique:users,email',
-          'status' => 'required|in:0,1',
-          'allow_session' => 'required',
-          'password' => 'required|between:6,12',
-          're_password' => 'required|between:6,12|same:password',
-          'role' => 'required|exists:roles,id',
-        ],
-        [
-          'name.required' => 'The name field is required.',
-          'name.unique' => 'This name is already taken.',
+      [
+        'name' => 'required|unique:users,name',
+        'type' => 'required|in:teacher,employee',
+        'email' => 'required|email|unique:users,email',
+        'status' => 'required|in:0,1',
+        'allow_session' => 'required',
+        'password' => 'required|between:6,12',
+        're_password' => 'required|between:6,12|same:password',
+        'role' => 'required|exists:roles,id',
+      ],
+      [
+        'name.required' => 'The name field is required.',
+        'name.unique' => 'This name is already taken.',
 
-          'type.required' => 'Type is required.',
-          'type.in' => 'Type must be teacher or employee.',
+        'type.required' => 'Type is required.',
+        'type.in' => 'Type must be teacher or employee.',
 
-          'email.required' => 'Email is required.',
-          'email.email' => 'Please enter a valid email address.',
-          'email.unique' => 'This email is already registered.',
+        'email.required' => 'Email is required.',
+        'email.email' => 'Please enter a valid email address.',
+        'email.unique' => 'This email is already registered.',
 
-          'status.required' => 'Status is required.',
-          'status.in' => 'Status must be 0 (inactive) or 1 (active).',
+        'status.required' => 'Status is required.',
+        'status.in' => 'Status must be 0 (inactive) or 1 (active).',
 
-          'allow_session.required' => 'Allow session selection is required.',
+        'allow_session.required' => 'Allow session selection is required.',
 
-          'password.required' => 'Password is required.',
-          'password.between' => 'Password must be between 6 and 12 characters.',
+        'password.required' => 'Password is required.',
+        'password.between' => 'Password must be between 6 and 12 characters.',
 
-          're_password.required' => 'Re-entering the password is required.',
-          're_password.between' => 'Re-entered password must be between 6 and 12 characters.',
-          're_password.same' => 'Passwords do not match.',
+        're_password.required' => 'Re-entering the password is required.',
+        're_password.between' => 'Re-entered password must be between 6 and 12 characters.',
+        're_password.same' => 'Passwords do not match.',
 
-          'role.required' => 'Role is required.',
-          'role.exists' => 'Selected role is invalid.',
-        ]
+        'role.required' => 'Role is required.',
+        'role.exists' => 'Selected role is invalid.',
+      ]
 
-      );
+    );
 
-      if ($validator->fails()){
-        return redirect()->back()
-            ->withErrors($validator)
-            ->withInput()
-            ->with([
-                'toastrmsg' => [
-                    'type' => 'error', 
-                    'title' => 'Users',
-                    'msg' => 'There was an issue while Creating User'
-                ]
-            ]);
-      }
-
-      switch ($request->input('type')) {
-        case 'employee':
-          $data = Employee::findOrfail($request->input('employee'));
-          break;
-
-        case 'teacher':
-          $data = Teacher::findOrfail($request->input('teacher'));
-          break;
-
-        default:
-          return redirect()->back()->withInput()
-           ->withErrors([
-                   'type' => 'You must be select User Type',
-               ]);
-          break;
-      }
-
-      $User = User::create([
-        'name'              =>  $request->input('name'),
-        'email'             =>  $request->input('email'),
-        'password'          =>  bcrypt($request->input('password')),
-        'active'            =>  $request->input('status'),
-        'allow_session'     =>  $request->input('allow_session'),
-        'foreign_id'        =>  $data->id,
-        'contact_no'        =>  $data->phone,
-        'user_type'         =>  $request->input('type'),
-      ]);
-
-      $Role = Role::findOrfail($request->input('role'));
-      $User->assignRole($Role->name);
-      $data->user_id = $User->id;
-      $data->save();
-
-      return redirect('users')->with([
-        'toastrmsg' => [
-          'type' => 'success', 
-          'title'  =>  'Users Registration',
-          'msg' =>  'Registration Successfull'
+    if ($validator->fails()) {
+      return redirect()->back()
+        ->withErrors($validator)
+        ->withInput()
+        ->with([
+          'toastrmsg' => [
+            'type' => 'error',
+            'title' => 'Users',
+            'msg' => 'There was an issue while Creating User'
           ]
-      ]);
+        ]);
     }
 
-    public function edit($id){
-      $data['user'] = User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
-      return view('admin.edit_user', $data);
+    switch ($request->input('type')) {
+      case 'employee':
+        $data = Employee::findOrfail($request->input('employee'));
+        break;
+
+      case 'teacher':
+        $data = Teacher::findOrfail($request->input('teacher'));
+        break;
+
+      default:
+        return redirect()->back()->withInput()
+          ->withErrors([
+            'type' => 'You must be select User Type',
+          ]);
+        break;
     }
 
+    $User = User::create([
+      'name'              =>  $request->input('name'),
+      'email'             =>  $request->input('email'),
+      'password'          =>  bcrypt($request->input('password')),
+      'active'            =>  $request->input('status'),
+      'allow_session'     =>  $request->input('allow_session'),
+      'foreign_id'        =>  $data->id,
+      'contact_no'        =>  $data->phone,
+      'user_type'         =>  $request->input('type'),
+    ]);
 
-    public function update(Request $request, $id){
-      $User =  User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
-      $validatedData  = $request->validate([
-          'active'            =>  'required',
-          'allow_session'     =>  'required|array',
-          'password'          =>  'nullable|between:6,12',
-          're_password'       =>  'nullable|between:6,12|same:password',
-      ]);
-      if(Auth::user()->can('users.update.update_password') && !empty(isset($validatedData['password']))){
-        $validatedData['password'] = bcrypt($validatedData['password']);
-      } else {
-        unset($validatedData['password']);
-      }
+    $Role = Role::findOrfail($request->input('role'));
+    $User->assignRole($Role->name);
+    $data->user_id = $User->id;
+    $data->save();
 
-      $validatedData['academic_session'] = (int) collect($request->input('allow_session', []))->last();
+    return redirect('users')->with([
+      'toastrmsg' => [
+        'type' => 'success',
+        'title'  =>  'Users Registration',
+        'msg' =>  'Registration Successfull'
+      ]
+    ]);
+  }
 
-      $User->update($validatedData);
+  public function edit($id)
+  {
+    $data['user'] = User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
+    return view('admin.edit_user', $data);
+  }
 
-      return redirect('users')->with([
-        'toastrmsg' => [
-          'type' => 'success', 
-          'title'  =>  'Users Registration',
-          'msg' =>  'Save Changes Successfull'
-          ]
-      ]);
+
+  public function update(Request $request, $id)
+  {
+    $User =  User::where('id', $id)->Staff()->NotDeveloper()->firstOrFail();
+    $validatedData  = $request->validate([
+      'active'            =>  'required',
+      'allow_session'     =>  'required|array',
+      'password'          =>  'nullable|between:6,12',
+      're_password'       =>  'nullable|between:6,12|same:password',
+    ]);
+    if (Auth::user()->can('users.update.update_password') && !empty(isset($validatedData['password']))) {
+      $validatedData['password'] = bcrypt($validatedData['password']);
+    } else {
+      unset($validatedData['password']);
     }
+
+    $validatedData['academic_session'] = (int) collect($request->input('allow_session', []))->last();
+
+    $User->update($validatedData);
+
+    return redirect('users')->with([
+      'toastrmsg' => [
+        'type' => 'success',
+        'title'  =>  'Users Registration',
+        'msg' =>  'Save Changes Successfull'
+      ]
+    ]);
+  }
+
+  public function loginAsUser($id)
+  {
+    $user = User::findOrfail($id);
+    Auth::login($user);
+    return redirect('/');
+  }
 }

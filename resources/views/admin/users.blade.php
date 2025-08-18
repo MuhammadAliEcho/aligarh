@@ -288,6 +288,10 @@
         opthtm  +=   (full.active == 1)? 'default' : 'danger';
         opthtm  +=  ' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
         @endcan
+        @role('Developer')
+          opthtm += '<a href="{{ url('users/login') }}/' + full.id + '" data-toggle="tooltip" title="Login as user" class="btn btn-default btn-circle btn-xs profile">';
+          opthtm += '<span class="fa fa-sign-in"></span></a>';
+        @endrole
         
         switch(full.user_type) {
             case 'teacher':
