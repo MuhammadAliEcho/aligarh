@@ -932,6 +932,9 @@
                                 toastr.error("Something went wrong. Please try again.");
                                 console.error('Error:', error);
                             }
+                        })
+                        .finally(() => {
+                            this.isSubmitting = false;
                         });
                 }
             },
