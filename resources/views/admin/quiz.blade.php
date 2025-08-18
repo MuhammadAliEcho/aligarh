@@ -348,6 +348,9 @@
             overflow-y: auto;
             overflow-x: auto;
         }
+        .text-black {
+            color: #000 !important;
+        }
     </style>
 @endsection
 
@@ -618,8 +621,15 @@
                                                         <div class="quiz-result-model-title">Quiz Result</div>
                                                     </div>
                                                     <div class="quiz-result-model-card-body">
-                                                        <h3 class="quiz-result-model-name">Students Information</h3>
+                                                        <h3 class="quiz-result-model-name"><span class="text-black" id="quizTitle"></span></h3>
                                                         <hr class="quiz-result-model-info-divider">
+                                                        <div class="quiz-result-model-form-row">
+                                                            <div class="quiz-result-model-form-group">
+                                                                <label class="quiz-result-model-form-label">Class: <span class="text-black" id="className"></span></label>
+                                                                <label class="quiz-result-model-form-label">Teacher: <span class="text-black" id="teacherName"></span></label>
+                                                                <label class="quiz-result-model-form-label">Total Marks: <span class="text-black" id="totalMarks"></span></label>
+                                                            </div>
+                                                        </div>
                                                         <div class="scrollable-table-wrapper">
                                                             <table class="table table-bordered">
                                                                 <thead>
@@ -822,23 +832,28 @@
                     $('#quizResultModal').modal('show');
                     axios.get(`/quizresult/${quizId}`)
                         .then(response => {
-                            const students = response.data;
+                            const data = response.data;
+                            $('#className').text(data.class);
+                            $('#teacherName').text(data.teacher);
+                            $('#totalMarks').text(data.total_marks);
+                            $('#className').append(' | '+data.section);
+                            $('#quizTitle').text(data.title);
+                            const students = data.students;
                             const tableBody = $('#studentResultsTable');
                             tableBody.empty();
-                            const quizIdMarkInput =
-                                `<input type="hidden" name="quiz_id" id="quiz_id" value="${quizId}">`;
+                            const quizIdMarkInput = `<input type="hidden" name="quiz_id" id="quiz_id" value="${data.quiz_id}">`;
                             tableBody.append(quizIdMarkInput);
 
                             students.forEach(student => {
                                 const isChecked = student.present ? 'checked' : '';
                                 const row = `
-                                <tr>
-                                    <td>${student.name}</td>
-                                    <td>${student.gr_no}</td>
-                                    <td><input type="number" class="form-control" name="marks[${student.student_id}]" value="${student.obtain_marks}" id="marks-${student.student_id}" /></td>
-                                    <td><input type="checkbox" class="form-check-input" name="present[${student.student_id}]" id="present-${student.student_id}" ${isChecked} /></td>
-                                </tr>
-                            `;
+                                    <tr>
+                                        <td>${student.name}</td>
+                                        <td>${student.gr_no}</td>
+                                        <td><input type="number" class="form-control" name="marks[${student.student_id}]" value="${student.obtain_marks ?? ''}" id="marks-${student.student_id}" /></td>
+                                        <td><input type="checkbox" class="form-check-input" name="present[${student.student_id}]" id="present-${student.student_id}" ${isChecked} /></td>
+                                    </tr>
+                                `;
                                 tableBody.append(row);
                             });
                         })

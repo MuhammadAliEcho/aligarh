@@ -15,7 +15,9 @@ class QuizResultController extends Controller
 {
     public function Index($id)
     {
-        $quiz = Quiz::select('id', 'title', 'section_id', 'class_id')->findOrFail($id);
+        $quiz = Quiz::with('teacher:id,name', 'class:id,name', 'section:id,name')
+            ->select('id', 'title', 'section_id', 'class_id', 'teacher_id', 'total_marks')
+            ->findOrFail($id);
 
         $studentsQuery = Student::SessionCurrent();
         if ($quiz->section_id === null) {
@@ -27,7 +29,7 @@ class QuizResultController extends Controller
         $students = $studentsQuery->select('id', 'name', 'gr_no')->get();
         $results = QuizResult::where('quiz_id', $quiz->id)->get()->keyBy('student_id');
 
-        $data = $students->map(function ($student) use ($results) {
+        $studentsData = $students->map(function ($student) use ($results) {
             $result = $results->get($student->id);
 
             return [
@@ -39,7 +41,15 @@ class QuizResultController extends Controller
             ];
         });
 
-        return response()->json($data->values());
+        return response()->json([
+            'quiz_id'   => $quiz->id,
+            'title'     => $quiz->title,
+            'teacher'   => optional($quiz->teacher)->name ?? 'N/A',
+            'class'     => optional($quiz->class)->name ?? 'N/A',
+            'section'   => optional($quiz->section)->name ?? 'All',
+            'total_marks' => $quiz->total_marks,
+            'students'  => $studentsData->values(),
+        ]);
     }
 
     public function create(Request $request)
