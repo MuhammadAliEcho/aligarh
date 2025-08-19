@@ -220,21 +220,38 @@ class NotificationsController extends Controller
 
     public function log(Request $request)
     {
-        if ($request->ajax()) {
-            $query = Notification::with('user')->select(
-                'notification',
-                'user_id',
-                'link',
-            );
+        $perPage = 10;
+        $page = $request->input('page', 1);
 
-            return DataTables::eloquent($query)
-                ->editColumn('created_by', function (Notification $notification) {
-                    return $notification->user->name;
-                })
-                ->make(true);
+        if ($request->wantsJson()) {
+            $notifications = Notification::with('user:id,name')
+                ->latest()
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            return response()->json([
+                'notifications' => $notifications->items(),
+                'current_page' => $notifications->currentPage(),
+                'last_page' => $notifications->lastPage(),
+                'from' => $notifications->firstItem(),
+                'to' => $notifications->lastItem(),
+                'total' => $notifications->total(),
+            ]);
         }
 
-        return view('admin.logs');
+        $notifications = Notification::with('user:id,name')
+            ->latest()
+            ->paginate($perPage);
+
+        return view('admin.logs', [
+            'notifications' => $notifications->items(),
+            'pagination' => [
+                'current_page' => $notifications->currentPage(),
+                'last_page' => $notifications->lastPage(),
+                'from' => $notifications->firstItem(),
+                'to' => $notifications->lastItem(),
+                'total' => $notifications->total(),
+            ]
+        ]);
     }
 
 
