@@ -1560,7 +1560,7 @@
                 <div class="col span-2-of-2">
 
                     <div class="col span-1-of-4">
-                        <img src="{{ URL('/img/mwlogo.png') }}" class="logo">
+                        <img alt="image" width="55px" src="{{ URL('/img/logo-1.png') }}">
                     </div>
                     <div class="col span-3-of-4" style="margin-top: -5px;">
                         <div class="span-2-of-2 text-1">{{ config('systemInfo.general.title') }}</div>
@@ -1593,7 +1593,12 @@
                         </div>
                     </div>
                     <div class="col span-1-of-4">
-                        <img src="{{ URL('/img/pic-1.png') }}" style="margin-top: 0%; width: 65px; height: 70px;">
+                        <img 
+                            src="{{ url('students/image/' . $student->id) }}" 
+                            onerror="this.onerror=null; this.src='{{ asset('img/avatar.jpg') }}';" 
+                            alt="Student Photo" 
+                            style="margin-top: 0%; width: 65px; height: 70px;"
+                        >
                     </div>
                 </div>
             </div>

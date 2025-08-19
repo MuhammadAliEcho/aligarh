@@ -732,8 +732,8 @@
                                                                 @endcan
                                                                 @can('students.card')
                                                                     <a :href="'{{ url('students/id-card') }}/' + student.id"
-                                                                        class="btn btn-sm btn-outline-primary">
-                                                                        <i class="fa fa-id-card-o"></i> View Card
+                                                                        class="btn btn-sm btn-outline-primary" target="_blank">
+                                                                        <i class="fa fa-id-card-o"></i> ID Card
                                                                     </a>
                                                                 @endcan
                                                             </div>
