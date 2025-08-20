@@ -132,7 +132,6 @@ class RoleController extends Controller
 				'dashboard.monthly_attendance' => 'Show Monthly Attendance',
 				'dashboard.fee_Collection' => 'Show Fee Collection',
 				'dashboard.monthly_expenses' => 'Show Monthly Expenses',
-				'student.card' => 'Student Card',
 				'user-settings.index' => 'User Settings View',
 				'user-settings.password.update' => 'Password Update',
 				'user-settings.change.session' => 'Change Session',
@@ -322,12 +321,11 @@ class RoleController extends Controller
 				'smsnotifications.sendbulksms' => 'Send Bulk SMS',
 				'smsnotifications.history' => 'SMS History',
 			],
-			'Notifications' => [
-				'notifications.index' => 'View',
-				'notifications.get.data' => 'Get Data',
-				'notifications.send' => 'Messsage Send',
-				'notifications.log' => 'View Logs',
-				'notifications.msg.log' => 'View Message Logs',
+			'Message Notifications' => [
+				'msg-notifications.index' => 'View',
+				'msg-notifications.get.data' => 'Get Data',
+				'msg-notifications.send' => 'Messsage Send',
+				'msg-notifications.msg.log' => 'View Message Logs',
 			],
 			'Reports' => [
 				'seatsreport' => 'Seats Report',

@@ -181,7 +181,7 @@
                 <div class="notification-dropdown dropdown-menu">
                     <div id="notification-list"></div> <!-- Notifications will be appended here -->
                     <div class="notification-mini-footer">
-                        <a href="/notifications/logs">See all notifications</a>
+                        <a href="/notifications/">See all notifications</a>
                     </div>
                 </div>
             </li>
@@ -230,7 +230,7 @@
             // Load notifications from the server
             function loadNotifications() {
                 $.ajax({
-                    url: '/notifications/logs',
+                    url: '/notifications/',
                     method: 'GET',
                     data: {
                         per_page: 5

@@ -319,14 +319,16 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
     });
 
 
-    Route::prefix('notifications')->name('notifications')->group(function(){
+    Route::prefix('msg-notifications')->name('msg-notifications')->group(function(){
         Route::get('/', [NotificationsController::class, 'index'])->name('.index');
         Route::post('/get/data', [NotificationsController::class, 'getData'])->name('.get.data');
         Route::post('/messsage-send', [NotificationsController::class, 'send'])->name('.send');
-        Route::get('/msg/logs', [NotificationsController::class, 'msgLog'])->name('.msg.log');
+        Route::get('/logs', [NotificationsController::class, 'msgLog'])->name('.msg.log');
+    });
 
-        Route::get('/logs', [NotificationsController::class, 'log'])->name('.log');
-        Route::post('/logs/{id}', [NotificationsController::class, 'logRead'])->name('.log.read');
+    Route::prefix('notifications')->name('notifications')->group(function(){
+        Route::get('/', [NotificationsController::class, 'log'])->name('.log');
+        Route::post('/{id}', [NotificationsController::class, 'logRead'])->name('.log.read');
     });
 
     Route::group(['middleware' => 'role:Developer','prefix' => 'academic-sessions','as' => 'academic-sessions'], function () {

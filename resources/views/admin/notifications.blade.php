@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Notifications |')
+@section('title', 'Messsage Notifications |')
 
 @section('head')
     <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -54,7 +54,7 @@
                             <h2>Messsage Send</h2>
                         </div>
                         <div class="ibox-content">
-                            <form id="notification" method="post" action="{{ route('notifications.send') }}"
+                            <form id="notification" method="post" action="{{ route('msg-notifications.send') }}"
                                 class="form-horizontal">
                                 {{ csrf_field() }}
 
@@ -389,7 +389,7 @@
                     console.log("Selected type changed to:", this.type);
                 },
                 getData() {
-                    axios.post('/notifications/get/data', {
+                    axios.post('/msg-notifications/get/data', {
                             type: this.type
                         })
                         .then(response => {

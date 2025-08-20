@@ -252,7 +252,7 @@
                             });
                     },
                     markAsRead(notification) {
-                        axios.post(`/notifications/logs/${notification.id}`, {
+                        axios.post(`/notifications/${notification.id}`, {
                                 _token: '{{ csrf_token() }}'
                             })
                             .then(() => {

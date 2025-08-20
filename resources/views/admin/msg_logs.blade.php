@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Logs |')
+@section('title', 'Message Logs |')
 
 @section('head')
     <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -34,7 +34,7 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-8 col-md-6">
-                <h2>Notifications</h2>
+                <h2>Logs</h2>
                 <ol class="breadcrumb">
                     <li>Home</li>
                     <li class="active"><a>Message Logs</a></li>
@@ -109,7 +109,7 @@
                 ],
                 processing: true,
                 serverSide: true,
-                ajax: '{{ url('notifications/msg/logs') }}',
+                ajax: '{{ url('msg-notifications/logs') }}',
                 columns: [
                     { data: 'type' },
                     { data: 'message' },

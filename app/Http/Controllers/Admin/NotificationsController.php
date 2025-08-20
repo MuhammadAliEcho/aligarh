@@ -293,7 +293,7 @@ class NotificationsController extends Controller
 
     private function returnNotifications()
     {
-        return redirect('notifications')->with([
+        return redirect('msg-notifications')->with([
             'toastrmsg' => [
                 'type' => 'success',
                 'title'  =>  'Message Send',
