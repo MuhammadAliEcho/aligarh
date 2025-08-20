@@ -15,7 +15,7 @@
             <li class="nb-dropdown" id="nb-bell">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
                     <i class="fa fa-bell"></i>
-                    <span class="label label-primary" id="nb-unread-count"></span>
+                    <span class="nb-badge-unread" id="nb-unread-count"></span>
                 </a>
 
                 <div class="nb-dropdown dropdown-menu">

@@ -1,14 +1,14 @@
 /* Badge on bell icon */
 .nb-badge-unread {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: 17px;
+  right: 7px;
   background-color: #e0245e;
   color: white;
   font-size: 0.65rem;
   font-weight: 700;
   padding: 3px 7px;
-  border-radius: 50%;
+  border-radius: 17%;
   line-height: 1;
   user-select: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -155,4 +155,8 @@
 /* Ensure dropdown stays within viewport */
 #nb-bell .nb-dropdown {
   max-width: 90vw;
+}
+
+#nb-unread-count {
+    display: none;
 }
