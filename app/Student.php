@@ -12,6 +12,7 @@ use App\Http\Traits\HasLeave;
 class Student extends Model {
 	use HasLeave;
 
+	protected $appends = ['attendance_percentage'];
 /*
 	protected static function boot() {
 		parent::boot();
@@ -167,4 +168,20 @@ class Student extends Model {
 	{
 		return $this->hasMany(QuizResult::class);
 	}
+
+	public function getAttendancePercentageAttribute()
+    {
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+        $attendances = $this->studentAttendance()
+            ->whereMonth('date', $currentMonth)
+            ->whereYear('date', $currentYear)
+            ->get();
+
+        $totalDays = $attendances->count();
+        $presentDays = $attendances->where('status', 1)->count();
+
+        return $totalDays > 0 ? round(($presentDays / $totalDays) * 100, 2) : 0;
+    }
 }
