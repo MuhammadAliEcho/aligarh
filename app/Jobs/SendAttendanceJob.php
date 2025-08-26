@@ -45,6 +45,7 @@ class SendAttendanceJob implements ShouldQueue
             'whatsapp' => (bool)$settings->whatsapp,
         ]);
 
+        //variables parser
         $this->message = str_replace('{name}', $this->name, $settings->message ?? '');
     }
 
