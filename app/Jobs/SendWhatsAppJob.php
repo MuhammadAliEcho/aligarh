@@ -51,4 +51,11 @@ class SendWhatsAppJob implements ShouldQueue
             Log::info('WhatsApp message sent successfully to ' . $this->whatsapp_number);
         }
     }
+
+    public function failed(\Throwable $exception)
+    {
+        Log::error("SendWhatsAppJob failed for number {$this->whatsapp_number}: " . $exception->getMessage(), [
+            'exception' => $exception->getTraceAsString()
+        ]);
+    }
 }
