@@ -5,59 +5,73 @@ namespace App\Jobs;
 use App\Jobs\SendMailJob;
 use App\Jobs\SendSmsJob;
 use App\Jobs\SendWhatsAppJob;
+use App\Models\NotificationsSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\NotificationsSetting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class SendAttendanceJob implements ShouldQueue
 {
- use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $emailSubject, $message;
+    public string $emailSubject;
+    public string $message;
     public Collection $notificationsSettings;
+    public bool $shouldSkip = false;
 
     public function __construct(
-        public  $notificationsSettingsName,
-        public  $name,
-        public  $email,
-        public  $sms_number,
-        public  $whatsapp_number
+        public string $notificationsSettingsName,
+        public string $name,
+        public string $email,
+        public string $sms_number,
+        public string $whatsapp_number
     ) {
         $this->emailSubject = 'Email from ' . config('systemInfo.general.name');
-        
-        $settings = NotificationsSetting::where('name', $notificationsSettingsName)->first();
-        
+
+        $settings = NotificationsSetting::where('name', $this->notificationsSettingsName)->first();
+
+        if (!$settings) {
+            $this->shouldSkip = true;
+            return;
+        }
+
         $this->notificationsSettings = collect([
-            'sms' => (bool)($settings->sms ?? false),
-            'mail' => (bool)($settings->mail ?? false),
-            'whatsapp' => (bool)($settings->whatsapp ?? false),
+            'sms' => (bool)$settings->sms,
+            'mail' => (bool)$settings->mail,
+            'whatsapp' => (bool)$settings->whatsapp,
         ]);
 
-        $this->message = $settings->message;
-        $this->message = str_replace("{name}", $name,$this->message);
+        $this->message = str_replace('{name}', $this->name, $settings->message ?? '');
     }
 
     public function handle(): void
     {
+        if ($this->shouldSkip) {
+            Log::info("SendAttendanceJob skipped: Notification settings '{$this->notificationsSettingsName}' not found.");
+            return;
+        }
+
         try {
-            if ($this->sendOn('mail')) {
+            if ($this->shouldSend('mail')) {
                 SendMailJob::dispatch($this->email, $this->message, $this->emailSubject);
             }
 
-            if ($this->sendOn('sms')) {
+            if ($this->shouldSend('sms')) {
                 SendSmsJob::dispatch($this->sms_number, $this->message);
             }
 
-            // if ($this->sendOn('whatsapp')) {
+            // Uncomment when WhatsApp support is ready
+            // if ($this->shouldSend('whatsapp')) {
             //     SendWhatsAppJob::dispatch($this->whatsapp_number, $this->message);
             // }
+
         } catch (\Throwable $e) {
-            Log::error('SendMsgJob dispatch failed: ' . $e->getMessage(), [
+            Log::error('SendAttendanceJob dispatch failed', [
+                'error' => $e->getMessage(),
                 'email' => $this->email,
                 'sms_number' => $this->sms_number,
                 'whatsapp_number' => $this->whatsapp_number,
@@ -65,8 +79,8 @@ class SendAttendanceJob implements ShouldQueue
         }
     }
 
-    private function sendOn(string $type): bool
+    private function shouldSend(string $channel): bool
     {
-        return $this->notificationsSettings->get($type, false);
+        return $this->notificationsSettings->get($channel, false);
     }
 }
