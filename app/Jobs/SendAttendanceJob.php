@@ -18,17 +18,17 @@ class SendAttendanceJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $emailSubject;
-    public string $message;
+    public $emailSubject;
+    public $message;
     public Collection $notificationsSettings;
     public bool $shouldSkip = false;
 
     public function __construct(
-        public string $notificationsSettingsName,
-        public string $name,
-        public string $email,
-        public string $sms_number,
-        public string $whatsapp_number
+        public $notificationsSettingsName,
+        public $name,
+        public $email,
+        public $sms_number,
+        public $whatsapp_number
     ) {
         $this->emailSubject = 'Email from ' . config('systemInfo.general.name');
 
