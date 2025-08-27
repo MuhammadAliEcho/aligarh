@@ -19,27 +19,29 @@ return [
 	],
 	'smtp' => [
 		// Add your SMTP settings here
-		'mailer'     => null,
-		'host'     => null,
-		'port'     => null,
-		'username' => null,
+		'mailer'     => 'smtp',
+		'host'     => 'host.docker.internal',
+		'port'     => '1025',
+		'username' => 'null',
 		'password' => null,
 		'encryption' => null,  // or 'ssl'
+		// 'from_email' => 'no-reply@example.com',
+		// 'from_name'  => 'Aligarh SMS',
 	],
 	'sms' => [
 		// Add your SMS settings here
-		'provider'     => null,  // Example provider
-		'url'      => null,
-		'api_token'      => null,
-		'api_secret'   => null,
-		'sender'    => null,
+		'provider'     => 'lifetimesms',  // Example provider
+		'url'      => 'https://lifetimesms.com/json',
+		'api_token'      => '8cbd9538d0393dc97bfffd37c028cafcbcdecb9971',
+		'api_secret'   => 'pumH3vVu0I8LvYzr2KAmSHW6ijZuaWmh',
+		'sender'    => 'Aligarh',
 	],
 	'whatsapp' => [
 		// Add your WhatsApp settings here
-		'provider'     => null,  // Example provider
-		'url'      => null,
-		'api_token'    => null,
-		'phone_id' => null,
-		'type' => null,
+		'provider'     => 'whatsapp business',  // Example provider
+		'url'      => 'https://graph.facebook.com/v19.0/',
+		'api_token'    => 'e647dad1-a318-49d7-b381-3102bc5c5b27',
+		'phone_id' => '1234567890',
+		'type' => 'text',
 	],
 ];
