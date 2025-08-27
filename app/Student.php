@@ -194,6 +194,7 @@ class Student extends Model
 		return $this->hasMany(QuizResult::class);
 	}
 
+	// For API
 	public function getAttendancePercentageAttribute()
 	{
 		$currentMonth = Carbon::now()->month;
@@ -227,5 +228,35 @@ class Student extends Model
 		$isPaid = $invoice->paid_amount >= $invoice->total_amount;
 
 		return $isPaid ? 'Paid <br> Rs.'.$invoice->total_amount : 'Unpaid <br> Rs.'.$invoice->total_amount;
+	}
+
+	public function getLastExamGradeAttribute()
+	{
+		$lastExamId = Exam::latest('id')->value('id');
+
+		if (!$lastExamId) {
+			return null;
+		}
+
+		$studentId = $this->id;
+		$classId = $this->class_id;
+
+		$totalObtainMarks = StudentResult::where('exam_id', $lastExamId)
+			->where('student_id', $studentId)
+			->sum('total_obtain_marks');
+
+		$totalMarks = SubjectResultAttribute::where('exam_id', $lastExamId)
+			->where('class_id', $classId)
+			->sum('total_marks');
+
+		if ($totalMarks == 0) {
+			return null;
+		}
+
+		$totalPercentage = ($totalObtainMarks / $totalMarks) * 100;
+
+		return Grade::where('from_percent', '<=', $totalPercentage)
+			->where('to_percent', '>=', $totalPercentage)
+			->value('name');
 	}
 }

@@ -29,7 +29,7 @@ class StudentController extends Controller
         $students = Student::where('guardian_id', $request->input('guardian_id'))->get();
         
         // Dynamically append only the attributes you need
-        $students->each->append(['current_month_fee', 'attendance_percentage']);
+        $students->each->append(['current_month_fee', 'attendance_percentage', 'last_exam_grade']);
 
         return response()->json([
             'students' => $students,
