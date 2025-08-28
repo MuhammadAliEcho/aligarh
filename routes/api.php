@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Guardian\RoutineController;
 use App\Http\Controllers\Api\Guardian\NoticeBoardController;
 use App\Http\Controllers\Api\Guardian\QuizController;
 use App\Http\Controllers\Api\Guardian\StudentController;
+use App\Http\Controllers\Api\Guardian\AttendanceController as GuardianAttendanceController;
 
 use App\Http\Controllers\Api\TMS\UserController as TMSUserController;
 use App\Http\Controllers\Api\TMS\AttendanceController;
@@ -35,6 +36,8 @@ Route::prefix('guardian')->group(function () {
         Route::middleware(['scope:guardian', 'auth.active'])->group(function () {
 
             Route::post('/students', [StudentController::class, 'getStudents']);
+            Route::get('/attendance/{student_id}', [GuardianAttendanceController::class, 'getAttendance']);
+
             Route::get('home', [HomeController::class, 'Home']);
             Route::post('student-profile', [StudentProfileController::class, 'GetShortProfile']);
             Route::post('student-invoices', [StudentFeeController::class, 'GetFeeInvoices']);
