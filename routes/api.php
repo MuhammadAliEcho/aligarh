@@ -38,6 +38,7 @@ Route::prefix('guardian')->group(function () {
             Route::post('/students', [StudentController::class, 'getStudents']);
             Route::get('/attendance/{student_id}', [GuardianAttendanceController::class, 'getAttendance']);
             Route::post('/exams', [ExamController::class, 'getExams']);
+            Route::post('/fee', [StudentFeeController::class, 'GetFeeInvoices']);
 
             Route::get('home', [HomeController::class, 'Home']);
             Route::post('student-profile', [StudentProfileController::class, 'GetShortProfile']);

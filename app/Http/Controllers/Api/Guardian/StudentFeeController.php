@@ -4,21 +4,29 @@ namespace App\Http\Controllers\Api\Guardian;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
-
-use App\AdditionalFee;
 use App\InvoiceMaster;
+use Illuminate\Support\Facades\Validator;
 
 class StudentFeeController extends Controller
 {
+    public function GetFeeInvoices(Request $request)
+    {
 
-    protected $Invoices;
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'student_id' => 'required|exists:students,id',
+            ],
+        );
 
-    public function GetFeeInvoices(Request $request){
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-        $this->Invoices = InvoiceMaster::where('student_id', $request->input('id'))->with('InvoiceDetail')->orderBy('payment_month', 'desc')->simplePaginate($request->input('per_page'));
-
-        return response()->json($this->Invoices, 200, ['Content-Type' => 'application/json'], JSON_NUMERIC_CHECK);
+        $Invoice = InvoiceMaster::where('student_id', $request->input('student_id'))->with('InvoiceDetail')->orderBy('payment_month', 'desc')->first();
+        return response()->json($Invoice);
     }
-
 }

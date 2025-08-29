@@ -225,6 +225,8 @@ class Student extends Model
 			return '-';
 		}
 
+		//discount
+		$invoice->total_amount = ($invoice->total_amount - $invoice->discount);
 		$isPaid = $invoice->paid_amount >= $invoice->total_amount;
 
 		return $isPaid ? 'Paid <br> Rs.'.$invoice->total_amount : 'Unpaid <br> Rs.'.$invoice->total_amount;
