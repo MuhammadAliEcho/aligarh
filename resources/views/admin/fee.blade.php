@@ -182,7 +182,8 @@
 												</tr>
 
 												<tr>
-												<th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th>
+												{{-- <th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th> --}}
+												<th>Discount</th>
 												<th><input type="number" class="form-control" name="discount" v-model="total_discount" required="true"></th>
 												</tr>
 											</tbody>
@@ -674,7 +675,7 @@
 					this.NoOfMonths = 0;
 				}
 				this.total_tuition_fee	= Number(this.fee.tuition_fee) * this.NoOfMonths;
-				this.total_discount	= Number(this.fee.discount) * this.NoOfMonths;
+				this.total_discount = (Number(this.fee?.discount) || 0) * (Number(this.NoOfMonths) || 0);
 			}
 		},
 
