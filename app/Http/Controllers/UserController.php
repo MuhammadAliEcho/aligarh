@@ -12,41 +12,34 @@ class UserController extends Controller {
 
   Public function PostLogin(Request $request){
 
-//    $this->LoginUserIDKey = filter_var($request->input('userid'), FILTER_VALIDATE_EMAIL)? 'email' : 'name';
-    $this->LoginUserIDKey = 'name';
+   $this->LoginUserIDKey = filter_var($request->input('userid'), FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+    // $this->LoginUserIDKey = 'name';
     $request->merge([$this->LoginUserIDKey => $request->input('userid')]);
     $this->PostLoginData = [$this->LoginUserIDKey => $request->input($this->LoginUserIDKey), 'password' => $request->input('password')];
 
     $this->ValidateLogin($request);
 
-    if (Auth::validate($this->PostLoginData)) {
-       $user = Auth::getLastAttempted();
-       if (!$user->active) {
-          return redirect()->back()->withInput()
-         ->withErrors([
-                   'invalid' => 'You must be Active to login',
-               ]);
-       }
-       
-       if($user->user_type == 'employee' || $user->user_type == 'teacher'){
+    if (Auth::attempt($this->PostLoginData)) {
+      $user = Auth::user();
 
-         if (Auth::attempt($this->PostLoginData)) {
-           //      dd(Auth::user());
-           /*		if($user->name == 'demo'){
-             return redirect('students');
-        }
-        */
-        //		return redirect('dashboard');
-        return redirect($request->input('redirect', 'dashboard'))->with([
-          'toastrmsg' => [
-            'type' => 'success', 
-            'title'  =>  'Welcome to ALIGARH',
-            'msg' =>  'School management system'
-          ], 
-          'script' => 'http://facebook.com/hashmanagement' 
-          ]);
-        }
+      if (!$user->active) {
+          Auth::logout(); // logout immediately if not active
+          return redirect()->back()->withInput()
+              ->withErrors([
+                  'invalid' => 'You must be Active to login',
+              ]);
       }
+
+      if ($user->user_type == 'employee' || $user->user_type == 'teacher') {
+              return redirect($request->input('redirect', 'dashboard'))->with([
+                  'toastrmsg' => [
+                      'type' => 'success',
+                      'title'  => 'Welcome to ALIGARH',
+                      'msg' => 'School management system'
+                  ],
+                  'script' => 'http://facebook.com/hashmanagement'
+              ]);
+          }
     }
       
       return redirect()->back()->withInput()
