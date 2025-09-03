@@ -171,10 +171,8 @@
 									<div class="form-group">
 										<label class="col-md-2 control-label">Payment Mode:</label>
 										<div class="col-md-6">
-											<select v-model="invoice_master.payment_type" class="form-control" name="payment_type" required="true">
-												<option>Chalan</option>
-												<option>Cash</option>
-											</select>
+											<div class="i-checks"><label> <input v-model="invoice_master.payment_type" type="radio" checked value="Cash" name="payment_type" required > <i></i>Cash</label></div>
+											<div class="i-checks"><label> <input v-model="invoice_master.payment_type" type="radio" value="Chalan" name="payment_type" required> <i></i>Chalan</label></div>
 										</div>
 									</div>
 
@@ -272,7 +270,7 @@
 			months: {},
 			NoOfMonths:0,
 			chalan_no: '',
-			payment_type: '',
+			payment_type: 'Cash',
 			paid_show: {{ $invoice_master->paid_amount }},
 		},
 

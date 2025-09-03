@@ -9,11 +9,11 @@ use App\AcademicSession;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Traits\HasLeave;
 
-class Student extends Model {
+class Student extends Model
+{
 	use HasLeave;
 
-	protected $appends = ['attendance_percentage'];
-/*
+	/*
 	protected static function boot() {
 		parent::boot();
 
@@ -23,85 +23,104 @@ class Student extends Model {
 	}
 */
 
-	public function scopeHaveCellNo($query){
+	public function scopeHaveCellNo($query)
+	{
 		return $query->where('phone', 'NOT LIKE', '21%')->whereRaw('LENGTH(phone) = 10');
 	}
 
-	public function scopeCurrentSession($query){
+	public function scopeCurrentSession($query)
+	{
 		return $query->where('session_id', Auth::user()->academic_session);
 	}
 
-	public function scopeNewAdmission($query, $academic_session){
-//		return $query->where('date_of_admission', '>=', Carbon::now()->toDateString());
-//		return $query->where('date_of_admission', '>=', AcademicSession::find(Auth::user()->academic_session)->getRawOriginal('start'));
+	public function scopeNewAdmission($query, $academic_session)
+	{
+		//		return $query->where('date_of_admission', '>=', Carbon::now()->toDateString());
+		//		return $query->where('date_of_admission', '>=', AcademicSession::find(Auth::user()->academic_session)->getRawOriginal('start'));
 		return $query->where('date_of_admission', '>=', $academic_session->getRawOriginal('start'));
-//		return $query->where('date_of_admission', '>=', '2018-04-01');
+		//		return $query->where('date_of_admission', '>=', '2018-04-01');
 	}
 
-	public function scopeOldAdmission($query, $academic_session){
-//		return $query->where('date_of_admission', '<=', Carbon::now()->toDateString());
-//		return $query->where('date_of_admission', '<=', AcademicSession::find(Auth::user()->academic_session)->getRawOriginal('start'));
+	public function scopeOldAdmission($query, $academic_session)
+	{
+		//		return $query->where('date_of_admission', '<=', Carbon::now()->toDateString());
+		//		return $query->where('date_of_admission', '<=', AcademicSession::find(Auth::user()->academic_session)->getRawOriginal('start'));
 		return $query->where('date_of_admission', '<=', $academic_session->getRawOriginal('start'));
-//		return $query->where('date_of_admission', '<=', '2018-04-01');
+		//		return $query->where('date_of_admission', '<=', '2018-04-01');
 	}
 
-	public function scopeInActiveOnSelectedSession($query, $academic_session){
+	public function scopeInActiveOnSelectedSession($query, $academic_session)
+	{
 		return $query->InActive()->whereBetween('date_of_leaving', [$academic_session->getRawOriginal('start'), $academic_session->getRawOriginal('end')]);
 	}
 
-	public function scopeActive($query){
+	public function scopeActive($query)
+	{
 		return $query->where('students.active', 1);
 	}
 
-	public function scopeInActive($query){
+	public function scopeInActive($query)
+	{
 		return $query->where('students.active', 0);
 	}
 
-	public function scopeWithOutDiscount($query){
+	public function scopeWithOutDiscount($query)
+	{
 		return $query->where('discount', 0);
 	}
 
-	public function scopeWithDiscount($query){
+	public function scopeWithDiscount($query)
+	{
 		return $query->where('discount', '>', 0);
 	}
 
-	public function scopeWithOutFullDiscount($query){
+	public function scopeWithOutFullDiscount($query)
+	{
 		return $query->where('students.net_amount', '>', 0);
 	}
 
-	public function Guardian() {
+	public function Guardian()
+	{
 		return $this->belongsTo('App\Guardian');
 	}
 
-	public function Std_Class() {
+	public function Std_Class()
+	{
 		return $this->hasOne('App\Classe', 'id', 'class_id');
 	}
 
-	public function StdClass() {
+	public function StdClass()
+	{
 		return $this->hasOne('App\Classe', 'id', 'class_id');
 	}
 
-	public function Section() {
+	public function Section()
+	{
 		return $this->hasOne('App\Section', 'id', 'section_id');
 	}
 
-	public function StudentResult(){
+	public function StudentResult()
+	{
 		return $this->hasMany('App\StudentResult');
 	}
 
-	public function StudentSubjectResult(){
+	public function StudentSubjectResult()
+	{
 		return $this->hasOne('App\StudentResult');
 	}
 
-	public function ParentInterview(){
+	public function ParentInterview()
+	{
 		return $this->hasOne('App\ParentInterview');
 	}
 
-	public function getDateOfBirthAttribute($date){
+	public function getDateOfBirthAttribute($date)
+	{
 		return Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');
 	}
 
-	public function getDateOfAdmissionAttribute($date){
+	public function getDateOfAdmissionAttribute($date)
+	{
 		return Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');
 	}
 
@@ -125,27 +144,33 @@ class Student extends Model {
 			: null;
 	}
 
-	public function AdditionalFee(){
+	public function AdditionalFee()
+	{
 		return $this->hasMany('App\AdditionalFee');
 	}
 
-	public function StudentAttendance(){
+	public function StudentAttendance()
+	{
 		return $this->hasMany('App\StudentAttendance');
 	}
 
-	public function StudentAttendanceByDate(){
+	public function StudentAttendanceByDate()
+	{
 		return $this->hasOne('App\StudentAttendance');
 	}
 
-	public function Invoices(){
+	public function Invoices()
+	{
 		return $this->hasMany('App\InvoiceMaster');
 	}
 
-	public function InvoiceMonths(){
+	public function InvoiceMonths()
+	{
 		return $this->hasMany('App\InvoiceMonth');
 	}
 
-	public function Certificates(){
+	public function Certificates()
+	{
 		return $this->hasMany('App\Certificate');
 	}
 
@@ -169,19 +194,71 @@ class Student extends Model {
 		return $this->hasMany(QuizResult::class);
 	}
 
+	// For API
 	public function getAttendancePercentageAttribute()
-    {
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+	{
+		$currentMonth = Carbon::now()->month;
+		$currentYear = Carbon::now()->year;
 
-        $attendances = $this->studentAttendance()
-            ->whereMonth('date', $currentMonth)
-            ->whereYear('date', $currentYear)
-            ->get();
+		$attendances = $this->studentAttendance()
+			->whereMonth('date', $currentMonth)
+			->whereYear('date', $currentYear)
+			->get();
 
-        $totalDays = $attendances->count();
-        $presentDays = $attendances->where('status', 1)->count();
+		$totalDays = $attendances->count();
+		$presentDays = $attendances->where('status', 1)->count();
 
-        return $totalDays > 0 ? round(($presentDays / $totalDays) * 100, 2) : 0;
-    }
+		return $totalDays > 0 ? round(($presentDays / $totalDays) * 100, 2) : 0;
+	}
+
+	public function getCurrentMonthFeeAttribute()
+	{
+		$currentMonth = Carbon::now()->month;
+		$currentYear = Carbon::now()->year;
+
+		$invoice = $this->invoices()
+			->whereMonth('date', $currentMonth)
+			->whereYear('date', $currentYear)
+			->first();
+
+		if (!$invoice) {
+			return '-';
+		}
+
+		//discount
+		$invoice->total_amount = ($invoice->total_amount - $invoice->discount);
+		$isPaid = $invoice->paid_amount >= $invoice->total_amount;
+
+		return $isPaid ? 'Paid <br> Rs.'.$invoice->total_amount : 'Unpaid <br> Rs.'.$invoice->total_amount;
+	}
+
+	public function getLastExamGradeAttribute()
+	{
+		$lastExamId = Exam::latest('id')->where('academic_session_id', $this->session_id)->value('id');
+
+		if (!$lastExamId) {
+			return null;
+		}
+
+		$studentId = $this->id;
+		$classId = $this->class_id;
+
+		$totalObtainMarks = StudentResult::where('exam_id', $lastExamId)
+			->where('student_id', $studentId)
+			->sum('total_obtain_marks');
+
+		$totalMarks = SubjectResultAttribute::where('exam_id', $lastExamId)
+			->where('class_id', $classId)
+			->sum('total_marks');
+
+		if ($totalMarks == 0) {
+			return null;
+		}
+
+		$totalPercentage = ($totalObtainMarks / $totalMarks) * 100;
+
+		return Grade::where('from_percent', '<=', $totalPercentage)
+			->where('to_percent', '>=', $totalPercentage)
+			->value('name');
+	}
 }

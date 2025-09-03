@@ -314,9 +314,9 @@
 
         /* override */
         .modal-dialog {
-            width: 180vh !important;
+            width: 80vw !important;
             margin: 30px auto;
-            height: 100vh !important;
+            /* height: 100vh !important; */
         }
 
         .modal-body {

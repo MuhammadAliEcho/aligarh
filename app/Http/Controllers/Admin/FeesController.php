@@ -134,7 +134,7 @@ class FeesController extends Controller
 
 			'date_of_payment'	=>	'sometimes|required|date',
 			'paid_amount'	=>	'sometimes|required|integer',
-			'payment_type'	=>	'sometimes|required'
+			'payment_type'	=>	'sometimes|required|in:Cash,Chalan',
 		]);
 
 		$InvoiceMaster = InvoiceMaster::findOrfail($request->input('invoice_id'));
@@ -292,7 +292,7 @@ class FeesController extends Controller
 			'invoice_no'  	=>  'required|integer|exists:invoice_master,id',
 			'date_of_payment'	=>	'sometimes|required|date',
 			'paid_amount'	=>	'sometimes|required|integer',
-			'payment_type'	=>	'sometimes|required'
+			'payment_type'	=>	'sometimes|required|in:Cash,Chalan',
         ]);
 
         if ($validator->fails()) {

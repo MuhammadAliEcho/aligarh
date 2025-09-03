@@ -40,7 +40,7 @@ class TeacherController extends Controller
         //'email'     =>  'required|email',
         'qualification'  =>  'required',
         'salary'      =>  'required|numeric',
-        'img'       => 	'image|mimes:jpg,jpeg|max:2048'
+        'img'       => 	'image|mimes:jpg,jpeg,png|max:1524'
     ]);
   }
 

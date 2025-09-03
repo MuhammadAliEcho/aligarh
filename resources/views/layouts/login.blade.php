@@ -17,6 +17,8 @@
 
     <link href="{{ URL::to('src/css/animate.css') }}" rel="stylesheet">
     <link href="{{ URL::to('src/css/style.css') }}" rel="stylesheet">
+     <!-- Toastr style -->
+    <link href="{{ URL::to('src/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 
 </head>
 
@@ -29,11 +31,18 @@
     <!-- Mainly scripts -->
     <script src="{{ URL::to('src/js/jquery-2.1.1.js') }}"></script>
     <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
+     <!-- Toastr js -->
+    <script src="{{ URL::to('src/js/plugins/toastr/toastr.min.js') }}"></script>
 
     <!-- Jquery Validate -->
     <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <script type="text/javascript">
+        @if (session('status'))
+            window.onload = function() {
+                toastr.success("{{ session('status') }}");
+            }
+        @endif
         function toggle(form, reset_form) {
             document.getElementById("form").style.display = form;
             document.getElementById("reset_form").style.display = reset_form;

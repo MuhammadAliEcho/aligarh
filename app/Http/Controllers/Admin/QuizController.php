@@ -16,10 +16,9 @@ class QuizController extends Controller
     public function index()
     {
         $data['teachers'] = Teacher::select('id', 'name')->get();
-        $data['classes'] = Classe::select('id', 'name')->get();
-        foreach ($data['classes'] as $class) {
-            $data['sections']['class_' . $class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
-        }
+        $getClassWithSections = $this->getClassWithSections();
+        $data['classes'] = $getClassWithSections['classes'];
+        $data['sections'] = $getClassWithSections['sections'];
 
         return view('admin.quiz', $data);
     }
@@ -106,8 +105,10 @@ class QuizController extends Controller
 
     public function edit($id)
     {
-        $data['quiz'] = Quiz::with('class:id,name', 'section:id,name', 'teacher:id,name')->findOrFail($id);
-        $data['sections'] = Section::select('name', 'id')->where(['class_id' => $data['quiz']->class->id])->get();
+        $data['quiz'] = Quiz::with('class:id,name', 'section:id,name', 'teacher:id,name', 'quizResults:id,quiz_id')->findOrFail($id);
+        $getClassWithSections = $this->getClassWithSections();
+        $data['classes'] = $getClassWithSections['classes'];
+        $data['sections'] = $getClassWithSections['sections'];
         $data['teachers'] = Teacher::select('id', 'name')->get();
 
         return view('admin.edit_quiz', $data);
@@ -121,6 +122,7 @@ class QuizController extends Controller
             'title'         => 'required|string|max:255',
             'section'       => 'nullable|exists:sections,id',
             'teacher'       => 'nullable|exists:teachers,id',
+            'class'         => 'sometimes|required|exists:classes,id',
             'date'          => 'required|date|date_format:Y-m-d',
             'total_marks'   => 'required|numeric|between:0,200',
         ]);
@@ -129,6 +131,8 @@ class QuizController extends Controller
             'title'       => $request->title,
             'date'        => $request->date,
             'section_id'  => $request->section,
+            // 'section_id'  => $request->section?? $quiz->section_id,
+            'class_id'    => $request->class ?? $quiz->class_id,
             'teacher_id'  => $request->teacher,
             'total_marks' => $request->total_marks
         ]);
@@ -164,7 +168,8 @@ class QuizController extends Controller
                 ]);
         }
 
-        $Quiz = Quiz::find($request->input('id'));
+        $Quiz = Quiz::with('quizResults')->find($request->input('id'));
+        $Quiz->quizResults()->delete();
         $Quiz->delete();
 
 
@@ -175,5 +180,15 @@ class QuizController extends Controller
                 'msg' => 'Deleted Successfully',
             ],
         ]);
+    }
+
+    private function getClassWithSections()
+    {
+        $data['classes'] = Classe::select('id', 'name')->get();
+        foreach ($data['classes'] as $class) {
+            $data['sections']['class_' . $class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
+        }
+
+        return $data;
     }
 }

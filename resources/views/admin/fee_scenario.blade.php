@@ -117,7 +117,7 @@
 																								<td>Late Fee</td>
 																								<td>
 																									<div>
-																										<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" min="1" required="true" class="form-control"/>
+																										<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" min="0" required="true" class="form-control"/>
 																										@if ($errors->has('late_fee'))
 																											<span class="help-block">
 																											<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('late_fee') }}</strong>

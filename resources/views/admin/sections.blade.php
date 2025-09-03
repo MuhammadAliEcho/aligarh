@@ -85,7 +85,7 @@
                                                     <td>{{ $section->name }}</td>
                                                     <td>{{ $section->nick_name }}</td>
                                                     <td>{{ $section->Students->count() }} | {{ $section->capacity }}</td>
-                                                    <td>{{ $section->Teacher['name'] }}</td>
+                                                    <td>{{ $section->Teacher?->name }}</td>
                                                     <td class="edit-section">
                                                       @can('manage-sections.edit.post')
                                                       <a href="{{ URL('manage-sections/edit/'.$section->id) }}" data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-option">

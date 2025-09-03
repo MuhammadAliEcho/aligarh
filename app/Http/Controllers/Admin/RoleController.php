@@ -359,7 +359,7 @@ class RoleController extends Controller
 				'fee-scenario.index' => 'Fee Scenario View',
 				'fee-scenario.update.scenario' => 'Fee Scenario Update',
 				'exam-grades.index' => 'Exam Grades View',
-				'exam-grades.update' => 'Exam Grades View',
+				'exam-grades.update' => 'Exam Grades Update',
 			],
 		];
 	}
