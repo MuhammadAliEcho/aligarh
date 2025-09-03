@@ -23,21 +23,33 @@ use App\ParentInterview;
 class StudentsController extends Controller 
 {
 
-//  protected $Routes;
+	//  protected $Routes;
 	// protected $data, $Student, $Request, $Input;
 
-// 	public function __Construct($Routes, Request $Request){
-// 		$this->data['root'] = $Routes;
-// 		$this->Request = $Request;
-// 		$this->Input  =    $Request->input();
-// 		// for session update temperory
-// //		$this->UpdateStd();
-// 	}
+	// 	public function __Construct($Routes, Request $Request){
+	// 		$this->data['root'] = $Routes;
+	// 		$this->Request = $Request;
+	// 		$this->Input  =    $Request->input();
+	// 		// for session update temperory
+	// //		$this->UpdateStd();
+	// 	}
 
-	public function GetImage($id){
-		$student  = Student::findorfail($id);
+	public function GetImage($id)
+	{
+		$student = Student::findOrFail($id);
+
+		// Check if file exists in the current tenant's storage
+		if (!Storage::exists($student->image_dir)) {
+			abort(404, 'Image not found.');
+		}
+
+		// Get the image content using the default storage (which handles tenancy)
 		$image = Storage::get($student->image_dir);
-		return Response($image, 200)->header('Content-Type', 'image');
+
+		// Get MIME type
+		$mime = Storage::mimeType($student->image_dir);
+
+		return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
 	}
 
 	public function GetProfile($id) {
@@ -493,14 +505,22 @@ class StudentsController extends Controller
 		);
 	}
 
-	protected function SaveImage($Student,$request){
+	protected function SaveImage($Student, $request)
+	{
 		$file = $request->file('img');
-		Storage::delete($Student->image_dir);
+
+		if ($Student->image_dir && Storage::exists($Student->image_dir)) {
+			Storage::delete($Student->image_dir);
+		}
+
 		$extension = $file->getClientOriginalExtension();
-		Storage::disk('public')->put('students/'.$Student->id.'.'.$extension,  File::get($file));
-//    $file = $request->file('img')->storePubliclyAs('images/students', $Student->id.'.'.$file->getClientOriginalExtension(), 'public');
-		$Student->image_dir = 'public/students/'.$Student->id.'.'.$extension;
-		$Student->image_url = 'students/image/'.$Student->id;
+		$filename = $Student->id;
+		
+		$path = 'students/' . $filename;
+		Storage::put($path . '.' . $extension, File::get($file));
+
+		$Student->image_dir = "{$path}" . '.' . $extension;
+		$Student->image_url = 'students/image/' . $filename;
 	}
 
 	protected function DeleteImage($Student){
@@ -508,6 +528,7 @@ class StudentsController extends Controller
 			Storage::delete($Student->image_dir);
 			$Student->image_dir = Null;
 			$Student->image_url = Null;
+			$Student->save();
 		}
 	}
 
