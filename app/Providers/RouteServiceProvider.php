@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -15,6 +15,14 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
+
+    /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    // public const HOME = '/';
+    // public const POLICY = 'policy';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -51,9 +59,12 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+		foreach ($this->centralDomains() as $domain) {
+			Route::middleware('web')
+				->domain($domain)
+				->namespace($this->namespace)
+				->group(base_path('routes/web.php'));
+		}
     }
 
     /**
@@ -65,9 +76,22 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+
+		foreach ($this->centralDomains() as $domain) {
+			Route::prefix('api')
+				->domain($domain)
+				->middleware('api')
+				->namespace($this->namespace)
+				->group(base_path('routes/api.php'));
+		}
+        // Route::prefix('api')
+        //      ->middleware('api')
+        //      ->namespace($this->namespace)
+        //      ->group(base_path('routes/api.php'));
     }
+
+	protected function centralDomains(): array
+	{
+		return config('tenancy.central_domains');
+	}
 }

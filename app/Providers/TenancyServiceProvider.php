@@ -133,6 +133,14 @@ class TenancyServiceProvider extends ServiceProvider
 		])
 		->namespace(static::$controllerNamespace)
 		->group(base_path('routes/tenant_web.php'));
+
+        Route::middleware([
+			'api',
+			InitializeTenancyByDomain::class,
+			PreventAccessFromCentralDomains::class,
+		])
+		->namespace(static::$controllerNamespace)
+		->group(base_path('routes/tenant_api.php'));
     }
 
     protected function makeTenancyMiddlewareHighestPriority()
