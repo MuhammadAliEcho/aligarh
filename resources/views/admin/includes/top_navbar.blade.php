@@ -69,13 +69,13 @@
             // Load notifications from the server
             function loadNotifications() {
                 $.ajax({
-                    url: '/notifications/',
+                    url: `{{ route('notifications.log') }}`,
                     method: 'GET',
                     data: {
                         per_page: 5
                     },
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'accept': 'application/json'
                     },
                     success: function(response) {
                         if (response.notifications && Array.isArray(response.notifications)) {
