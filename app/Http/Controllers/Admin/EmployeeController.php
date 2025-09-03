@@ -14,16 +14,22 @@ use App\Http\Controllers\Controller;
 class EmployeeController extends Controller
 {
   public function GetImage($id)
-{
+  {
     $Employee = Employee::findOrFail($id);
+
+    // Check if file exists in the current tenant's storage
     if (!Storage::exists($Employee->img_dir)) {
-        return response()->json(['error' => 'Image not found'], 404);
+      abort(404, 'Image not found.');
     }
+
+    // Get the image content using the default storage (which handles tenancy)
     $image = Storage::get($Employee->img_dir);
+
+    // Get MIME type
     $mime = Storage::mimeType($Employee->img_dir);
 
-    return response($image, 200)->header('Content-Type', $mime);
-}
+    return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
+  }
 
   public function GetProfile($id){
     $data['employee']  = Employee::findOrFail($id);
@@ -197,14 +203,22 @@ class EmployeeController extends Controller
   }
 
 
-  protected function SaveImage($Employee, $request){
+  protected function SaveImage($Employee, $request)
+  {
     $file = $request->file('img');
-    Storage::delete($Employee->img_dir);
+
+    if ($Employee->img_dir && Storage::exists($Employee->img_dir)) {
+      Storage::delete($Employee->img_dir);
+    }
+
     $extension = $file->getClientOriginalExtension();
-    Storage::disk('public')->put('employee/'.$Employee->id.'.'.$extension,  File::get($file));
-    //$file = $this->Request->file('img')->storePubliclyAs('images/employee', $Employee->id.'.'.$file->getClientOriginalExtension(), 'public');
-    $Employee->img_dir = 'public/employee/'.$Employee->id.'.'.$extension;
-    $Employee->img_url = 'employee/image/'.$Employee->id;
+    $filename = $Employee->id;
+
+    $path = 'employee/' . $filename;
+    Storage::put($path . '.' . $extension, File::get($file));
+
+    $Employee->img_dir = "{$path}" . '.' . $extension;
+    $Employee->img_url = 'employee/image/' . $filename;
   }
 
 }

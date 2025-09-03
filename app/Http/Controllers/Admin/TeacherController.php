@@ -14,17 +14,15 @@ use App\Http\Controllers\Controller;
 class TeacherController extends Controller
 {
 
-  public function GetImage($id){
+  public function GetImage($id)
+  {
     $teacher  = Teacher::findorfail($id);
-    //$image = Storage::get($teacher->image_dir);
-    //$image = Storage::disk('public/studnets')->get('1.jpg');
-    //return Response($image, 200);
-    if(Storage::exists($teacher->image_dir)){
-      return Response(Storage::get($teacher->image_dir), 200)->header('Content-Type', 'image');
-    }
+    // Get the image content using the default storage (which handles tenancy)
+    $image = Storage::get($teacher->image_dir);
 
-    return abort(404);
-  
+    // Get MIME type
+    $mime = Storage::mimeType($teacher->image_dir);
+    return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
   }
 
   public function GetProfile($id){
@@ -186,14 +184,22 @@ class TeacherController extends Controller
   }
 
 
-  protected function SaveImage($Teacher, $request){
+  protected function SaveImage($Teacher, $request)
+  {
     $file = $request->file('img');
-    Storage::delete($Teacher->image_dir);
+
+    if ($Teacher->image_dir && Storage::exists($Teacher->image_dir)) {
+      Storage::delete($Teacher->image_dir);
+    }
+    
     $extension = $file->getClientOriginalExtension();
-    Storage::disk('public')->put('teachers/'.$Teacher->id.'.'.$extension,  File::get($file));
-    //$file = $request->file('img')->storePubliclyAs('images/teachers', $Teacher->id.'.'.$file->getClientOriginalExtension(), 'public');
-    $Teacher->image_dir = 'public/teachers/'.$Teacher->id.'.'.$extension;
-    $Teacher->image_url = 'teacher/image/'.$Teacher->id;
+    $filename = $Teacher->id;
+
+    $path = 'teacher/' . $filename;
+    Storage::put($path . '.' . $extension, File::get($file));
+
+    $Teacher->image_dir = "{$path}" . '.' . $extension;
+    $Teacher->image_url = 'teacher/image/' . $filename;
   }
 
 }
