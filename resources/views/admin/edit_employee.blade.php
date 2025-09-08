@@ -86,7 +86,7 @@
                                           </span>
                                         </div>
                                         <div class="col-md-6">
-                                          <img id="img" src="{{ ($employee->img_url == '')? '#' : URL($employee->img_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
+                                          <img id="img" src="{{ ($employee->img_url == '')? '#' : URL($employee->img_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" style="width: 100px;" />
                                           @if ($errors->has('img'))
                                               <span class="help-block">
                                                   <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
