@@ -43,7 +43,8 @@ class SendMsgJob implements ShouldQueue
     {
         try {
             if ($this->sendOn('mail')) {
-                SendMailJob::dispatch($this->email, $this->message, $this->emailSubject);
+                SendMailJob::dispatch($this->email, $this->message, $this->emailSubject)
+                ->onConnection('central')->onQueue('default');
             }
 
             if ($this->sendOn('sms')) {

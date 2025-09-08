@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('QUEUE_CONNECTION', 'central'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,6 +39,16 @@ return [
             'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
+            'after_commit' => false,
+        ],
+        //Central queue connection using landlord DB
+        'central' => [
+            'driver' => 'database',
+            'connection' => 'mysql_landlord',
+            'table' => 'jobs',
+            'queue' => 'default',
+            'retry_after' => 90,
+            'after_commit' => false,
         ],
 
         'beanstalkd' => [
@@ -60,8 +70,9 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue' => 'default',
+            'queue' => env('REDIS_QUEUE', 'default'),
             'retry_after' => 90,
+            'block_for' => null,
         ],
 
     ],
@@ -78,7 +89,7 @@ return [
     */
 
     'failed' => [
-        'database' => env('DB_CONNECTION', 'mysql'),
+        'database' => env('DB_CONNECTION', 'mysql_landlord'), //Also log failed jobs in central DB
         'table' => 'failed_jobs',
     ],
 
