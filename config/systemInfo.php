@@ -11,6 +11,8 @@ return [
 		'available_sms'		=> 3042,
 		'sms_validity' 		=> '2030-01-01',
 		'next_chalan_no' 		=> 1,
+		'logo' 				=> null,
+		'logo_url' 				=> null,
 		'bank' => [
 			'name'       => 'Abc Bank',
 			'address'    => 'Abc Branch',

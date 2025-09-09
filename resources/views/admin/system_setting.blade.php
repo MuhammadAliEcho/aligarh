@@ -142,7 +142,7 @@
                                                     </div>
                                                     <div class="col-md-10">
                                                         <form id="tchr_rgstr" method="POST"
-                                                            action="{{ URL('system-setting/update') }}" class="form-horizontal">
+                                                            action="{{ URL('system-setting/update') }}" class="form-horizontal" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
 
                                                             <div class="tab-content">
@@ -339,6 +339,38 @@
                                                                             <input type="text"
                                                                                 value="{{ $system_info['general']['next_chalan_no']}}"
                                                                                 readonly="true" class="form-control" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group{{ $errors->has('logo') ? ' has-error' : '' }}">
+                                                                        <div class="col-md-2"> 
+                                                                            <span class="btn btn-default btn-block btn-file">
+                                                                                <input type="file" name="logo" accept="image/*" id="logoinp" /> 
+                                                                                <span class="fa fa-image"></span> Upload Logo
+                                                                            </span> 
+                                                                        </div>
+                                                                        <div class="col-md-6"> 
+                                                                            <img id="logo" 
+                                                                                src="{{ config('systemInfo.general.logo_url') ?? '' }}" 
+                                                                                alt="Logo Preview" 
+                                                                                class="img-responsive img-thumbnail"
+                                                                                style="{{ config('systemInfo.general.logo') ? 'display: block;' : 'display: none;' }}" />
+                                                                            
+                                                                            @if(config('systemInfo.general.logo'))
+                                                                                <div class="mt-2" id="deleteLogoContainer">
+                                                                                    <button type="button" class="btn btn-danger btn-sm" id="deleteLogo">
+                                                                                        <span class="fa fa-trash"></span>
+                                                                                    </button>
+                                                                                    <input type="hidden" name="removeImage" id="removeImageInput" value="">
+                                                                                </div>
+                                                                            @endif
+                                                                            @if ($errors->has('logo'))
+                                                                                <span class="help-block"> 
+                                                                                    <strong>
+                                                                                        <span class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('logo') }}
+                                                                                    </strong>
+                                                                                </span>
+                                                                            @endif
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -819,9 +851,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(notification, index) in notifications" :key="notification.id" @click="selectRow(notification)">
+                                                <tr v-for="(notification, index) in notifications" :key="notification.id">
                                                     <td>@{{ index + 1 }}</td>
-                                                    <td>@{{ formatName(notification.name) }}</td>
+                                                    <td><span @click="selectRow(notification)" style="cursor: pointer;">@{{ formatName(notification.name) }}</span></td>
                                                     <td><input type="checkbox" v-model="notification.mail"
                                                             @change="updateSetting(notification, 'mail')" @click.stop></td>
                                                     <td><input type="checkbox" v-model="notification.sms"
@@ -861,10 +893,39 @@
     <script type="text/javascript">
         var tbl;
 
+        function readURL(input) { 
+            if (input.files && input.files[0]) { 
+                var reader = new FileReader(); 
+                reader.onload = function (e) { 
+                    $('#logo').attr('src', e.target.result).show(); 
+                } 
+                reader.readAsDataURL(input.files[0]); 
+            } 
+        }
 
         $(document).ready(function() {
 
             $("[data-toggle='tooltip']").tooltip();
+
+            $("#logoinp").change(function(){
+                    readURL(this);
+                    $('#removeImageInput').val('');
+            });
+
+            $('#deleteLogo').click(function() {
+                if (confirm('Are you sure you want to remove the logo?')) {
+                    $('#logo').hide();
+                    $('#logoinp').val(''); 
+                    $('#removeImageInput').val('1'); 
+                    $('#deleteLogoContainer').hide();
+                    var newInput = $('#logoinp').clone();
+                    $('#logoinp').replaceWith(newInput);
+                    newInput.change(function(){
+                        readURL(this);
+                        $('#removeImageInput').val('');
+                    });
+                }
+            });
 
             $("#sms_history_form").validate({
                 rules: {
@@ -951,23 +1012,23 @@
                     notification.whatsapp = newValue;
 
                     axios.post(`/system-setting/notification-settings/row`, {
-                        id: notification.id,
-                        mail: newValue,
-                        sms: newValue,
-                        whatsapp: newValue
-                    })
-                    .then(response => {
-                        toastr.success("Row settings updated", "Notification");
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        toastr.error("Failed to update row", "Error");
-                    });
+                            id: notification.id,
+                            mail: newValue,
+                            sms: newValue,
+                            whatsapp: newValue
+                        })
+                        .then(response => {
+                            toastr.success("Row settings updated", "Notification");
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            toastr.error("Failed to update row", "Error");
+                        });
                 },
 
                 toggleSelectAll(type, event) {
                     const isChecked = event.target.checked;
-                    
+
                     this.notifications.forEach(notification => {
                         notification[type] = isChecked;
                     });

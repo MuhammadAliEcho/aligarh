@@ -41,6 +41,7 @@ use App\Http\Controllers\Admin\AttendanceLeaveController;
 use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\Admin\QuizResultController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 
 /*
 |--------------------------------------------------------------------------
@@ -382,4 +383,17 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/', [ExamGradesController::class, 'Index'])->name('.index');
         Route::post('/update', [ExamGradesController::class, 'UpdateGrade'])->name('.update');
     });
+
+    //route for public access //need improvement on tenants
+    Route::get('/storage/{path}', function ($path) {
+        $file = storage_path('app/public/' . $path);
+
+        if (!File::exists($file)) {
+            abort(404);
+        }
+        $fileContents = File::get($file);
+        $mimeType = File::mimeType($file);
+
+        return response($fileContents)->header('Content-Type', $mimeType);
+    })->where('path', '.*');
 });

@@ -126,7 +126,7 @@ class Student extends Model
 
 	public function AcademicSession()
 	{
-		return $this->hasOne('App\AcademicSession', 'id');
+		return $this->belongsTo('App\AcademicSession', 'session_id');
 	}
 
 	public function setDateOfBirthInwordsAttribute($date)
