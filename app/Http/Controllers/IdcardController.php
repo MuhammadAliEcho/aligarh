@@ -9,8 +9,7 @@ class IdcardController extends Controller {
 
     public function StudentIdcard(Request $request, $id){
         
-        $student = Student::findOrFail($id);
-
+        $student = Student::with('Guardian:id,phone', 'AcademicSession:id,title')->findOrFail($id);
         return view('admin.printable.idcard_student', ['student' => $student]);
     }
 }

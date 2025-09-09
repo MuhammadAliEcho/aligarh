@@ -124,6 +124,11 @@ class Student extends Model
 		return Carbon::createFromFormat('Y-m-d', $date)->format('d/m/Y');
 	}
 
+	public function AcademicSession()
+	{
+		return $this->hasOne('App\AcademicSession', 'id');
+	}
+
 	public function setDateOfBirthInwordsAttribute($date)
 	{
 		try {

@@ -1609,23 +1609,23 @@
                     <div class="col span-3-of-5">
                         <div class="span-2-of-2" style="margin: 1% 0;">
                             <span style="font-size: 120%; letter-spacing: 1px;">Father Name :</span>
-                            <span style="font-size: 180%; margin-left: 8.5%;">{{ $student->father_name }}</span>
+                            <span style="font-size: 180%; margin-left: 8.5%;">{{ $student->father_name??'-' }}</span>
                         </div>
                         <div class="span-2-of-2" style="margin: 2% 0;">
                             <span style="font-size: 120%; letter-spacing: 1px;">P.H No :</span>
-                            <span style="font-size: 180%; margin-left: 19.5%;">0332-xxxxxxx</span>
+                            <span style="font-size: 180%; margin-left: 19.5%;">{{ $student->Guardian->phone??'-' }}</span>
                         </div>
                         <div class="span-2-of-2" style="margin: 2% 0 0;">
                             <span style="font-size: 120%; letter-spacing: 1px;">GR No</span>
-                            <span style="font-size: 180%; margin-left: 21.5%;">{{ $student->gr_no }}</span>
+                            <span style="font-size: 180%; margin-left: 21.5%;">{{ $student->gr_no??'-' }}</span>
                         </div>
                         <div class="span-2-of-2" style="margin: 1% 0;">
                             <span style="font-size: 120%; letter-spacing: 1px;">Session :</span>
-                            <span style="font-size: 180%; margin-left: 14%;">2019-2020</span>
+                            <span style="font-size: 180%; margin-left: 14%;">{{ $student->AcademicSession->title??'-' }}</span>
                         </div>
                         <div class="span-2-of-2" style="margin: 2% 0;">
                             <span style="font-size: 120%; letter-spacing: 1px;">Issuing Date:</span>
-                            <span style="font-size: 180%; margin-left: 8.5%;">3-April-2018</span>
+                            <span style="font-size: 180%; margin-left: 8.5%;">{{ $student->created_at->format('F j, Y') }}</span>
                         </div>
                     </div>
                     {{-- QR Code --}}
@@ -1637,7 +1637,7 @@
 
                 <div class="span-2-of-2" style="margin: 2% 0;">
                     <span style="font-size: 120%; letter-spacing: 1px;">Postal Address :</span>
-                    <span style="font-size: 180%; margin-left: 4%;">1/285 shah faisal colony</span>
+                    <span style="font-size: 180%; margin-left: 4%;">{{ $student->address??'-' }}</span>
                 </div>
                 <div class="span-2-of-2" style="margin: 2% 0;">
                     <span style="font-size: 120%; letter-spacing: 1px;">Student Signature</span>
