@@ -41,6 +41,7 @@ use App\Http\Controllers\Admin\AttendanceLeaveController;
 use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\Admin\QuizResultController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,14 +62,14 @@ Route::post('/password/reset', 'Auth\ResetPasswordController@reset')->name('pass
 Route::get('logout', [UserController::class,'LogOut'])->name('logout');
 
 Route::group(['middleware' => 'guest'], function(){
-	Route::get('login', [UserController::class, 'GetLogin'])->name('login');
-	Route::post('login', [UserController::class, 'PostLogin'])->name('login.post');
+    Route::get('login', [UserController::class, 'GetLogin'])->name('login');
+    Route::post('login', [UserController::class, 'PostLogin'])->name('login.post');
 });
 
 Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], function(){
 
     Route::get('/cmd', function () {
-        
+
         // Artisan::call('migrate', ['--force' => true]);
         // Artisan::call('db:seed', ['--class' => 'UserSeeder', '--force' => true, ]);
         // Artisan::call('db:seed', ['--class' => 'PermissionsSeeder', '--force' => true, ]);
@@ -135,7 +136,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/add', [GuardiansController::class, 'AddGuardian'])->name('.add');
         Route::post('/edit/{id}', [GuardiansController::class, 'PostEditGuardian'])->name('.edit.post');
     });
-    
+
     Route::prefix('manage-classes')->name('manage-classes')->group(function(){
         Route::get('/', [ManageClasses::class, 'GetClasses'])->name('.index');
         Route::get('/edit/{id}', [ManageClasses::class, 'EditClass'])->name('.edit');
@@ -149,7 +150,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/add', [ManageSections::class, 'AddSection'])->name('.add');
         Route::post('/edit/{id}', [ManageSections::class, 'PostEditSection'])->name('.edit.post');
     });
-    
+
     Route::prefix('vendors')->name('vendors')->group(function(){
         Route::get('/', [VendorsController::class, 'GetVendor'])->name('.index');
         Route::get('/edit/{id}', [VendorsController::class, 'EditVendor'])->name('.edit');
@@ -262,7 +263,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/', [LibraryController::class, 'GetLibrary'])->name('.index');
         Route::get('/edit/{id}', [LibraryController::class, 'EditBook'])->name('.edit');
         Route::post('/add', [LibraryController::class, 'AddBook'])->name('.add');
-        Route::post('/edit/{id}', [LibraryController::class, 'PostEditBook'])->name('.edit.post');  
+        Route::post('/edit/{id}', [LibraryController::class, 'PostEditBook'])->name('.edit.post');
     });
 
     Route::prefix('noticeboard')->name('noticeboard')->group(function(){
@@ -374,4 +375,17 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/', [ExamGradesController::class, 'Index'])->name('.index');
         Route::post('/update', [ExamGradesController::class, 'UpdateGrade'])->name('.update');
     });
+
+    //route for public access
+    Route::get('/storage/{path}', function ($path) {
+        $file = storage_path('app/public/' . $path);
+
+        if (!File::exists($file)) {
+            abort(404);
+        }
+        $fileContents = File::get($file);
+        $mimeType = File::mimeType($file);
+
+        return response($fileContents)->header('Content-Type', $mimeType);
+    })->where('path', '.*');
 });

@@ -8,9 +8,13 @@ use Larapack\ConfigWriter\Repository as ConfigWriter;
 use App\SystemInvoice;
 use PDF;
 use App\NotificationsSetting;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class SystemSettingController extends Controller
 {
+	protected $ConfigWriter;
 	public function GetSetting()
 	{
 		$data['system_invoices']	=	SystemInvoice::all();
@@ -64,9 +68,9 @@ class SystemSettingController extends Controller
 
 
 		// dd($request->all());
-		$ConfigWriter = new ConfigWriter('systemInfo');
+		$this->ConfigWriter = new ConfigWriter('systemInfo');
 
-		$ConfigWriter->set([
+		$this->ConfigWriter->set([
 			// General
 			'general' => [
 				'name'				=> $request->input('name'),
@@ -111,7 +115,13 @@ class SystemSettingController extends Controller
 			],
 		]);
 
-		$ConfigWriter->save();
+		if ($request->input('removeImage')) {
+			$this->DeleteImage();
+		} elseif ($request->hasFile('logo')) {
+			$this->SaveImage($request);
+		}
+
+		$this->ConfigWriter->save();
 
 		return redirect('system-setting')->with([
 			'toastrmsg' => [
@@ -173,5 +183,32 @@ class SystemSettingController extends Controller
 			'field'   => $field,
 			'value'   => $value
 		]);
+	}
+
+	protected function SaveImage($request)
+	{
+		$file = $request->file('logo');
+		$config = $this->ConfigWriter->all();
+		if (!empty($config['general']['logo'])) {
+			Storage::disk('public')->delete($config['general']['logo']);
+		}
+		$extension = $file->getClientOriginalExtension();
+		$randomName = Str::random(20) . '.' . $extension;
+		$path = 'tenants/' . $randomName;
+		Storage::disk('public')->put($path, File::get($file));
+		$config['general']['logo'] = $path;
+		$config['general']['logo_url'] = asset('storage/' . $path);
+		$this->ConfigWriter->set($config);
+	}
+
+	protected function DeleteImage()
+	{
+		$config = $this->ConfigWriter->all();
+		if (!empty($config['general']['logo'])) {
+			Storage::disk('public')->delete($config['general']['logo']);
+		}
+		$config['general']['logo'] = null;
+		$config['general']['logo_url'] = null;
+		$this->ConfigWriter->set($config);
 	}
 }
