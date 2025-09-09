@@ -851,9 +851,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(notification, index) in notifications" :key="notification.id" @click="selectRow(notification)">
+                                                <tr v-for="(notification, index) in notifications" :key="notification.id">
                                                     <td>@{{ index + 1 }}</td>
-                                                    <td>@{{ formatName(notification.name) }}</td>
+                                                    <td><span @click="selectRow(notification)" style="cursor: pointer;">@{{ formatName(notification.name) }}</span></td>
                                                     <td><input type="checkbox" v-model="notification.mail"
                                                             @change="updateSetting(notification, 'mail')" @click.stop></td>
                                                     <td><input type="checkbox" v-model="notification.sms"
