@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'central'),
+    'default' => env('QUEUE_DRIVER', 'central'),
 
     /*
     |--------------------------------------------------------------------------
