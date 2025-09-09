@@ -110,6 +110,7 @@ class SystemSettingController extends Controller
 		];
 
 		$currentSystemInfo = $tenant->system_info ?? [];
+		// $currentSystemInfo = config('systemInfo');
 		$tenant->fill([
 			'system_info' => array_merge_recursive_distinct($currentSystemInfo, $updateData)
 		]);
