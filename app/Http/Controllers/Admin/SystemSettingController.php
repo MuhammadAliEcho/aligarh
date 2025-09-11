@@ -84,9 +84,9 @@ class SystemSettingController extends Controller
 				'general' => [
 					'name'				=> $request->input('name'),
 					'address'         	=> $request->input('address'),
-					'contact_name'      	=> $request->input('contact_name'),
+					'contact_name'      => $request->input('contact_name'),
 					'contact_no'      	=> $request->input('contact_no'),
-					'contact_email'           	=> $request->input('contact_email'),
+					'contact_email'     => $request->input('email'),
 					'title'           	=> $request->input('title'),
 					'bank' => [
 						'name'       	=> $request->input('bank_name'),
