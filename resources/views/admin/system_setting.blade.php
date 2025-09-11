@@ -350,7 +350,7 @@
                                                                         </div>
                                                                         <div class="col-md-6"> 
                                                                             <img id="logo" 
-                                                                                src="{{ route('system-setting.logo') }}" 
+                                                                                src="{{ $system_info['general']['logo'] ? route('system-setting.logo'): '' }}" 
                                                                                 alt="Logo Preview" 
                                                                                 class="img-responsive img-thumbnail"
                                                                                 style="max-width:50% !important; {{ isset($system_info['general']['logo']) && $system_info['general']['logo'] ? 'display: block;' : 'display: none;' }}" />
