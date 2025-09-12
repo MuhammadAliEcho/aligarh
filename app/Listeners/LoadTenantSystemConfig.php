@@ -30,6 +30,13 @@ class LoadTenantSystemConfig
 
         $systemInfo = $tenant->system_info ?? null;
 
+        if($tenant->id){
+            config([
+                'cache.prefix'	=>	$tenant->id?? env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
+                'cache.stores.file.path' => storage_path('framework/cache/data'.($tenant->id? '/'.$tenant->id : '')),
+            ]);
+        }
+
         if (!$systemInfo || empty($systemInfo['smtp']['host'])) {
             return;
         }
