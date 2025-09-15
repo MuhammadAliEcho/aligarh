@@ -48,10 +48,8 @@ class NinjaClientWebHookController extends Controller
         $tenant = Tenant::create([
             'id'                => $tenantId,
             'name'              => $tenantId,
-            'ninja_id'          => $data['id'],
-            'active'            => ($data['archived_at'] ?? 1) == 0 ? 1 : 0,
-            'contact_name'      => $data['name'] ?? null,
-            'contact_number'    => $data['phone'] ?? null,
+            'contact_name'      => $data['name'] ?? 'N/A',
+            'contact_number'    => $data['phone'] ?? 'N/A',
             'address'           => $fullAddress,
             'data'              => $customData,
         ]);
@@ -82,67 +80,6 @@ class NinjaClientWebHookController extends Controller
         //         'error' => $e->getMessage(),
         //     ], 422);
         // }
-    }
-
-    public function update(Request $request)
-    {
-        // dd($request->all());
-
-        if ($response = $this->validateTenants($request)) {
-            return $response;
-        }
-
-        $data = $request->all();
-        $tenantId = $data['custom_value2'];
-
-        // Decode tenant config
-        $customValue3 = $data['custom_value3'] ?? '{}';
-        $customData = is_array($customValue3)
-            ? $customValue3
-            : json_decode($customValue3, true);
-
-        if (!is_array($customData)) {
-            $customData = [];
-        }
-
-        // Merge in system config
-        $customData['systemInfo'] = array_merge($customData['systemInfo'] ?? [], config('systemInfo'));
-
-        // Find tenant
-        $tenant = Tenant::find($tenantId);
-
-        if (!$tenant) {
-            return response()->json([
-                'message' => 'Tenant not found.',
-            ], 404);
-        }
-
-        // Update fields
-        $tenant->id             = $data['custom_value2'] ?? $tenant->id;
-        $tenant->contact_name   = $data['name'] ?? $tenant->contact_name;
-        $tenant->contact_number = $data['phone'] ?? $tenant->contact_number;
-        $tenant->address        = ($data['address1'] ?? '') . ($data['address2'] ?? '');
-
-        // Update custom data
-        $tenant->data = array_merge($tenant->data ?? [], $customData);
-
-        $tenant->save();
-
-        // Update or create domain
-        $domainName = parse_url($data['website'] ?? '', PHP_URL_HOST);
-        if ($domainName) {
-            $tenant->domains()->updateOrCreate(
-                ['domain' => $domainName],
-                ['config' => json_encode([
-                    'tenancy_db_name' => $customData['tenancy_db_name'] ?? null,
-                ])]
-            );
-        }
-
-        return response()->json([
-            'message' => 'Tenant updated successfully.',
-            'tenant' => $tenant->load('domains'),
-        ], 200);
     }
 
 

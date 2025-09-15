@@ -12,11 +12,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     use HasDatabase, HasDomains;
 
     protected $connection = 'mysql_landlord';
-
-    protected $casts = [
-        'active' => 'boolean',
-    ];
-
+    
     //need improvemnt  use native Tenents Setting
 
 
@@ -30,8 +26,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         return [
             'id',
             'name',
-            'ninja_id',
-            'active',
             'contact_name', 
             'address',
             'contact_number',
@@ -45,8 +39,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     protected $fillable = [
         'id',
         'name',
-        'ninja_id',
-        'active',
         'contact_name',
         'contact_number',
         'address', 
