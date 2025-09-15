@@ -19,3 +19,4 @@ Route::get('/', function(){
 
 // need middleware for validation Peronsal Access 
 Route::post('client/create', [NinjaClientWebHookController::class, 'create']);
+Route::post('client/update', [NinjaClientWebHookController::class, 'update']);

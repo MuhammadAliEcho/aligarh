@@ -47,7 +47,7 @@ class NinjaClientWebHookController extends Controller
 
         $tenant = Tenant::create([
             'id'                => $tenantId,
-            'name'              => $tenantId,
+            'name'              => $data['name'],
             'ninja_id'          => $data['id'],
             'active'            => ($data['archived_at'] ?? 1) == 0 ? 1 : 0,
             'contact_name'      => $data['name'] ?? null,
@@ -84,6 +84,81 @@ class NinjaClientWebHookController extends Controller
         // }
     }
 
+    public function update(Request $request)
+    {
+        if ($response = $this->validateTenants($request)) {
+            return $response;
+        }
+
+        $data = $request->all();
+        $tenantId = $data['custom_value2'];
+
+        // Decode tenant config
+        $customValue3 = $data['custom_value3'] ?? '{}';
+        $customData = is_array($customValue3)
+            ? $customValue3
+            : json_decode($customValue3, true);
+
+        if (!is_array($customData)) {
+            $customData = [];
+        }
+
+        // Preserve tenancy_db_name before merging system config
+        $tenancyDbName = $customData['tenancy_db_name'] ?? null;
+
+        // Get system config and remove tenancy_db_name from it to prevent override
+        $systemConfig = config('systemInfo');
+        if (isset($systemConfig['tenancy_db_name'])) {
+            unset($systemConfig['tenancy_db_name']);
+        }
+
+        // Merge in system config (without tenancy_db_name)
+        $customData['systemInfo'] = array_merge($customData['systemInfo'] ?? [], $systemConfig);
+
+        // Restore tenancy_db_name at root level
+        if ($tenancyDbName) {
+            $customData['tenancy_db_name'] = $tenancyDbName;
+        }
+
+        // Find tenant
+        $tenant = Tenant::where('ninja_id', $data['id'])->first();
+
+        if (!$tenant) {
+            return response()->json([
+                'message' => 'Tenant not found.',
+            ], 404);
+        }
+
+        // Update fields
+        $tenant->id             = $tenantId ?? $tenant->id;
+        $tenant->name           = $data['name'] ?? $tenant->name;
+        $tenant->active         = (($data['archived_at'] ?? 1) == 0 ? 1 : 0) ?? $tenant->active;
+        $tenant->contact_name   = $data['name'] ?? $tenant->contact_name;
+        $tenant->contact_number = $data['phone'] ?? $tenant->contact_number;
+        $tenant->address        = ($data['address1'] ?? '') . ($data['address2'] ?? '');
+
+        // Update custom data
+        $existingData = is_array($tenant->data) ? $tenant->data : json_decode($tenant->data ?? '{}', true);
+        $tenant->data = array_replace_recursive($existingData ?? [], $customData);
+
+        $tenant->save();
+
+        // Update or create domain
+        $domainName = parse_url($data['website'] ?? '', PHP_URL_HOST);
+        if ($domainName) {
+            $tenant->domains()->updateOrCreate(
+                ['domain' => $domainName],
+                ['config' => json_encode([
+                    'tenancy_db_name' => $customData['tenancy_db_name'] ?? null,
+                ])]
+            );
+        }
+
+        return response()->json([
+            'message' => 'Tenant updated successfully.',
+            'tenant' => $tenant->load('domains'),
+        ], 200);
+    }
 
     public function validateTenants(Request $request)
     {
