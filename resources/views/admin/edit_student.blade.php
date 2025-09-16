@@ -142,7 +142,7 @@
 															<button type="button" class="close" @click="removeImage = 1">
 																<span aria-hidden="true">&times;</span>
 															</button>
-															<img id="img" src="{{ ($student->image_url == '')? '#' : URL($student->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" style=":max-width:100px !important;"  />
+															<img id="img" src="{{ ($student->image_url == '')? '#' : URL($student->image_url) }}"  alt="Item Image... 454" class="img-responsive img-thumbnail" style="max-width:100px !important;min-width:105px !important;"/>
 														</template>
 														<template v-if="removeImage">
 															<img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" :style="{ maxWidth: '100px', minWidth: '105px' }"/>
