@@ -28,7 +28,12 @@ class LoadTenantSystemConfig
 
         $tenant = $event->tenancy->tenant;
 
-        $systemInfo = $tenant->system_info ?? null;
+        // Get default system info and tenant system info
+        $defaultSystemInfo = config('systemInfo', []);
+        $tenantSystemInfo = $tenant->system_info ?? [];
+
+        // Merge tenant settings over default settings recursively
+        $systemInfo = array_merge_recursive_distinct($defaultSystemInfo, $tenantSystemInfo);
 
         if($tenant->id){
             config([
@@ -50,7 +55,7 @@ class LoadTenantSystemConfig
         Config::set('mail.encryption', $smtp['encryption']);
         Config::set('mail.username', $smtp['username']);
         Config::set('mail.password', $smtp['password']);
-        Config::set('mail.from.address', $smtp['username']);
+        Config::set('mail.from.address', $smtp['from_address']);
         Config::set('mail.from.name', $general['title']);
 
     }

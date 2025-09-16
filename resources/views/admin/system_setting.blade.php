@@ -322,7 +322,7 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="form-group">
+                                                                    {{-- <div class="form-group">
                                                                         <label class="col-md-2 control-label">Available
                                                                             SMS</label>
                                                                         <div class="col-md-6">
@@ -330,7 +330,7 @@
                                                                                 value="{{ $system_info['general']['available_sms'] . ' till ' . $system_info['general']['sms_validity']}}"
                                                                                 readonly="true" class="form-control" />
                                                                         </div>
-                                                                    </div>
+                                                                    </div> --}}
 
                                                                     <div class="form-group">
                                                                         <label class="col-md-2 control-label">Next
@@ -353,7 +353,7 @@
                                                                                 src="{{ $system_info['general']['logo'] ? route('system-setting.logo'): '' }}" 
                                                                                 alt="Logo Preview" 
                                                                                 class="img-responsive img-thumbnail"
-                                                                                style="max-width:50% !important; {{ isset($system_info['general']['logo']) && $system_info['general']['logo'] ? 'display: block;' : 'display: none;' }}" />
+                                                                                style="max-width:100px !important; {{ isset($system_info['general']['logo']) && $system_info['general']['logo'] ? 'display: block;' : 'display: none;' }}" />
                                                                                 
                                                                             @if(isset($system_info['general']['logo']) && $system_info['general']['logo'])
                                                                                 <div class="mt-2" id="deleteLogoContainer">
@@ -426,6 +426,24 @@
                                                                                     <strong><span
                                                                                             class="fa fa-exclamation-triangle"></span>
                                                                                         {{ $errors->first('smtp_port') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('smtp_from_address') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">SMTP
+                                                                            Mail From Address</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="smtp_from_address"
+                                                                                placeholder="mail@domain.com" class="form-control"
+                                                                                value="{{ old('smtp_from_address', $system_info['smtp']['from_address']) }}" />
+                                                                            @if ($errors->has('smtp_from_address'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('smtp_from_address') }}</strong>
                                                                                 </span>
                                                                             @endif
                                                                         </div>
@@ -913,18 +931,16 @@
             });
 
             $('#deleteLogo').click(function() {
-                if (confirm('Are you sure you want to remove the logo?')) {
-                    $('#logo').hide();
-                    $('#logoinp').val(''); 
-                    $('#removeImageInput').val('1'); 
-                    $('#deleteLogoContainer').hide();
-                    var newInput = $('#logoinp').clone();
-                    $('#logoinp').replaceWith(newInput);
-                    newInput.change(function(){
-                        readURL(this);
-                        $('#removeImageInput').val('');
-                    });
-                }
+                $('#logo').hide();
+                $('#logoinp').val(''); 
+                $('#removeImageInput').val('1'); 
+                $('#deleteLogoContainer').hide();
+                var newInput = $('#logoinp').clone();
+                $('#logoinp').replaceWith(newInput);
+                newInput.change(function(){
+                    readURL(this);
+                    $('#removeImageInput').val('');
+                });
             });
 
             $("#sms_history_form").validate({

@@ -25,31 +25,35 @@ class Tenant extends BaseTenant implements TenantWithDatabase
      * Define which columns are stored as dedicated columns vs the data JSON column
      * These should match the actual columns in your tenants table
      */
-    public static function getCustomColumns(): array
-    {
-        return [
-            'id',
-            'name',
-            'ninja_id',
-            'active',
-            'contact_name', 
-            'address',
-            'contact_number',
-            'data',
-        ];
-    }
+
+
+    //need improvemnt  
+
+    // public static function getCustomColumns(): array
+    // {
+    //     return [
+    //         'id',
+    //         'name',
+    //         'ninja_id',
+    //         'active',
+    //         'contact_name', 
+    //         'address',
+    //         'contact_number',
+    //         'data',
+    //     ];
+    // }
     
-    /**
-     * These attributes can be mass assigned
-     */
-    protected $fillable = [
-        'id',
-        'name',
-        'ninja_id',
-        'active',
-        'contact_name',
-        'contact_number',
-        'address', 
-        'data',
-    ];
+    // /**
+    //  * These attributes can be mass assigned
+    //  */
+    // protected $fillable = [
+    //     'id',
+    //     'name',
+    //     'ninja_id',
+    //     'active',
+    //     'contact_name',
+    //     'contact_number',
+    //     'address', 
+    //     'data',
+    // ];
 }

@@ -27,9 +27,13 @@ class SystemSettingController extends Controller
 	}
 	public function GetSetting()
 	{
-		$data['system_invoices']	=	SystemInvoice::all();
+		$data['system_invoices']		=	SystemInvoice::all();
 		$data['notifications_setting']	=	NotificationsSetting::all();
-		$data['system_info']	=	(tenancy()->tenant->system_info);
+
+		$defaultSystemInfo = config('systemInfo', []);
+		$tenantSystemInfo = tenancy()->tenant->system_info ?? [];
+		$data['system_info'] = array_merge_recursive_distinct($defaultSystemInfo, $tenantSystemInfo);
+
 		return view('admin.system_setting', $data);
 	}
 
@@ -58,11 +62,12 @@ class SystemSettingController extends Controller
 			'logo'            => 'image|mimes:jpg,jpeg,png|max:1048',
 
 			// SMTP
-			'smtp_host'      => 'nullable|string',
-			'smtp_port'      => 'nullable|numeric',
-			'smtp_username'  => 'nullable|string',
-			'smtp_password'  => 'nullable|string',
-			'smtp_encryption' => 'nullable|in:tls,ssl',
+			'smtp_host'      	=> 'nullable|string',
+			'smtp_port'      	=> 'nullable|numeric',
+			'smtp_from_address' => 'nullable|email',
+			'smtp_username'  	=> 'nullable|string',
+			'smtp_password'  	=> 'nullable|string',
+			'smtp_encryption' 	=> 'nullable|in:tls,ssl',
 
 			// SMS
 			'sms_provider'   => 'nullable|in:lifetimesms',
@@ -100,6 +105,7 @@ class SystemSettingController extends Controller
 					'mailer'		=> $request->input('smtp_mailer'),
 					'host'       	=> $request->input('smtp_host'),
 					'port'       	=> $request->input('smtp_port'),
+					'from_address'  => $request->input('smtp_from_address'),
 					'username'   	=> $request->input('smtp_username'),
 					'password'   	=> $request->input('smtp_password'),
 					'encryption' 	=> $request->input('smtp_encryption'),
