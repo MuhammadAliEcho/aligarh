@@ -555,7 +555,7 @@
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" />
+                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" style="max-width:100px !important;min-width:105px !important;" />
                                             @if ($errors->has('img'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
