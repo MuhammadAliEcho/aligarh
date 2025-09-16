@@ -34,7 +34,7 @@
 
 <body class="pace-done md-skin {{ Auth::user()->settings->skin_config->nav_collapse }}">
 	@if( tenancy()->tenant->system_info['general']['validity'] < Carbon\Carbon::now()->toDateString())
-	<div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-warning-sign" ></span> <b> The System Is Expired!</b></div>
+	<div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-warning-sign" ></span> <b>The system is expired at {{ Carbon::parse(tenancy()->tenant->system_info['general']['validity'])->toDateString() }}, account will inactive in next week. Please contact adminstrator.</b></div>
     @endif
     <div id="wrapper">
         <div id="app">
