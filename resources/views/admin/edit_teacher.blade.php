@@ -98,7 +98,16 @@
                                           </span>
                                         </div>
                                         <div class="col-md-6">
-                                          <img id="img" src="{{ ($teacher->image_url == '')? '#' : URL($teacher->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" style="width: 100px;" />
+                                          <input type="hidden" name="removeImage" v-model="removeImage" />
+                                          <template v-if="removeImage == 0">
+                                            <button type="button" class="close" @click="removeImage = 1">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <img id="img" src="{{ ($teacher->image_url == '')? '#' : URL($teacher->image_url) }}"  alt="Item Image... 454" class="img-responsive img-thumbnail" style="max-width:100px !important;min-width:105px !important;"/>
+                                          </template>
+                                          <template v-if="removeImage">
+                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" :style="{ maxWidth: '100px', minWidth: '105px' }"/>
+                                          </template>
                                           @if ($errors->has('img'))
                                               <span class="help-block">
                                                   <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
@@ -289,3 +298,13 @@
     </script>
 
     @endsection
+    @section('vue')
+			<script type="text/javascript">
+				var app = new Vue({
+					el: '#app',
+					data: {
+						removeImage: {{ $teacher->image_url? 0 : 1 }},
+					},
+				});
+			</script>
+		@endsection

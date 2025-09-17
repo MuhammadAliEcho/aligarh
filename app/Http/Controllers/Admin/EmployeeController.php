@@ -154,9 +154,13 @@ class EmployeeController extends Controller
         }
     $this->PostValidate($request);
     $this->SetAttributes($Employee, $request);
-    if($request->hasFile('img')){
+
+    if ($request->hasFile('img')) {
       $this->SaveImage($Employee, $request);
+    } elseif ($request->input('removeImage')) {
+      $this->DeleteImage($Employee);
     }
+
     $Employee->updated_by  = Auth::user()->id;
     $Employee->save();
 
@@ -221,4 +225,13 @@ class EmployeeController extends Controller
     $Employee->img_url = 'employee/image/' . $filename;
   }
 
+  protected function DeleteImage($Employee)
+  {
+    if ($Employee->img_dir) {
+      Storage::delete($Employee->img_dir);
+      $Employee->img_dir = null;
+      $Employee->img_url = null;
+      $Employee->save();
+    }
+  }
 }

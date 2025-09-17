@@ -127,9 +127,13 @@ class TeacherController extends Controller
     $Teacher = Teacher::find($id);
     $this->PostValidate($request);
     $this->SetAttributes($Teacher, $request);
+
     if($request->hasFile('img')){
       $this->SaveImage($Teacher, $request);
-    }
+    } else if($request->input('removeImage')){
+			$this->DeleteImage($Teacher);
+		}
+
     $Teacher->updated_by  = Auth::user()->id;
     $Teacher->save();
     if ($Teacher->User) {
@@ -202,4 +206,13 @@ class TeacherController extends Controller
     $Teacher->image_url = 'teacher/image/' . $filename;
   }
 
+  protected function DeleteImage($Teacher)
+  {
+    if ($Teacher->image_dir) {
+      Storage::delete($Teacher->image_dir);
+      $Teacher->image_dir = null;
+      $Teacher->image_url = null;
+      $Teacher->save();
+    }
+  }
 }
