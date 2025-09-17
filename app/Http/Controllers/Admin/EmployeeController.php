@@ -164,6 +164,12 @@ class EmployeeController extends Controller
     $Employee->updated_by  = Auth::user()->id;
     $Employee->save();
 
+    if ($Employee->User) {
+      $Employee->User->email   =  $Employee->email;
+      $Employee->User->contact_no   =  $Employee->phone;
+      $Employee->User->save();
+    }
+
     return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'success',
