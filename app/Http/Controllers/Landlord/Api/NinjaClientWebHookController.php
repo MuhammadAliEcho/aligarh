@@ -29,8 +29,7 @@ class NinjaClientWebHookController extends Controller
             $customData = [];
         }
 
-
-        $customData['systemInfo'] = array_merge($customData['systemInfo'] ?? [], config('systemInfo'));
+        $systemInfo = array_merge($customData['systemInfo'] ?? [], config('systemInfo'));
 
         // Check if tenant already exists
         $existingTenant = Tenant::find($tenantId);
@@ -45,15 +44,17 @@ class NinjaClientWebHookController extends Controller
         // Create Tenant - separate dedicated columns from JSON data
         $fullAddress = ($data['address1'] ?? '') . ($data['address2'] ?? '');
 
+
         $tenant = Tenant::create([
-            'id'                => $tenantId,
-            'name'              => $data['name'],
-            'ninja_id'          => $data['id'],
-            'active'            => ($data['archived_at'] ?? 1) == 0 ? 1 : 0,
-            'contact_name'      => $data['name'] ?? null,
-            'contact_number'    => $data['phone'] ?? null,
-            'address'           => $fullAddress,
-            'data'              => $customData,
+            'id'                        => $tenantId,
+            'name'                      => $data['name'],
+            'ninja_id'                  => $data['id'],
+            'active'                    => ($data['archived_at'] ?? 1) == 0 ? 1 : 0,
+            'contact_name'              => $data['name'] ?? null,
+            'contact_number'            => $data['phone'] ?? null,
+            'address'                   => $fullAddress,
+            'systemInfo'                => $systemInfo,
+            'tenancy_db_name'           => $customData['tenancy_db_name'] ?? null,
         ]);
 
         // Log::info('Created tenant record:', $tenant->toArray());
@@ -106,19 +107,11 @@ class NinjaClientWebHookController extends Controller
         // Preserve tenancy_db_name before merging system config
         $tenancyDbName = $customData['tenancy_db_name'] ?? null;
 
-        // Get system config and remove tenancy_db_name from it to prevent override
-        $systemConfig = config('systemInfo');
-        if (isset($systemConfig['tenancy_db_name'])) {
-            unset($systemConfig['tenancy_db_name']);
-        }
 
-        // Merge in system config (without tenancy_db_name)
-        $customData['systemInfo'] = array_merge($customData['systemInfo'] ?? [], $systemConfig);
+        $defaultSystemInfo = config('systemInfo', []);
+        $requestSystemInfo = $customData['systemInfo'] ?? [];
 
-        // Restore tenancy_db_name at root level
-        if ($tenancyDbName) {
-            $customData['tenancy_db_name'] = $tenancyDbName;
-        }
+        $systemInfo = array_merge_recursive_distinct($defaultSystemInfo, $requestSystemInfo);
 
         // Find tenant
         $tenant = Tenant::where('ninja_id', $data['id'])->first();
@@ -129,6 +122,9 @@ class NinjaClientWebHookController extends Controller
             ], 404);
         }
 
+        $dbSystemInfo =    $tenant->system_info ?? [];
+        $finalSystemInfo = array_merge_recursive_distinct($dbSystemInfo, $systemInfo);
+
         // Update fields
         $tenant->id             = $tenantId ?? $tenant->id;
         $tenant->name           = $data['name'] ?? $tenant->name;
@@ -138,8 +134,8 @@ class NinjaClientWebHookController extends Controller
         $tenant->address        = ($data['address1'] ?? '') . ($data['address2'] ?? '');
 
         // Update custom data
-        $existingData = is_array($tenant->data) ? $tenant->data : json_decode($tenant->data ?? '{}', true);
-        $tenant->data = array_replace_recursive($existingData ?? [], $customData);
+        $tenant->systemInfo = $finalSystemInfo;
+        $tenant->tenancy_db_name = $tenancyDbName?? $tenant->tenancy_db_name;  
 
         $tenant->save();
 
@@ -149,7 +145,7 @@ class NinjaClientWebHookController extends Controller
             $tenant->domains()->updateOrCreate(
                 ['domain' => $domainName],
                 ['config' => json_encode([
-                    'tenancy_db_name' => $customData['tenancy_db_name'] ?? null,
+                    'tenancy_db_name' => $tenant->tenancy_db_name ?? null,
                 ])]
             );
         }
@@ -166,7 +162,7 @@ class NinjaClientWebHookController extends Controller
         // Manual validation
         $validator = Validator::make($request->all(), [
             'name'          => 'required|string',
-            'address1'      => 'required|string',
+            'address1'      => 'nullable|string',
             'phone'         => 'required|string',
             'custom_value1' => 'required|string',
             'custom_value2' => 'required|string',

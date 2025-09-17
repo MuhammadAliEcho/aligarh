@@ -12,6 +12,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     use HasDatabase, HasDomains;
 
     protected $connection = 'mysql_landlord';
+    public $timestamps = false;
 
     protected $casts = [
         'active' => 'boolean',
@@ -29,31 +30,16 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     //need improvemnt  
 
-    // public static function getCustomColumns(): array
-    // {
-    //     return [
-    //         'id',
-    //         'name',
-    //         'ninja_id',
-    //         'active',
-    //         'contact_name', 
-    //         'address',
-    //         'contact_number',
-    //         'data',
-    //     ];
-    // }
-    
-    // /**
-    //  * These attributes can be mass assigned
-    //  */
-    // protected $fillable = [
-    //     'id',
-    //     'name',
-    //     'ninja_id',
-    //     'active',
-    //     'contact_name',
-    //     'contact_number',
-    //     'address', 
-    //     'data',
-    // ];
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'name',
+            'ninja_id',
+            'active',
+            'contact_name',
+            'address',
+            'contact_number',
+        ];
+    }
 }
