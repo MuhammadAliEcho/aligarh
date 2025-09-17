@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Landlord\Api;
 
-use App\Tenant;
+use App\Model\Landloard\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain;
-use App\Tenant;
+use App\Model\Landloard\Domain;
+use App\Model\Landloard\Tenant;
 
 return [
     'tenant_model' => Tenant::class,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Model\Landloard;
 
 use Stancl\Tenancy\Database\Models\Domain as BaseDomain;
 

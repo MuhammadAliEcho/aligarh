@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Model\Landloard;
 
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
