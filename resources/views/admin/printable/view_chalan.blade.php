@@ -74,16 +74,16 @@
                 <table style="width: 500px">
                     <tbody>
                         <tr style="border-top:1px solid black">
-                            <td>{{ tenancy()->tenant->system_info['general']['bank_name'] }}</td>
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['name'] }}</td>
                             <td rowspan="3" style="padding-top: 10px">
                                 <img alt="image" src="{{ URL('/img/bank.png') }}" style="width: 43px;">
                             </td>
                         </tr>
                         <tr>
-                            <td>{{ tenancy()->tenant->system_info['general']['bank_address'] }}</td>
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['address'] }}</td>
                         </tr>
                         <tr>
-                            <td>Account No. {{ tenancy()->tenant->system_info['general']['bank_account_no'] }}</td>
+                            <td>Account No. {{ tenancy()->tenant->system_info['general']['bank']['account_no'] }}</td>
                         </tr>
                     </tbody>
                 </table>
