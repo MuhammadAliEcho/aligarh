@@ -539,7 +539,7 @@
 		opthtm += '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-invoice"><span class="fa fa-edit"></span></a>';
 		@endcan
 		@can('fee.group.chalan.print')
-		opthtm += '<a data-toggle="tooltip" target="_new" title="Print Group Invoice" class="btn btn-default btn-circle btn-xs group-invoice"><span class="fa fa-file-pdf-o"></span></a>';
+		opthtm += '<a data-toggle="tooltip" target="_new" title="Print Group Invoice" class="btn btn-default btn-circle btn-xs group-invoice"><span class="fa fa-print"></span></a>';
 		@endcan
 		tbl = $('.dataTables-teacher').DataTable({
 		  dom: '<"html5buttons"B>lTfgitp',

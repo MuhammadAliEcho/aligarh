@@ -341,6 +341,22 @@
                                                                                 readonly="true" class="form-control" />
                                                                         </div>
                                                                     </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('bank_account_no') ? ' has-error' : '' }}">
+                                                                        <label title="Term and Condition of Fee Chalan" class="col-md-2 control-label">Term and Condition</label>
+                                                                        <div class="col-md-6">
+                                                                            <textarea type="text" name="chalan_term_and_Condition" placeholder="Term and Condition" class="form-control">{{ old('chalan_term_and_Condition', $system_info['general']['chalan_term_and_Condition']) }}</textarea>
+                                                                            @if ($errors->has('chalan_term_and_Condition'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('chalan_term_and_Condition') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
                                                                     <div class="form-group{{ $errors->has('logo') ? ' has-error' : '' }}">
                                                                         <div class="col-md-2"> 
                                                                             <span class="btn btn-default btn-block btn-file">

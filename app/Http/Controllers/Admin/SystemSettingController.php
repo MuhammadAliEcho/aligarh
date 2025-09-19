@@ -51,48 +51,50 @@ class SystemSettingController extends Controller
 
 		$this->validate($request, [
 			// General
-			'name'           => 'required',
-			'title'          => 'required',
-			'email'          => 'nullable|email',
-			'address'        => 'required',
-			'contact_no'     => 'nullable',
-			'bank_name'      => 'required',
-			'bank_address'   => 'required',
-			'bank_account_no' => 'required',
-			'logo'            => 'image|mimes:jpg,jpeg,png|max:1048',
+			'name'           				=> 'required',
+			'title'          				=> 'required',
+			'email'          				=> 'nullable|email',
+			'address'        				=> 'required',
+			'contact_no'     				=> 'nullable',
+			'bank_name'      				=> 'required',
+			'bank_address'   				=> 'required',
+			'bank_account_no' 				=> 'required',
+			'chalan_term_and_Condition'     => 'nullable|string|max:1000',
+			'logo'            				=> 'image|mimes:jpg,jpeg,png|max:1048',
 
 			// SMTP
-			'smtp_host'      	=> 'nullable|string',
-			'smtp_port'      	=> 'nullable|numeric',
-			'smtp_from_address' => 'nullable|email',
-			'smtp_username'  	=> 'nullable|string',
-			'smtp_password'  	=> 'nullable|string',
-			'smtp_encryption' 	=> 'nullable|in:tls,ssl',
+			'smtp_host'      				=> 'nullable|string',
+			'smtp_port'      				=> 'nullable|numeric',
+			'smtp_from_address' 			=> 'nullable|email',
+			'smtp_username'  				=> 'nullable|string',
+			'smtp_password'  				=> 'nullable|string',
+			'smtp_encryption' 				=> 'nullable|in:tls,ssl',
 
 			// SMS
-			'sms_provider'   => 'nullable|in:lifetimesms',
-			'sms_url'    	 => 'nullable|string',
-			'sms_api_token'    => 'nullable|string',
-			'sms_api_secret' => 'nullable|string',
-			'sms_sender'  => 'nullable|string',
+			'sms_provider'   				=> 'nullable|in:lifetimesms',
+			'sms_url'    	 				=> 'nullable|string',
+			'sms_api_token'    				=> 'nullable|string',
+			'sms_api_secret' 				=> 'nullable|string',
+			'sms_sender'  					=> 'nullable|string',
 
 			// WhatsApp
-			'whatsapp_provider' => 'nullable|in:whatsapp business',
-			'whatsapp_url'    => 'nullable|string',
-			'whatsapp_token'    => 'nullable|string',
-			'whatsapp_phone_id' => 'nullable|string',
+			'whatsapp_provider' 			=> 'nullable|in:whatsapp business',
+			'whatsapp_url'    				=> 'nullable|string',
+			'whatsapp_token'    			=> 'nullable|string',
+			'whatsapp_phone_id' 			=> 'nullable|string',
 		]);
 
 		$tenant = tenancy()->tenant;
 		$updateData = [
 				// General
 				'general' => [
-					'name'				=> $request->input('name'),
-					'address'         	=> $request->input('address'),
-					'contact_name'      => $request->input('contact_name'),
-					'contact_no'      	=> $request->input('contact_no'),
-					'contact_email'     => $request->input('email'),
-					'title'           	=> $request->input('title'),
+					'name'							=> $request->input('name'),
+					'address'         				=> $request->input('address'),
+					'contact_name'      			=> $request->input('contact_name'),
+					'contact_no'      				=> $request->input('contact_no'),
+					'contact_email'     			=> $request->input('email'),
+					'title'           				=> $request->input('title'),
+					'chalan_term_and_Condition'     => $request->input('chalan_term_and_Condition'),
 					'bank' => [
 						'name'       	=> $request->input('bank_name'),
 						'address'    	=> $request->input('bank_address'),

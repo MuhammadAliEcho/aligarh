@@ -155,13 +155,11 @@
                 <p style="margin-top: 20px; margin-bottom: 5px; border-bottom: 1px solid">Accountant Signature</p>
 
                 <ol style="margin-bottom: 0px">
-                    <li>All Types of Fees are non refundable.</li>
-                    <li>Late fee of 150 will be charged after 15th of every month irrespective of holidays.</li>
-                    <li>Receipt will only be valid when it bears the bank stamp and signature of the designated bank
-                        officer.</li>
-                    <li>Fee challan will not be valid for payment after 25th of each month.</li>
-                    <li>If the voucher is lost by the parent or student, Rs 70/- will be charged for duplicate receipt.</li>
-                    <li>Only cash will be acceptable.</li>
+                    @php
+                        $terms = tenancy()->tenant->system_info['general']['chalan_term_and_Condition'];
+                        $formatted_terms = nl2br(e($terms));
+                    @endphp
+                    {!! $formatted_terms !!}
                 </ol>
             </div>
         </div>
