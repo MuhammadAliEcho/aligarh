@@ -122,7 +122,7 @@
 @section('content')
     <div class="container-fluid" style="padding-left: 5px;">
         <div v-for="(copy, index) in copies" :key="index" class="row"
-            style="border: 1px solid black; padding: 2px; width: 507px;">
+            style="border: 1px solid black; margin-right: 15px; width: 507px;">
             <div id="address" style="width: 500px;">
                 <table style="width: 420px">
                     <tbody>
@@ -231,20 +231,10 @@
                 </ol>
             </div>
         </div>
-
-        {{-- <div class="row"
-        style="border: 1px solid black; padding: 2px; width: 507px; height: 1000px; margin-left: 504px; position: absolute;"
-        id="schoolcopy">
-        <div v-html="address"></div>
-        <h4 class="text-center text-danger" style="width: 500px; border:1px solid black"> School's Copy </h4>
-        <div v-html="schoolcopy"></div>
-    </div> --}}
     </div>
 @endsection
-
 @section('script')
 @endsection
-
 @section('vue')
     <script type="text/javascript">
         var app = new Vue({
@@ -252,8 +242,6 @@
             data: {
                 groupInvoices: {!! json_encode($groupInvoice, JSON_NUMERIC_CHECK) !!},
                 guardian: {!! json_encode($guardian, JSON_NUMERIC_CHECK) !!},
-                // schoolcopy,
-                // address: '',
                 consolidatedFees: {!! json_encode($consolidatedFees) !!},
                 totalPayable: {!! json_encode($totalAmount) !!},
                 totalDiscount: {!! json_encode($totalDiscount) !!},
@@ -275,13 +263,6 @@
                     return array?.join(', ');
                 }
             },
-
-            mounted: function() {
-                // this.schoolcopy = $("#stdcopy").html();
-                // this.address = $("#address").html();
-                // window.print();
-            },
-
             methods: {
                 inwords: function() {
                     var inWords = toWords(this.totalPayable);
