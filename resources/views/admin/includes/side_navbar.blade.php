@@ -54,6 +54,12 @@
                         class="nav-label">Guardians</span></a>
             </li>
             @endcan
+            @can('visitors.index')
+                <li class="{{ isActiveRoute('visitors.*') }}">
+                    <a href="{{ route('visitors.index') }}" data-root="visitors"><i
+                        class="fa fa-group"></i> <span class="nav-label">Visitors</span></a>
+                </li>
+            @endcan
             @canany(['manage-classes.index', 'manage-sections.index'])
                 <li class="{{ isActiveRoute(['manage-classes.*','manage-sections.*']) }}">
                     <a data-root="classes"><i class="fa fa-sitemap"></i> <span class="nav-label">Class</span><span

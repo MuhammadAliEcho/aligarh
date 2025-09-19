@@ -43,6 +43,7 @@ use App\Http\Controllers\Admin\QuizResultController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Admin\VistorStudentController;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -143,6 +144,15 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/edit/{id}', [GuardiansController::class, 'EditGuardian'])->name('.edit');
         Route::post('/add', [GuardiansController::class, 'AddGuardian'])->name('.add');
         Route::post('/edit/{id}', [GuardiansController::class, 'PostEditGuardian'])->name('.edit.post');
+    });
+
+    Route::prefix('visitors')->name('visitors')->group(function(){
+        Route::get('/', [VistorStudentController::class, 'index'])->name('.index');
+        Route::get('/grid', [VistorStudentController::class, 'grid'])->name('.grid');
+        Route::get('/profile/{id}', [VistorStudentController::class, 'GetProfile'])->name('.profile');
+        Route::post('/create', [VistorStudentController::class, 'create'])->name('.create');
+        Route::get('/edit/{id}', [VistorStudentController::class, 'edit'])->name('.edit');
+        Route::post('/update/{id}', [VistorStudentController::class, 'update'])->name('.update');
     });
     
     Route::prefix('manage-classes')->name('manage-classes')->group(function(){

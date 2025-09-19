@@ -175,6 +175,16 @@ class RoleController extends Controller
 				'students.certificate.create' => 'Certificate Create',
 				'students.leave' => 'Students Leave',
 			],
+
+			'Visitors' => [
+				'visitors.index' => 'Visitors View',
+				'visitors.grid' => 'Visitors Gird View',
+				'visitors.profile' => 'Visitors Profile',
+				'visitors.create' => 'Visitors Create',	
+				'visitors.edit' => 'Visitors Edit',
+				'visitors.update' => 'Visitors Update',	
+			],
+			
 			'Teachers' => [
 				'teacher.index' => 'Teachers View',
 				'teacher.grid' => 'Teachers Gird View',
