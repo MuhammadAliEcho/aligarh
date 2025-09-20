@@ -79,10 +79,11 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         // tenancy()->end();
 
         // Artisan::call('migrate', ['--force' => true]);
-        // Artisan::call('migrate', ['--force' => true]);
+        // Artisan::call('tenants:migrate', ['--force' => true]);
         // Artisan::call('db:seed', ['--class' => 'UserSeeder', '--force' => true, ]);
         // Artisan::call('db:seed', ['--class' => 'PermissionsSeeder', '--force' => true, ]);
         // Artisan::call('db:seed', ['--class' => 'PermissionsUpdateSeeder', '--force' => true, ]);
+        // Artisan::call('tenants:seed', ['--class' => 'PermissionsUpdateSeeder', '--force' => true, ]);
         // Artisan::call('db:seed', ['--class' => 'NotificationsSettingsSeeder', '--force' => true, ]);
         // return response('<h2>✅ Done: Migrations and PermissionsUpdateSeeder ran successfully.</h2>');
     });
