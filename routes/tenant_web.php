@@ -75,17 +75,26 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::get('/cmd', function () {
         
+        // $output = '';
         // when run cmd on landloard end the tenancy
         // tenancy()->end();
 
         // Artisan::call('migrate', ['--force' => true]);
+        // Get the output of the artisan command
+        // $output .= Artisan::output();
         // Artisan::call('tenants:migrate', ['--force' => true]);
-        // Artisan::call('db:seed', ['--class' => 'UserSeeder', '--force' => true, ]);
-        // Artisan::call('db:seed', ['--class' => 'PermissionsSeeder', '--force' => true, ]);
+        // $output .= Artisan::output();
+        // Artisan::call('db:seed', ['--class' => 'UserSeeder', '--force' => true]);
+        // $output .= Artisan::output();
+        // Artisan::call('db:seed', ['--class' => 'PermissionsSeeder', '--force' => true]);
+        // $output .= Artisan::output();
         // Artisan::call('db:seed', ['--class' => 'PermissionsUpdateSeeder', '--force' => true, ]);
+        // $output .= Artisan::output();
         // Artisan::call('tenants:seed', ['--class' => 'PermissionsUpdateSeeder', '--force' => true, ]);
+        // $output .= Artisan::output();
         // Artisan::call('db:seed', ['--class' => 'NotificationsSettingsSeeder', '--force' => true, ]);
-        // return response('<h2>✅ Done: Migrations and PermissionsUpdateSeeder ran successfully.</h2>');
+        // $output .= Artisan::output();
+        // return response("<pre>$output</pre><h2>✅ Done: Migrations ran successfully.</h2>");
     });
 
     // Route::get('id-card/student', [IdcardController::class, 'StudentIdcard'])->name('student.card');
