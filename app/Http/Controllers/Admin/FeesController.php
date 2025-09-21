@@ -512,7 +512,7 @@ class FeesController extends Controller
 
 	protected function UpdateAdditionalFee($Student, $request){
 		AdditionalFee::where(['student_id' => $Student->id])->delete();
-		if (COUNT($request->input('fee')) >= 1) {
+		if ($request->input('fee') && COUNT($request->input('fee')) >= 1) {
 			foreach ($request->input('fee') as $key => $value) {
 				$AdditionalFee = new AdditionalFee;
 				$AdditionalFee->id = $value['id'];
