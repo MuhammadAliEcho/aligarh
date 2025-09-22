@@ -226,6 +226,24 @@
                                                                     </div>
 
                                                                     <div
+                                                                        class="form-group{{ $errors->has('contact_name') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">Contact Name</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="contact_name"
+                                                                                placeholder="Contact Name"
+                                                                                value="{{ old('contact_name', $system_info['general']['contact_name']) }}"
+                                                                                class="form-control" />
+                                                                            @if ($errors->has('contact_name'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('contact_name') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
                                                                         class="form-group{{ $errors->has('contact_no') ? ' has-error' : '' }}">
                                                                         <label class="col-md-2 control-label">Contact
                                                                             No</label>

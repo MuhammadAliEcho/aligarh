@@ -55,6 +55,7 @@ class SystemSettingController extends Controller
 			'title'          				=> 'required',
 			'email'          				=> 'nullable|email',
 			'address'        				=> 'required',
+			'contact_name'     				=> 'nullable|string',
 			'contact_no'     				=> 'nullable',
 			'bank_name'      				=> 'required',
 			'bank_address'   				=> 'required',

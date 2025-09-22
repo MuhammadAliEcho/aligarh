@@ -5,6 +5,7 @@ return [
 		'title'            				=> '(campus I)',
 		'address'          				=> 'ABC Address',
 		'student_capacity' 				=> 500,
+		'contact_name'       		    => 'Abc',
 		'contact_no'       				=> '5855553116',
 		'contact_email'    				=> 'aligarh@admin.com',
 		'validity'         				=> '2030-01-01',
