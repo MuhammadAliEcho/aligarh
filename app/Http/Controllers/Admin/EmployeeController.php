@@ -47,7 +47,7 @@ class EmployeeController extends Controller
         'role'      =>  'required',
         //'qualification'  =>  'required',
         'salary'      =>  'required|numeric',
-        'img'       =>    'image|mimes:jpg,jpeg,png|max:1524',
+        'img'       =>    'image|mimes:jpg,jpeg,png|max:100',
     ]);
   }
 

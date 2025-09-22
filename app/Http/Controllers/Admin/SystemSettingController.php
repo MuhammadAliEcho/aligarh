@@ -60,7 +60,7 @@ class SystemSettingController extends Controller
 			'bank_address'   				=> 'required',
 			'bank_account_no' 				=> 'required',
 			'chalan_term_and_Condition'     => 'nullable|string|max:1000',
-			'logo'            				=> 'image|mimes:jpg,jpeg,png|max:1048',
+			'logo'            				=> 'image|mimes:jpg,jpeg,png|max:100',
 
 			// SMTP
 			'smtp_host'      				=> 'nullable|string',
