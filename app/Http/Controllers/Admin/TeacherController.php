@@ -16,13 +16,19 @@ class TeacherController extends Controller
 
   public function GetImage($id)
   {
-    $teacher  = Teacher::findorfail($id);
+    $teacher = Teacher::findOrFail($id);
+
+    // Check if file exists in the current tenant's storage
+    if (!Storage::exists($teacher->image_dir)) {
+      abort(404, 'Image not found.');
+    }
     // Get the image content using the default storage (which handles tenancy)
     $image = Storage::get($teacher->image_dir);
 
     // Get MIME type
     $mime = Storage::mimeType($teacher->image_dir);
-    return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
+		return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
+
   }
 
   public function GetProfile($id){
