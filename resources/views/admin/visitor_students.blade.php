@@ -6,9 +6,6 @@
     <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
-    <script type="text/javascript">
-        var sections = {!! json_encode($sections ?? '') !!};
-    </script>
     <style type="text/css">
         .print-table {
             width: 100%;
@@ -535,7 +532,7 @@
                                                                 @endcan
                                                                 {{-- @can('visitors.delete') --}}
                                                                     <a data-placement="top" data-toggle="tooltip" title="Delete"
-                                                                        @click.prevent="deleteQuiz(visitor.id)" href="#"
+                                                                        @click.prevent="deleteVisitor(visitor.id)" href="#"
                                                                         class="btn btn-sm btn-outline-danger">
                                                                         <i class="fa fa-trash"></i> Delete
                                                                     </a>
@@ -634,7 +631,7 @@
                                             <div class="form-group{{ $errors->has('date_of_birth') ? ' has-error' : '' }}">
                                                 <label class="col-md-2 control-label">Date Of Birth</label>
                                                 <div class="col-md-6">
-                                                    <input type="text" id="datetimepicker4" name="date_of_birth"
+                                                    <input type="text" id="date_of_birth" name="date_of_birth"
                                                         placeholder="DOB" value="{{ old('date_of_birth') }}"
                                                         class="form-control" />
                                                     @if ($errors->has('date_of_birth'))
@@ -717,21 +714,6 @@
                                                         <span class="help-block">
                                                             <strong><span class="fa fa-exclamation-triangle"></span>
                                                                 {{ $errors->first('class') }}</strong>
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group{{ $errors->has('section') ? ' has-error' : '' }}">
-                                                <label class="col-md-2 control-label">Section</label>
-                                                <div class="col-md-6 select2-div">
-                                                    <select class="form-control select2" name="section">
-                                                        <option value="" disabled selected>Section</option>
-                                                    </select>
-                                                    @if ($errors->has('section'))
-                                                        <span class="help-block">
-                                                            <strong><span class="fa fa-exclamation-triangle"></span>
-                                                                {{ $errors->first('section') }}</strong>
                                                         </span>
                                                     @endif
                                                 </div>
@@ -851,7 +833,7 @@
 
             $('[data-toggle="tooltip"]').tooltip();
 
-            $('#datetimepicker4').datetimepicker({
+            $('#date_of_birth').datetimepicker({
                 format: 'YYYY-MM-DD',
             });
             $('#date_of_visiting').datetimepicker({
@@ -877,7 +859,7 @@
                     class: {
                         required: true,
                     },
-                    section: {
+                    religion: {
                         required: true,
                     },
                     guardian_relation: {
@@ -904,29 +886,14 @@
                 },
             });
 
-            $('#tchr_rgstr [name="class"]').on('change', function() {
-                clsid = $(this).val();
-                $('#tchr_rgstr [name="section"]').html('');
-                if (sections['class_' + clsid].length > 0) {
-                    $.each(sections['class_' + clsid], function(k, v) {
-                        $('#tchr_rgstr [name="section"]').append('<option value="' + v['id'] +
-                            '">' + v['name'] + '</option>');
-                    });
-                }
-            });
+           
 
             @if (COUNT($errors) >= 1)
                 $('#tchr_rgstr [name="gender"]').val('{{ old('gender') }}');
-                $('#tchr_rgstr [name="guardian"]').val('{{ old('guardian') }}');
                 $('#tchr_rgstr [name="class"]').val("{{ old('class') }}");
                 $('#tchr_rgstr [name="class"]').change();
-                $('#tchr_rgstr [name="section"]').val('{{ old('section') }}');
             @endif
 
-            $('#tchr_rgstr [name="guardian"]').attr('style', 'width:100%').select2({
-                placeholder: "Nothing Selected",
-                allowClear: true,
-            });
 
             @if (COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
                 $('.nav-tabs a[href="#tab-11"]').tab('show');
@@ -987,7 +954,7 @@
                             console.error('Failed to fetch visitors:', error);
                         });
                 },
-                deleteQuiz(deleteId) {
+                deleteVisitor(deleteId) {
                     swal({
                         title: "Are you sure?",
                         text: "You are about to delete this entry.",

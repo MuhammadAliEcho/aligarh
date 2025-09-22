@@ -5,9 +5,6 @@
     <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
-    <script type="text/javascript">
-        var sections = {!! json_encode($sections ?? '') !!};
-    </script>
 @endsection
 @section('content')
     @include('admin.includes.side_navbar')
@@ -87,16 +84,16 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group{{ $errors->has('dob') ? ' has-error' : '' }}">
+                                <div class="form-group{{ $errors->has('date_of_birth') ? ' has-error' : '' }}">
                                     <label class="col-md-2 control-label">Date Of Birth</label>
                                     <div class="col-md-6">
-                                        <input type="text" id="datetimepicker4" name="dob" placeholder="DOB"
-                                            value="{{ old('dob', $visitorStudents->date_of_birth) }}"
+                                        <input type="text" id="date_of_birth" name="date_of_birth" placeholder="DOB"
+                                            value="{{ old('date_of_birth', $visitorStudents->date_of_birth) }}"
                                             class="form-control" />
-                                        @if ($errors->has('dob'))
+                                        @if ($errors->has('date_of_birth'))
                                             <span class="help-block">
                                                 <strong><span class="fa fa-exclamation-triangle"></span>
-                                                    {{ $errors->first('dob') }}</strong>
+                                                    {{ $errors->first('date_of_birth') }}</strong>
                                             </span>
                                         @endif
                                     </div>
@@ -161,38 +158,23 @@
                                         @endif
                                     </div>
                                 </div>
-                                @can('students.class_edit')
-                                    <div class="form-group{{ $errors->has('class') ? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Class</label>
-                                        <div class="col-md-6 select2-div">
-                                            <select class="form-control select2" name="class">
-                                                <option value="" disabled selected>Class</option>
-                                                @foreach ($classes as $class)
-                                                    <option value="{{ $class->id }}">{{ $class->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('class'))
-                                                <span class="help-block">
-                                                    <strong><span class="fa fa-exclamation-triangle"></span>
-                                                        {{ $errors->first('class') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
+                                <div class="form-group{{ $errors->has('class') ? ' has-error' : '' }}">
+                                    <label class="col-md-2 control-label">Class</label>
+                                    <div class="col-md-6 select2-div">
+                                        <select class="form-control select2" name="class">
+                                            <option value="" disabled selected>Class</option>
+                                            @foreach ($classes as $class)
+                                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('class'))
+                                            <span class="help-block">
+                                                <strong><span class="fa fa-exclamation-triangle"></span>
+                                                    {{ $errors->first('class') }}</strong>
+                                            </span>
+                                        @endif
                                     </div>
-                                    <div class="form-group{{ $errors->has('section') ? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Section</label>
-                                        <div class="col-md-6 select2-div">
-                                            <select class="form-control select2" name="section">
-                                            </select>
-                                            @if ($errors->has('section'))
-                                                <span class="help-block">
-                                                    <strong><span class="fa fa-exclamation-triangle"></span>
-                                                        {{ $errors->first('section') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @endcan
+                                </div>
 
                                 <div class="form-group{{ $errors->has('guardian_relation') ? ' has-error' : '' }}">
                                     <label class="col-md-2 control-label">Guardian Relation</label>
@@ -290,16 +272,8 @@
         $(document).ready(function() {
 
             $('[data-toggle="tooltip"]').tooltip();
-
-            $('#datetimepicker4').datetimepicker({
-                format: 'DD/MM/YYYY'
-            });
-            $('#datetimepicker5').datetimepicker({
-                format: 'DD/MM/YYYY'
-            });
-
-            $('#datetimepicker6').datetimepicker({
-                format: 'YYYY-MM-DD'
+            $('#date_of_birth').datetimepicker({
+                format: 'YYYY-MM-DD',
             });
 
             $("#tchr_rgstr").validate({
@@ -319,7 +293,7 @@
                     class: {
                         required: true,
                     },
-                    section: {
+                    religion: {
                         required: true,
                     },
                     guardian_relation: {
@@ -337,34 +311,18 @@
                     date_of_birth: {
                         required: true,
                     },
-                    date_of_visiting: {
-                        required: true,
-                    },
+                    // date_of_visiting: {
+                    //     required: true,
+                    // },
                     phone: {
                         required: true,
                     }
                 },
             });
 
-			var visitorStudents = {!! json_encode($visitorStudents ?? []) !!};
-
-            $('#tchr_rgstr [name="class"]').on('change', function() {
-                clsid = $(this).val();
-                $('#tchr_rgstr [name="section"]').html('');
-                if (sections['class_' + clsid].length > 0) {
-                    $.each(sections['class_' + clsid], function(k, v) {
-                    var selected = (visitorStudents['section_id'] == v['id']) ? 'selected' : '';
-                    $('[name="section"]').append(
-                        '<option ' + selected + ' value="' + v['id'] + '">' + v['name'] + '</option>'
-                    );
-               		});
-                }
-            });
 
             $('#tchr_rgstr [name="gender"]').val('{{ old('gender', $visitorStudents->gender) }}');
             $('#tchr_rgstr [name="class"]').val("{{ old('class', $visitorStudents->class_id) }}");
-            $('#tchr_rgstr [name="class"]').change();
-            $('#tchr_rgstr [name="section"]').val('{{ old('section', $visitorStudents->section_id) }}');
 
         });
     </script>

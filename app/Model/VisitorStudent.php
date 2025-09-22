@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class VisitorStudent extends Model
 {
@@ -20,7 +21,7 @@ class VisitorStudent extends Model
         'guardian_relation',
         'date_of_birth',
         'last_school',
-        'dov',
+        'date_of_visiting',
         'seeking_class',
         'created_by',
         'updated_by',
@@ -32,7 +33,8 @@ class VisitorStudent extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->academic_session_id = auth()->user()->academic_session;
+            $model->session_id = Auth::user()->academic_session;
+            $model->created_by = Auth::user()->id??2;
         });
     }
 
