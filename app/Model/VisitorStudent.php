@@ -10,6 +10,7 @@ class VisitorStudent extends Model
     protected $fillable = [
         'name',
         'session_id',
+        'student_id',
         'father_name',
         'class_id',
         'email',

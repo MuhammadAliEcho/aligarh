@@ -530,13 +530,13 @@
                                                                         <i class="fa fa-pencil"></i> Edit
                                                                     </a>
                                                                 @endcan
-                                                                {{-- @can('visitors.delete') --}}
+                                                                @can('visitors.delete')
                                                                     <a data-placement="top" data-toggle="tooltip" title="Delete"
                                                                         @click.prevent="deleteVisitor(visitor.id)" href="#"
                                                                         class="btn btn-sm btn-outline-danger">
                                                                         <i class="fa fa-trash"></i> Delete
                                                                     </a>
-                                                                {{-- @endcan --}}
+                                                                @endcan
                                                             </div>
                                                            
                                                         </div>

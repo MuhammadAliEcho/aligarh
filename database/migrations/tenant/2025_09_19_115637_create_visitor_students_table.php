@@ -19,6 +19,7 @@ class CreateVisitorStudentsTable extends Migration
             $table->integer('session_id');
             $table->string('father_name');
             $table->integer('class_id');
+            $table->integer('student_id')->nullable()->comment('Register students ID');
             $table->string('email', 1024)->nullable();
             $table->string('religion', 1024)->nullable();
             $table->string('gender', 32);
