@@ -181,6 +181,8 @@ class RoleController extends Controller
 				'visitors.grid' => 'Visitors Gird View',
 				'visitors.profile' => 'Visitors Profile',
 				'visitors.create' => 'Visitors Create',	
+				'students.show.visitor' => 'Show  Addmissison Visitors',
+				'students.create.visitor' => 'Create Addmissison Visitors',
 				'visitors.edit' => 'Visitors Edit',
 				'visitors.update' => 'Visitors Update',	
 				'visitors.delete' => 'Visitors Delete',

@@ -11,14 +11,16 @@ use App\Guardian;
 use App\Classe;
 use App\Section;
 use App\AdditionalFee;
-use DB;
 use Carbon\Carbon;
-use Auth;
 use App\AcademicSessionHistory;
 use App\Http\Controllers\Controller;
 use Validator;
 use App\Certificate;
 use App\ParentInterview;
+use App\Model\VisitorStudent;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StudentsController extends Controller 
 {
@@ -191,6 +193,88 @@ class StudentsController extends Controller
 					]
 			]);
 
+	}
+	public function ShowVistor(Request $request, $visitor_id)
+	{
+		$data['visitorStudents'] = VisitorStudent::findorFail($visitor_id);
+
+		if ($data['visitorStudents']->student_id) {
+
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'	=> 'error',
+					'title'	=>  'Students',
+					'msg'	=>  'Student already Admitted'
+				]
+			]);
+		}
+
+		$data['classes'] = Classe::select('id', 'name')->get();
+		$data['guardians'] = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
+		$data['no_of_active_students'] = Student::active()->count();
+
+		foreach ($data['classes'] as $key => $class) {
+			$data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
+		}
+		return view('admin.add_visitor_student', $data);
+	}
+
+	public function CreateVistor(Request $request, $visitor_id)
+	{
+		if (Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']) {
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'  => 'error',
+					'title' => 'Students',
+					'msg'   => 'Over students limit'
+				]
+			]);
+		}
+
+		DB::beginTransaction();
+
+		try {
+			$visitorStudents = VisitorStudent::findOrFail($visitor_id);
+			$this->PostValidate($request);
+
+			$Student = new Student;
+			$this->SetAttributes($Student, $request);
+			$Student->created_by  = Auth::user()->id;
+			$Student->session_id  = Auth::user()->academic_session;
+			$this->UpdateGrNo($Student, $request);
+			$Student->save();
+			if ($request->hasFile('img')) {
+				$this->SaveImage($Student, $request);
+				$Student->save();
+			}
+
+			$visitorStudents->student_id = $Student->id;
+			$visitorStudents->save();
+
+			$this->UpdateAcademicSessionHistory($Student);
+			$this->UpdateAdditionalFee($Student, $request);
+
+			DB::commit();
+
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'  => 'success',
+					'title' => 'Student Registration',
+					'msg'   => 'Registration Successful'
+				]
+			]);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage(). " Full Trace: " . $e);
+
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'  => 'error',
+					'title' => 'Students',
+					'msg'   => 'Something went wrong'
+				]
+			]);
+		}
 	}
 
 	public function EditStudent($id){

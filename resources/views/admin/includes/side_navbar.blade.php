@@ -30,6 +30,12 @@
                         class="nav-label">Dashboard</span></a>
             </li>
             @endcan
+            @can('visitors.index')
+                <li class="{{ isActiveRoute('visitors.*') }}">
+                    <a href="{{ route('visitors.index') }}" data-root="visitors"><i
+                        class="fa fa-id-badge"></i> <span class="nav-label">Visitors</span></a>
+                </li>
+            @endcan
             @can('students.index')
             <li class="{{ isActiveRoute('students.*') }}">
                 <a href="{{ route('students.index') }}" data-root="students"><i
@@ -53,12 +59,6 @@
                 <a href="{{ route('guardian.index') }}" data-root="guardians"><i class="fa fa-user"></i> <span
                         class="nav-label">Guardians</span></a>
             </li>
-            @endcan
-            @can('visitors.index')
-                <li class="{{ isActiveRoute('visitors.*') }}">
-                    <a href="{{ route('visitors.index') }}" data-root="visitors"><i
-                        class="fa fa-group"></i> <span class="nav-label">Visitors</span></a>
-                </li>
             @endcan
             @canany(['manage-classes.index', 'manage-sections.index'])
                 <li class="{{ isActiveRoute(['manage-classes.*','manage-sections.*']) }}">

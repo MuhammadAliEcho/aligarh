@@ -524,6 +524,13 @@
                                                                 </li>
                                                             </ul>
                                                             <div class="text-end mt-3">
+                                                                @can('students.create.visitor')
+                                                                    <a v-if="visitor.student_id == null" :href="`{{ url('students') }}/${visitor.id}/visitor`"  
+                                                                        class="btn btn-sm btn-outline-primary" 
+                                                                        title="Add Student New (Admission)">
+                                                                        <i class="fa fa-plus"></i> Add
+                                                                    </a>
+                                                                @endcan
                                                                 @can('visitors.update')
                                                                     <a :href="'{{ url('visitors/edit') }}/' + visitor.id"
                                                                         class="btn btn-sm btn-outline-primary">
@@ -531,7 +538,7 @@
                                                                     </a>
                                                                 @endcan
                                                                 @can('visitors.delete')
-                                                                    <a data-placement="top" data-toggle="tooltip" title="Delete"
+                                                                    <a  title="Delete"
                                                                         @click.prevent="deleteVisitor(visitor.id)" href="#"
                                                                         class="btn btn-sm btn-outline-danger">
                                                                         <i class="fa fa-trash"></i> Delete
@@ -809,21 +816,7 @@
 
 
     <script type="text/javascript">
-        var tbl;
-        var tr;
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#img').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
         $(document).ready(function() {
-
 
             @if ($errors->any())
                 $('a[href="#tab-11"]').tab('show');
@@ -900,10 +893,6 @@
             @else
                 $('.nav-tabs a[href="#tab-10"]').tab('show');
             @endif
-
-            $("#imginp").change(function() {
-                readURL(this);
-            });
         });
     </script>
 
@@ -914,7 +903,7 @@
     <script src="{{ asset('src/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 
     <script type="text/javascript">
-        var app = new Vue({
+                var app = new Vue({
             el: '#app',
             data: {
                 visitor_capacity: {{ tenancy()->tenant->system_info['general']['student_capacity'] }},
