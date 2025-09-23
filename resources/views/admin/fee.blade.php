@@ -68,6 +68,7 @@
 									<table class="table table-striped table-bordered table-hover dataTables-teacher" width="100%">
 									  <thead>
 										<tr>
+										<th><input type="checkbox" id="select-all"></th>
 										  <th>ID</th>
 										  <th>GR-No</th>
 										  <th>Total Amount</th>
@@ -558,13 +559,53 @@
 				.addClass('compact')
 				.css('font-size', 'inherit');
 			  }
-			}
+			},
+			{
+				text: 'Print Bulk Invoices',
+				action: function (e, dt, node, config) {
+				var selectedIds = [];
+				$('.dataTables-teacher tbody .row-checkbox:checked').each(function () {
+					selectedIds.push($(this).data('id'));
+				});
+				if (selectedIds.length === 0) {
+					alert('Please select at least one row.');
+					return;
+				}
+					$.ajax({
+						url: '{{ url("/fee/bulk-print-invoice") }}',
+						method: 'POST',
+						data: {
+							_token: '{{ csrf_token() }}',
+							ids: selectedIds
+						},
+						success: function (response) {
+							if (response.success && response.redirect_url) {
+								window.open(response.redirect_url, '_blank');
+							} else {
+								alert('Something went wrong while generating invoice.');
+							}
+						},
+						error: function () {
+							alert('Error occurred while printing invoices.');
+						}
+					});
+				}
+			},
+
 		  ],
 		  Processing: true,
 		  serverSide: true,
 		  order: [[0, "desc"]],
 		  ajax: '{{ URL('fee') }}',
 		  columns: [
+			{
+				data: 'id',
+				orderable: false,
+				searchable: false,
+				render: function (data, type, row) {
+				return '<input type="checkbox" class="row-checkbox" data-id="' + data + '">';
+				}
+			},
 			{data: 'id', name: 'invoice_master.id'},
 			{data: 'gr_no', name: 'invoice_master.gr_no'},
 			{data: 'total_amount', name: 'invoice_master.total_amount'},
@@ -592,6 +633,20 @@
 		$(this).attr('href','{{ URL('fee/group-chalan/') }}/'+tbl.row( $(this).parents('tr') ).data().guardian_id);
 		$(this).tooltip('show');
 	  });
+
+
+	// When "Select All" is clicked
+	$('#select-all').on('click', function() {
+	var checked = $(this).is(':checked');
+	$('.dataTables-teacher tbody .row-checkbox').prop('checked', checked);
+	});
+
+	$('.dataTables-teacher tbody').on('change', '.row-checkbox', function() {
+	var total = $('.dataTables-teacher tbody .row-checkbox').length;
+	var checked = $('.dataTables-teacher tbody .row-checkbox:checked').length;
+	$('#select-all').prop('checked', total === checked);
+	});
+
 
 		$("#tchr_rgstr").validate({
 			rules: {
@@ -756,7 +811,7 @@
 					success: function(msg){
 
 						if (e.target.id == 'GetStdFee') {
-//							console.log(msg);
+							//	console.log(msg);
 							feeApp.std.id = msg.id;
 							feeApp.std.name = msg.name;
 							feeApp.std.gr_no = msg.gr_no;
@@ -766,7 +821,7 @@
 							feeApp.fee.discount = msg.discount;
 							feeApp.fee.feedata = true;
 						} else {
-//							console.log(msg);
+							//console.log(msg);
 							feeApp.AjaxMsg(msg);
 							feeApp.fee.feedata = false;
 						}

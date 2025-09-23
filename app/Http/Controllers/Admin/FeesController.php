@@ -436,6 +436,43 @@ class FeesController extends Controller
 		return view('admin.printable.view_group_chalan', $data);
 	}
 
+	public function ShowBulkInvoice(Request $request)
+	{
+		$ids = session('bulk_invoice_ids');
+
+		if (!$ids || !is_array($ids)) {
+			abort(404, 'No invoice data found.');
+		}
+
+		$invoices = InvoiceMaster::with(['InvoiceDetail', 'InvoiceMonths'])
+			->whereIn('id', $ids)
+			->get();
+
+		$students = Student::whereIn('id', $invoices->pluck('student_id')->unique())->get()->keyBy('id');
+
+		return view('admin.printable.view_bulk_invoice', [
+			'invoices' => $invoices,
+			'students' => $students
+		]);
+	}
+
+
+
+	public function BulkPrintInvoice(Request $request)
+	{
+		$ids = $request->input('ids');
+
+		if (empty($ids) || !is_array($ids)) {
+			return response()->json(['success' => false, 'message' => 'No invoices selected.']);
+		}
+		session(['bulk_invoice_ids' => $ids]);
+
+		return response()->json([
+			'success' => true,
+			'redirect_url' => route('fee.bulk.invoice.print')
+		]);
+	}
+
 	public function GetStudentFee(Request $request){
 
 		if($request->ajax()){
