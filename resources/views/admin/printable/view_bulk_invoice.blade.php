@@ -129,15 +129,18 @@
                 <table style="margin-top: 15px; width: 100%;">
                     <tbody>
                         <tr>
-                            <td width="250px">R.No. <u>@{{ invoices[{{ $index }}].id }}</u></td>
-                            <td width="250px">Issue Date. <u>@{{ formatDate(invoices[{{ $index }}].created_at) }}</u></td>
+                            <td width="250px">R.No. <u>{{ $invoice->id }}</u></td>
+                            <td width="250px">Issue Date. <u>{{ \Carbon\Carbon::parse($invoice->created_at)->format('F j, Y') }}</u></td>
                         </tr>
                         <tr>
                             <td>
-                                <span v-if="invoices[{{ $index }}].paid_amount" class="label label-success hidden-print">PAID</span>
-                                <span v-else class="label label-danger hidden-print">UNPAID</span>
+                                @if($invoice->paid_amount)
+                                    <span class="label label-success hidden-print">PAID</span>
+                                @else
+                                    <span class="label label-danger hidden-print">UNPAID</span>
+                                @endif
                             </td>
-                            <td>Due Date. <u>@{{ invoices[{{ $index }}].due_date }}</u></td>
+                            <td>Due Date. <u>{{ $invoice->due_date }}</u></td>
                         </tr>
                         <tr>
                             <td>Name. <u>{{ $student->name ?? 'N/A' }}</u></td>
@@ -149,9 +152,13 @@
                         </tr>
                         <tr>
                             <td colspan="2">Fee for the month. <u>
-                                <span v-for="month in invoices[{{ $index }}].invoice_months">
-                                    @{{ month.month }},
-                                </span>
+                                @if($invoice->InvoiceMonths && count($invoice->InvoiceMonths) > 0)
+                                    @foreach($invoice->InvoiceMonths as $month)
+                                        {{ $month->month }}{{ !$loop->last ? ', ' : '' }}
+                                    @endforeach
+                                @else
+                                    N/A
+                                @endif
                             </u></td>
                         </tr>
                     </tbody>
@@ -165,28 +172,42 @@
                                 <th width="200px">Amount</th>
                             </tr>
 
-                            <tr v-for="detail in invoices[{{ $index }}].invoice_detail" :key="detail.id">
-                                <td>@{{ detail.fee_name }}</td>
-                                <td>@{{ detail.amount }}</td>
-                            </tr>
+                            @if($invoice->InvoiceDetail && count($invoice->InvoiceDetail) > 0)
+                                @foreach($invoice->InvoiceDetail as $detail)
+                                    <tr>
+                                        <td>{{ $detail->fee_name }}</td>
+                                        <td>{{ $detail->amount }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
 
-                            <tr v-if="invoices[{{ $index }}].discount > 0">
-                                <th>Discount</th>
-                                <th>@{{ invoices[{{ $index }}].discount }}</th>
-                            </tr>
+                            @if($invoice->discount > 0)
+                                <tr>
+                                    <th>Discount</th>
+                                    <th>{{ $invoice->discount }}</th>
+                                </tr>
+                            @endif
 
                             <tr>
                                 <th class="text-right">Payable within due date</th>
-                                <th>@{{ invoices[{{ $index }}].net_amount }}/-</th>
+                                <th>{{ $invoice->net_amount }}/-</th>
                             </tr>
                             <tr>
-                                <td class="text-right">Payable after due date</td>
-                                <td>@{{ invoices[{{ $index }}].net_amount + invoices[{{ $index }}].late_fee }}/-</td>
+                                <td class="text-right">Payable after due due date</td>
+                                <td>{{ $invoice->net_amount + $invoice->late_fee }}/-</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <p style="margin-top: 15px;">Amount In Words: <u>@{{ inwords(invoices[{{ $index }}].net_amount) }}</u></p>
+                    @php
+                        // Simple number to words conversion (you can create a helper function)
+                        // function numberToWords($number) {
+                        //     $formatter = new NumberFormatter('en', NumberFormatter::SPELLOUT);
+                        //     return ucfirst($formatter->format($number));
+                        // }
+                    @endphp
+                    <p style="margin-top: 15px;">Amount In Words: <u>{{ $invoice->net_amount }}</u></p>
+                    {{-- <p style="margin-top: 15px;">Amount In Words: <u>{{ numberToWords($invoice->net_amount) }}</u></p> --}}
                 </div>
 
                 <p style="margin-top: 20px; margin-bottom: 5px; border-bottom: 1px solid;">Accountant Signature</p>
@@ -203,52 +224,254 @@
             {{-- School's Copy --}}
             <div class="invoice-header" style="margin-top: 40px; border-top: 1px solid black; padding-top: 10px;">
                 <h4 class="text-center text-danger" style="border:1px solid black;">School's Copy</h4>
-                <div v-html="address"></div>
-                <div v-html="schoolcopy"></div>
+                
+                {{-- Repeat address section for school copy --}}
+                <table style="width: 420px;">
+                    <tbody>
+                        <tr>
+                            <td rowspan="3" style="padding: 5px;">
+                                <img alt="logo" width="80px"
+                                    src="{{ tenancy()->tenant->system_info['general']['logo'] ? route('system-setting.logo') : URL('/img/logo-1.png') }}">
+                            </td>
+                            <td>
+                                <h2 class="text-center text-success">{{ tenancy()->tenant->system_info['general']['name'] }}</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                {{ tenancy()->tenant->system_info['general']['address'] }}. Tel
+                                {{ tenancy()->tenant->system_info['general']['contact_no'] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table style="width: 500px;">
+                    <tbody>
+                        <tr style="border-top:1px solid black;">
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['name'] }}</td>
+                            <td rowspan="3" style="padding-top: 10px;">
+                                <img alt="bank-logo" src="{{ URL('/img/bank.png') }}" style="width: 43px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['address'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Account No. {{ tenancy()->tenant->system_info['general']['bank']['account_no'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {{-- Repeat student copy content for school copy --}}
+                <table style="margin-top: 15px; width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td width="250px">R.No. <u>{{ $invoice->id }}</u></td>
+                            <td width="250px">Issue Date. <u>{{ \Carbon\Carbon::parse($invoice->created_at)->format('F j, Y') }}</u></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @if($invoice->paid_amount)
+                                    <span class="label label-success hidden-print">PAID</span>
+                                @else
+                                    <span class="label label-danger hidden-print">UNPAID</span>
+                                @endif
+                            </td>
+                            <td>Due Date. <u>{{ $invoice->due_date }}</u></td>
+                        </tr>
+                        <tr>
+                            <td>Name. <u>{{ $student->name ?? 'N/A' }}</u></td>
+                            <td>Father's Name. <u>{{ $student->father_name ?? 'N/A' }}</u></td>
+                        </tr>
+                        <tr>
+                            <td>Class. <u>{{ optional($student->std_class)->name ?? 'N/A' }}</u></td>
+                            <td>G.R No. <u>{{ $student->gr_no ?? 'N/A' }}</u></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Fee for the month. <u>
+                                @if($invoice->InvoiceMonths && count($invoice->InvoiceMonths) > 0)
+                                    @foreach($invoice->InvoiceMonths as $month)
+                                        {{ $month->month }}{{ !$loop->last ? ', ' : '' }}
+                                    @endforeach
+                                @else
+                                    N/A
+                                @endif
+                            </u></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="height: 350px; overflow: hidden;">
+                    <table class="table table-bordered" style="width: 100%;">
+                        <tbody>
+                            <tr style="background: blue; color: white;">
+                                <th width="300px">Particulars</th>
+                                <th width="200px">Amount</th>
+                            </tr>
+
+                            @if($invoice->InvoiceDetail && count($invoice->InvoiceDetail) > 0)
+                                @foreach($invoice->InvoiceDetail as $detail)
+                                    <tr>
+                                        <td>{{ $detail->fee_name }}</td>
+                                        <td>{{ $detail->amount }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+
+                            @if($invoice->discount > 0)
+                                <tr>
+                                    <th>Discount</th>
+                                    <th>{{ $invoice->discount }}</th>
+                                </tr>
+                            @endif
+
+                            <tr>
+                                <th class="text-right">Payable within due date</th>
+                                <th>{{ $invoice->net_amount }}/-</th>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Payable after due date</td>
+                                <td>{{ $invoice->net_amount + $invoice->late_fee }}/-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="margin-top: 15px;">Amount In Words: <u>{{ $invoice->net_amount }}</u></p>
+                    {{-- <p style="margin-top: 15px;">Amount In Words: <u>{{ numberToWords($invoice->net_amount) }}</u></p> --}}
+                </div>
             </div>
 
             {{-- Bank's Copy --}}
             <div class="invoice-header" style="margin-top: 20px; border-top: 1px solid black; padding-top: 10px;">
                 <h4 class="text-center text-danger" style="border:1px solid black;">Bank's Copy</h4>
-                <div v-html="address"></div>
-                <div v-html="schoolcopy"></div>
+                
+                {{-- Repeat address section for bank copy --}}
+                <table style="width: 420px;">
+                    <tbody>
+                        <tr>
+                            <td rowspan="3" style="padding: 5px;">
+                                <img alt="logo" width="80px"
+                                    src="{{ tenancy()->tenant->system_info['general']['logo'] ? route('system-setting.logo') : URL('/img/logo-1.png') }}">
+                            </td>
+                            <td>
+                                <h2 class="text-center text-success">{{ tenancy()->tenant->system_info['general']['name'] }}</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                {{ tenancy()->tenant->system_info['general']['address'] }}. Tel
+                                {{ tenancy()->tenant->system_info['general']['contact_no'] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table style="width: 500px;">
+                    <tbody>
+                        <tr style="border-top:1px solid black;">
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['name'] }}</td>
+                            <td rowspan="3" style="padding-top: 10px;">
+                                <img alt="bank-logo" src="{{ URL('/img/bank.png') }}" style="width: 43px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['address'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Account No. {{ tenancy()->tenant->system_info['general']['bank']['account_no'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {{-- Repeat student copy content for bank copy --}}
+                <table style="margin-top: 15px; width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td width="250px">R.No. <u>{{ $invoice->id }}</u></td>
+                            <td width="250px">Issue Date. <u>{{ \Carbon\Carbon::parse($invoice->created_at)->format('F j, Y') }}</u></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @if($invoice->paid_amount)
+                                    <span class="label label-success hidden-print">PAID</span>
+                                @else
+                                    <span class="label label-danger hidden-print">UNPAID</span>
+                                @endif
+                            </td>
+                            <td>Due Date. <u>{{ $invoice->due_date }}</u></td>
+                        </tr>
+                        <tr>
+                            <td>Name. <u>{{ $student->name ?? 'N/A' }}</u></td>
+                            <td>Father's Name. <u>{{ $student->father_name ?? 'N/A' }}</u></td>
+                        </tr>
+                        <tr>
+                            <td>Class. <u>{{ optional($student->std_class)->name ?? 'N/A' }}</u></td>
+                            <td>G.R No. <u>{{ $student->gr_no ?? 'N/A' }}</u></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Fee for the month. <u>
+                                @if($invoice->InvoiceMonths && count($invoice->InvoiceMonths) > 0)
+                                    @foreach($invoice->InvoiceMonths as $month)
+                                        {{ $month->month }}{{ !$loop->last ? ', ' : '' }}
+                                    @endforeach
+                                @else
+                                    N/A
+                                @endif
+                            </u></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="height: 350px; overflow: hidden;">
+                    <table class="table table-bordered" style="width: 100%;">
+                        <tbody>
+                            <tr style="background: blue; color: white;">
+                                <th width="300px">Particulars</th>
+                                <th width="200px">Amount</th>
+                            </tr>
+
+                            @if($invoice->InvoiceDetail && count($invoice->InvoiceDetail) > 0)
+                                @foreach($invoice->InvoiceDetail as $detail)
+                                    <tr>
+                                        <td>{{ $detail->fee_name }}</td>
+                                        <td>{{ $detail->amount }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+
+                            @if($invoice->discount > 0)
+                                <tr>
+                                    <th>Discount</th>
+                                    <th>{{ $invoice->discount }}</th>
+                                </tr>
+                            @endif
+
+                            <tr>
+                                <th class="text-right">Payable within due date</th>
+                                <th>{{ $invoice->net_amount }}/-</th>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Payable after due date</td>
+                                <td>{{ $invoice->net_amount + $invoice->late_fee }}/-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="margin-top: 15px;">Amount In Words: <u>{{ $invoice->net_amount }}</u></p>
+                    {{-- <p style="margin-top: 15px;">Amount In Words: <u>{{ numberToWords($invoice->net_amount) }}</u></p> --}}
+                </div>
             </div>
 
         </div> {{-- End of invoice-page --}}
     @endforeach
 
 </div>
-@endsection
 
-@section('vue')
-<script type="text/javascript">
-    var app = new Vue({
-        el: '#app',
-        data: {
-            invoices: {!! json_encode($invoices, JSON_NUMERIC_CHECK) !!},
-            students: {!! json_encode($students, JSON_NUMERIC_CHECK) !!},
-            schoolcopy: '',
-            address: '',
-        },
-
-        mounted() {
-            this.schoolcopy = document.querySelector("#stdcopy-0")?.innerHTML || '';
-            this.address = document.querySelector("#address-0")?.innerHTML || '';
-            window.print();
-        },
-
-        methods: {
-            inwords(amount) {
-                if (!amount) return '';
-                var inWords = toWords(amount);
-                return inWords.charAt(0).toUpperCase() + inWords.slice(1);
-            },
-            formatDate(dateString) {
-                if (!dateString) return '';
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString(undefined, options);
-            }
-        }
-    });
+<script>
+    // Auto print when page loads
+    window.onload = function() {
+        window.print();
+    };
 </script>
 @endsection

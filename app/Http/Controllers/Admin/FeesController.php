@@ -448,7 +448,13 @@ class FeesController extends Controller
 			->whereIn('id', $ids)
 			->get();
 
-		$students = Student::whereIn('id', $invoices->pluck('student_id')->unique())->get()->keyBy('id');
+		$studentIds = $invoices->pluck('student_id')->unique();
+		$studentsCollection = Student::whereIn('id', $studentIds)->get()->keyBy('id');
+
+		$students = [];
+		foreach ($invoices as $invoice) {
+			$students[] = $studentsCollection->get($invoice->student_id);
+		}
 
 		return view('admin.printable.view_bulk_invoice', [
 			'invoices' => $invoices,
