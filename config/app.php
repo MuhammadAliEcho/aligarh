@@ -13,6 +13,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    
+    'ssl' => env('APP_SSL', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -138,6 +140,11 @@ return [
     'providers' => [
 
         /*
+         * Tenant Config Service Providers...
+         */
+		App\Providers\TenantConfigServiceProvider::class,
+
+        /*
          * Laravel Framework Service Providers...
          */
         Illuminate\Auth\AuthServiceProvider::class,
@@ -190,6 +197,8 @@ return [
         // LaravelPassport
         Laravel\Passport\PassportServiceProvider::class,
 
+        // Tenancy
+		App\Providers\TenancyServiceProvider::class
     ],
 
     /*

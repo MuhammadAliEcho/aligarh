@@ -9,11 +9,17 @@ class Notification extends Model
     protected $fillable = [
         'notification',
         'link',
+        'is_read',
         'user_id',
     ];
 
     public function user()
     {
         return $this->belongsTo('App\User', 'user_id');
+    }
+
+    public function scopeSelfUser($query)
+    {
+        return $query->where('user_id', auth()->user()->id);
     }
 }

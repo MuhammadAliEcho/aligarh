@@ -9,14 +9,16 @@
 	<meta name="keywords" content="HTML,CSS,XML,JavaScript,management,system,school,school management system,alirarh,aligarh school management system">
 	<meta name="author" content="Hash Management">
 
-    <link rel="icon" href="{{ URL::to('src/icon/favicon.png') }}">
+    <link rel="icon" href="{{ asset('src/icon/favicon.png') }}">
     <title>Login | Aligarh School Management System</title>
 
-    <link href="{{ URL::to('src/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 
-    <link href="{{ URL::to('src/css/animate.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/animate.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/style.css') }}" rel="stylesheet">
+     <!-- Toastr style -->
+    <link href="{{ asset('src/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 
 </head>
 
@@ -27,13 +29,20 @@
     </div>
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/jquery-2.1.1.js') }}"></script>
-    <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('src/js/bootstrap.min.js') }}"></script>
+     <!-- Toastr js -->
+    <script src="{{ asset('src/js/plugins/toastr/toastr.min.js') }}"></script>
 
     <!-- Jquery Validate -->
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <script type="text/javascript">
+        @if (session('status'))
+            window.onload = function() {
+                toastr.success("{{ session('status') }}");
+            }
+        @endif
         function toggle(form, reset_form) {
             document.getElementById("form").style.display = form;
             document.getElementById("reset_form").style.display = reset_form;

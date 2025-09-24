@@ -29,7 +29,8 @@ class SendWhatsAppJob implements ShouldQueue
             return;
         }
 
-        $config = config('systemInfo.whatsapp');
+        // this settings should also pass form trigger in construct
+        $config = tenancy()->tenant->system_info['whatsapp'];
         $url = rtrim($config['url'], '/') . "/{$config['phone_id']}/messages";
 
         $response = Http::withToken($config['api_token'])
@@ -50,5 +51,12 @@ class SendWhatsAppJob implements ShouldQueue
         } else {
             Log::info('WhatsApp message sent successfully to ' . $this->whatsapp_number);
         }
+    }
+
+    public function failed(\Throwable $exception)
+    {
+        Log::error("SendWhatsAppJob failed for number {$this->whatsapp_number}: " . $exception->getMessage(), [
+            'exception' => $exception->getTraceAsString()
+        ]);
     }
 }

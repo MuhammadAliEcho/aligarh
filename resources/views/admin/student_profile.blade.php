@@ -4,7 +4,7 @@
 
   @section('head')
   <!-- HEAD -->
-		<link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+		<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
 
 	<style type="text/css">
 		@media print{
@@ -317,7 +317,7 @@
 	@section('script')
 
 	<!-- Data picker -->
-	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
 
 	@endsection
 

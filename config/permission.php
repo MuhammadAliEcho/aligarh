@@ -211,5 +211,8 @@ return [
         'login',
         'logout',
         'login.post',
+        'notifications.log',
+        'notifications.log.read',
+        'system-setting.logo',
     ]
 ];

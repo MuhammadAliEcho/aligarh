@@ -186,6 +186,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 3px;
+            text-align: left;
         }
 
         .info-value {
@@ -194,6 +195,7 @@
             font-weight: 600;
             line-height: 1.3;
             word-break: break-word;
+            text-align: left;
         }
 
         .fee-amount {
@@ -708,8 +710,8 @@
                                                 <i class="fa fa-graduation-cap"></i>
                                             </div>
                                             <div class="student-info-content">
-                                                <div class="info-label">Class</div>
-                                                <div class="info-value">{{ $student->std_class->name }}</div>
+                                                <div class="student-info-label">Class</div>
+                                                <div class="student-info-value">{{ $student->std_class->name }}</div>
                                             </div>
                                         </li>
                                         <li class="student-info-item">
@@ -736,7 +738,7 @@
                                             </div>
                                             <div class="student-info-content">
                                                 <div class="student-info-label">Guardian</div>
-                                                <div class="student-info-value info-value">{{ $guardian->name }}</div>
+                                                <div class="student-info-value student-info-value">{{ $guardian->name }}</div>
                                             </div>
                                         </li>
                                         <li class="student-info-item">

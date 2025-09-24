@@ -3,9 +3,9 @@
   @section('title', 'Sections |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/hrtab/hrtab.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/hrtab/hrtab.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')
@@ -85,7 +85,7 @@
                                                     <td>{{ $section->name }}</td>
                                                     <td>{{ $section->nick_name }}</td>
                                                     <td>{{ $section->Students->count() }} | {{ $section->capacity }}</td>
-                                                    <td>{{ $section->Teacher['name'] }}</td>
+                                                    <td>{{ $section->Teacher?->name }}</td>
                                                     <td class="edit-section">
                                                       @can('manage-sections.edit.post')
                                                       <a href="{{ URL('manage-sections/edit/'.$section->id) }}" data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-option">
@@ -214,13 +214,13 @@
     @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/hrtab/hrtab.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/hrtab/hrtab.js') }}"></script>
 
 
     <!-- Select2 -->
-    <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
     <script type="text/javascript">
 

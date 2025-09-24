@@ -3,10 +3,10 @@
 	@section('title', 'Students |')
 
 	@section('head')
-	<link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
 	<script type="text/javascript">
 			var sections = {!! json_encode($sections ?? '') !!};
 	</script>
@@ -142,10 +142,10 @@
 															<button type="button" class="close" @click="removeImage = 1">
 																<span aria-hidden="true">&times;</span>
 															</button>
-															<img id="img" src="{{ ($student->image_url == '')? '#' : URL($student->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
+															<img id="img" src="{{ ($student->image_url == '')? '#' : URL($student->image_url) }}"  alt="Item Image... 454" class="img-responsive img-thumbnail" style="max-width:100px !important;min-width:105px !important;"/>
 														</template>
 														<template v-if="removeImage">
-															<img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" />
+															<img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" :style="{ maxWidth: '100px', minWidth: '105px' }"/>
 														</template>
 													
 														@if ($errors->has('img'))
@@ -197,21 +197,19 @@
 															@endif
 														</div>
 													</div>
-												@endcan
-
-												<div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
-													<label class="col-md-2 control-label">Section</label>
-													<div class="col-md-6 select2-div">
-														<select class="form-control select2" name="section">
-														</select>
-														@if ($errors->has('section'))
-																<span class="help-block">
-																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('section') }}</strong>
-																</span>
-														@endif
+													<div class="form-group{{ ($errors->has('section'))? ' has-error' : '' }}">
+														<label class="col-md-2 control-label">Section</label>
+														<div class="col-md-6 select2-div">
+															<select class="form-control select2" name="section">
+															</select>
+															@if ($errors->has('section'))
+																	<span class="help-block">
+																			<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('section') }}</strong>
+																	</span>
+															@endif
+														</div>
 													</div>
-												</div>
-												{{-- @endif --}}
+												@endcan
 
 												<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
 													<label class="col-md-2 control-label">GR No</label>
@@ -336,22 +334,22 @@
 		@section('script')
 
 		<!-- Mainly scripts 
-		<script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 		-->
 
-		<script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-		<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
 		<!-- Input Mask-->
-		 <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+		 <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
 		<!-- Select2 -->
-		<script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 		<!-- require with bootstrap-datetimepicker -->
-		<script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-		<script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
 		<script type="text/javascript">
 

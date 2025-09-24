@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Logs |')
+@section('title', 'Message Logs |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <style type="text/css">
         .print-table {
             width: 100%;
@@ -34,7 +34,7 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-8 col-md-6">
-                <h2>Notifications</h2>
+                <h2>Logs</h2>
                 <ol class="breadcrumb">
                     <li>Home</li>
                     <li class="active"><a>Message Logs</a></li>
@@ -78,8 +78,8 @@
 @endsection
 
 @section('script')
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -104,12 +104,12 @@
                         exportOptions: {
                             columns: [0, 1, 2, 3, 4, 5, 6] 
                         },
-                        title: "Notifications | {{ config('systemInfo.general.title') }}"
+                        title: "Notifications | {{ tenancy()->tenant->system_info['general']['title'] }}"
                     }
                 ],
                 processing: true,
                 serverSide: true,
-                ajax: '{{ url('notifications/msg/logs') }}',
+                ajax: '{{ url('msg-notifications/logs') }}',
                 columns: [
                     { data: 'type' },
                     { data: 'message' },

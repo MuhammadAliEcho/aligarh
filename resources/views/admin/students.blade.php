@@ -2,10 +2,10 @@
 
 @section('title', 'Students |')
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <script type="text/javascript">
         var sections = {!! json_encode($sections ?? '') !!};
     </script>
@@ -530,10 +530,11 @@
                 <div class="col-lg-12">
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
-                            <li class="">
-                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Students</a>
-                            </li>
-
+                            @canany(['students.index','students.grid'])
+                                <li class="">
+                                    <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Students</a>
+                                </li>
+                            @endcanany
                             @can('students.add')
                                 <li class="add-student">
                                     <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Admit Students</a>
@@ -728,6 +729,12 @@
                                                                     <a :href="'{{ url('students/edit') }}/' + student.id"
                                                                         class="btn btn-sm btn-outline-primary">
                                                                         <i class="fa fa-pencil"></i> Edit
+                                                                    </a>
+                                                                @endcan
+                                                                @can('students.card')
+                                                                    <a :href="'{{ url('students/id-card') }}/' + student.id"
+                                                                        class="btn btn-sm btn-outline-primary" target="_blank">
+                                                                        <i class="fa fa-id-card-o"></i> ID Card
                                                                     </a>
                                                                 @endcan
                                                             </div>
@@ -998,7 +1005,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <img id="img" src="" alt="Item Image..."
-                                                        class="img-responsive img-thumbnail" />
+                                                        class="img-responsive img-thumbnail" 
+                                                        style="max-width:100px !important;min-width:105px !important;"/>
                                                     @if ($errors->has('img'))
                                                         <span class="help-block">
                                                             <strong><span class="fa fa-exclamation-triangle"></span>
@@ -1300,7 +1308,7 @@
                                                                             <input id="guardian_name" required type="name" class="guardian-model-form-control" placeholder="Enter Name">
                                                                         </div>
                                                                         <div class="guardian-model-form-group">
-                                                                            <label class="guardian-model-form-label">Email Address<span class="text-danger">*</span></label>
+                                                                            <label class="guardian-model-form-label">Email Address</label>
                                                                             <input id="guardian_email" required type="email" class="guardian-model-form-control" placeholder="Enter Email">
                                                                         </div>
                                                                     </div>
@@ -1356,22 +1364,22 @@
 @section('script')
 
     <!-- Mainly scripts
-            <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+            <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
             -->
 
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-    <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
     <!-- Select2 -->
-    <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
     <!-- require with bootstrap-datetimepicker -->
-    <script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
 
 
@@ -1466,7 +1474,7 @@
                         exportOptions: {
                             columns: ":visible"
                         },
-                        title: "Student Register | {{ config('systemInfo.general.title') }}",
+                        title: "Student Register | {{ tenancy()->tenant->system_info['general']['title'] }}",
                     },
                     'colvis'
                 ],
@@ -1692,7 +1700,7 @@
 @endsection
 
 @section('vue')
-    <script src="{{ URL::to('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
     <script type="text/javascript">
         var app = new Vue({
             el: '#app',
@@ -1704,7 +1712,7 @@
                     discount: {{ old('discount', 0) }},
                 },
                 no_of_active_students: {{ $no_of_active_students }},
-                student_capacity: {{ config('systemInfo.general.student_capacity') }},
+                student_capacity: {{ tenancy()->tenant->system_info['general']['student_capacity'] }},
                 layout: 'grid',
                 options: [5, 10, 25, 50, 100],
                 per_page: 10,

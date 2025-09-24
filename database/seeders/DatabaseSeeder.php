@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(PermissionsSeeder::class); //for Reset all permission role, etc 
+        $this->call(NotificationsSettingsSeeder::class); 
         // $this->call(PermissionsUpdateSeeder::class); // only delete permissions and  Sync roles
     }
 }

@@ -56,7 +56,7 @@
     <div class="container-fluid">
 
         <div class="row">
-            <h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+            <h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
             <div class="col-md-4">
                 <h4>Attendance Of Class: {{ $selected_class->name . ' ' . $section_nick }} ({{ $input['date'] }})</h4>
                 <h4>No Of Students: {{ COUNT($students) }}</h4>

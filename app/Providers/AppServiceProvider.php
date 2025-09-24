@@ -15,6 +15,7 @@ use App\Observers\InvoiceMasterObserver;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,8 +31,9 @@ class AppServiceProvider extends ServiceProvider
         StudentAttendance::observe(StudentAttendanceObserver::class);
         InvoiceMaster::observe(InvoiceMasterObserver::class);
 
-        // Load custom system configuration
-        $this->loadSystemConfiguration();
+        if (config('app.ssl')) { 
+            URL::forceScheme('https');
+        }
     }
 
     /**
@@ -44,27 +46,4 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Dynamically load system configuration from systemInfo.php
-     *
-     * @return void
-     */
-    protected function loadSystemConfiguration()
-    {
-        $smtp = config('systemInfo.general.smtp');
-        $general = config('systemInfo.general');
-
-        if (!empty($smtp['host'])) {
-            Config::set('mail.driver', 'smtp');
-
-            Config::set('mail.host', $smtp['host']);
-            Config::set('mail.port', $smtp['port']);
-            Config::set('mail.encryption', $smtp['encryption']);
-            Config::set('mail.username', $smtp['username']);
-            Config::set('mail.password', $smtp['password']);
-
-            Config::set('mail.from.address', $general['email']);
-            Config::set('mail.from.name', $general['name']);
-        }
-    }
 }

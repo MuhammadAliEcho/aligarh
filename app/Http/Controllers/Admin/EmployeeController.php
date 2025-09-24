@@ -14,16 +14,22 @@ use App\Http\Controllers\Controller;
 class EmployeeController extends Controller
 {
   public function GetImage($id)
-{
+  {
     $Employee = Employee::findOrFail($id);
+
+    // Check if file exists in the current tenant's storage
     if (!Storage::exists($Employee->img_dir)) {
-        return response()->json(['error' => 'Image not found'], 404);
+      abort(404, 'Image not found.');
     }
+
+    // Get the image content using the default storage (which handles tenancy)
     $image = Storage::get($Employee->img_dir);
+
+    // Get MIME type
     $mime = Storage::mimeType($Employee->img_dir);
 
-    return response($image, 200)->header('Content-Type', $mime);
-}
+    return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
+  }
 
   public function GetProfile($id){
     $data['employee']  = Employee::findOrFail($id);
@@ -41,7 +47,10 @@ class EmployeeController extends Controller
         'role'      =>  'required',
         //'qualification'  =>  'required',
         'salary'      =>  'required|numeric',
-        'img'       =>    'image|mimes:jpg,jpeg|max:2048',
+        'img'       =>    'image|mimes:jpg,jpeg,png|max:100',
+        'date_of_birth' => 'required|date|date_format:Y-m-d',
+        'date_of_joining' => 'required|date|date_format:Y-m-d',
+        'id_card' => 'required|string|max:255|unique:employees,id_card'. (($request->route('id'))? ','.$request->route('id') : ''),
     ]);
   }
 
@@ -148,16 +157,26 @@ class EmployeeController extends Controller
         }
     $this->PostValidate($request);
     $this->SetAttributes($Employee, $request);
-    if($request->hasFile('img')){
+
+    if ($request->hasFile('img')) {
       $this->SaveImage($Employee, $request);
+    } elseif ($request->input('removeImage')) {
+      $this->DeleteImage($Employee);
     }
+
     $Employee->updated_by  = Auth::user()->id;
     $Employee->save();
+
+    if ($Employee->User) {
+      $Employee->User->email   =  $Employee->email;
+      $Employee->User->contact_no   =  $Employee->phone;
+      $Employee->User->save();
+    }
 
     return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'success',
-          'title'  =>  'Employee Registration',
+          'title'  =>  'Employee Update',
           'msg' =>  'Save Changes Successfull'
           ]
       ]);
@@ -194,17 +213,37 @@ class EmployeeController extends Controller
     $Employee->address = $request->input('address');
     $Employee->religion = $request->input('religion');
     $Employee->phone = $request->input('phone');
+    $Employee->date_of_birth = $request->input('date_of_birth');
+    $Employee->date_of_joining = $request->input('date_of_joining');
+    $Employee->id_card = $request->input('id_card');
   }
 
 
-  protected function SaveImage($Employee, $request){
+  protected function SaveImage($Employee, $request)
+  {
     $file = $request->file('img');
-    Storage::delete($Employee->img_dir);
+
+    if ($Employee->img_dir && Storage::exists($Employee->img_dir)) {
+      Storage::delete($Employee->img_dir);
+    }
+
     $extension = $file->getClientOriginalExtension();
-    Storage::disk('public')->put('employee/'.$Employee->id.'.'.$extension,  File::get($file));
-    //$file = $this->Request->file('img')->storePubliclyAs('images/employee', $Employee->id.'.'.$file->getClientOriginalExtension(), 'public');
-    $Employee->img_dir = 'public/employee/'.$Employee->id.'.'.$extension;
-    $Employee->img_url = 'employee/image/'.$Employee->id;
+    $filename = $Employee->id;
+
+    $path = 'employee/' . $filename;
+    Storage::put($path . '.' . $extension, File::get($file));
+
+    $Employee->img_dir = "{$path}" . '.' . $extension;
+    $Employee->img_url = 'employee/image/' . $filename;
   }
 
+  protected function DeleteImage($Employee)
+  {
+    if ($Employee->img_dir) {
+      Storage::delete($Employee->img_dir);
+      $Employee->img_dir = null;
+      $Employee->img_url = null;
+      $Employee->save();
+    }
+  }
 }

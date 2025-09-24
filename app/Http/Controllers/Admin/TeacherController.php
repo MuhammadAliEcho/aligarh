@@ -14,17 +14,21 @@ use App\Http\Controllers\Controller;
 class TeacherController extends Controller
 {
 
-  public function GetImage($id){
-    $teacher  = Teacher::findorfail($id);
-    //$image = Storage::get($teacher->image_dir);
-    //$image = Storage::disk('public/studnets')->get('1.jpg');
-    //return Response($image, 200);
-    if(Storage::exists($teacher->image_dir)){
-      return Response(Storage::get($teacher->image_dir), 200)->header('Content-Type', 'image');
-    }
+  public function GetImage($id)
+  {
+    $teacher = Teacher::findOrFail($id);
 
-    return abort(404);
-  
+    // Check if file exists in the current tenant's storage
+    if (!Storage::exists($teacher->image_dir)) {
+      abort(404, 'Image not found.');
+    }
+    // Get the image content using the default storage (which handles tenancy)
+    $image = Storage::get($teacher->image_dir);
+
+    // Get MIME type
+    $mime = Storage::mimeType($teacher->image_dir);
+		return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
+
   }
 
   public function GetProfile($id){
@@ -40,7 +44,10 @@ class TeacherController extends Controller
         //'email'     =>  'required|email',
         'qualification'  =>  'required',
         'salary'      =>  'required|numeric',
-        'img'       => 	'image|mimes:jpg,jpeg|max:2048'
+        'img'       => 	'image|mimes:jpg,jpeg,png|max:100',
+        'date_of_birth' => 'required|date|date_format:Y-m-d',
+        'date_of_joining' => 'required|date|date_format:Y-m-d',
+        'id_card' => 'required|string|max:255|unique:teachers,id_card'. (($request->route('id'))? ','.$request->route('id') : ''),
     ]);
   }
 
@@ -129,9 +136,13 @@ class TeacherController extends Controller
     $Teacher = Teacher::find($id);
     $this->PostValidate($request);
     $this->SetAttributes($Teacher, $request);
+
     if($request->hasFile('img')){
       $this->SaveImage($Teacher, $request);
-    }
+    } else if($request->input('removeImage')){
+			$this->DeleteImage($Teacher);
+		}
+
     $Teacher->updated_by  = Auth::user()->id;
     $Teacher->save();
     if ($Teacher->User) {
@@ -143,13 +154,14 @@ class TeacherController extends Controller
     return redirect('teacher')->with([
         'toastrmsg' => [
           'type' => 'success', 
-          'title'  =>  'Teacher Registration',
+          'title'  =>  'Teacher Update',
           'msg' =>  'Save Changes Successfull'
           ]
       ]);
   }
 
   public function AddTeacher(Request $request){
+
     $this->PostValidate($request);
     $Teacher = new Teacher;
     $this->SetAttributes($Teacher, $request);
@@ -183,17 +195,37 @@ class TeacherController extends Controller
     $Teacher->salary = $request->input('salary');
     $Teacher->address = $request->input('address');
     $Teacher->phone = $request->input('phone');
+    $Teacher->date_of_birth = $request->input('date_of_birth');
+    $Teacher->date_of_joining = $request->input('date_of_joining');
+    $Teacher->id_card = $request->input('id_card');
   }
 
 
-  protected function SaveImage($Teacher, $request){
+  protected function SaveImage($Teacher, $request)
+  {
     $file = $request->file('img');
-    Storage::delete($Teacher->image_dir);
+
+    if ($Teacher->image_dir && Storage::exists($Teacher->image_dir)) {
+      Storage::delete($Teacher->image_dir);
+    }
+    
     $extension = $file->getClientOriginalExtension();
-    Storage::disk('public')->put('teachers/'.$Teacher->id.'.'.$extension,  File::get($file));
-    //$file = $request->file('img')->storePubliclyAs('images/teachers', $Teacher->id.'.'.$file->getClientOriginalExtension(), 'public');
-    $Teacher->image_dir = 'public/teachers/'.$Teacher->id.'.'.$extension;
-    $Teacher->image_url = 'teacher/image/'.$Teacher->id;
+    $filename = $Teacher->id;
+
+    $path = 'teacher/' . $filename;
+    Storage::put($path . '.' . $extension, File::get($file));
+
+    $Teacher->image_dir = "{$path}" . '.' . $extension;
+    $Teacher->image_url = 'teacher/image/' . $filename;
   }
 
+  protected function DeleteImage($Teacher)
+  {
+    if ($Teacher->image_dir) {
+      Storage::delete($Teacher->image_dir);
+      $Teacher->image_dir = null;
+      $Teacher->image_url = null;
+      $Teacher->save();
+    }
+  }
 }

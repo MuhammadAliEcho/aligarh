@@ -33,7 +33,8 @@ class SendSmsJob implements ShouldQueue
         }
 
 
-        $config = config('systemInfo.sms');
+        // this settings should also pass form trigger in construct
+        $config = tenancy()->tenant->system_info['sms'];
         if (strlen($config['sender']) < 3 || strlen($config['sender']) > 11 || str_contains($config['sender'], ' ')) {
             Log::error('Invalid Sender ID: Must be 3-11 characters with no spaces.', [
                 'sender' => $config['sender']
@@ -43,23 +44,15 @@ class SendSmsJob implements ShouldQueue
             return;
         }
 
-        try {
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-            ])->post(rtrim($config['url'], '/'), [
-                'api_token'  => $config['api_token'],
-                'api_secret' => $config['api_secret'],
-                'to'         => $this->phone,
-                'from'       => $config['sender'],
-                'message'    => $this->message,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Something went wrong while sending SMS.', [
-                'error' => $e->getMessage()
-            ]);
-            $this->logCommunication(400, ['sender' => $config['sender'], 'Something went wrong while sending SMS.', 'error' => $e->getMessage()]);
-            return;
-        }
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->post(rtrim($config['url'], '/'), [
+            'api_token'  => $config['api_token'],
+            'api_secret' => $config['api_secret'],
+            'to'         => $this->phone,
+            'from'       => $config['sender'],
+            'message'    => $this->message,
+        ]);
 
         if ($response->successful() && str_contains(strtolower($response->body()), 'ok')) {
 
@@ -77,6 +70,16 @@ class SendSmsJob implements ShouldQueue
                 'response' => $response->body(),
             ]);
         }
+    }
+    
+    public function failed(\Throwable $exception)
+    {
+        Log::error("SendSmsJob failed for phone {$this->phone}: " . $exception->getMessage());
+
+        $this->logCommunication(500, [
+            'message' => "Failed to send SMS to {$this->phone}",
+            'exception' => $exception->getMessage(),
+        ]);
     }
 
     private function logCommunication(int $statusCode, array $response): void

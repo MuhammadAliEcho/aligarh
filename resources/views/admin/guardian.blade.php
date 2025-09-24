@@ -3,8 +3,8 @@
   @section('title', 'Guardians |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <style type="text/css">
       .print-table {
         width: 100%;
@@ -347,9 +347,11 @@
                 <div class="col-lg-12">
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
+                          @canany(['guardian.index','guardian.grid'])
                             <li class="">
                               <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Guardians</a>
                             </li>
+                          @endcanany
                             @can('guardian.add')
                               <li class="add-guardian">
                                 <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Guardians</a>
@@ -613,14 +615,14 @@
     @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+     <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
     <script type="text/javascript">
     var tbl;
@@ -670,7 +672,7 @@
               exportOptions: {
                 columns: [ 0, 1, 2, 3]
               },
-              title: "Guardians | {{ config('systemInfo.general.title') }}",
+              title: "Guardians | {{ tenancy()->tenant->system_info['general']['title'] }}",
             }
           ],
           Processing: true,

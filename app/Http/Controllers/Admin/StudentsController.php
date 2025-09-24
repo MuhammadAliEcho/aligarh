@@ -11,33 +11,47 @@ use App\Guardian;
 use App\Classe;
 use App\Section;
 use App\AdditionalFee;
-use DB;
 use Carbon\Carbon;
-use Auth;
 use App\AcademicSessionHistory;
 use App\Http\Controllers\Controller;
 use Validator;
 use App\Certificate;
 use App\ParentInterview;
+use App\Model\VisitorStudent;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StudentsController extends Controller 
 {
 
-//  protected $Routes;
+	//  protected $Routes;
 	// protected $data, $Student, $Request, $Input;
 
-// 	public function __Construct($Routes, Request $Request){
-// 		$this->data['root'] = $Routes;
-// 		$this->Request = $Request;
-// 		$this->Input  =    $Request->input();
-// 		// for session update temperory
-// //		$this->UpdateStd();
-// 	}
+	// 	public function __Construct($Routes, Request $Request){
+	// 		$this->data['root'] = $Routes;
+	// 		$this->Request = $Request;
+	// 		$this->Input  =    $Request->input();
+	// 		// for session update temperory
+	// //		$this->UpdateStd();
+	// 	}
 
-	public function GetImage($id){
-		$student  = Student::findorfail($id);
+	public function GetImage($id)
+	{
+		$student = Student::findOrFail($id);
+
+		// Check if file exists in the current tenant's storage
+		if (!Storage::exists($student->image_dir)) {
+			abort(404, 'Image not found.');
+		}
+
+		// Get the image content using the default storage (which handles tenancy)
 		$image = Storage::get($student->image_dir);
-		return Response($image, 200)->header('Content-Type', 'image');
+
+		// Get MIME type
+		$mime = Storage::mimeType($student->image_dir);
+
+		return response($image, 200)->header('Content-Type', $mime ?? 'image/jpeg');
 	}
 
 	public function GetProfile($id) {
@@ -69,7 +83,7 @@ class StudentsController extends Controller
 				'dob'       =>  'required',
 				'doa'       =>  'required',
 				'doe'       =>  'required',
-				'img'       => 	'image|mimes:jpg,jpeg|max:2048',
+				'img'       => 	'image|mimes:jpg,jpeg,png|max:100',
 		]);
 	}
 
@@ -146,7 +160,7 @@ class StudentsController extends Controller
 
 		$this->PostValidate($request);
 
-		if(Student::active()->count() >= config('systemInfo.general.student_capacity')){
+		if(Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']){
 			return redirect('students')->with([
 									'toastrmsg' => [
 										'type'	=> 'error', 
@@ -160,7 +174,8 @@ class StudentsController extends Controller
 		$this->SetAttributes($Student, $request);
 		$Student->created_by  = Auth::user()->id;
 		$Student->session_id  = Auth::user()->academic_session;
-		$this->UpdateGrNo($Student, $request);
+		$Student->UpdateGrNo($request->input('gr_no'));
+		// $this->UpdateGrNo($Student, $request);
 		$Student->save();
 		if($request->hasFile('img')){
 			$this->SaveImage($Student, $request);
@@ -179,6 +194,88 @@ class StudentsController extends Controller
 					]
 			]);
 
+	}
+	public function ShowVistor(Request $request, $visitor_id)
+	{
+		$data['visitorStudents'] = VisitorStudent::findorFail($visitor_id);
+
+		if ($data['visitorStudents']->student_id) {
+
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'	=> 'error',
+					'title'	=>  'Students',
+					'msg'	=>  'Student already Admitted'
+				]
+			]);
+		}
+
+		$data['classes'] = Classe::select('id', 'name')->get();
+		$data['guardians'] = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
+		$data['no_of_active_students'] = Student::active()->count();
+
+		foreach ($data['classes'] as $key => $class) {
+			$data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
+		}
+		return view('admin.add_visitor_student', $data);
+	}
+
+	public function CreateVistor(Request $request, $visitor_id)
+	{
+		if (Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']) {
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'  => 'error',
+					'title' => 'Students',
+					'msg'   => 'Over students limit'
+				]
+			]);
+		}
+
+		DB::beginTransaction();
+
+		try {
+			$visitorStudents = VisitorStudent::findOrFail($visitor_id);
+			$this->PostValidate($request);
+
+			$Student = new Student;
+			$this->SetAttributes($Student, $request);
+			$Student->created_by  = Auth::user()->id;
+			$Student->session_id  = Auth::user()->academic_session;
+			$this->UpdateGrNo($Student, $request);
+			$Student->save();
+			if ($request->hasFile('img')) {
+				$this->SaveImage($Student, $request);
+				$Student->save();
+			}
+
+			$visitorStudents->student_id = $Student->id;
+			$visitorStudents->save();
+
+			$this->UpdateAcademicSessionHistory($Student);
+			$this->UpdateAdditionalFee($Student, $request);
+
+			DB::commit();
+
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'  => 'success',
+					'title' => 'Student Registration',
+					'msg'   => 'Registration Successful'
+				]
+			]);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage(). " Full Trace: " . $e);
+
+			return redirect('students')->with([
+				'toastrmsg' => [
+					'type'  => 'error',
+					'title' => 'Students',
+					'msg'   => 'Something went wrong'
+				]
+			]);
+		}
 	}
 
 	public function EditStudent($id){
@@ -460,7 +557,7 @@ class StudentsController extends Controller
 
 	protected function UpdateAdditionalFee($Student, $request){
 		AdditionalFee::where(['student_id' => $Student->id])->delete();
-		if (COUNT($request->input('fee')) >= 1) {
+		if ($request->input('fee') && COUNT($request->input('fee')) >= 1) {
 			foreach ($request->input('fee') as $key => $value) {
 				$AdditionalFee = new AdditionalFee;
 				$AdditionalFee->id = $value['id'];
@@ -493,14 +590,22 @@ class StudentsController extends Controller
 		);
 	}
 
-	protected function SaveImage($Student,$request){
+	protected function SaveImage($Student, $request)
+	{
 		$file = $request->file('img');
-		Storage::delete($Student->image_dir);
+
+		if ($Student->image_dir && Storage::exists($Student->image_dir)) {
+			Storage::delete($Student->image_dir);
+		}
+
 		$extension = $file->getClientOriginalExtension();
-		Storage::disk('public')->put('students/'.$Student->id.'.'.$extension,  File::get($file));
-//    $file = $request->file('img')->storePubliclyAs('images/students', $Student->id.'.'.$file->getClientOriginalExtension(), 'public');
-		$Student->image_dir = 'public/students/'.$Student->id.'.'.$extension;
-		$Student->image_url = 'students/image/'.$Student->id;
+		$filename = $Student->id;
+		
+		$path = 'students/' . $filename;
+		Storage::put($path . '.' . $extension, File::get($file));
+
+		$Student->image_dir = "{$path}" . '.' . $extension;
+		$Student->image_url = 'students/image/' . $filename;
 	}
 
 	protected function DeleteImage($Student){
@@ -508,6 +613,7 @@ class StudentsController extends Controller
 			Storage::delete($Student->image_dir);
 			$Student->image_dir = Null;
 			$Student->image_url = Null;
+			$Student->save();
 		}
 	}
 

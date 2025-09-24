@@ -3,9 +3,9 @@
   @section('title', 'Edit Fees Invoice |')
 
   @section('head')
-	<link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')
@@ -171,10 +171,8 @@
 									<div class="form-group">
 										<label class="col-md-2 control-label">Payment Mode:</label>
 										<div class="col-md-6">
-											<select v-model="invoice_master.payment_type" class="form-control" name="payment_type" required="true">
-												<option>Chalan</option>
-												<option>Cash</option>
-											</select>
+											<div class="i-checks"><label> <input v-model="invoice_master.payment_type" type="radio" checked value="Cash" name="payment_type" required > <i></i>Cash</label></div>
+											<div class="i-checks"><label> <input v-model="invoice_master.payment_type" type="radio" value="Chalan" name="payment_type" required> <i></i>Chalan</label></div>
 										</div>
 									</div>
 
@@ -205,13 +203,13 @@
 	@section('script')
 
 
-	<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
 	<!-- Input Mask-->
-	 <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+	 <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
 	<!-- Data picker -->
-	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
 
 	<script type="text/javascript">
 	var tbl;
@@ -260,7 +258,7 @@
 	@section('vue')
 
 	<!-- Select2 -->
-	<script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 	<script type="text/javascript">
 	  var app = new Vue({
@@ -272,7 +270,7 @@
 			months: {},
 			NoOfMonths:0,
 			chalan_no: '',
-			payment_type: '',
+			payment_type: 'Cash',
 			paid_show: {{ $invoice_master->paid_amount }},
 		},
 

@@ -62,7 +62,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-		<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+		<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
 		<h4>Yearly Collection Statment</h4>
 		<h4>Session: 
 			{{ \Carbon\Carbon::parse($session->getRawOriginal('start'))->format('M-Y') }}

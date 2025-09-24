@@ -3,10 +3,10 @@
   @section('title', 'Vouchers |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')
@@ -177,22 +177,22 @@
     @section('script')
 
     <!-- Mainly scripts 
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
     -->
 
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+     <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
     <!-- Select2 -->
-    <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
     <!-- require with bootstrap-datetimepicker -->
-    <script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
     <script type="text/javascript">
 

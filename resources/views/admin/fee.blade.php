@@ -3,11 +3,11 @@
   @section('title', 'Fees |')
 
   @section('head')
-	<link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-	<link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
-<!-- 	<link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet"> -->
+	<link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+<!-- 	<link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet"> -->
   @endsection
 
   @section('content')
@@ -182,7 +182,8 @@
 												</tr>
 
 												<tr>
-												<th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th>
+												{{-- <th>Discount @{{ '('+ fee.discount+'*'+NoOfMonths+')' }}</th> --}}
+												<th>Discount</th>
 												<th><input type="number" class="form-control" name="discount" v-model="total_discount" required="true"></th>
 												</tr>
 											</tbody>
@@ -326,13 +327,11 @@
 												</div>
 											</div>
 
-											<div class="form-group">
-												<label class="col-md-2 control-label">Payment Mode</label>
+											<div class="form-group{{ ($errors->has('payment_type'))? ' has-error' : '' }}">
+												<label class="col-md-2 control-label"> Payment Mode </label>
 												<div class="col-md-6">
-													<select class="form-control" name="payment_type" required="true">
-														<option>Chalan</option>
-														<option>Cash</option>
-													</select>
+													<div class="i-checks"><label> <input type="radio" checked value="Cash" name="payment_type" required> <i></i>Cash</label></div>
+													<div class="i-checks"><label> <input type="radio" value="Chalan" name="payment_type"  required> <i></i>Chalan</label></div>
 												</div>
 											</div>
 
@@ -489,21 +488,21 @@
 	@section('script')
 
 	<!-- Mainly scripts -->
-	<script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 
-	<script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-	<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
 	<!-- Input Mask-->
-	 <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+	 <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
 	<!-- Data picker -->
-	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
 
 	<!-- require with bootstrap-datetimepicker -->
-<!-- 	<script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-	<script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script> -->
+<!-- 	<script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script> -->
 
 	<script type="text/javascript">
 	var tbl;
@@ -538,6 +537,9 @@
 		@endcan
 		@can('fee.edit.invoice.post')
 		opthtm += '<a data-toggle="tooltip" title="Edit" class="btn btn-default btn-circle btn-xs edit-invoice"><span class="fa fa-edit"></span></a>';
+		@endcan
+		@can('fee.group.chalan.print')
+		opthtm += '<a data-toggle="tooltip" target="_new" title="Print Group Invoice" class="btn btn-default btn-circle btn-xs group-invoice"><span class="fa fa-print"></span></a>';
 		@endcan
 		tbl = $('.dataTables-teacher').DataTable({
 		  dom: '<"html5buttons"B>lTfgitp',
@@ -584,6 +586,10 @@
 	  });
 	  $('.dataTables-teacher tbody').on( 'mouseenter', '.edit-invoice', function () {
 		$(this).attr('href','{{ URL('fee/edit-invoice/?id=') }}'+tbl.row( $(this).parents('tr') ).data().id);
+		$(this).tooltip('show');
+	  });
+	  $('.dataTables-teacher tbody').on( 'mouseenter', '.group-invoice', function () {
+		$(this).attr('href','{{ URL('fee/group-chalan/') }}/'+tbl.row( $(this).parents('tr') ).data().guardian_id);
 		$(this).tooltip('show');
 	  });
 
@@ -645,7 +651,7 @@
 	@section('vue')
 
 	<!-- Select2 -->
-	<script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 	@if($root == 'create')
 	<script type="text/javascript">
@@ -676,7 +682,7 @@
 					this.NoOfMonths = 0;
 				}
 				this.total_tuition_fee	= Number(this.fee.tuition_fee) * this.NoOfMonths;
-				this.total_discount	= Number(this.fee.discount) * this.NoOfMonths;
+				this.total_discount = (Number(this.fee?.discount) || 0) * (Number(this.NoOfMonths) || 0);
 			}
 		},
 

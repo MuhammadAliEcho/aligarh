@@ -10,6 +10,7 @@ use App\Employee;
 use App\Guardian;
 use App\Notification;
 use App\NotificationLog;
+use App\NotificationsSetting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMsgJob;
@@ -20,8 +21,8 @@ class NotificationsController extends Controller
 {
     public function index(Request $request)
     {
-
-        return view('admin.notifications');
+        $data['notificationSettings'] = NotificationsSetting::where('name', 'send_msg')->first();
+        return view('admin.notifications', $data);
     }
 
     public function getData(Request $request)
@@ -219,23 +220,49 @@ class NotificationsController extends Controller
 
     public function log(Request $request)
     {
-        if ($request->ajax()) {
-            $query = Notification::with('user')->select(
-                'notification',
-                'user_id',
-                'link',
-            );
+        $perPage = 10;
+        $page = $request->input('page', 1);
 
-            return DataTables::eloquent($query)
-                ->editColumn('created_by', function (Notification $notification) {
-                    return $notification->user->name;
-                })
-                ->make(true);
+        if ($request->ajax()) {
+            $notifications = Notification::with('user:id,name')
+                ->latest()
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            return response()->json([
+                'notifications' => $notifications->items(),
+                'current_page' => $notifications->currentPage(),
+                'last_page' => $notifications->lastPage(),
+                'from' => $notifications->firstItem(),
+                'to' => $notifications->lastItem(),
+                'total' => $notifications->total(),
+            ]);
         }
 
-        return view('admin.logs');
+        $notifications = Notification::with('user:id,name')
+            ->latest()
+            ->paginate($perPage);
+
+        return view('admin.logs', [
+            'notifications' => $notifications->items(),
+            'pagination' => [
+                'current_page' => $notifications->currentPage(),
+                'last_page' => $notifications->lastPage(),
+                'from' => $notifications->firstItem(),
+                'to' => $notifications->lastItem(),
+                'total' => $notifications->total(),
+            ]
+        ]);
     }
 
+    public function logRead($id)
+    {
+        $notification = Notification::find($id);
+        if ($notification->is_read == 0) {
+            $notification->is_read = 1;
+            $notification->save();
+        }
+        return 200;
+    }
 
     public function msgLog(Request $request)
     {
@@ -266,7 +293,7 @@ class NotificationsController extends Controller
 
     private function returnNotifications()
     {
-        return redirect('notifications')->with([
+        return redirect('msg-notifications')->with([
             'toastrmsg' => [
                 'type' => 'success',
                 'title'  =>  'Message Send',

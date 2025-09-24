@@ -50,7 +50,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+	<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
 	<h4 class="text-center">AWARD LIST</h4>
 	<h4 class="text-center"><u>@{{ selected_exam.name }}, &nbsp;@{{ selected_exam.academic_session.title }}</u></h4>
 

@@ -3,8 +3,8 @@
 @section('title', 'System Settings |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
 
     <style>
         .general-nav-pills-vertical {
@@ -52,6 +52,11 @@
             border-bottom: 10px solid transparent;
             border-left: 10px solid #009486;
         }
+
+        .d-none {
+            display: none !important;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -133,11 +138,27 @@
                                                                     <i class="fa fa-whatsapp"></i> WhatsApp
                                                                 </a>
                                                             </li>
+                                                            <li>
+                                                                <a href="#contact" data-toggle="tab">
+                                                                    <i class="fa fa-user"></i> Contact
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#bank" data-toggle="tab">
+                                                                     <i class="fa fa-bank"></i> Bank Info
+
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#miscellaneous" data-toggle="tab">
+                                                                    <i class="fa fa-cogs"></i> Miscellaneous
+                                                                </a>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                     <div class="col-md-10">
                                                         <form id="tchr_rgstr" method="POST"
-                                                            action="{{ URL('system-setting/update') }}" class="form-horizontal">
+                                                            action="{{ URL('system-setting/update') }}" class="form-horizontal" enctype="multipart/form-data">
                                                             {{ csrf_field() }}
 
                                                             <div class="tab-content">
@@ -153,7 +174,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="name"
                                                                                 placeholder="Name"
-                                                                                value="{{ old('name', config('systemInfo.general.name')) }}"
+                                                                                value="{{ old('name', $system_info['general']['name']) }}"
                                                                                 class="form-control" />
                                                                             @if ($errors->has('name'))
                                                                                 <span class="help-block">
@@ -172,7 +193,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="title"
                                                                                 placeholder="Title"
-                                                                                value="{{ old('name', config('systemInfo.general.title')) }}"
+                                                                                value="{{ old('name', $system_info['general']['title']) }}"
                                                                                 class="form-control" />
                                                                             @if ($errors->has('title'))
                                                                                 <span class="help-block">
@@ -185,30 +206,12 @@
                                                                     </div>
 
                                                                     <div
-                                                                        class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">E-Mail</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" name="email"
-                                                                                placeholder="E-Mail"
-                                                                                value="{{ old('email', config('systemInfo.general.email')) }}"
-                                                                                class="form-control" />
-                                                                            @if ($errors->has('email'))
-                                                                                <span class="help-block">
-                                                                                    <strong><span
-                                                                                            class="fa fa-exclamation-triangle"></span>
-                                                                                        {{ $errors->first('email') }}</strong>
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
                                                                         class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
                                                                         <label class="col-md-2 control-label">Address</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="address"
                                                                                 placeholder="Address"
-                                                                                value="{{ old('address', config('systemInfo.general.address')) }}"
+                                                                                value="{{ old('address', $system_info['general']['address']) }}"
                                                                                 class="form-control" />
                                                                             @if ($errors->has('address'))
                                                                                 <span class="help-block">
@@ -221,91 +224,12 @@
                                                                     </div>
 
                                                                     <div
-                                                                        class="form-group{{ $errors->has('contact_no') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Contact
-                                                                            No</label>
-                                                                        <div class="col-md-6">
-                                                                            <div class="input-group m-b">
-                                                                                <span class="input-group-addon">+92</span>
-                                                                                <input type="text" name="contact_no"
-                                                                                    value="{{ old('contact_no', config('systemInfo.general.contact_no')) }}"
-                                                                                    placeholder="Contact No"
-                                                                                    class="form-control"
-                                                                                    data-mask="9999999999" />
-                                                                            </div>
-                                                                            @if ($errors->has('contact_no'))
-                                                                                <span class="help-block">
-                                                                                    <strong><span
-                                                                                            class="fa fa-exclamation-triangle"></span>
-                                                                                        {{ $errors->first('contact_no') }}</strong>
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
-                                                                        class="form-group{{ $errors->has('bank_name') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Bank</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" name="bank_name"
-                                                                                placeholder="Name"
-                                                                                value="{{ old('bank_name', config('systemInfo.general.bank.name')) }}"
-                                                                                class="form-control" />
-                                                                            @if ($errors->has('bank_name'))
-                                                                                <span class="help-block">
-                                                                                    <strong><span
-                                                                                            class="fa fa-exclamation-triangle"></span>
-                                                                                        {{ $errors->first('bank_name') }}</strong>
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
-                                                                        class="form-group{{ $errors->has('bank_address') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Bank
-                                                                            Address</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" name="bank_address"
-                                                                                placeholder="Address"
-                                                                                value="{{ old('bank_address', config('systemInfo.general.bank.address')) }}"
-                                                                                class="form-control" />
-                                                                            @if ($errors->has('bank_address'))
-                                                                                <span class="help-block">
-                                                                                    <strong><span
-                                                                                            class="fa fa-exclamation-triangle"></span>
-                                                                                        {{ $errors->first('bank_address') }}</strong>
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
-                                                                        class="form-group{{ $errors->has('bank_account_no') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Bank
-                                                                            Account No</label>
-                                                                        <div class="col-md-6">
-                                                                            <input type="text" name="bank_account_no"
-                                                                                placeholder="Account no"
-                                                                                value="{{ old('bank_account_no', config('systemInfo.general.bank.account_no')) }}"
-                                                                                class="form-control" />
-                                                                            @if ($errors->has('bank_account_no'))
-                                                                                <span class="help-block">
-                                                                                    <strong><span
-                                                                                            class="fa fa-exclamation-triangle"></span>
-                                                                                        {{ $errors->first('bank_account_no') }}</strong>
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
                                                                         class="form-group{{ $errors->has('student_capacity') ? ' has-error' : '' }}">
                                                                         <label class="col-md-2 control-label">Student
                                                                             Capacity</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="student_capacity"
-                                                                                value="{{ config('systemInfo.general.student_capacity') }}"
+                                                                                value="{{ $system_info['general']['student_capacity'] }}"
                                                                                 readonly="true" class="form-control" />
                                                                             @if ($errors->has('student_capacity'))
                                                                                 <span class="help-block">
@@ -317,23 +241,56 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="form-group">
+                                                                    {{-- <div class="form-group">
                                                                         <label class="col-md-2 control-label">Available
                                                                             SMS</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text"
-                                                                                value="{{ config('systemInfo.general.available_sms') . ' till ' . config('systemInfo.general.sms_validity') }}"
+                                                                                value="{{ $system_info['general']['available_sms'] . ' till ' . $system_info['general']['sms_validity']}}"
                                                                                 readonly="true" class="form-control" />
                                                                         </div>
-                                                                    </div>
+                                                                    </div> --}}
 
-                                                                    <div class="form-group">
+                                                                    {{-- <div class="form-group">
                                                                         <label class="col-md-2 control-label">Next
                                                                             Chalan No</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text"
-                                                                                value="{{ config('systemInfo.general.next_chalan_no') }}"
+                                                                                value="{{ $system_info['general']['next_chalan_no']}}"
                                                                                 readonly="true" class="form-control" />
+                                                                        </div>
+                                                                    </div> --}}
+
+                                                                    <div class="form-group{{ $errors->has('logo') ? ' has-error' : '' }}">
+                                                                        <div class="col-md-2"> 
+                                                                            <span class="btn btn-default btn-block btn-file">
+                                                                                <input type="file" name="logo" accept="image/*" id="logoinp" /> 
+                                                                                <span class="fa fa-image"></span> Upload Logo
+                                                                            </span> 
+                                                                        </div>
+                                                                        <div class="col-md-6"> 
+                                                                            <img id="logo" 
+                                                                                src="{{ $system_info['general']['logo'] ? route('system-setting.logo'): '' }}" 
+                                                                                alt="Logo Preview" 
+                                                                                class="img-responsive img-thumbnail"
+                                                                                style="max-width:100px !important; {{ isset($system_info['general']['logo']) && $system_info['general']['logo'] ? 'display: block;' : 'display: none;' }}" />
+                                                                                
+                                                                            @if(isset($system_info['general']['logo']) && $system_info['general']['logo'])
+                                                                                <div class="mt-2" id="deleteLogoContainer">
+                                                                                    <button type="button" class="btn btn-danger btn-sm" id="deleteLogo">
+                                                                                        <span class="fa fa-trash"></span>
+                                                                                    </button>
+                                                                                    <input type="hidden" name="removeImage" id="removeImageInput" value="">
+                                                                                </div>
+                                                                            @endif
+                                                                            @if ($errors->has('logo'))
+                                                                                <span class="help-block"> 
+                                                                                    <strong>
+                                                                                        <span class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('logo') }}
+                                                                                    </strong>
+                                                                                </span>
+                                                                            @endif
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -347,7 +304,7 @@
                                                                             <input type="text" name="smtp_mailer"
                                                                                 placeholder="smtp.gmail.com"
                                                                                 class="form-control"
-                                                                                value="{{ old('smtp_mailer', config('systemInfo.smtp.mailer')) }}" />
+                                                                                value="{{ old('smtp_mailer', $system_info['smtp']['mailer']) }}" />
                                                                             @if ($errors->has('smtp_mailer'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -365,7 +322,7 @@
                                                                             <input type="text" name="smtp_host"
                                                                                 placeholder="smtp.gmail.com"
                                                                                 class="form-control"
-                                                                                value="{{ old('smtp_host', config('systemInfo.smtp.host')) }}" />
+                                                                                value="{{ old('smtp_host', $system_info['smtp']['host']) }}" />
                                                                             @if ($errors->has('smtp_host'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -383,12 +340,30 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="smtp_port"
                                                                                 placeholder="587" class="form-control"
-                                                                                value="{{ old('smtp_port', config('systemInfo.smtp.port')) }}" />
+                                                                                value="{{ old('smtp_port', $system_info['smtp']['port']) }}" />
                                                                             @if ($errors->has('smtp_port'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
                                                                                             class="fa fa-exclamation-triangle"></span>
                                                                                         {{ $errors->first('smtp_port') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('smtp_from_address') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">SMTP
+                                                                            Mail From Address</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="smtp_from_address"
+                                                                                placeholder="mail@domain.com" class="form-control"
+                                                                                value="{{ old('smtp_from_address', $system_info['smtp']['from_address']) }}" />
+                                                                            @if ($errors->has('smtp_from_address'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('smtp_from_address') }}</strong>
                                                                                 </span>
                                                                             @endif
                                                                         </div>
@@ -401,7 +376,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="smtp_username"
                                                                                 placeholder="Username" class="form-control"
-                                                                                value="{{ old('smtp_username', config('systemInfo.smtp.username')) }}" />
+                                                                                value="{{ old('smtp_username', $system_info['smtp']['username']) }}" />
                                                                             @if ($errors->has('smtp_username'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -419,7 +394,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="password" name="smtp_password"
                                                                                 placeholder="Password" class="form-control"
-                                                                                value="{{ old('smtp_password', config('systemInfo.smtp.password')) }}" />
+                                                                                value="{{ old('smtp_password', $system_info['smtp']['password']) }}" />
                                                                             @if ($errors->has('smtp_password'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -440,10 +415,10 @@
                                                                                 <option value="">Select Encryption
                                                                                 </option>
                                                                                 <option value="tls"
-                                                                                    {{ old('smtp_encryption', config('systemInfo.smtp.encryption')) == 'tls' ? 'selected' : '' }}>
+                                                                                    {{ old('smtp_encryption', $system_info['smtp']['encryption'] == 'tls' ? 'selected' : '') }}>
                                                                                     TLS</option>
                                                                                 <option value="ssl"
-                                                                                    {{ old('smtp_encryption', config('systemInfo.smtp.encryption')) == 'ssl' ? 'selected' : '' }}>
+                                                                                    {{ old('smtp_encryption', $system_info['smtp']['encryption'] == 'ssl' ? 'selected' : '') }}>
                                                                                     SSL</option>
                                                                             </select>
                                                                             @if ($errors->has('smtp_encryption'))
@@ -467,7 +442,7 @@
                                                                                 <option value="">Select Provider
                                                                                 </option>
                                                                                 <option value="lifetimesms"
-                                                                                    {{ old('sms_provider', config('systemInfo.sms.provider')) == 'lifetimesms' ? 'selected' : '' }}>
+                                                                                    {{ old('sms_provider', $system_info['sms']['provider'] == 'lifetimesms' ? 'selected' : '') }}>
                                                                                     Lifetime SMS
                                                                                 </option>
                                                                             </select>
@@ -487,7 +462,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="sms_url"
                                                                                 placeholder="API Key" class="form-control"
-                                                                                value="{{ old('sms_url', config('systemInfo.sms.url')) }}" />
+                                                                                value="{{ old('sms_url', $system_info['sms']['url']) }}" />
                                                                             @if ($errors->has('sms_url'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -505,7 +480,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="sms_api_token"
                                                                                 placeholder="API Token" class="form-control"
-                                                                                value="{{ old('sms_api_token', config('systemInfo.sms.api_token')) }}" />
+                                                                                value="{{ old('sms_api_token', $system_info['sms']['api_token']) }}" />
                                                                             @if ($errors->has('sms_api_token'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -523,7 +498,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="password" name="sms_api_secret"
                                                                                 placeholder="API Secret" class="form-control"
-                                                                                value="{{ old('sms_api_secret', config('systemInfo.sms.api_secret')) }}" />
+                                                                                value="{{ old('sms_api_secret', $system_info['sms']['api_secret']) }}" />
                                                                             @if ($errors->has('sms_api_secret'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -540,7 +515,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="sms_sender"
                                                                                 placeholder="Sender Name" class="form-control"
-                                                                                value="{{ old('sms_sender', config('systemInfo.sms.sender')) }}" />
+                                                                                value="{{ old('sms_sender', $system_info['sms']['sender']) }}" />
                                                                             @if ($errors->has('sms_sender'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -564,7 +539,7 @@
                                                                                 <option value="">Select Provider
                                                                                 </option>
                                                                                 <option value="whatsapp business"
-                                                                                    {{ old('whatsapp_provider', config('systemInfo.whatsapp.provider')) == 'whatsapp business' ? 'selected' : '' }}>
+                                                                                    {{ old('whatsapp_provider', $system_info['whatsapp']['provider'] == 'whatsapp business' ? 'selected' : '') }}>
                                                                                     WhatsApp Business</option>
                                                                             </select>
                                                                             @if ($errors->has('whatsapp_provider'))
@@ -582,7 +557,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="whatsapp_url"
                                                                                 placeholder="URL" class="form-control"
-                                                                                value="{{ old('whatsapp_url', config('systemInfo.whatsapp.url')) }}" />
+                                                                                value="{{ old('whatsapp_url', $system_info['whatsapp']['url']) }}" />
                                                                             @if ($errors->has('whatsapp_url'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -599,7 +574,7 @@
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="whatsapp_token"
                                                                                 placeholder="API Token" class="form-control"
-                                                                                value="{{ old('whatsapp_token', config('systemInfo.whatsapp.api_token')) }}" />
+                                                                                value="{{ old('whatsapp_token', $system_info['whatsapp']['api_token']) }}" />
                                                                             @if ($errors->has('whatsapp_token'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -618,7 +593,7 @@
                                                                             <input type="text" name="whatsapp_phone_id"
                                                                                 placeholder="Phone Number ID"
                                                                                 class="form-control"
-                                                                                value="{{ old('whatsapp_phone_id', config('systemInfo.whatsapp.phone_id')) }}" />
+                                                                                value="{{ old('whatsapp_phone_id', $system_info['whatsapp']['phone_id']) }}" />
                                                                             @if ($errors->has('whatsapp_phone_id'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -638,7 +613,7 @@
                                                                                 <option value="">Select Type
                                                                                 </option>
                                                                                 <option value="text"
-                                                                                    {{ old('whatsapp_mgs_type', config('systemInfo.whatsapp.type')) == 'text' ? 'selected' : '' }}>
+                                                                                    {{ old('whatsapp_mgs_type', $system_info['whatsapp']['type'] == 'text' ? 'selected' : '') }}>
                                                                                     Text</option>
                                                                             </select>
                                                                             @if ($errors->has('whatsapp_mgs_type'))
@@ -659,7 +634,7 @@
                                                                             <input type="text" name="whatsapp_webhook"
                                                                                 placeholder="Webhook URL"
                                                                                 class="form-control"
-                                                                                value="{{ old('whatsapp_webhook', config('systemInfo.general.whatsapp.webhook_url')) }}" />
+                                                                                value="{{ old('whatsapp_webhook', $system_info['general']['whatsappbhook_url']) }}" />
                                                                             @if ($errors->has('whatsapp_webhook'))
                                                                                 <span class="help-block">
                                                                                     <strong><span
@@ -670,6 +645,154 @@
                                                                         </div>
                                                                     </div> --}}
                                                                 </div>
+
+
+                                                                <!-- Contact Tab -->
+                                                                <div id="contact" class="tab-pane fade">
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('contact_name') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">Contact Name</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="contact_name"
+                                                                                placeholder="Contact Name"
+                                                                                value="{{ old('contact_name', $system_info['general']['contact_name']) }}"
+                                                                                class="form-control" />
+                                                                            @if ($errors->has('contact_name'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('contact_name') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('contact_no') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">Contact
+                                                                            No</label>
+                                                                        <div class="col-md-6">
+                                                                            <div class="input-group m-b">
+                                                                                <span class="input-group-addon">+92</span>
+                                                                                <input type="text" name="contact_no"
+                                                                                    value="{{ old('contact_no', $system_info['general']['contact_no']) }}"
+                                                                                    placeholder="Contact No"
+                                                                                    class="form-control"
+                                                                                    data-mask="9999999999" />
+                                                                            </div>
+                                                                            @if ($errors->has('contact_no'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('contact_no') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">E-Mail</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="email"
+                                                                                placeholder="E-Mail"
+                                                                                value="{{ old('email', $system_info['general']['contact_email']) }}"
+                                                                                class="form-control" />
+                                                                            @if ($errors->has('email'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('email') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <!-- Bank Info Tab -->
+                                                                <div id="bank" class="tab-pane fade">
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('bank_name') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">Bank Name</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="bank_name"
+                                                                                placeholder="Name"
+                                                                                value="{{ old('bank_name', $system_info['general']['bank']['name']) }}"
+                                                                                class="form-control" />
+                                                                            @if ($errors->has('bank_name'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('bank_name') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('bank_address') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">Bank
+                                                                            Address</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="bank_address"
+                                                                                placeholder="Address"
+                                                                                value="{{ old('bank_address', $system_info['general']['bank']['address']) }}"
+                                                                                class="form-control" />
+                                                                            @if ($errors->has('bank_address'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('bank_address') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('bank_account_no') ? ' has-error' : '' }}">
+                                                                        <label class="col-md-2 control-label">Bank
+                                                                            Account No</label>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" name="bank_account_no"
+                                                                                placeholder="Account no"
+                                                                                value="{{ old('bank_account_no', $system_info['general']['bank']['account_no']) }}"
+                                                                                class="form-control" />
+                                                                            @if ($errors->has('bank_account_no'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('bank_account_no') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <!-- Misc Info Tab -->
+                                                                <div id="miscellaneous" class="tab-pane fade">
+                                                                    <div
+                                                                        class="form-group{{ $errors->has('bank_account_no') ? ' has-error' : '' }}">
+                                                                        <label title="Term and Condition of Fee Chalan" class="col-md-2 control-label">
+                                                                            Term and Condition 
+                                                                            <span class="text-info" data-toggle="tooltip" title="Term and Condition of Fee Chalan">
+                                                                                <i class="fa fa-info-circle"></i>
+                                                                            </span>
+                                                                        </label>
+                                                                        <div class="col-md-6">
+                                                                            <textarea type="text" rows="10" name="chalan_term_and_Condition" placeholder="Term and Condition" class="form-control">{{ old('chalan_term_and_Condition', $system_info['general']['chalan_term_and_Condition']) }}</textarea>
+                                                                            @if ($errors->has('chalan_term_and_Condition'))
+                                                                                <span class="help-block">
+                                                                                    <strong><span
+                                                                                            class="fa fa-exclamation-triangle"></span>
+                                                                                        {{ $errors->first('chalan_term_and_Condition') }}</strong>
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
                                                             </div>
 
                                                             <!-- Submit Button -->
@@ -742,13 +865,13 @@
                                                     <b>Package Activation Date: </b>2019-01-19
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <b>Validity: </b>{{ config('systemInfo.general.sms_validity') }}
-                                                    @if (config('systemInfo.general.sms_validity') >= Carbon\Carbon::now()->todateString() == false)
+                                                    <b>Validity: </b>{{ $system_info['general']['sms_validity'] }}
+                                                    @if ($system_info['general']['sms_validity'] >= Carbon\Carbon::now()->todateString() == false)
                                                         <span class="label label-danger">Expired</span>
                                                     @endif
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <b>Remain SMS: </b>{{ config('systemInfo.general.available_sms') }}
+                                                    <b>Remain SMS: </b>{{ $system_info['general']['available_sms']}}
                                                 </li>
                                             </ul>
                                         </div>
@@ -794,19 +917,19 @@
                                                     <th>#</th>
                                                     <th>Name</th>
                                                     <th>
-                                                        <input id="select-all-mail" type="checkbox" @change="toggleSelectAll('mail', $event)">
+                                                        <input id="select-all-mail" class="d-none"  type="checkbox" @change="toggleSelectAll('mail', $event)" @click.stop>
                                                         <label for="select-all-mail" data-toggle="tooltip" title="select all">
                                                             <b>Mail</b>
                                                         </label>
                                                     </th>
                                                     <th>
-                                                        <input id="select-all-sms" type="checkbox" @change="toggleSelectAll('sms', $event)">
+                                                        <input id="select-all-sms" class="d-none" type="checkbox" @change="toggleSelectAll('sms', $event)" @click.stop>
                                                         <label for="select-all-sms" data-toggle="tooltip" title="select all">
                                                             <b>SMS</b>
                                                         </label>
                                                     </th>
                                                     <th>
-                                                        <input id="select-all-whatsapp" type="checkbox" @change="toggleSelectAll('whatsapp', $event)">
+                                                        <input id="select-all-whatsapp" class="d-none" type="checkbox" @change="toggleSelectAll('whatsapp', $event)" @click.stop>
                                                         <label for="select-all-whatsapp" data-toggle="tooltip" title="select all">
                                                             <b>WhatsApp</b>
                                                         </label>
@@ -816,13 +939,13 @@
                                             <tbody>
                                                 <tr v-for="(notification, index) in notifications" :key="notification.id">
                                                     <td>@{{ index + 1 }}</td>
-                                                    <td>@{{ formatName(notification.name) }}</td>
+                                                    <td><span @click="selectRow(notification)" style="cursor: pointer;">@{{ formatName(notification.name) }}</span></td>
                                                     <td><input type="checkbox" v-model="notification.mail"
-                                                            @change="updateSetting(notification, 'mail')"></td>
+                                                            @change="updateSetting(notification, 'mail')" @click.stop></td>
                                                     <td><input type="checkbox" v-model="notification.sms"
-                                                            @change="updateSetting(notification, 'sms')"></td>
+                                                            @change="updateSetting(notification, 'sms')" @click.stop></td>
                                                     <td><input type="checkbox" v-model="notification.whatsapp"
-                                                            @change="updateSetting(notification, 'whatsapp')"></td>
+                                                            @change="updateSetting(notification, 'whatsapp')" @click.stop></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -841,25 +964,52 @@
 @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-    <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
     <!-- Data picker -->
-    <script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/loadash-4.17.15/min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/loadash-4.17.15/min.js') }}"></script>
 
     <script type="text/javascript">
         var tbl;
 
+        function readURL(input) { 
+            if (input.files && input.files[0]) { 
+                var reader = new FileReader(); 
+                reader.onload = function (e) { 
+                    $('#logo').attr('src', e.target.result).show(); 
+                } 
+                reader.readAsDataURL(input.files[0]); 
+            } 
+        }
 
         $(document).ready(function() {
 
             $("[data-toggle='tooltip']").tooltip();
+
+            $("#logoinp").change(function(){
+                    readURL(this);
+                    $('#removeImageInput').val('');
+            });
+
+            $('#deleteLogo').click(function() {
+                $('#logo').hide();
+                $('#logoinp').val(''); 
+                $('#removeImageInput').val('1'); 
+                $('#deleteLogoContainer').hide();
+                var newInput = $('#logoinp').clone();
+                $('#logoinp').replaceWith(newInput);
+                newInput.change(function(){
+                    readURL(this);
+                    $('#removeImageInput').val('');
+                });
+            });
 
             $("#sms_history_form").validate({
                 rules: {
@@ -938,10 +1088,31 @@
                             toastr.error("Update failed. Please try again.", "Error");
                         });
                 }, 300),
+                selectRow(notification) {
+                    const anySelected = notification.mail || notification.sms || notification.whatsapp;
+                    const newValue = !anySelected;
+                    notification.mail = newValue;
+                    notification.sms = newValue;
+                    notification.whatsapp = newValue;
+
+                    axios.post(`/system-setting/notification-settings/row`, {
+                            id: notification.id,
+                            mail: newValue,
+                            sms: newValue,
+                            whatsapp: newValue
+                        })
+                        .then(response => {
+                            toastr.success("Row settings updated", "Notification");
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            toastr.error("Failed to update row", "Error");
+                        });
+                },
 
                 toggleSelectAll(type, event) {
                     const isChecked = event.target.checked;
-                    
+
                     this.notifications.forEach(notification => {
                         notification[type] = isChecked;
                     });

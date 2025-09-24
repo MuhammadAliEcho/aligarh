@@ -4,7 +4,7 @@
 <div>
     <div>
         <h6>
-            <img alt="image" class="img-responsive" src="{{ URL::to('src/icon/favicon.png') }}" />
+            <img alt="image" class="img-responsive" src="{{ asset('src/icon/favicon.png') }}" />
         </h6>
     </div>
     <h3>Reset Your Password</h3>

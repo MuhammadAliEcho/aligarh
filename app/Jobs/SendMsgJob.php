@@ -27,7 +27,8 @@ class SendMsgJob implements ShouldQueue
         public  $whatsapp_number,
         public string $message
     ) {
-        $this->emailSubject = 'Email from ' . config('systemInfo.general.name');
+        // this settings should also pass form trigger in construct
+        $this->emailSubject = 'Email from ' . tenancy()->tenant->system_info['general']['name'];
 
         $settings = NotificationsSetting::where('name', 'send_msg')->first();
 

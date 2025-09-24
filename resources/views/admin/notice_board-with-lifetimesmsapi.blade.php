@@ -4,9 +4,9 @@
 
   @section('head')
 
-    <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <!-- Sweet Alert -->
-    <link href="{{ URL::to('src/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')
@@ -201,14 +201,14 @@
     @section('script')
 
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- require with bootstrap-datetimepicker -->
-    <script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
     <!-- Sweet alert -->
-    <script src="{{ URL::to('src/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 
 
     <script type="text/javascript">

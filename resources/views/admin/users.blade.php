@@ -3,10 +3,10 @@
   @section('title', 'Users |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
     <style type="text/css">
   .print-table {
     width: 100%;
@@ -249,17 +249,17 @@
     @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+     <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
     <!-- Select2 -->
-    <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 @if ($errors->any())
     <script>
@@ -288,6 +288,10 @@
         opthtm  +=   (full.active == 1)? 'default' : 'danger';
         opthtm  +=  ' btn-circle btn-xs edit-option"><span class="fa fa-edit"></span></a>';
         @endcan
+        @role('Developer')
+          opthtm += '<a href="{{ url('users/login') }}/' + full.id + '" data-toggle="tooltip" title="Login as user" class="btn btn-default btn-circle btn-xs profile">';
+          opthtm += '<span class="fa fa-sign-in"></span></a>';
+        @endrole
         
         switch(full.user_type) {
             case 'teacher':
@@ -331,7 +335,7 @@
                 exportOptions: {
                   columns: [ 0, 1, 2]
                 },
-                title: "Users | {{ config('systemInfo.general.title') }}",
+                title: "Users | {{ tenancy()->tenant->system_info['general']['title'] }}",
               }
             ],
             Processing: true,

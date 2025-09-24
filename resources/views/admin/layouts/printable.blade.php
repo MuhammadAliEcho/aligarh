@@ -8,14 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>@yield('title') Aligarh School Management System</title>
-    <link rel="icon" href="{{ URL::to('src/icon/favicon.png') }}">
+    <link rel="icon" href="{{ asset('src/icon/favicon.png') }}">
 
-    <link href="{{ URL::to('src/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 
     <style>
       .expire  {
-        background-image: url("{{ URL::to('img/expired-stamp.png') }}");
+        background-image: url("{{ asset('img/expired-stamp.png') }}");
 
       }
     </style>
@@ -48,41 +48,41 @@
 
 <body>
   <div id="app">
-  	@if( config('systemInfo.general.validity') < Carbon\Carbon::now()->toDateString())
-      <img src="{{ URL::to('img/expired-stamp.png') }}" style="opacity: 0.5; width: -webkit-fill-available; position: absolute" id="expired-stamp" >
+  	@if( tenancy()->tenant->system_info['general']['validity'] < now()->toDateString())
+      <img src="{{ asset('img/expired-stamp.png') }}" style="opacity: 0.5; width: -webkit-fill-available; position: absolute" id="expired-stamp" >
     @endif
   
     @yield('content')
   </div>
 
-    <script src="{{ URL::to('src/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('src/js/jquery-2.1.1.js') }}"></script>
     <!-- jQuery UI -->
-    <script src="{{ URL::to('src/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 
     @yield('script')
 
 
     <!-- Lodash version 4.17.10 -->
-    <script src="{{ URL::to('src/lodash.min.js') }}"></script>
+    <script src="{{ asset('src/lodash.min.js') }}"></script>
 
     @if(env('APP_DEBUG'))
         <!-- Vue dev version -->
-        <script src="{{ URL::to('src/vue.js') }}"></script>
+        <script src="{{ asset('src/vue.js') }}"></script>
     @else
         <!-- Vue -->
-        <script src="{{ URL::to('src/vue.min-2.5.15.js') }}"></script>
+        <script src="{{ asset('src/vue.min-2.5.15.js') }}"></script>
     @endif
     @yield('vue')
 
-    <script src="{{ URL::to('src/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/bootstrap.min.js') }}"></script>
 
-  	@if( config('systemInfo.general.validity') < Carbon\Carbon::now()->toDateString())
+  	@if( tenancy()->tenant->system_info['general']['validity'] < now()->toDateString())
     <script>
       $( document ).ready(function() {
         const expiredStampsHeight = ($("#expired-stamp").height());
         const expiredStamps = Number(($("#app").height())/expiredStampsHeight).toFixed(0);
         for (i = 1; i < expiredStamps; i++) { 
-          $("#app").prepend('<img src="{{ URL::to('img/expired-stamp.png') }}" style="opacity: 0.5; margin-top: '+(expiredStampsHeight * i)+'px; width: -webkit-fill-available; position: absolute">')
+          $("#app").prepend('<img src="{{ asset('img/expired-stamp.png') }}" style="opacity: 0.5; margin-top: '+(expiredStampsHeight * i)+'px; width: -webkit-fill-available; position: absolute">')
         }
       });
     </script>

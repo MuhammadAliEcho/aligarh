@@ -46,7 +46,7 @@ class DashboardController extends Controller
 		$data['no_of_guardians'] 	= Guardian::count();
 		$data['daily_attendance'] 	= $this->getDailyAttendance();
 		$data['timelines'] 			= $this->getNoticeBoard();
-		$data['student_capacity'] 	= config('systemInfo.general.student_capacity');
+		$data['student_capacity'] 	= tenancy()->tenant->system_info['general']['student_capacity'];
 		
 		$session = Auth::user()->academicSession()->first();
 		if ($session && $session->start && $session->end) {

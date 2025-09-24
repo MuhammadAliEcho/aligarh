@@ -3,7 +3,7 @@
 	@section('title', 'Students |')
 
 	@section('head')
-	<link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
 
 	<style type="text/css">
 		@media print{
@@ -304,11 +304,11 @@
 		@section('script')
 
 		<!-- Select2 -->
-		<script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 		<!-- require with bootstrap-datetimepicker -->
-		<script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-		<script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
 		<script type="text/javascript">
 

@@ -4,9 +4,9 @@
 @section('title', 'Edit Role |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
     <style>
         .permission-group h4 {
             border-bottom: 2px solid #eee;
@@ -122,18 +122,22 @@
                                     </div>
                                 </div>
                             </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-6">
-                    <button class="btn btn-primary" type="submit">
-                        <span class="glyphicon glyphicon-save"></span> Update Role
-                    </button>
-                    <a href="{{ URL('roles') }}" class="btn btn-default">
-                        <span class="glyphicon glyphicon-arrow-left"></span> Back to Roles
-                    </a>
-                </div>
-            </div>
-        </form>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-6">
+                                    <button class="btn btn-primary" type="submit">
+                                        <span class="glyphicon glyphicon-save"></span> Update Role
+                                    </button>
+                                    <a href="{{ URL('roles') }}" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-arrow-left"></span> Back to Roles
+                                    </a>
+                                    @role('Developer')
+                                        <button id="sync-permissions-btn" class="btn btn-warning" type="submit" data-placement="top" data-toggle="tooltip" title="Sync Permissions to All Roles Except Developer">
+                                            <span class="glyphicon glyphicon-save"></span> Sync Permissions
+                                        </button>
+                                    @endrole
+                                </div>
+                            </div>
+                        </form>
                       </div>
                   </div>
               </div>
@@ -144,12 +148,12 @@
 @endsection
 @section('script')
     <!-- Mainly scripts -->
-<script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
-<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 <!-- Input Mask-->
-<script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+<script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 <!-- Select2 -->
-<script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 @if ($errors->any())
     <script>
         @foreach ($errors->all() as $error)
@@ -160,6 +164,15 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+    @role('Developer')
+        $('#sync-permissions-btn').click(function() {
+            if ($('#role_update input[name="sync_permissions"]').length === 0) {
+                $('#role_update').append('<input type="hidden" name="sync_permissions" value="1">');
+            }
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+    @endrole
 
     $("#tchr_rgstr").validate({
         rules: {

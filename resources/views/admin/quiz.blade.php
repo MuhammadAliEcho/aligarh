@@ -4,11 +4,11 @@
 @section('title', 'Quizzes |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
     <script type="text/javascript">
         var sections = {!! json_encode($sections ?? '') !!};
     </script>
@@ -314,9 +314,9 @@
 
         /* override */
         .modal-dialog {
-            width: 180vh !important;
+            width: 80vw !important;
             margin: 30px auto;
-            height: 100vh !important;
+            /* height: 100vh !important; */
         }
 
         .modal-body {
@@ -344,9 +344,12 @@
         }
 
         .scrollable-table-wrapper {
-            max-height: 58vh;
+            max-height: 54vh;
             overflow-y: auto;
             overflow-x: auto;
+        }
+        .text-black {
+            color: #000 !important;
         }
     </style>
 @endsection
@@ -618,8 +621,15 @@
                                                         <div class="quiz-result-model-title">Quiz Result</div>
                                                     </div>
                                                     <div class="quiz-result-model-card-body">
-                                                        <h3 class="quiz-result-model-name">Students Information</h3>
+                                                        <h3 class="quiz-result-model-name"><span class="text-black" id="quizTitle"></span></h3>
                                                         <hr class="quiz-result-model-info-divider">
+                                                        <div class="quiz-result-model-form-row">
+                                                            <div class="quiz-result-model-form-group">
+                                                                <label class="quiz-result-model-form-label">Class: <span class="text-black" id="className"></span></label>
+                                                                <label class="quiz-result-model-form-label">Teacher: <span class="text-black" id="teacherName"></span></label>
+                                                                <label class="quiz-result-model-form-label">Total Marks: <span class="text-black" id="totalMarks"></span></label>
+                                                            </div>
+                                                        </div>
                                                         <div class="scrollable-table-wrapper">
                                                             <table class="table table-bordered">
                                                                 <thead>
@@ -627,7 +637,7 @@
                                                                         <th>Name</th>
                                                                         <th>GR Number</th>
                                                                         <th>Obtained Marks</th>
-                                                                        <th>Present</th>
+                                                                        <th id="togglePresentHeader" style="cursor: pointer;">Present</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody id="studentResultsTable">
@@ -658,11 +668,11 @@
 @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
     @if ($errors->any())
         <script>
@@ -717,12 +727,44 @@
                 $('a[href="#tab-10"]').tab('show');
             @endif
         });
+
+        // For model
+        let allPresentChecked = false;
+        $(document).on('click', '#togglePresentHeader', function () {
+            allPresentChecked = !allPresentChecked;
+            $('[id^=present-]').prop('checked', allPresentChecked).trigger('change');
+        });
+
+        $(document).on('change', '[id^=present-]', function () {
+            const studentId = $(this).attr('id').split('-')[1];
+            const marksInput = $(`#marks-${studentId}`);
+            const totalMarks = parseInt($('#totalMarks').text()) || 0;
+
+            if ($(this).is(':checked')) {
+                marksInput.prop('disabled', false);
+                marksInput.attr('max', totalMarks);
+            } else {
+                marksInput.val('');
+                marksInput.prop('disabled', true);
+            }
+        });
+
+        $(document).on('input', '[id^=marks-]', function () {
+            const totalMarks = parseInt($('#totalMarks').text()) || 0;
+            let val = parseFloat($(this).val());
+
+            if (val > totalMarks) {
+                $(this).val(totalMarks);
+            } else if (val < 0) {
+                $(this).val(0);
+            }
+        });
     </script>
 @endsection
 @section('vue')
-    <script src="{{ URL::to('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/lodash-4.17.15/min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/lodash-4.17.15/min.js') }}"></script>
     <script>
         new Vue({
             el: '#app',
@@ -822,23 +864,28 @@
                     $('#quizResultModal').modal('show');
                     axios.get(`/quizresult/${quizId}`)
                         .then(response => {
-                            const students = response.data;
+                            const data = response.data;
+                            $('#className').text(data.class);
+                            $('#teacherName').text(data.teacher);
+                            $('#totalMarks').text(data.total_marks);
+                            $('#className').append(' | '+data.section);
+                            $('#quizTitle').text(data.title);
+                            const students = data.students;
                             const tableBody = $('#studentResultsTable');
                             tableBody.empty();
-                            const quizIdMarkInput =
-                                `<input type="hidden" name="quiz_id" id="quiz_id" value="${quizId}">`;
+                            const quizIdMarkInput = `<input type="hidden" name="quiz_id" id="quiz_id" value="${data.quiz_id}">`;
                             tableBody.append(quizIdMarkInput);
 
                             students.forEach(student => {
                                 const isChecked = student.present ? 'checked' : '';
                                 const row = `
-                                <tr>
-                                    <td>${student.name}</td>
-                                    <td>${student.gr_no}</td>
-                                    <td><input type="number" class="form-control" name="marks[${student.student_id}]" value="${student.obtain_marks}" id="marks-${student.student_id}" /></td>
-                                    <td><input type="checkbox" class="form-check-input" name="present[${student.student_id}]" id="present-${student.student_id}" ${isChecked} /></td>
-                                </tr>
-                            `;
+                                    <tr>
+                                        <td>${student.name}</td>
+                                        <td>${student.gr_no}</td>
+                                        <td><input type="number" class="form-control" name="marks[${student.student_id}]" value="${student.obtain_marks ?? ''}" id="marks-${student.student_id}" /></td>
+                                        <td><input type="checkbox" class="form-check-input" name="present[${student.student_id}]" id="present-${student.student_id}" ${isChecked} /></td>
+                                    </tr>
+                                `;
                                 tableBody.append(row);
                             });
                         })
@@ -885,6 +932,9 @@
                                 toastr.error("Something went wrong. Please try again.");
                                 console.error('Error:', error);
                             }
+                        })
+                        .finally(() => {
+                            this.isSubmitting = false;
                         });
                 }
             },

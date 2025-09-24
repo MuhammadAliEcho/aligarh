@@ -7,6 +7,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\InvoiceMaster;
 use App\InvoiceDetail;
 use App\InvoiceMonth;
+use App\Guardian;
 use Auth;
 use Carbon\Carbon;
 use App\Student;
@@ -25,9 +26,12 @@ class FeesController extends Controller
 	public function Index(Request $request, array $data = [], $job = ''){
 
 		if ($request->ajax()) {
-			return DataTables::eloquent(InvoiceMaster::query())
+			return DataTables::eloquent(InvoiceMaster::query()->with('Student.Guardian:id'))
 				->editColumn('created_at', function ($row) {
 					return Carbon::parse($row->created_at)->format('Y-m-d');
+				})
+				->editColumn('guardian_id', function ($row) {
+					return $row->Student->Guardian->id;
 				})
 				->make(true);
 		}
@@ -134,7 +138,7 @@ class FeesController extends Controller
 
 			'date_of_payment'	=>	'sometimes|required|date',
 			'paid_amount'	=>	'sometimes|required|integer',
-			'payment_type'	=>	'sometimes|required'
+			'payment_type'	=>	'sometimes|required|in:Cash,Chalan',
 		]);
 
 		$InvoiceMaster = InvoiceMaster::findOrfail($request->input('invoice_id'));
@@ -292,7 +296,7 @@ class FeesController extends Controller
 			'invoice_no'  	=>  'required|integer|exists:invoice_master,id',
 			'date_of_payment'	=>	'sometimes|required|date',
 			'paid_amount'	=>	'sometimes|required|integer',
-			'payment_type'	=>	'sometimes|required'
+			'payment_type'	=>	'sometimes|required|in:Cash,Chalan',
         ]);
 
         if ($validator->fails()) {
@@ -363,6 +367,73 @@ class FeesController extends Controller
 		$data['student']	= Student::find($data['invoice']->student_id);
 //		dd($data['invoice']->InvoiceMonths[0]->month);
 		return view('admin.printable.view_chalan', $data);
+	}
+
+	public function GetGroupInvoice(Request $request, $guardian_id)
+	{
+		$guardian = Guardian::findOrFail($guardian_id);
+
+		$groupInvoice = Student::with([
+			'dueInvoice',
+			'dueInvoice.InvoiceDetail',
+			'dueInvoice.InvoiceMonths',
+			'std_class'
+		])
+			->where('guardian_id', $guardian_id)
+			->get();
+
+		$studentNames = $groupInvoice->pluck('name')->all();
+		$classNames = $groupInvoice->pluck('std_class.name')->map(function ($name) {
+			return $name ?? 'N/A';
+		})->all();
+
+		$totalAmount = 0;
+		$consolidatedFees = [];
+		$uniqueMonths = [];
+		$totalDiscount = 0; 
+		$dueInvoice = null;
+
+		$groupInvoice->each(function ($student) use (&$totalAmount, &$consolidatedFees, &$uniqueMonths, &$totalDiscount, &$dueInvoice) {
+			if ($student->dueInvoice) {
+				$invoice = $student->dueInvoice;
+				$totalAmount += $invoice->net_amount;
+				$totalDiscount += $invoice->discount ?? 0; 
+
+				$dueInvoice = $dueInvoice? $dueInvoice : $invoice->due_date;
+
+				// Unique months
+				collect($invoice->InvoiceMonths)
+					->pluck('month')
+					->each(function ($month) use (&$uniqueMonths) {
+						if (!in_array($month, $uniqueMonths)) {
+							$uniqueMonths[] = $month;
+						}
+					});
+
+				// Consolidated fees
+				collect($invoice->InvoiceDetail)->each(function ($detail) use (&$consolidatedFees) {
+					$consolidatedFees[$detail->fee_name] = ($consolidatedFees[$detail->fee_name] ?? 0) + $detail->amount;
+				});
+			}
+		});
+
+		$data = [
+			'dueDate' => $dueInvoice,
+			'groupInvoice' => $groupInvoice,
+			'guardian' => $guardian,
+			'totalAmount' => $totalAmount,
+			'totalDiscount' => $totalDiscount,
+			'consolidatedFees' => $consolidatedFees,
+			'uniqueMonths' => $uniqueMonths,
+			'studentNames' => array_unique($studentNames),
+			'classNames' => array_unique($classNames),
+			'invoiceCount' => $groupInvoice->filter(function ($student) {
+				return $student->dueInvoice !== null;
+			})->count()
+		];
+
+		// ddd($data);
+		return view('admin.printable.view_group_chalan', $data);
 	}
 
 	public function GetStudentFee(Request $request){
@@ -441,7 +512,7 @@ class FeesController extends Controller
 
 	protected function UpdateAdditionalFee($Student, $request){
 		AdditionalFee::where(['student_id' => $Student->id])->delete();
-		if (COUNT($request->input('fee')) >= 1) {
+		if ($request->input('fee') && COUNT($request->input('fee')) >= 1) {
 			foreach ($request->input('fee') as $key => $value) {
 				$AdditionalFee = new AdditionalFee;
 				$AdditionalFee->id = $value['id'];

@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Guardian;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 
 class UserController extends Controller
@@ -22,35 +22,55 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request){
-//        dd($request->input());
-
-//    $this->LoginUserIDKey = filter_var($request->input('userid'), FILTER_VALIDATE_EMAIL)? 'email' : 'name';
+    public function login(Request $request)
+    {
         $this->LoginUserIDKey = 'name';
-        $request->merge([$this->LoginUserIDKey => $request->input('user_id'), 'user_type'    =>  'guardian']);
-        $this->PostLoginData = [$this->LoginUserIDKey => $request->input($this->LoginUserIDKey), 'password' => $request->input('password'), 'user_type' => 'guardian'];
+        $request->merge([
+            $this->LoginUserIDKey => $request->input('user_id'),
+            'user_type' => 'guardian'
+        ]);
 
-        $this->ValidateLogin($request);
+        $this->PostLoginData = [
+            $this->LoginUserIDKey => $request->input($this->LoginUserIDKey),
+            'password' => $request->input('password'),
+            'user_type' => 'guardian'
+        ];
+
+        $response = $this->ValidateLogin($request);
+        if ($response !== true) {
+            return $response;
+        }
 
         if (Auth::validate($this->PostLoginData)) {
             $user = Auth::getLastAttempted();
-/*             if($user->user_type !== 'guardian'){
-                return response()->json(['error'=>'unauthorized', 'msg' => 'You must login userType as Guardian'], 401);
-            } */
+
             if (!$user->active) {
-                return response()->json(['error'=>'unauthorized', 'msg' => 'You must be Active to login'], 401);
+                return response()->json([
+                    'error' => 'unauthorized',
+                    'msg' => 'You must be Active to login'
+                ], 401);
             }
         }
-        
+
         if (Auth::attempt($this->PostLoginData)) {
-            $guardian   =    Guardian::find($request->user()->foreign_id);
             $user = Auth::user();
+            $guardian = Guardian::find($user->foreign_id);
             $token =  $user->createToken('AligarhApp', ['guardian'])->accessToken;
-            return response()->json(['User' => ['User'  =>  $user, 'Profile' =>  $guardian], 'token' => $token], $this->successStatus);
+
+
+            return response()->json([
+                'User' => [
+                    'User' => $user,
+                    'Profile' => $guardian,
+                ],
+                'token' => $token
+            ], $this->successStatus);
         }
 
-        return response()->json(['error'=>'unauthorized', 'msg' => 'Invalid UserID OR Password'], 401);
-
+        return response()->json([
+            'error' => 'unauthorized',
+            'msg' => 'Invalid UserID or Password'
+        ], 401);
     }
 
     /**
@@ -68,7 +88,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], 401);            
+            return response()->json(['error' => $validator->errors()], 401);
         }
 
         $input = $request->all();
@@ -77,29 +97,42 @@ class UserController extends Controller
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
 
-        return response()->json(['success'=>$success], $this->successStatus);
+        return response()->json(['success' => $success], $this->successStatus);
     }
 
-    public function Logout(Request $request){
+    public function Logout(Request $request)
+    {
         $this->validate($request, [
             'token' =>  'required'
         ]);
         $request->user()->token()->delete();
         return response()->json(['msg' => "Logout"]);
-//        Auth::user()->AauthAcessToken()->delete();
+        //        Auth::user()->AauthAcessToken()->delete();
     }
 
-    protected function ValidateLogin(Request $request){
-        $this->validate($request, [
-            $this->LoginUserIDKey => 'required|min:4|max:255',
-            'password' => 'required|min:6|max:12',
-            'user_type' =>  'required'
+    protected function ValidateLogin(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                $this->LoginUserIDKey => 'required|min:4|max:255',
+                'password' => 'required|min:6|max:12',
+                'user_type' => 'required'
             ],
             [
-            $this->LoginUserIDKey.'.required' => 'UserID is Required',
-            'password.required' => 'Password is Required',
+                $this->LoginUserIDKey . '.required' => 'UserID is Required',
+                'password.required' => 'Password is Required',
             ]
         );
-    }
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        return true;
+    }
 }

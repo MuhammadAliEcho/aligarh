@@ -1,8 +1,8 @@
 <div class="container-fluid">
 
 	<div class="row">
-		<h2 class="text-center">{{ config('systemInfo.general.title') }}</h3>
-		<h4 class="text-center">{{ config('systemInfo.general.address') }}</h4>
+		<h2 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
+		<h4 class="text-center">{{ tenancy()->tenant->system_info['general']['address'] }}</h4>
 		<h3 class="text-center"><u>ADMISSION FORM</u></h4>
 			<hr>
 		<div class="col-xs-9" style="padding-left: 0px">

@@ -88,6 +88,16 @@ class RoleController extends Controller
 		try {
 			$Role = Role::NotDeveloper()->findOrFail($id);
 			$Role->syncPermissions($request->input('permissions'));
+
+			if (filled($request->sync_permissions)) {
+				$rolesToSync = Role::NotDeveloper()
+					// ->where('id', '!=', $Role->id)
+					->get();
+				foreach ($rolesToSync as $role) {
+					$role->syncPermissions($request->input('permissions'));
+				}
+			}
+
 			DB::commit();
 		} catch (\Exception $e) {
 			DB::rollBack();
@@ -132,7 +142,6 @@ class RoleController extends Controller
 				'dashboard.monthly_attendance' => 'Show Monthly Attendance',
 				'dashboard.fee_Collection' => 'Show Fee Collection',
 				'dashboard.monthly_expenses' => 'Show Monthly Expenses',
-				'student.card' => 'Student Card',
 				'user-settings.index' => 'User Settings View',
 				'user-settings.password.update' => 'Password Update',
 				'user-settings.change.session' => 'Change Session',
@@ -155,6 +164,7 @@ class RoleController extends Controller
 				'students.grid' => 'Students Gird View',
 				'students.add' => 'Students Create',
 				'students.edit' => 'Students Edit',
+				'students.card' => 'Student View Card',
 				'students.class_edit' => 'Edit Class',
 				'students.edit.post' => 'Students Update',
 				'students.profile' => 'Students Profile',
@@ -165,8 +175,22 @@ class RoleController extends Controller
 				'students.certificate.create' => 'Certificate Create',
 				'students.leave' => 'Students Leave',
 			],
+
+			'Visitors' => [
+				'visitors.index' => 'Visitors View',
+				'visitors.grid' => 'Visitors Gird View',
+				'visitors.profile' => 'Visitors Profile',
+				'visitors.create' => 'Visitors Create',	
+				'students.show.visitor' => 'Show  Addmissison Visitors',
+				'students.create.visitor' => 'Create Addmissison Visitors',
+				'visitors.edit' => 'Visitors Edit',
+				'visitors.update' => 'Visitors Update',	
+				'visitors.delete' => 'Visitors Delete',
+			],
+			
 			'Teachers' => [
 				'teacher.index' => 'Teachers View',
+				'teacher.grid' => 'Teachers Gird View',
 				'teacher.add' => 'Teachers Create',
 				'teacher.edit' => 'Teachers Edit',
 				'teacher.edit.post' => 'Teachers Update',
@@ -176,6 +200,7 @@ class RoleController extends Controller
 			],
 			'Employees' => [
 				'employee.index' => 'Employees View',
+				'employee.grid' => 'Employees Gird View',
 				'employee.add' => 'Employees Create',
 				'employee.edit' => 'Employees Edit',
 				'employee.edit.post' => 'Employees Update',
@@ -185,6 +210,7 @@ class RoleController extends Controller
 			],
 			'Guardians' => [
 				'guardian.index' => 'Guardians View',
+				'guardian.grid' => 'Guardians Gird View',
 				'guardian.add' => 'Guardians Create',
 				'guardian.edit' => 'Guardians Edit',
 				'guardian.edit.post' => 'Guardians Update',
@@ -304,6 +330,7 @@ class RoleController extends Controller
 				'fee.get.student.fee' 	=> 'Get Student Fee',
 				'fee.update' 			=> 'Student Fee Update',
 				'fee.chalan.print' 		=> 'Chalan Print',
+				'fee.group.chalan.print'=> 'Group Chalan Print',
 				'fee.invoice.print' 	=> 'Invoice Print',
 				//lnk with create and update invoice
 				'fee.findstu' 			=> 'Find Student Fee',
@@ -321,12 +348,11 @@ class RoleController extends Controller
 				'smsnotifications.sendbulksms' => 'Send Bulk SMS',
 				'smsnotifications.history' => 'SMS History',
 			],
-			'Notifications' => [
-				'notifications.index' => 'View',
-				'notifications.get.data' => 'Get Data',
-				'notifications.send' => 'Messsage Send',
-				'notifications.log' => 'View Logs',
-				'notifications.msg.log' => 'View Message Logs',
+			'Message Notifications' => [
+				'msg-notifications.index' => 'View',
+				'msg-notifications.get.data' => 'Get Data',
+				'msg-notifications.send' => 'Messsage Send',
+				'msg-notifications.msg.log' => 'View Message Logs',
 			],
 			'Reports' => [
 				'seatsreport' => 'Seats Report',
@@ -357,7 +383,7 @@ class RoleController extends Controller
 				'fee-scenario.index' => 'Fee Scenario View',
 				'fee-scenario.update.scenario' => 'Fee Scenario Update',
 				'exam-grades.index' => 'Exam Grades View',
-				'exam-grades.update' => 'Exam Grades View',
+				'exam-grades.update' => 'Exam Grades Update',
 			],
 		];
 	}

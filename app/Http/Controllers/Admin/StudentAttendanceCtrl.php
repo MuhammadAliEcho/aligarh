@@ -135,7 +135,7 @@ class StudentAttendanceCtrl extends Controller
 									'toastrmsg' => [
 										'type' => 'success', 
 										'title'  =>  'Student Attendance',
-										'msg' =>  'Attendance Job Successfull'
+										'msg' =>  'Attendance Added Successfull'
 									]
 								]); 
 	}

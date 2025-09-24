@@ -4,7 +4,7 @@
 
 	@section('head')
 
-	<link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
 	@endsection
 
 	@section('content')
@@ -42,13 +42,13 @@
 										<div class="tabs-container">
 												<ul class="nav nav-tabs">
 													<li class="active">
-														@can('fee-scenario.update.scenario')
+														@can('fee-scenario.index')
 															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Fee Scenario</a>
 														@endcan
 													</li>
 												</ul>
 												<div class="tab-content">
-													@can('fee-scenario.update.scenario')
+													@can('fee-scenario.index')
 														<div id="tab-10" class="tab-pane fade fade in active add-guardian">
 																<div class="panel-body">
 																	
@@ -117,7 +117,7 @@
 																								<td>Late Fee</td>
 																								<td>
 																									<div>
-																										<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" min="1" required="true" class="form-control"/>
+																										<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" min="0" required="true" class="form-control"/>
 																										@if ($errors->has('late_fee'))
 																											<span class="help-block">
 																											<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('late_fee') }}</strong>
@@ -133,12 +133,15 @@
 																			</div>
 																		</div>
 
-																		<div class="form-group">
-																			<div class="col-md-offset-2 col-md-6">
-																					<button class="btn btn-primary" name="type" value="1" type="submit"><span class="glyphicon glyphicon-save"></span> Only For New Student </button>
-																					<button class="btn btn-primary" name="type" value="2" type="submit"><span class="glyphicon glyphicon-save"></span> Apply All Student </button>
+
+																		@can('fee-scenario.update.scenario')
+																			<div class="form-group">
+																				<div class="col-md-offset-2 col-md-6">
+																						<button class="btn btn-primary" name="type" value="1" type="submit"><span class="glyphicon glyphicon-save"></span> Only For New Student </button>
+																						<button class="btn btn-primary" name="type" value="2" type="submit"><span class="glyphicon glyphicon-save"></span> Apply All Student </button>
+																				</div>
 																			</div>
-																		</div>
+																		@endcan
 																	</form>
 
 																</div>
@@ -162,12 +165,12 @@
 		@section('script')
 
 		<!-- Mainly scripts -->
-		<script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 
-		<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
 		<!-- Input Mask-->
-		 <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+		 <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
 		<script type="text/javascript">
 		var tbl;

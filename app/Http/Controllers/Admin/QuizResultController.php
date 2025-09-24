@@ -15,7 +15,9 @@ class QuizResultController extends Controller
 {
     public function Index($id)
     {
-        $quiz = Quiz::select('id', 'title', 'section_id', 'class_id')->findOrFail($id);
+        $quiz = Quiz::with('teacher:id,name', 'class:id,name', 'section:id,name')
+            ->select('id', 'title', 'section_id', 'class_id', 'teacher_id', 'total_marks')
+            ->findOrFail($id);
 
         $studentsQuery = Student::SessionCurrent();
         if ($quiz->section_id === null) {
@@ -27,7 +29,7 @@ class QuizResultController extends Controller
         $students = $studentsQuery->select('id', 'name', 'gr_no')->get();
         $results = QuizResult::where('quiz_id', $quiz->id)->get()->keyBy('student_id');
 
-        $data = $students->map(function ($student) use ($results) {
+        $studentsData = $students->map(function ($student) use ($results) {
             $result = $results->get($student->id);
 
             return [
@@ -39,17 +41,25 @@ class QuizResultController extends Controller
             ];
         });
 
-        return response()->json($data->values());
+        return response()->json([
+            'quiz_id'   => $quiz->id,
+            'title'     => $quiz->title,
+            'teacher'   => optional($quiz->teacher)->name ?? 'N/A',
+            'class'     => optional($quiz->class)->name ?? 'N/A',
+            'section'   => optional($quiz->section)->name ?? 'All',
+            'total_marks' => $quiz->total_marks,
+            'students'  => $studentsData->values(),
+        ]);
     }
 
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'quiz_id'                   => 'required|uuid|exists:quizzes,id',
-            'results'                   => 'required|array|min:1',
-            'results.*.student_id'      => 'required|exists:students,id',
-            'results.*.obtain_marks'    => 'required|numeric|between:0,200',
-            'results.*.present'         => 'required|boolean|in:0,1',
+            'quiz_id'              => 'required|uuid|exists:quizzes,id',
+            'results'              => 'required|array|min:1',
+            'results.*.student_id' => 'required|exists:students,id',
+            'results.*.present'    => 'required|boolean|in:0,1',
+            'results.*.obtain_marks' => 'nullable|numeric|min:0|max:200',
         ]);
 
         if ($validator->fails()) {
@@ -62,12 +72,29 @@ class QuizResultController extends Controller
         $quiz = Quiz::select('id', 'total_marks')->findOrFail($quizId);
 
         foreach ($results as $index => $result) {
-            if ($result['obtain_marks'] > $quiz->total_marks) {
-                return response()->json([
-                    'errors' => [
-                        "results.$index.obtain_marks" => ["Obtained marks cannot exceed total marks ({$quiz->total_marks})."]
-                    ]
-                ], 422);
+            $isPresent = (bool) $result['present'];
+            $marks = $result['obtain_marks'];
+
+            // If student is present, obtain_marks must be provided and within range
+            if ($isPresent) {
+                if (!is_numeric($marks)) {
+                    return response()->json([
+                        'errors' => [
+                            "results.$index.obtain_marks" => ["Obtained marks are required for present students."]
+                        ]
+                    ], 422);
+                }
+
+                if ($marks > $quiz->total_marks) {
+                    return response()->json([
+                        'errors' => [
+                            "results.$index.obtain_marks" => ["Obtained marks cannot exceed total marks ({$quiz->total_marks})."]
+                        ]
+                    ], 422);
+                }
+            } else {
+                // If absent, marks must be null
+                $results[$index]['obtain_marks'] = null;
             }
         }
 
@@ -88,11 +115,9 @@ class QuizResultController extends Controller
             ];
 
             if ($existing->has($studentId)) {
-                // It's an update
                 $record['id'] = $existing[$studentId];
                 $toUpdate[] = $record;
             } else {
-                // It's a new insert
                 $record['id'] = (string) Str::uuid();
                 $record['created_at'] = now();
                 $toInsert[] = $record;
@@ -100,12 +125,10 @@ class QuizResultController extends Controller
         }
 
         DB::transaction(function () use ($toInsert, $toUpdate) {
-            // Insert new ones
             collect($toInsert)->chunk(200)->each(function ($chunk) {
                 QuizResult::insert($chunk->toArray());
             });
 
-            // Update existing ones
             collect($toUpdate)->chunk(200)->each(function ($chunk) {
                 foreach ($chunk as $data) {
                     QuizResult::where('id', $data['id'])->update([

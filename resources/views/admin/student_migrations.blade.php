@@ -239,7 +239,7 @@
 
 	@section('script')
 
-		<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
 		<script type="text/javascript">
 			$("#form").validate();

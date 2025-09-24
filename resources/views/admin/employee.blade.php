@@ -3,8 +3,10 @@
   @section('title', 'Employee |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+
   <style type="text/css">
     .print-table {
       width: 100%;
@@ -346,9 +348,11 @@
                 <div class="col-lg-12">
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
-                            <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Employees</a>
-                            </li>
+                            @canany(['employee.index','employee.grid'])
+                              <li class="">
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Employees</a>
+                              </li>
+                            @endcanany  
                             @can('employee.add')
                               <li class="add-employee">
                                 <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Employee</a>
@@ -544,7 +548,7 @@
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" />
+                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" style="max-width:100px !important;min-width:105px !important;"/>
                                             @if ($errors->has('img'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
@@ -631,6 +635,43 @@
                                             @endif
                                           </div>
                                         </div>
+
+                                        <div class="form-group{{ ($errors->has('date_of_birth'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">DOB</label>
+                                          <div class="col-md-6">
+                                            <input id="date_of_birth" type="text" name="date_of_birth" value="{{ old('date_of_birth') }}" placeholder="Date Of Birth" class="form-control"/>
+                                            @if ($errors->has('date_of_birth'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date_of_birth') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('id_card'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">ID:</label>
+                                          <div class="col-md-6">
+                                            <input type="text" name="id_card" value="{{ old('id_card') }}" placeholder="Enter ID CNIC/Passport etc..." class="form-control"/>
+                                            @if ($errors->has('id_card'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('id_card') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group{{ ($errors->has('date_of_joining'))? ' has-error' : '' }}">
+                                          <label class="col-md-2 control-label">Date Of Joining</label>
+                                          <div class="col-md-6">
+                                            <input id="date_of_joining" type="text" name="date_of_joining" value="{{ old('date_of_joining') }}" placeholder="Date Of Joining" class="form-control"/>
+                                            @if ($errors->has('date_of_joining'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date_of_joining') }}</strong>
+                                                </span>
+                                            @endif
+                                          </div>
+                                        </div>
+
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-6">
                                                 <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
@@ -661,15 +702,25 @@
     @section('script')
 
     <!-- Mainly scripts 
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
     -->
 
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+
+    @if ($errors->any())
+      <script>
+          @foreach ($errors->all() as $error)
+              toastr.error("{{ $error }}", "Validation Error");
+          @endforeach
+      </script>
+    @endif
 
     <script type="text/javascript">
 
@@ -700,6 +751,14 @@
 
     var tbl;
       $(document).ready(function(){
+        $('#date_of_birth').datetimepicker({
+          format: 'YYYY-MM-DD',
+        });
+
+        $('#date_of_joining').datetimepicker({
+            format: 'YYYY-MM-DD',
+            defaultDate: moment(),
+        });
 
 /*    For Column Search
         $('.dataTables-teacher thead th').each( function () {
@@ -735,7 +794,7 @@
               exportOptions: {
                 columns: [ 0, 1, 2, 3]
               },
-              title: "Employees | {{ config('systemInfo.general.title') }}",
+              title: "Employees | {{ tenancy()->tenant->system_info['general']['title'] }}",
             }
           ],
           Processing: true,
@@ -776,6 +835,15 @@
                 required: true,
               },
               gender: {
+                required: true,
+              },
+              date_of_birth: {
+                required: true,
+              },
+              date_of_joining: {
+                required: true,
+              },
+              id_card: {
                 required: true,
               },
 /*              qualification: {

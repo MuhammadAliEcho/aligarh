@@ -479,30 +479,32 @@
 						</div>
 					@endcan
 					@can('dashboard.timeline')
-						<div class="row">
-							<div class="col-md-12">
-								<div class="notic-board-container">
-									<h3 class="section-title">
-										<i class="fa fa-clipboard"></i> Notice Board
-									</h3>
-									<div class="timeline-modern">
-										@foreach ($timelines as $timeline)
-											<div class="timeline-node">
-												<div class="timeline-date">{{ $timeline->timeline_date}}</div>
-												<div class="timeline-dot"></div>
-												<div class="timeline-branch">
-													<div class="notice-card">
-														<h4><i class="fa fa-bullhorn"></i> {{ $timeline->title}}</h4>
-														<p>{{ $timeline->notice }}</p>
-														<small>{{$timeline->till_date_formatted}}</small>
+						@if ($timelines->count() > 0)
+							<div class="row">
+								<div class="col-md-12">
+									<div class="notic-board-container">
+										<h3 class="section-title">
+											<i class="fa fa-clipboard"></i> Notice Board
+										</h3>
+										<div class="timeline-modern">
+											@foreach ($timelines as $timeline)
+												<div class="timeline-node">
+													<div class="timeline-date">{{ $timeline->timeline_date}}</div>
+													<div class="timeline-dot"></div>
+													<div class="timeline-branch">
+														<div class="notice-card">
+															<h4><i class="fa fa-bullhorn"></i> {{ $timeline->title}}</h4>
+															<p>{{ $timeline->notice }}</p>
+															<small>{{$timeline->till_date_formatted}}</small>
+														</div>
 													</div>
 												</div>
-											</div>
-										@endforeach
+											@endforeach
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+						@endif
 					@endcan
 					@can('dashboard.monthly_attendance')
 						<!-- Charts Section -->

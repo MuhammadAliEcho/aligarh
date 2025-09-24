@@ -47,7 +47,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-		<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+		<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
 		<h4>GR NO.__________________</h4>
 		<h3 class="text-center"><u>TRANSFER CERTIFICATE</u></h3>
 

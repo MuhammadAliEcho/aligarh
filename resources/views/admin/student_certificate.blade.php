@@ -4,7 +4,7 @@
 
   @section('head')
   <!-- HEAD -->
-	<script type="text/javascript" src="{{ URL::to('src/js/plugins/ckeditor_4.10.1/ckeditor.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('src/js/plugins/ckeditor_4.10.1/ckeditor.js') }}"></script>
   @endsection
 
   @section('content')
@@ -101,7 +101,7 @@
 
 	@section('script')
 
-		<script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+		<script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
 	<script type="text/javascript">
 		$("#certificateform").validate({

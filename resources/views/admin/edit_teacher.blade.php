@@ -4,7 +4,9 @@
 
   @section('head')
   <!-- Input Mask-->
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+  
   @endsection
 
   @section('content')
@@ -98,7 +100,16 @@
                                           </span>
                                         </div>
                                         <div class="col-md-6">
-                                          <img id="img" src="{{ ($teacher->image_url == '')? '#' : URL($teacher->image_url) }}"  alt="Item Image..." class="img-responsive img-thumbnail" />
+                                          <input type="hidden" name="removeImage" v-model="removeImage" />
+                                          <template v-if="removeImage == 0">
+                                            <button type="button" class="close" @click="removeImage = 1">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <img id="img" src="{{ ($teacher->image_url == '')? '#' : URL($teacher->image_url) }}"  alt="Item Image... 454" class="img-responsive img-thumbnail" style="max-width:100px !important;min-width:105px !important;"/>
+                                          </template>
+                                          <template v-if="removeImage">
+                                            <img id="img" src=""  alt="Item Image..." class="img-responsive img-thumbnail" :style="{ maxWidth: '100px', minWidth: '105px' }"/>
+                                          </template>
                                           @if ($errors->has('img'))
                                               <span class="help-block">
                                                   <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('img') }}</strong>
@@ -205,6 +216,42 @@
                                         </div>
                                       </div>
 
+                                      <div class="form-group{{ ($errors->has('date_of_birth'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">DOB</label>
+                                        <div class="col-md-6">
+                                          <input id="date_of_birth" type="text" name="date_of_birth" value="{{ old('date_of_birth', $teacher['date_of_birth']) }}" placeholder="Date Of Birth" class="form-control"/>
+                                          @if ($errors->has('date_of_birth'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date_of_birth') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group{{ ($errors->has('id_card'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">ID:</label>
+                                        <div class="col-md-6">
+                                          <input type="text" name="id_card" value="{{ old('id_card', $teacher['id_card']) }}" placeholder="Enter ID CNIC/Passport etc..." class="form-control"/>
+                                          @if ($errors->has('id_card'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('id_card') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group{{ ($errors->has('date_of_joining'))? ' has-error' : '' }}">
+                                        <label class="col-md-2 control-label">Date Of Joining</label>
+                                        <div class="col-md-6">
+                                          <input id="date_of_joining" type="text" name="date_of_joining" value="{{ old('date_of_joining', $teacher['date_of_joining']) }}" placeholder="Date Of Joining" class="form-control"/>
+                                          @if ($errors->has('date_of_joining'))
+                                              <span class="help-block">
+                                                  <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('date_of_joining') }}</strong>
+                                              </span>
+                                          @endif
+                                        </div>
+                                      </div>
+
                                       <div class="form-group">
                                           <div class="col-md-offset-2 col-md-6">
                                               <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Save Changes </button>
@@ -230,10 +277,20 @@
     @section('script')
 
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+
+    @if ($errors->any())
+        <script>
+            @foreach ($errors->all() as $error)
+                toastr.error("{{ $error }}", "Validation Error");
+            @endforeach
+        </script>
+    @endif
 
     <script type="text/javascript">
 
@@ -248,6 +305,15 @@
     }
 
       $(document).ready(function(){
+
+        $('#date_of_birth').datetimepicker({
+            format: 'YYYY-MM-DD',
+        });
+
+        $('#date_of_joining').datetimepicker({
+            format: 'YYYY-MM-DD',
+            defaultDate: moment(),
+        });
 
         $("#tchr_rgstr").validate({
             rules: {
@@ -289,3 +355,13 @@
     </script>
 
     @endsection
+    @section('vue')
+			<script type="text/javascript">
+				var app = new Vue({
+					el: '#app',
+					data: {
+						removeImage: {{ $teacher->image_url? 0 : 1 }},
+					},
+				});
+			</script>
+		@endsection

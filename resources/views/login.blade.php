@@ -4,7 +4,7 @@
     <div>
         <div>
             <h6>
-                <img alt="image" class="img-responsive" src="{{ URL::to('src/icon/favicon.png') }}" />
+                <img alt="image" class="img-responsive" src="{{ asset('src/icon/favicon.png') }}" />
             </h6>
             <!--h6 class="logo-name">Aligarh</h6-->
         </div>
@@ -12,7 +12,7 @@
         <p>A Powerfull School Management System</p>
         <p>Login in. To Control IT.</p>
 
-        <form class="m-t" role="form" method="POST" id="form" action="{{ URL('login') }}">
+        <form class="m-t" role="form" method="POST" id="form" action="{{ route('login') }}">
             {{ csrf_field() }}
             @if (Session::has('redirect'))
                 <input type="hidden" name="redirect" value="{{ old('redirect', Session::get('redirect')) }}" />

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Role;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -71,11 +73,14 @@ class UserSeeder extends Seeder
             ],
         ]);
 
+        $role = Role::find(1);
+        $user = User::find(1);
+        $user->syncRoles($role);
 
         DB::table('academic_sessions')->insert([
             [
-                'start' => '2025-01-01',
-                'end'   => '2026-01-01',
+                'start' => '2025-04-01',
+                'end'   => '2026-03-31',
                 'title' =>  '2025-2026',
             ]
         ]);

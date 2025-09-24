@@ -3,9 +3,9 @@
   @section('title', 'Edit User |')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
-  <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')
@@ -130,6 +130,24 @@
                                           </div>
                                         </div>
                                       @endcan
+                                      <div id="role" class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+                                      <label class="col-md-2 control-label">Role</label>
+                                      <div class="col-md-6">
+                                        <select id="role" name="role" class="form-control" required>
+                                          <option value="">Select a role</option>
+                                          @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}" {{ old('role', $userRole) == $role->id ? 'selected' : '' }}>
+                                              {{ $role->name }}
+                                            </option>
+                                          @endforeach
+                                        </select>
+                                        @if ($errors->has('role'))
+                                          <span class="help-block">
+                                            <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('role') }} </strong>
+                                          </span>
+                                        @endif
+                                      </div>
+                                    </div>
                                       <div class="form-group">
                                           <div class="col-md-offset-2 col-md-6">
                                               <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Update </button>
@@ -155,15 +173,15 @@
     @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
 
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <!-- Input Mask-->
-     <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+     <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 
     <!-- Select2 -->
-    <script src="{{ URL::to('src/js/plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
     @if ($errors->any())
     <script>
         @foreach ($errors->all() as $error)

@@ -3,9 +3,9 @@
 @section('title', 'Academic Session |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-		<link href="{{ URL::to('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+		<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -81,13 +81,6 @@
                                             class="form-horizontal">
                                             {{ csrf_field() }}
 
-                                            <div class="form-group">
-                                                <label class="col-md-2 control-label">Title</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" id="title" readonly 
-                                                        value="" class="form-control" />
-                                                </div>
-                                            </div>
                                             <div class="form-group{{ $errors->has('start') ? ' has-error' : '' }}">
                                               <label class="col-md-2 control-label">Session Start</label>
                                               <div class="col-md-6">
@@ -103,6 +96,7 @@
                                                     @endif
                                               </div>
                                             </div>
+
                                             <div class="form-group{{ $errors->has('end') ? ' has-error' : '' }}">
                                               <label class="col-md-2 control-label">Session End</label>
                                               <div class="col-md-6">
@@ -118,6 +112,15 @@
                                                     @endif
                                               </div>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label">Title</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="title" readonly 
+                                                        value="" class="form-control" />
+                                                </div>
+                                            </div>
+
                                             <div class="form-group">
                                                 <div class="col-md-offset-2 col-md-6">
                                                     <button class="btn btn-primary" type="submit"><span
@@ -138,11 +141,11 @@
     </div>
 @endsection
 @section('script')
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
-	<script src="{{ URL::to('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
 
 
     <script type="text/javascript">

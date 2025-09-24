@@ -76,7 +76,7 @@
 	<img src="{{URL('img/hashmangementletterhead-Alain.jpg')}}" style="width:21.0cm; height:29.2cm; margin: none; padding: none">
 	
 	<div class="row" style="position: absolute; top: 150px; left: 2.5cm; width: 16cm">
-		<h3 class="center"> Payment history of {{ config('systemInfo.general.title') }} </h3>
+		<h3 class="center"> Payment history of {{ tenancy()->tenant->system_info['general']['title'] }} </h3>
 		<hr>
 		<h4 class="text-right"><u>Date: {{ Carbon\Carbon::now()->format('d-M-Y') }}</u></h4>
 		<table class="table table-bordered invoice-table">

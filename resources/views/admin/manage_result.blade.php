@@ -3,7 +3,7 @@
   @section('title', 'Student Restults Manage |')
 
   @section('head')
-	<link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
 
   @endsection
 
@@ -323,7 +323,7 @@
 
 	@section('script')
 
-	<script src="{{ URL::to('src/js/jquery.print.js') }}"></script>
+	<script src="{{ asset('src/js/jquery.print.js') }}"></script>
 
 	<script type="text/javascript">
 	  $('#result_attributes_print').click(function(e){

@@ -4,8 +4,8 @@
 @section('title', 'Edit Quiz |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
     <style type="text/css">
         .print-table {
             width: 100%;
@@ -91,24 +91,43 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label"> Class </label>
                                     <div class="col-md-6">
-                                        <input type="text" disabled class="form-control" value="{{ $quiz->class->name }}">
+                                        @if ($quiz->quizResults->count() == 0)
+                                            <select class="form-control select2" name="class" required="true">
+                                                <option value="">{{ '--- Select ---' }}</option>
+                                                @foreach ($classes as $class)
+                                                    <option {{ $quiz->class_id == $class->id ? 'selected' : '' }} value="{{ $class->id }}">{{ $class->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('class'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span>
+                                                        {{ $errors->first('class') }}</strong>
+                                                </span>
+                                            @endif
+                                        @endif
+                                        @if($quiz->quizResults->count() > 0)
+                                            <input type="text" disabled class="form-control" value="{{ $quiz->class->name }}">
+                                        @endif
                                     </div>
                                 </div>
 
                                 <div class="form-group{{ $errors->has('section') ? ' has-error' : '' }}">
                                     <label class="col-md-2 control-label"> Section </label>
                                     <div class="col-md-6">
-                                        <select class="form-control select2" name="section">
-                                            <option value="">{{ '--- Select ---' }}</option>
-                                            @foreach ($sections as $section)
-                                                <option {{ old('section', $quiz->section_id) == $section->id ? 'selected' : '' }} value="{{ $section->id }}">{{ $section->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('section'))
-                                            <span class="help-block">
-                                                <strong><span class="fa fa-exclamation-triangle"></span>
-                                                    {{ $errors->first('section') }}</strong>
-                                            </span>
+                                        @if ($quiz->quizResults->count() == 0)
+                                            <select class="form-control select2" name="section">
+                                                <option value="" disabled selected>{{ '--- Select ---' }}
+                                                </option>
+                                            </select>
+                                            @if ($errors->has('section'))
+                                                <span class="help-block">
+                                                    <strong><span class="fa fa-exclamation-triangle"></span>
+                                                        {{ $errors->first('section') }}</strong>
+                                                </span>
+                                            @endif
+                                        @endif
+                                        @if($quiz->quizResults->count() > 0)
+                                            <input type="text" disabled class="form-control" value="{{ $quiz->section->name?? '' }}">
                                         @endif
                                     </div>
                                 </div>
@@ -163,12 +182,12 @@
 @section('script')
 
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
     @if ($errors->any())
         <script>
             @foreach ($errors->all() as $error)
@@ -178,6 +197,22 @@
     @endif
 
     <script type="text/javascript">
+
+        var sections = {!! json_encode($sections ?? []) !!};
+        var quiz = {!! json_encode($quiz ?? []) !!};
+
+        function populateSections(clsid) {
+            $('[name="section"]').html('<option value="" selected>--- Select ---</option>');
+            if (sections['class_' + clsid] && sections['class_' + clsid].length > 0) {
+                $.each(sections['class_' + clsid], function(k, v) {
+                    var selected = (quiz['section_id'] == v['id']) ? 'selected' : '';
+                    $('[name="section"]').append(
+                        '<option ' + selected + ' value="' + v['id'] + '">' + v['name'] + '</option>'
+                    );
+                });
+            }
+        }
+
         $(document).ready(function() {
             $('#datetimepicker').datetimepicker({
                 format: 'YYYY-MM-DD',
@@ -195,6 +230,16 @@
                     }
                 }
             });
+
+            $('[name="class"]').on('change', function() {
+                var clsid = $(this).val();
+                populateSections(clsid);
+            });
+            // On page load, if quiz has class_id and section_id, prepopulate
+            if (quiz['class_id']) {
+                $('[name="class"]').val(quiz['class_id']).trigger('change');
+                populateSections(quiz['class_id']);
+            }
         });
     </script>
 @endsection

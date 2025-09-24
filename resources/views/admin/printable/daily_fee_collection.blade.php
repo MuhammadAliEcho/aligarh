@@ -57,7 +57,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+	<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
 	<h4>Daily Fee Collection Report</h4>
 	<h4>Between: ( {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['start'])->Format('M-Y') }} TO {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['end'])->Format('M-Y') }} )</h4>
 		

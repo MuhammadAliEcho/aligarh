@@ -26,20 +26,24 @@ class SendMailJob implements ShouldQueue
     public function handle()
     {
         if ($this->email) {
-            try {
-                Mail::raw($this->message, function ($mail) {
-                    $mail->to($this->email)
-                        ->subject($this->subject);
-                });
+            Mail::raw($this->message, function ($mail) {
+                $mail->to($this->email)
+                     ->subject($this->subject);
+            });
 
-                $this->logCommunication(200, ['message' => 'Email sent successfully']);
-                Log::info("Email sent to: {$this->email}");
-                
-            } catch (\Exception $e) {
-                Log::error("Failed to send email to {$this->email}. Error: " . $e->getMessage());
-                $this->logCommunication(400, ['message' => "Failed to send email to {$this->email}. Error: " . $e->getMessage()]);
-            }
+            $this->logCommunication(200, ['message' => 'Email sent successfully']);
+            Log::info("Email sent to: {$this->email}");
         }
+    }
+
+    public function failed(\Throwable $exception)
+    {
+        Log::error("Job failed for email {$this->email}: " . $exception->getMessage());
+
+        $this->logCommunication(500, [
+            'message' => "Failed to send email to {$this->email}",
+            'exception' => $exception->getMessage(),
+        ]);
     }
 
     private function logCommunication(int $statusCode, array $response): void

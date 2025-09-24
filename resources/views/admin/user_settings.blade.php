@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
   @section('head')
-  <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')

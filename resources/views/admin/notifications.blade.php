@@ -1,12 +1,12 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Notifications |')
+@section('title', 'Messsage Notifications |')
 
 @section('head')
-    <link href="{{ URL::to('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
-    <link href="{{ URL::to('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
 
     <style>
         .label-student-token {
@@ -54,7 +54,7 @@
                             <h2>Messsage Send</h2>
                         </div>
                         <div class="ibox-content">
-                            <form id="notification" method="post" action="{{ route('notifications.send') }}"
+                            <form id="notification" method="post" action="{{ route('msg-notifications.send') }}"
                                 class="form-horizontal">
                                 {{ csrf_field() }}
 
@@ -132,7 +132,24 @@
                                         </small>
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-8" style="margin-bottom: 10px;">
+                                        <small class="text-muted d-block mb-2 font-weight-bold">
+                                            Notification Settings
+                                        </small>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            <label class="radio-inline" style="margin-right: 15px;">
+                                                <input disabled type="checkbox" {{$notificationSettings['mail'] == 1 ? 'checked' : '' }}> Mail
+                                            </label>
+                                            <label class="radio-inline" style="margin-right: 15px;">
+                                                <input disabled type="checkbox" {{$notificationSettings['sms'] == 1 ? 'checked' : '' }}> SMS
+                                            </label>
+                                            <label class="radio-inline" style="margin-right: 15px;">
+                                                <input disabled type="checkbox" {{$notificationSettings['whatsapp'] == 1 ? 'checked' : '' }}> WhatsApp
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type="hidden" v-model="type" name="type" />
                                 <input v-if="type === 'students'" type="hidden" v-model="selectedStudentId"
                                     name="selected_student_id" />
@@ -160,11 +177,11 @@
 
 @section('script')
     <!-- Mainly scripts -->
-    <script src="{{ URL::to('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/dataTables/datatables.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
-    <script src="{{ URL::to('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jeditable/jquery.jeditable.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/dataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('src/js/plugins/axios-1.11.0/axios.min.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -372,7 +389,7 @@
                     console.log("Selected type changed to:", this.type);
                 },
                 getData() {
-                    axios.post('/notifications/get/data', {
+                    axios.post('/msg-notifications/get/data', {
                             type: this.type
                         })
                         .then(response => {

@@ -76,7 +76,7 @@ class FeeScenarioController extends Controller
 				$student->save();
 
 				$student->AdditionalFee()->delete();
-				if (COUNT($request->input('fee')) >= 1) {
+				if ($request->input('fee') && COUNT($request->input('fee')) >= 1) {
 					foreach ($request->input('fee') as $key => $value) {
 						$AdditionalFee = new AdditionalFee;
 						$AdditionalFee->student_id = $student->id;

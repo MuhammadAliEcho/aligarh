@@ -2,7 +2,7 @@
 @section('title', 'Fee Receipts Statment | ')
 
 @section('head')
-	<script src="{{ URL::to('src/moment-develop/min/moment.min.js') }}"></script>
+	<script src="{{ asset('src/moment-develop/min/moment.min.js') }}"></script>
 
 	<style type="text/css">
 		.invoice-title h2, .invoice-title h3 {
@@ -58,7 +58,7 @@
 <div class="container-fluid">
 
 	<div class="row">
-	<h3 class="text-center">{{ config('systemInfo.general.title') }}</h3>
+	<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
 	<h4>Fee Receipts Statment</h4>
 	<h4>Between: ( {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['start'])->Format('M-Y') }} TO {{ Carbon\Carbon::createFromFormat('Y-m-d', $betweendates['end'])->Format('M-Y') }} )</h3>
 		<p>Filters:- 

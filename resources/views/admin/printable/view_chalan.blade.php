@@ -60,30 +60,30 @@
                     <tbody>
                         <tr>
                             <td rowspan="3" style="padding: 5px">
-                                <img alt="image" width="80px" src="{{ URL('/img/logo-1.png') }}">
+                                <img alt="image" width="80px" src="{{ tenancy()->tenant->system_info['general']['logo'] ? route('system-setting.logo') : URL('/img/logo-1.png')}}">
                             </td>
                             <td>
-                                <h2 class="text-center text-success">{{ config('systemInfo.general.name') }}</h2>
+                                <h2 class="text-center text-success">{{ tenancy()->tenant->system_info['general']['name'] }}</h2>
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-center">{{ config('systemInfo.general.address')}}. Tel {{ config('systemInfo.general.contact_no')}}</td>
+                            <td class="text-center">{{ tenancy()->tenant->system_info['general']['address']}}. Tel {{ tenancy()->tenant->system_info['general']['contact_no']}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <table style="width: 500px">
                     <tbody>
                         <tr style="border-top:1px solid black">
-                            <td>{{ config('systemInfo.general.bank_name') }}</td>
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['name'] }}</td>
                             <td rowspan="3" style="padding-top: 10px">
                                 <img alt="image" src="{{ URL('/img/bank.png') }}" style="width: 43px;">
                             </td>
                         </tr>
                         <tr>
-                            <td>{{ config('systemInfo.general.bank_address') }}</td>
+                            <td>{{ tenancy()->tenant->system_info['general']['bank']['address'] }}</td>
                         </tr>
                         <tr>
-                            <td>Account No. {{ config('systemInfo.general.bank_account_no') }}</td>
+                            <td>Account No. {{ tenancy()->tenant->system_info['general']['bank']['account_no'] }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -155,13 +155,11 @@
                 <p style="margin-top: 20px; margin-bottom: 5px; border-bottom: 1px solid">Accountant Signature</p>
 
                 <ol style="margin-bottom: 0px">
-                    <li>All Types of Fees are non refundable.</li>
-                    <li>Late fee of 150 will be charged after 15th of every month irrespective of holidays.</li>
-                    <li>Receipt will only be valid when it bears the bank stamp and signature of the designated bank
-                        officer.</li>
-                    <li>Fee challan will not be valid for payment after 25th of each month.</li>
-                    <li>If the voucher is lost by the parent or student, Rs 70/- will be charged for duplicate receipt.</li>
-                    <li>Only cash will be acceptable.</li>
+                    @php
+                        $terms = tenancy()->tenant->system_info['general']['chalan_term_and_Condition'];
+                        $formatted_terms = nl2br(e($terms));
+                    @endphp
+                    {!! $formatted_terms !!}
                 </ol>
             </div>
         </div>

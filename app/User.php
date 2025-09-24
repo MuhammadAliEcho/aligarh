@@ -42,12 +42,15 @@ class User extends Authenticatable
 
         static::creating(function ($model) {
             $model->created_by 			= Auth::user()->id??2;
-            $model->settings  			=   Auth::user()->settings?? '{"skin_config":{"nav_collapse":""}}';
+            $model->settings  			=   Auth::user()->settings?? ["skin_config"=>["nav_collapse"=>""]]; // its obect it should pas array not like string.
 
         });
         static::updating(function ($model) {
             $model->updated_by  		=   Auth::user()->id??2;
-            $model->settings  			=   Auth::user()->settings?? '{"skin_config":{"nav_collapse":""}}';
+						// whay settings update on here every edit and its cast object it should pass as array you set it as string ..
+            // $model->settings  			=   ["skin_config"=>["nav_collapse"=>""]];
+            // $model->settings  			=     '{"skin_config":{"nav_collapse":""}}';
+            // $model->settings  			=   Auth::user()->settings?? '{"skin_config":{"nav_collapse":""}}';
         });
     }
 
