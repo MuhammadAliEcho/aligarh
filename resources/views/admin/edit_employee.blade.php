@@ -266,7 +266,7 @@
                 toastr.error("{{ $error }}", "Validation Error");
             @endforeach
         </script>
-    @endiript>
+    @endif
 
     <script type="text/javascript">
 
