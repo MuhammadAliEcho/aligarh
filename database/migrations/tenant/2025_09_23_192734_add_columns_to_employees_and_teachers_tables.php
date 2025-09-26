@@ -15,13 +15,13 @@ class AddColumnsToEmployeesAndTeachersTables extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             $table->date('date_of_birth')->nullable()->after('img_url');
-            $table->string('id_card')->unique()->nullable()->after('date_of_birth');
+            $table->string('id_card')->nullable()->after('date_of_birth');
             $table->date('date_of_joining')->nullable()->after('id_card');
         });
 
         Schema::table('teachers', function (Blueprint $table) {
             $table->date('date_of_birth')->nullable()->after('image_url');
-            $table->string('id_card')->unique()->nullable()->after('date_of_birth');
+            $table->string('id_card')->nullable()->after('date_of_birth');
             $table->date('date_of_joining')->nullable()->after('id_card');
         });
     }
