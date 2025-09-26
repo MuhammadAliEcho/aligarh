@@ -256,6 +256,11 @@
                 dueDate: {!! json_encode($dueDate) !!},
                 copies: ['Student\'s Copy', 'School\'s Copy', 'Bank\'s Copy']
             },
+            mounted(){
+                setTimeout(() => {
+                    window.print();
+                }, 800);
+            },
             computed: {
                 invoiceIds: function() {
                     return this.groupInvoices.map((group) => group?.due_invoice?.id).filter(id => id != null).join(', ');

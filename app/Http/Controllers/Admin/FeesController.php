@@ -16,7 +16,8 @@ use DB;
 use PDF;
 use App\Http\Controllers\Controller;
 use App\AcademicSession;
-use Validator;
+use App\Classe;
+use Illuminate\Support\Facades\Validator;
 use Larapack\ConfigWriter\Repository as ConfigWriter;
 
 class FeesController extends Controller
@@ -385,7 +386,6 @@ class FeesController extends Controller
 
 		$data['invoice'] = InvoiceMaster::with('InvoiceDetail')->with('InvoiceMonths')->findOrfail($id);
 		$data['student']	= Student::find($data['invoice']->student_id);
-//		dd($data['invoice']->InvoiceMonths[0]->month);
 		return view('admin.printable.view_chalan', $data);
 	}
 
@@ -458,32 +458,66 @@ class FeesController extends Controller
 
 	public function BulkPrintInvoice(Request $request)
 	{
-		$ids = $request->input('ids');
 
-		if (empty($ids) || !is_array($ids)) {
-			return redirect('fee')->with([
+		// Validate request inputs
+		$validator = Validator::make($request->all(),[
+        'ids' => 'required_without:class_id|array',
+        'ids.*' => 'integer|exists:invoice_master,id',
+        'class_id' => 'required_without:ids|integer|exists:classes,id',
+    ], [
+        'ids.required_without' => 'Please select at least one invoice or provide a class.',
+        'class_id.required_without' => 'Please select a class or provide invoice IDs.',
+        'ids.*.exists' => 'One or more selected invoices do not exist.',
+        'class_id.exists' => 'The selected class does not exist.',
+    ]);
+
+		// ✅ Redirect to 'fee' on validation failure with custom toastr message
+    if ($validator->fails()) {
+        return redirect('fee')->with([
+            'toastrmsg' => [
+                'type'  => 'error',
+                'title' => 'Bulk Print Invoices',
+                'msg'   => $validator->errors()->first(), // Show first validation error
+            ]
+        ]);
+    }
+
+		$ids = $request->input('ids');
+		if($ids){
+			if (empty($ids) || !is_array($ids)) {
+				return redirect('fee')->with([
 				'toastrmsg' => [
 					'type'	=> 'error', 
 					'title'	=>  'Bulk Print Invoices',
 					'msg'	=>  'Please select at least one invoice.'		
-
-				]
-			]);
+					
+					]
+				]);
+			}
+				
+			if (count($ids) > 50) {
+				return redirect('fee')->with([
+					'toastrmsg' => [
+						'type'	=> 'error', 
+						'title'	=>  'Bulk Print Invoices',
+						'msg'	=>  'You can not print more than 50 invoices at a time.'
+						]
+					]);
+				}
+		} else {
+			$classe = Classe::findOrFail($request->input('class_id'));
 		}
 
-		if (count($ids) > 50) {
-			return redirect('fee')->with([
-				'toastrmsg' => [
-					'type'	=> 'error', 
-					'title'	=>  'Bulk Print Invoices',
-					'msg'	=>  'You can not print more than 50 invoices at a time.'
-				]
-			]);
+		$invoices = InvoiceMaster::with(['InvoiceDetail', 'InvoiceMonths']);
+		if($ids){
+			$invoices->whereIn('id', $ids);
+		} else {
+			$invoices->whereHas('Student', function($q) use ($classe) {
+				return $q->where('class_id', $classe->id);
+			});
 		}
 
-		$invoices = InvoiceMaster::with(['InvoiceDetail', 'InvoiceMonths'])
-			->whereIn('id', $ids)
-			->get();
+		$invoices =	$invoices->get();
 
 		if ($invoices->isEmpty()) {
 			abort(404, 'No invoices found.');
