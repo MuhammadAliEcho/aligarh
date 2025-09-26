@@ -4,7 +4,7 @@
 @section('head')
     <style>
         body {
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .invoice-page {
@@ -54,10 +54,6 @@
             color: darkred;
         }
 
-        .hidden-print {
-            display: none;
-        }
-
         .logo {
             width: 80px;
         }
@@ -66,10 +62,30 @@
             width: 43px;
         }
 
-        @media print {
-            .hidden-print {
-                display: none !important;
-            }
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid black !important;
+            padding: 0px;
+        }
+
+        .table>tbody>tr>td {
+            padding: 1px;
+        }
+
+        .fz-12 {
+            font-size: 12px;
+        }
+
+        .fz-13 {
+            font-size: 13px;
+        }
+
+        .fz-14 {
+            font-size: 14px;
+        }
+
+        .fz-16 {
+            font-size: 16px;
         }
     </style>
 @endsection
@@ -194,7 +210,7 @@
                                 @endif
 
                                 <tr>
-                                    <th>Payable within due date</th>
+                                    <th class="text-right">Payable within due date</th>
                                     <th>{{ $invoice->net_amount }}/-</th>
                                 </tr>
                                 <tr>
@@ -203,7 +219,7 @@
                                 </tr>
                             </table>
 
-                            <p style="margin-top: 10px; text-transform: capitalize;" class="inwords">
+                            <p style="margin-top: 10px; text-transform: capitalize;" class="inwords fz-12">
                                 Amount in words: <u>{{ $invoice->net_amount }}</u>
                             </p>
 
