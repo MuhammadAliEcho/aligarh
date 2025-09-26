@@ -306,8 +306,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
      Route::prefix('fee')->name('fee')->group(function(){
         Route::get('/', [FeesController::class, 'Index'])->name('.index');
         Route::get('/group-chalan/{guardian_id}', [FeesController::class, 'GetGroupInvoice'])->name('.group.chalan.print');
-        Route::get('/fee/bulk-invoice/print', [FeesController::class, 'ShowBulkInvoice'])->name('.bulk.invoice.print');
-        Route::post('/bulk-print-invoice', [FeesController::class, 'BulkPrintInvoice'])->name('.bulk.print.invoice');
+        Route::get('/bulk-print-invoice', [FeesController::class, 'BulkPrintInvoice'])->name('.bulk.print.invoice');
         Route::get('/create ', [FeesController::class, 'FindInvoice'])->name('.create');
         Route::post('/create/{id}', [FeesController::class, 'CreateInvoice'])->name('.create.store');
         Route::get('/collect', [FeesController::class, 'GetInvoice'])->name('.get.invoice.collect');

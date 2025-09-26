@@ -161,7 +161,7 @@
                                         @if ($invoice->paid_amount)
                                             <span class="label label-success hidden-print">PAID</span>
                                         @else
-                                            <span class="label label-success hidden-print">UNPAID</span>
+                                            <span class="label label-danger hidden-print">UNPAID</span>
                                         @endif
                                     </td>
                                     <td>Due Date: <u>{{ $invoice->due_date }}</u></td>

@@ -436,17 +436,38 @@ class FeesController extends Controller
 		return view('admin.printable.view_group_chalan', $data);
 	}
 
-	public function ShowBulkInvoice(Request $request)
+	public function BulkPrintInvoice(Request $request)
 	{
-		$ids = session('bulk_invoice_ids');
+		$ids = $request->input('ids');
 
-		if (!$ids || !is_array($ids)) {
-			abort(404, 'No invoice data found.');
+		if (empty($ids) || !is_array($ids)) {
+			return redirect('fee')->with([
+				'toastrmsg' => [
+					'type'	=> 'error', 
+					'title'	=>  'Bulk Print Invoices',
+					'msg'	=>  'Please select at least one invoice.'		
+
+				]
+			]);
+		}
+
+		if (count($ids) > 50) {
+			return redirect('fee')->with([
+				'toastrmsg' => [
+					'type'	=> 'error', 
+					'title'	=>  'Bulk Print Invoices',
+					'msg'	=>  'You can not print more than 50 invoices at a time.'
+				]
+			]);
 		}
 
 		$invoices = InvoiceMaster::with(['InvoiceDetail', 'InvoiceMonths'])
 			->whereIn('id', $ids)
 			->get();
+
+		if ($invoices->isEmpty()) {
+			abort(404, 'No invoices found.');
+		}
 
 		$studentIds = $invoices->pluck('student_id')->unique();
 		$studentsCollection = Student::whereIn('id', $studentIds)->get()->keyBy('id');
@@ -459,23 +480,6 @@ class FeesController extends Controller
 		return view('admin.printable.view_bulk_invoice', [
 			'invoices' => $invoices,
 			'students' => $students
-		]);
-	}
-
-
-
-	public function BulkPrintInvoice(Request $request)
-	{
-		$ids = $request->input('ids');
-
-		if (empty($ids) || !is_array($ids)) {
-			return response()->json(['success' => false, 'message' => 'No invoices selected.']);
-		}
-		session(['bulk_invoice_ids' => $ids]);
-
-		return response()->json([
-			'success' => true,
-			'redirect_url' => route('fee.bulk.invoice.print')
 		]);
 	}
 
