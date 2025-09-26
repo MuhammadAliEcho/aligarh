@@ -174,7 +174,7 @@
                             <td>Due Date. <u>@{{ dueDate }}</u></td>
                         </tr>
                         <tr>
-                            <td>Students. <u>@{{ studentNames | join }}</u></td>
+                            <td>Students. <u>@{{ studentNames }}</u></td>
                             <td>Guardian. <u>{{ $guardian->name }}</u></td>
                         </tr>
                         <tr>
@@ -245,7 +245,7 @@
                 consolidatedFees: {!! json_encode($consolidatedFees) !!},
                 totalPayable: {!! json_encode($totalAmount) !!},
                 totalDiscount: {!! json_encode($totalDiscount) !!},
-                studentNames: {!! json_encode($studentNames) !!},
+                studentNamesForNull: {!! json_encode($studentNames) !!},
                 classNames: {!! json_encode($classNames) !!},
                 uniqueMonths: {!! json_encode($uniqueMonths) !!},
                 totalStudents: {!! json_encode($invoiceCount) !!},
@@ -255,7 +255,18 @@
             },
             computed: {
                 invoiceIds: function() {
-                    return this.groupInvoices.map((invoice) => invoice.id).join(',');
+                    return this.groupInvoices.map((group) => group?.due_invoice?.id).join(',');
+                },
+                filteredInvoices() {
+                    return this.groupInvoices.filter(group => group?.due_invoice);
+                },
+                studentNames() {
+                    const hasAnyDueInvoice = this.groupInvoices.some(group => group?.due_invoice);
+                    if (hasAnyDueInvoice) {
+                        return this.filteredInvoices.map(group => group.name).join(',');
+                    } else {
+                        return this.studentNamesForNull.join(',');
+                    }
                 }
             },
             filters: {
