@@ -492,7 +492,7 @@
                                                 <label class="col-md-2 control-label">Receipt No</label>
                                                 <div class="col-md-6">
                                                     <input type="text" name="receipt_no" placeholder="Receipt NO"
-                                                        value="{{ old('receipt_no') }}" class="form-control" />
+                                                        value="{{ old('receipt_no', $visitorStudents->id) }}" class="form-control" />
                                                     @if ($errors->has('receipt_no'))
                                                         <span class="help-block">
                                                             <strong><span class="fa fa-exclamation-triangle"></span>
