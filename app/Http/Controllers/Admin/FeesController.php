@@ -33,6 +33,26 @@ class FeesController extends Controller
 				->editColumn('guardian_id', function ($row) {
 					return $row->Student->Guardian->id;
 				})
+				->addColumn('paid_status', function ($row) {
+    	    return $row->paid_amount > 0 ? '1' : '0'; // Important: must match dropdown values
+		    })
+				->filterColumn('paid_status', function($query, $keyword) {
+					if ($keyword == '1') {
+							$query->where('paid_amount', '>', 0);
+					} elseif ($keyword == '0') {
+							$query->where('paid_amount', '=', 0);
+					}
+		    })
+				->addColumn('due_status', function ($row) {
+    	    return $row->due_date > now() ? '1' : '0'; // Important: must match dropdown values
+		    })
+				->filterColumn('due_status', function($query, $keyword) {
+					if ($keyword == '1') {
+							$query->where('due_date', '>=', now());
+					} elseif ($keyword == '0') {
+							$query->where('due_date', '<', now());
+					}
+		    })
 				->make(true);
 		}
 		$data['year'] = Carbon::now()->year;

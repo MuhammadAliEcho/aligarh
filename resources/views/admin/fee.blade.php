@@ -73,12 +73,43 @@
 										  <th>GR-No</th>
 										  <th>Total Amount</th>
 										  <th>Discount</th>
+										  <th>Paid Status</th>
 										  <th>Paid Amount</th>
+										  <th>Due Status</th>
 										  <th>Due Date</th>
 										  <th>Issue Date</th>
 										  <th>Options</th>
 										</tr>
 									  </thead>
+										<tfoot>
+											<tr>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th>
+													<select id="filterPaid">
+															<option value="">All</option>
+															<option value="1">Paid</option>
+															<option value="0">Unpaid</option>
+													</select>
+												</th>
+												<th></th>
+												<th>
+													<select id="filterDue">
+															<option value="">All</option>
+															<option value="1">Due</option>
+															<option value="0">Overdue</option>
+													</select>
+												</th>
+												<th></th>
+												<th></th>
+
+											</tr>
+
+										</tfoot>
 									</table>
 								  </div>
 
@@ -478,10 +509,6 @@
 
 		  </div>
 
-
-		  
-
-
 		</div>
 
 	@endsection
@@ -597,7 +624,9 @@
 			{data: 'gr_no', name: 'invoice_master.gr_no'},
 			{data: 'total_amount', name: 'invoice_master.total_amount'},
 			{data: 'discount', name: 'invoice_master.discount'},
+			{data: 'paid_status', name: 'paid_status', visible: false },
 			{data: 'paid_amount', name: 'invoice_master.paid_amount'},
+			{data: 'due_status', name: 'due_status', visible: false },
 			{data: 'due_date', name: 'invoice_master.due_date'},
 			{data: 'created_at', name: 'invoice_master.created_at'},
 			{"defaultContent": opthtm, className: 'hidden-print'},
@@ -686,6 +715,23 @@
 	  @endif
 
 	  });
+		var search = $.fn.dataTable.util.throttle(
+			function(colIdx, val, exactmatch = false) {
+					regExSearch = '^' + val + '$';
+					tbl
+							.column(colIdx)
+							.search(exactmatch ? regExSearch : val, true, false)
+							.draw();
+			},
+			1000
+	);
+
+	$("#filterPaid").on('change', function() {
+			search((5), this.value, (this.value === ''));
+	});
+	$("#filterDue").on('change', function() {
+			search((7), this.value, (this.value === ''));
+	});
 	</script>
 
 	@endsection
