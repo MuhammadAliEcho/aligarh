@@ -7,7 +7,7 @@
     body {
         padding: 0 10px;
         margin: 0;
-        /* font-size: 15px; */
+        font-size: 12px;
         font-family: 'Arial', sans-serif;
         color: #000;
     }
@@ -96,7 +96,7 @@
     ol {
         padding-left: 15px;
         margin-top: 10px;
-        font-size: 13px;
+        font-size: 10px;
     }
 
     ol li {
@@ -254,7 +254,8 @@
                 totalStudents: {!! json_encode($invoiceCount) !!},
                 currentDate: '',
                 dueDate: {!! json_encode($dueDate) !!},
-                copies: ['Student\'s Copy', 'School\'s Copy', 'Bank\'s Copy']
+                copies: ['Student\'s Copy', 'School\'s Copy']
+                // copies: ['Student\'s Copy', 'School\'s Copy', 'Bank\'s Copy']
             },
             mounted(){
                 setTimeout(() => {
