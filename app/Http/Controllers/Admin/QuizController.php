@@ -78,7 +78,7 @@ class QuizController extends Controller
                 ->withInput()
                 ->with([
                     'toastrmsg' => [
-                        'type' => 'Quiz',
+                        'type' => 'error',
                         'title' => 'Quiz',
                         'msg' => 'There was an issue while Creating Quiz',
                     ],

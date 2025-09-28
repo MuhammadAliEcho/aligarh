@@ -58,8 +58,26 @@ class FeesController extends Controller
 		}
 		$data['year'] = Carbon::now()->year;
 		$data['root'] = $job;
+		$data['classes'] = Classe::select('id', 'name')->get();
+		$data['session'] = Auth::user()->AcademicSession;
+		$data['betweendates']	=	[
+				'start'	=>	$data['session']->getRawOriginal('start'),
+//				'start'	=>	$data['student']->getRawOriginal('date_of_enrolled'),
+				// 'start'	=>	Carbon::createFromFormat('Y-m-d', $data['student']->getRawOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
+				'end'	=>	$data['session']->getRawOriginal('end')
+				// 'end'	=> Carbon::now()->addYear()->startOfMonth()->toDateString()
+			];
 
-	    return view('admin.fee', $data);
+		$month = $data['betweendates']['start'];
+		while ($month <= $data['betweendates']['end']) {
+				$data['months'][] = [
+						'selected'	=>	false,
+						'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
+						'value' => Carbon::createFromFormat('Y-m-d', $month)->Format('Y-m-d')
+					];
+			$month = Carbon::createFromFormat('Y-m-d', $month)->addMonth()->format('Y-m-d');
+		}
+		return view('admin.fee', $data);
 	}
 
 	public function FindStudent(Request $request){
@@ -303,13 +321,27 @@ class FeesController extends Controller
 
 	function CreateBulkInvoice(Request $request){
 
-		$request->validate([
+		$validator = Validator::make($request->all(), [
 			'class_id'	=>	'required|exists:classes,id',
 			'months'  			=>  'required|array',
 			'months.*'  			=>  'required|date',
 			'issue_date'		=>	'required|date',
-			'due_date'			=>	'required|date|after_or_equal:issue_date'
+			'due_date'			=>	'required|date|after_or_equal:issue_date',
 		]);
+
+		if($validator->fails()){
+			return redirect('fee')
+			->withErrors($validator)
+			->withInput()
+			->with([
+				'toastrmsg' => [
+					'form' => 'fee.bulk.create.invoice',
+					'type' 	=> 'error', 
+					'title' =>  'Invoice',
+					'msg' 	=>  'There was an issue while Creating Invoice'
+				]
+			]);
+		}
 
 		$classe = Classe::with('Students', 'Students.AdditionalFee')->find($request->input('class_id'));
 		$monthsCount = collect($request->input('months'))->count();
@@ -338,6 +370,7 @@ class FeesController extends Controller
 
 				'created_at'	=>	$request->input('issue_date'),
 				'date'			=>	$request->input('issue_date'),
+				'issue_date'	=>	$request->input('issue_date'),
 				'due_date'	=>	$request->input('due_date'),
 
 				'total_tuition_fee'	=>	($student->tuition_fee * $monthsCount),
@@ -378,9 +411,8 @@ class FeesController extends Controller
 			],
 			'no_of_invoices'	=>	collect($createdInvoices)->count(),
 			'created_invoices' => $createdInvoices,
-			'print_voucher' => route('fee.bulk.print.invoice', $request->only('class_id'))
+			'print_voucher' => route('fee.bulk.print.invoice', ['class_id' => $request->input('class_id'), 'paid' => 0, 'due' => 1])
 		]);
-
 
 	}
 
@@ -600,6 +632,22 @@ class FeesController extends Controller
 			});
 		}
 
+		if($request->filled('paid')) {
+			if($request->input('paid') == 1){
+				$invoices->paid();
+			} else {
+				$invoices->unPaid();
+			}
+		}
+
+		if($request->filled('due')) {
+			if($request->input('due') == 1){
+				$invoices->due();
+			} else {
+				$invoices->overDue();
+			}
+		}
+
 		$invoices =	$invoices->get();
 
 		if ($invoices->isEmpty()) {
@@ -711,6 +759,7 @@ class FeesController extends Controller
 	}
 
 	protected function SaveInvoice($Student, $request){
+
 		$this->InvoiceMaster	=	InvoiceMaster::create(
 					[
 						'student_id' => $Student->id,

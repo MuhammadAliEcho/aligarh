@@ -11,11 +11,12 @@ class InvoiceMaster extends Model
 
 	protected $table = "invoice_master";
 
-	protected $fillable = [
-		'user_id', 'student_id', 'gr_no', 'payment_month',
-		'total_amount', 'discount', 'paid_amount', 'payment_type',
-		'chalan_no', 'date', 'date_of_payment', 'due_date', 'created_at', 'late_fee', 'net_amount'
-	];
+	// protected $fillable = [
+	// 	'user_id', 'student_id', 'gr_no', 'payment_month',
+	// 	'total_amount', 'discount', 'paid_amount', 'payment_type',
+	// 	'chalan_no', 'date', 'date_of_payment', 'due_date', 'created_at', 'late_fee', 'net_amount'
+	// ];
+	Protected $guarded = ['id'];
 
 	public function getCreatedAtAttribute($date) {
 		if (!$date) return null;
@@ -63,6 +64,22 @@ class InvoiceMaster extends Model
 
 	public function Student(){
 		return $this->belongsTo('App\Student');
+	}
+
+	public function scopePaid($query){
+		return $query->where('paid_amount', '>', 0);
+	}
+
+	public function scopeUnPaid($query){
+		return $query->where('paid_amount', 0);
+	}
+
+	public function scopeDue($query){
+		return $query->where('due_date', '>=', now());
+	}
+
+	public function scopeOverDue($query){
+		return $query->where('due_date', '<', now());
 	}
 
 }

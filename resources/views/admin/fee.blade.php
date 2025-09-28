@@ -7,7 +7,7 @@
 	<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
-<!-- 	<link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet"> -->
+	<link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
   @endsection
 
   @section('content')
@@ -48,6 +48,11 @@
 							@can('fee.create.store')
 								<li class="make-fee">
 									<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
+								</li>
+							@endcan
+							@can('fee.bulk.create.invoice')
+								<li class="make-fee">
+									<a data-toggle="tab" href="#tab-14"><span class="fa fa-edit"></span> Create Bulk Invoice</a>
 								</li>
 							@endcan
 							@can('fee.collect.store')
@@ -115,6 +120,87 @@
 
 								</div>
 							</div>
+							@can('fee.bulk.create.invoice')
+								<div id="tab-14" class="tab-pane fade make-fee">
+									<div id="createfeeApp" class="panel-body">
+									<h2> Create Bulk Invoice </h2>
+									<div class="hr-line-dashed"></div>
+
+										<form id="crt_bulk_invoice_frm" method="POST" action="{{ route('fee.bulk.create.invoice') }}" class="form-horizontal jumbotron" role="form" >
+											@csrf
+										<div class="form-group{{ ($errors->has('class_id'))? ' has-error' : '' }}">
+											<label class="col-md-2 control-label"> Class </label>
+											<div class="col-md-6">
+											<select class="form-control" name="class_id" required="true">
+												<option value="" disabled selected>Class</option>
+												@foreach ($classes as $class)
+														<option value="{{ $class->id }}" {{ old('class_id') == $class->id? 'selected' : ''}}>{{ $class->name }}</option>
+												@endforeach
+											</select>
+											@if ($errors->has('class_id'))
+												<span class="help-block">
+													<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('class_id') }} </strong>
+												</span>
+											@endif
+											</div>
+										</div>
+
+										<div class="form-group{{ $errors->has('months') ? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Months</label>
+											<div class="col-md-6">
+												<select class="form-control" id="select2_bulk_months" multiple="multiple" name="months[]" required="true" style="width: 100%">
+													@foreach($months as $month)
+													<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
+													@endforeach
+												</select>
+												@if ($errors->has('months'))
+													<span class="help-block">
+														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('months') }} </strong>
+													</span>
+												@endif
+											</div>
+										</div>
+
+										<div class="form-group{{ $errors->has('issue_date') ? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Issue Date</label>
+											<div class="col-md-6">
+													<input type="text" id="datetimepicker_issuedate" name="issue_date"
+															placeholder="Issue Date" value="{{ old('issue_date') }}"
+															class="form-control" required />
+													@if ($errors->has('issue_date'))
+															<span class="help-block">
+																	<strong><span class="fa fa-exclamation-triangle"></span>
+																			{{ $errors->first('issue_date') }}</strong>
+															</span>
+													@endif
+											</div>
+										</div>
+
+										<div class="form-group{{ $errors->has('due_date') ? ' has-error' : '' }}">
+											<label class="col-md-2 control-label">Due Date</label>
+											<div class="col-md-6">
+													<input type="text" id="datetimepicker_duedate" name="due_date"
+															placeholder="Due Date" value="{{ old('due_date') }}"
+															class="form-control" required />
+													@if ($errors->has('due_date'))
+															<span class="help-block">
+																	<strong><span class="fa fa-exclamation-triangle"></span>
+																			{{ $errors->first('due_date') }}</strong>
+															</span>
+													@endif
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-md-offset-2 col-md-6">
+												<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Create </button>
+											</div>
+										</div>
+
+										</form>
+									</div>
+								</div>
+							@endcan
 							@can('fee.create.store')
 								<div id="tab-11" class="tab-pane fade make-fee">
 									<div id="createfeeApp" class="panel-body">
@@ -529,8 +615,8 @@
 	<script src="{{ asset('src/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
 
 	<!-- require with bootstrap-datetimepicker -->
-<!-- 	<script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
-	<script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script> -->
+	<script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
+	<script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 
 	<script type="text/javascript">
 	var tbl;
@@ -547,14 +633,21 @@
 
 	  $(document).ready(function(){
 
-	  @if((COUNT($errors) >= 1 && !$errors->has('toastrmsg')) || $root == 'create')
-		$('a[href="#tab-11"]').tab('show');
-		@if(isset($Input))
-		  $('[name="gr_no"').val('{{ $Input['gr_no'] }}');
-		@endif
-	  @else
-		$('a[href="#tab-10"]').tab('show');
+	  @if((COUNT($errors) >= 1 && session('toastrmsg.form') == 'fee.bulk.create.invoice'))
+			$('a[href="#tab-14"]').tab('show');
+			$('#select2_bulk_months').val(@json(old('months', [])));
+		@elseif((COUNT($errors) >= 1 && !$errors->has('toastrmsg')))
+			$('a[href="#tab-11"]').tab('show');
+				@if(isset($Input))
+					$('[name="gr_no"]').val('{{ $Input['gr_no'] }}');
+				@endif
+		@else
+			$('a[href="#tab-10"]').tab('show');
 	  @endif
+
+		@if(session('print_voucher'))
+			window.open('{!! session('print_voucher') !!}', '_blank');
+		@endif
 
 		opthtm = '';
 		@can('fee.chalan.print')
@@ -708,6 +801,18 @@
 			},
 			tags: true,
 			// templateResult: select2template,
+		});
+
+		$("#select2_bulk_months").select2({
+			placeholder: "select months"
+		}).change();
+
+		$('#datetimepicker_issuedate').datetimepicker({
+				format: 'YYYY-MM-DD',
+				defaultDate: moment()
+		});
+		$('#datetimepicker_duedate').datetimepicker({
+				format: 'YYYY-MM-DD',
 		});
 
 	  @if(Session::get('invoice_created') !== null)
