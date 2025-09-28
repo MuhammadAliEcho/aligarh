@@ -684,7 +684,7 @@
             </div>
 
             {{-- Students --}}
-            <div class="container text-left" style="margin: 30px 0;">
+            <div class="container-fluid text-left">
                 <h2 class="students-heading">
                     <i class="fa fa-users text-primary"></i> Students
                 </h2>
