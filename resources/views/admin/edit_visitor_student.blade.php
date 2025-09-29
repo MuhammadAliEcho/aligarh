@@ -176,21 +176,6 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group{{ $errors->has('guardian_relation') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Guardian Relation</label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="guardian_relation" placeholder="guardian Relation"
-                                            value="{{ old('guardian_relation', $visitorStudents->guardian_relation) }}"
-                                            class="form-control" />
-                                        @if ($errors->has('guardian_relation'))
-                                            <span class="help-block">
-                                                <strong><span class="fa fa-exclamation-triangle"></span>
-                                                    {{ $errors->first('guardian_relation') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Address</label>
                                     <div class="col-md-6">
@@ -219,7 +204,7 @@
                                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                                     <label class="col-md-2 control-label">Email</label>
                                     <div class="col-md-6">
-                                        <input type="email" name="email" placeholder="guardian Relation"
+                                        <input type="email" name="email" placeholder="Email"
                                             value="{{ old('email', $visitorStudents->email) }}" class="form-control" />
                                         @if ($errors->has('email'))
                                             <span class="help-block">
@@ -229,6 +214,14 @@
                                         @endif
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Remarks</label>
+                                    <div class="col-md-6">
+                                        <textarea type="text" name="remarks" placeholder="Remarks" class="form-control">{{ old('remarks', $visitorStudents->remarks) }}</textarea>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <div class="col-md-offset-2 col-md-6">
                                         <button class="btn btn-primary" type="submit"><span
@@ -281,9 +274,6 @@
                     name: {
                         required: true,
                     },
-                    email: {
-                        email: true,
-                    },
                     father_name: {
                         required: true,
                     },
@@ -294,9 +284,6 @@
                         required: true,
                     },
                     religion: {
-                        required: true,
-                    },
-                    guardian_relation: {
                         required: true,
                     },
                     address: {

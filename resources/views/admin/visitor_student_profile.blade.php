@@ -96,10 +96,6 @@
                                         <td>@{{ student.place_of_birth }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Guardian Relation :</th>
-                                        <td>@{{ student.guardian_relation }}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Last School :</th>
                                         <td>@{{ student.last_school }}</td>
                                     </tr>
@@ -128,6 +124,10 @@
                                         <th>Date Of Visiting :</th>
                                         <td>@{{ student.date_of_visiting }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Remarks :</th>
+                                        <td>@{{ student.remarks }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -148,7 +148,6 @@
                 student: {!! json_encode($visitorStudents, JSON_NUMERIC_CHECK) !!},
             },
             mounted: function() {
-                console.log(this.student);
                 $("[data-toggle='tooltip']").on('mouseenter', function() {
                     $(this).tooltip('show');
                 }).mouseleave(function() {

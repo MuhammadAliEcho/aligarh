@@ -19,11 +19,11 @@ class VisitorStudent extends Model
         'phone',
         'address',
         'place_of_birth',
-        'guardian_relation',
         'date_of_birth',
         'last_school',
         'date_of_visiting',
         'seeking_class',
+        'remarks',
         'created_by',
         'updated_by',
     ];

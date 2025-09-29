@@ -35,7 +35,6 @@ class VistorStudentController extends Controller
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('address', 'like', "%{$search}%")
-                    ->orWhere('guardian_relation', 'like', "%{$search}%")
                     ->orWhere('last_school', 'like', "%{$search}%")
                     ->orWhere('seeking_class', 'like', "%{$search}%")
                     ->orWhere('religion', 'like', "%{$search}%")
@@ -63,17 +62,17 @@ class VistorStudentController extends Controller
                 'name'              => 'required|string|max:255',
                 'father_name'       => 'required|string',
                 'class'             => 'required|exists:classes,id',
-                'email'             => 'required|unique:visitor_students,email',
+                'email'             => 'nullable|unique:visitor_students,email',
                 'religion'           => 'required|string',
                 'phone'             => 'required|string',
                 'gender'             => 'required|string|in:Male,Female',
                 'address'           => 'required|string',
                 'seeking_class'     => 'required|string',
                 'place_of_birth'    => 'required|string',
-                'guardian_relation' => 'required|string',
                 'last_school'       => 'required|string',
                 'date_of_birth'     => 'required|date|date_format:Y-m-d',
                 'date_of_visiting'  => 'required|date|date_format:Y-m-d',
+                'remarks'           => 'nullable|string|max:1000',
             ]
         );
 
@@ -101,10 +100,10 @@ class VistorStudentController extends Controller
             'seeking_class'         => $request->input('seeking_class'),
             'address'               => $request->input('address'),
             'place_of_birth'        => $request->input('place_of_birth'),
-            'guardian_relation'     => $request->input('guardian_relation'),
             'date_of_birth'         => $request->input('date_of_birth'),
             'last_school'           => $request->input('last_school'),
             'date_of_visiting'      => $request->input('date_of_visiting'),
+            'remarks'               => $request->input('remarks'),
         ]);
 
         return redirect('visitors')->with([
@@ -139,17 +138,17 @@ class VistorStudentController extends Controller
                 'name'              => 'sometimes|required|string|max:255',
                 'father_name'       => 'sometimes|required|string',
                 'class'             => 'sometimes|required|exists:classes,id',
-                'email'             => 'sometimes|required|email|unique:visitor_students,email,' . $id,
+                'email'             => 'nullable|email|unique:visitor_students,email,' . $id,
                 'religion'          => 'sometimes|required|string',
                 'phone'             => 'sometimes|required|string',
                 'gender'            => 'sometimes|required|string|in:Male,Female',
                 'address'           => 'sometimes|required|string',
                 'seeking_class'     => 'sometimes|required|string',
                 'place_of_birth'    => 'sometimes|required|string',
-                'guardian_relation' => 'sometimes|required|string',
                 'last_school'       => 'sometimes|required|string',
                 'date_of_birth'     => 'sometimes|required|date|date_format:Y-m-d',
                 // 'date_of_visiting'  => 'required|date|date_format:Y-m-d',
+                'remarks'           => 'nullable|string|max:1000',
             ]
         );
 
@@ -177,9 +176,9 @@ class VistorStudentController extends Controller
             'seeking_class'     => $request->input('seeking_class'),
             'address'           => $request->input('address'),
             'place_of_birth'    => $request->input('place_of_birth'),
-            'guardian_relation' => $request->input('guardian_relation'),
             'date_of_birth'     => $request->input('date_of_birth'),
             'last_school'       => $request->input('last_school'),
+            'remarks'           => $request->input('remarks'),
             // 'date_of_visiting'  => $request->input('date_of_visiting'),
         ]);
 
