@@ -94,6 +94,11 @@ class Student extends Model
 		return $this->hasOne('App\Classe', 'id', 'class_id');
 	}
 
+	public function StudentClass()
+	{
+		return $this->belongsTo('App\Classe', 'class_id');
+	}
+
 	public function Section()
 	{
 		return $this->hasOne('App\Section', 'id', 'section_id');

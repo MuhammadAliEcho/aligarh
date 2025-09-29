@@ -88,7 +88,15 @@
 									  </thead>
 										<tfoot>
 											<tr>
-												<th></th>
+												<th>
+													<select id="filterClass">
+														<option value="">All</option>
+														@foreach ($classes as $class)
+															<option value="{{ $class->id }}">{{ $class->name }}
+															</option>
+														@endforeach
+													</select>
+												</th>
 												<th></th>
 												<th></th>
 												<th></th>
@@ -703,7 +711,12 @@
 		  Processing: true,
 		  serverSide: true,
 		  order: [[0, "desc"]],
-		  ajax: '{{ URL('fee') }}',
+		  ajax: {
+			url: '{{ URL('fee') }}',
+			data: function(d) {
+				d.class_id = $('#filterClass').val(); 
+		  	}
+		  },
 		  columns: [
 			{
 				data: 'id',
@@ -836,6 +849,10 @@
 	});
 	$("#filterDue").on('change', function() {
 			search((7), this.value, (this.value === ''));
+	});
+	$("#filterClass").on('change', function() {
+		// console.log('Filter changed to:', this.value); 
+		tbl.ajax.reload();
 	});
 	</script>
 

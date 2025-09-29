@@ -24,36 +24,57 @@ class FeesController extends Controller
 {
 	protected $mons = [], $InvoiceMaster;
 
-	public function Index(Request $request, array $data = [], $job = ''){
+	public function Index(Request $request, array $data = [], $job = '')
+	{
+		$data['classes'] = Classe::select('id', 'name')->get();
 
 		if ($request->ajax()) {
-			return DataTables::eloquent(InvoiceMaster::query()->with('Student.Guardian:id'))
+
+			$class_id = $request->input('class_id');
+			$query = InvoiceMaster::query()->with('Student.Guardian:id', 'Student.StudentClass:id,name');
+			if ($class_id) {
+				$query->whereHas('Student.StudentClass', function ($q) use ($class_id) {
+					$q->where('id', $class_id);
+				});
+			}
+			return DataTables::eloquent($query)
 				->editColumn('created_at', function ($row) {
 					return Carbon::parse($row->created_at)->format('Y-m-d');
 				})
 				->editColumn('guardian_id', function ($row) {
-					return $row->Student->Guardian->id;
+					return $row->Student->Guardian->id ?? '';
+				})
+				->editColumn('class_id', function ($row) {
+					return $row->Student->StudentClass->id ?? '';
+				})
+				->editColumn('class_name', function ($row) {
+					return $row->Student->StudentClass->name ?? '';
 				})
 				->addColumn('paid_status', function ($row) {
-    	    return $row->paid_amount > 0 ? '1' : '0'; // Important: must match dropdown values
-		    })
+					return $row->paid_amount > 0 ? '1' : '0'; // Important: must match dropdown values
+				})
 				->filterColumn('paid_status', function($query, $keyword) {
 					if ($keyword == '1') {
-							$query->where('paid_amount', '>', 0);
+						$query->where('paid_amount', '>', 0);
 					} elseif ($keyword == '0') {
-							$query->where('paid_amount', '=', 0);
+						$query->where('paid_amount', '=', 0);
 					}
-		    })
+				})
 				->addColumn('due_status', function ($row) {
-    	    return $row->due_date > now() ? '1' : '0'; // Important: must match dropdown values
-		    })
+					return $row->due_date > now() ? '1' : '0'; // Important: must match dropdown values
+				})
 				->filterColumn('due_status', function($query, $keyword) {
 					if ($keyword == '1') {
-							$query->where('due_date', '>=', now());
+						$query->where('due_date', '>=', now());
 					} elseif ($keyword == '0') {
-							$query->where('due_date', '<', now());
+						$query->where('due_date', '<', now());
 					}
-		    })
+				})
+				->filterColumn('class_name', function ($query, $keyword) {
+					$query->whereHas('Student.StudentClass', function ($q) use ($keyword) {
+						$q->where('name', 'like', "%{$keyword}%");
+					});
+				})
 				->make(true);
 		}
 		$data['year'] = Carbon::now()->year;
@@ -61,20 +82,20 @@ class FeesController extends Controller
 		$data['classes'] = Classe::select('id', 'name')->get();
 		$data['session'] = Auth::user()->AcademicSession;
 		$data['betweendates']	=	[
-				'start'	=>	$data['session']->getRawOriginal('start'),
-//				'start'	=>	$data['student']->getRawOriginal('date_of_enrolled'),
-				// 'start'	=>	Carbon::createFromFormat('Y-m-d', $data['student']->getRawOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
-				'end'	=>	$data['session']->getRawOriginal('end')
-				// 'end'	=> Carbon::now()->addYear()->startOfMonth()->toDateString()
-			];
+			'start'	=>	$data['session']->getRawOriginal('start'),
+			//				'start'	=>	$data['student']->getRawOriginal('date_of_enrolled'),
+			// 'start'	=>	Carbon::createFromFormat('Y-m-d', $data['student']->getRawOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
+			'end'	=>	$data['session']->getRawOriginal('end')
+			// 'end'	=> Carbon::now()->addYear()->startOfMonth()->toDateString()
+		];
 
 		$month = $data['betweendates']['start'];
 		while ($month <= $data['betweendates']['end']) {
-				$data['months'][] = [
-						'selected'	=>	false,
-						'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
-						'value' => Carbon::createFromFormat('Y-m-d', $month)->Format('Y-m-d')
-					];
+			$data['months'][] = [
+				'selected'	=>	false,
+				'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
+				'value' => Carbon::createFromFormat('Y-m-d', $month)->Format('Y-m-d')
+			];
 			$month = Carbon::createFromFormat('Y-m-d', $month)->addMonth()->format('Y-m-d');
 		}
 		return view('admin.fee', $data);
@@ -84,11 +105,11 @@ class FeesController extends Controller
 		if ($request->ajax()) {
 			$students = Student::where('gr_no', 'LIKE', '%'.$request->Input('q').'%')
 								->orwhere('name', 'LIKE', '%'.$request->Input('q').'%')
-									->get();
+				->get();
 			foreach ($students as $k=>$student) {
 				$data[$k]['id'] = $student->id;
 				$data[$k]['text'] = $student->gr_no.' | '.$student->name;
-/*				$data[$k]['htm1'] = '<span class="text-danger">';
+				/*				$data[$k]['htm1'] = '<span class="text-danger">';
 				$data[$k]['htm2'] = '</span>';*/
 			}
 			return response(isset($data)? $data : [0 => ['text' => 'No Data Available']]);
@@ -100,7 +121,7 @@ class FeesController extends Controller
 		$this->validate($request, [
 			'gr_no'  	=>  'required',
 			//'month'  	=>  'required',
-    	]);
+		]);
 
 		$data['student'] = Student::find($request->input('gr_no'));
 
@@ -115,7 +136,7 @@ class FeesController extends Controller
 			if($invoice->getRawOriginal('due_date') >= Carbon::now()->toDateString()){
 				return redirect('fee')->withInput()->withErrors(['gr_no' => "Invoice# $invoice->id already created"])->with([
 					'toastrmsg' => [
-						'type' => 'info', 
+						'type' => 'info',
 						'title'  =>  "Invoice# $invoice->id",
 						'msg' =>  'Invoice Already Created'
 					],
@@ -163,7 +184,7 @@ class FeesController extends Controller
 			];
 		}
 
-	    return view('admin.fee.edit_fee_invoice', $data);
+		return view('admin.fee.edit_fee_invoice', $data);
 
 	}
 
@@ -201,7 +222,7 @@ class FeesController extends Controller
 
 		])->save();
 
-			InvoiceDetail::where('invoice_id', $InvoiceMaster->id)->delete();
+		InvoiceDetail::where('invoice_id', $InvoiceMaster->id)->delete();
 
 		foreach ($request->input('additionalfee') as $key => $fee) {
 
@@ -231,7 +252,7 @@ class FeesController extends Controller
 
 		return redirect('fee')->with([
 			'toastrmsg' => [
-				'type' => 'success', 
+				'type' => 'success',
 				'title'  =>  'Invoice',
 				'msg' =>  'Invoice Updated Successfull'
 			],
@@ -242,18 +263,18 @@ class FeesController extends Controller
 
 	protected function FetchMonths($data){
 		$data['betweendates']	=	[
-//				'start'	=>	$data['session']->getRawOriginal('start'),
-//				'start'	=>	$data['student']->getRawOriginal('date_of_enrolled'),
-				'start'	=>	Carbon::createFromFormat('Y-m-d', $data['student']->getRawOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
-//				'end'	=>	$data['session']->getRawOriginal('end')
-				'end'	=> Carbon::now()->addYear()->startOfMonth()->toDateString()
-			];
+			//				'start'	=>	$data['session']->getRawOriginal('start'),
+			//				'start'	=>	$data['student']->getRawOriginal('date_of_enrolled'),
+			'start'	=>	Carbon::createFromFormat('Y-m-d', $data['student']->getRawOriginal('date_of_enrolled'))->startOfMonth()->toDateString(),
+			//				'end'	=>	$data['session']->getRawOriginal('end')
+			'end'	=> Carbon::now()->addYear()->startOfMonth()->toDateString()
+		];
 
 		$data['payment_months'] = InvoiceMonth::select('month')
-											->whereBetween('month', [$data['betweendates']['start'], $data['betweendates']['end']])
-											->where([
-												'student_id' => $data['student']->id,
-											])->get();
+			->whereBetween('month', [$data['betweendates']['start'], $data['betweendates']['end']])
+			->where([
+				'student_id' => $data['student']->id,
+			])->get();
 
 		$month = $data['betweendates']['start'];
 		while ($month <= $data['betweendates']['end']) {
@@ -261,17 +282,17 @@ class FeesController extends Controller
 			if ($data['payment_months']) {
 				if ($data['payment_months']->where('month', Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'))->count() === 0) {
 					$this->mons[] = [
-							'selected'	=>	false,
-							'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
-							'value' => Carbon::createFromFormat('Y-m-d', $month)->Format('Y-m-d')
-						];
-				}
-			} else {
-				$this->mons[] = [
 						'selected'	=>	false,
 						'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
 						'value' => Carbon::createFromFormat('Y-m-d', $month)->Format('Y-m-d')
 					];
+				}
+			} else {
+				$this->mons[] = [
+					'selected'	=>	false,
+					'title' => Carbon::createFromFormat('Y-m-d', $month)->Format('M-Y'),
+					'value' => Carbon::createFromFormat('Y-m-d', $month)->Format('Y-m-d')
+				];
 			}
 
 			$month = Carbon::createFromFormat('Y-m-d', $month)->addMonth()->format('Y-m-d');
@@ -287,17 +308,17 @@ class FeesController extends Controller
 			'due_date'			=>	'required|date|after_or_equal:issue_date'
 		]);
 
-		
+
 		$Student = Student::findOrfail($id);
 		$AdditionalFee = $Student->AdditionalFee;
-		
+
 		$validateInvoiceMonth = InvoiceMonth::where('student_id', $Student->id)
 			->whereIn('month', $request->input('months'))->get();
 
 		if($validateInvoiceMonth->count()){
 			return redirect()->back()->with([
 				'toastrmsg' => [
-					'type' => 'info', 
+					'type' => 'info',
 					'title'  =>  "Invoice",
 					'msg' =>  'Invoice Already Created'
 				],
@@ -307,11 +328,11 @@ class FeesController extends Controller
 		$this->SaveInvoice($Student, $request);
 		$this->SaveDetails($request, $AdditionalFee, $Student);
 		$this->SaveMonths($request, $Student);
-		
-//		dd($request->all());
+
+		//		dd($request->all());
 		return redirect('fee')->with([
 			'toastrmsg' => [
-				'type' => 'success', 
+				'type' => 'success',
 				'title'  =>  'Invoice',
 				'msg' =>  'Invoice Created Successfull'
 			],
@@ -331,16 +352,16 @@ class FeesController extends Controller
 
 		if($validator->fails()){
 			return redirect('fee')
-			->withErrors($validator)
-			->withInput()
-			->with([
-				'toastrmsg' => [
-					'form' => 'fee.bulk.create.invoice',
-					'type' 	=> 'error', 
-					'title' =>  'Invoice',
-					'msg' 	=>  'There was an issue while Creating Invoice'
-				]
-			]);
+				->withErrors($validator)
+				->withInput()
+				->with([
+					'toastrmsg' => [
+						'form' => 'fee.bulk.create.invoice',
+						'type' 	=> 'error',
+						'title' =>  'Invoice',
+						'msg' 	=>  'There was an issue while Creating Invoice'
+					]
+				]);
 		}
 
 		$classe = Classe::with('Students', 'Students.AdditionalFee')->find($request->input('class_id'));
@@ -350,14 +371,14 @@ class FeesController extends Controller
 		foreach ($classe->Students as $key => $student) {
 
 			$invoiceMonthCount = InvoiceMonth::where('student_id', $student->id)
-			->whereIn('month', $request->input('months'))->count();
+				->whereIn('month', $request->input('months'))->count();
 
 			if($invoiceMonthCount){
 				continue;	// continue to next
 			}
 
 			$previousInvoice =	InvoiceMaster::where('student_id', $student->id)->orderBy('id', 'desc')->first();
-			
+
 			if($previousInvoice && $previousInvoice->getRawOriginal('due_date') >= now()->toDateString()){
 				continue; // continue to next
 			}
@@ -389,7 +410,7 @@ class FeesController extends Controller
 			}
 
 			$invoice = $this->SaveInvoice($student, $data);
-			
+
 			$this->SaveDetails($data, $student->AdditionalFee?? [], $student);
 
 			$this->SaveMonths($data, $student);
@@ -405,7 +426,7 @@ class FeesController extends Controller
 
 		return redirect('fee')->with([
 			'toastrmsg' => [
-				'type' => 'success', 
+				'type' => 'success',
 				'title'  =>  'Invoice',
 				'msg' =>  $no_of_invoices . ' Invoices were created successfully'
 			],
@@ -421,27 +442,27 @@ class FeesController extends Controller
 		if($request->ajax() == false){
 			return redirect('fee')->with([
 				'toastrmsg' => [
-					'type'	=> 'warning', 
+					'type'	=> 'warning',
 					'title'	=>  'Student Fee',
 					'msg'	=>  'Something is wrong!'
 				]
 			]);
 		}
 
-        $validator = Validator::make($request->all(), [
+		$validator = Validator::make($request->all(), [
 			'invoice_no'  	=>  'required|integer|exists:invoice_master,id',
 			'date_of_payment'	=>	'sometimes|required|date',
 			'paid_amount'	=>	'sometimes|required|integer',
 			'payment_type'	=>	'sometimes|required|in:Cash,Chalan',
-        ]);
+		]);
 
-        if ($validator->fails()) {
+		if ($validator->fails()) {
 			return response([
-				'type'	=> 'error', 
+				'type'	=> 'error',
 				'title'	=>  'Student Fee',
 				'msg'	=>  'Error in posting fee invoice'
 			], 422);
-        }
+		}
 
 		$invoice = InvoiceMaster::findOrfail($request->input('invoice_no'));
 		$invoice->date_of_payment = $request->input('date_of_payment');
@@ -450,7 +471,7 @@ class FeesController extends Controller
 		$invoice->save();
 
 		return response([
-			'type'	=> 'success', 
+			'type'	=> 'success',
 			'title'	=>  'Student Fee',
 			'msg'	=>  'Invoice paid successfully'
 		], 200);
@@ -462,24 +483,24 @@ class FeesController extends Controller
 		if($request->ajax() == false){
 			return redirect('fee')->with([
 				'toastrmsg' => [
-					'type'	=> 'warning', 
+					'type'	=> 'warning',
 					'title'	=>  'Student Fee',
 					'msg'	=>  'Something is wrong!'
 				]
 			]);
 		}
 
-        $validator = Validator::make($request->all(), [
+		$validator = Validator::make($request->all(), [
 			'invoice_no'  	=>  'required|integer|exists:invoice_master,id',
-        ]);
+		]);
 
-        if ($validator->fails()) {
+		if ($validator->fails()) {
 			return response([
-				'type'	=> 'error', 
+				'type'	=> 'error',
 				'title'	=>  'Student Fee',
 				'msg'	=>  'Invoice No not exists!'
 			], 422);
-        }
+		}
 		$invoice = InvoiceMaster::findOrfail($request->input('invoice_no'));
 		$data['invoice_detail'] = $invoice->InvoiceDetail;
 		$data['invoice_months'] = $invoice->InvoiceMonths;
@@ -488,12 +509,12 @@ class FeesController extends Controller
 
 		$data['student']	= Student::with('StdClass')->find($data['invoice']['student_id']);
 
-        return response()->json($data, 200, ['Content-Type' => 'application/json'], JSON_NUMERIC_CHECK);
+		return response()->json($data, 200, ['Content-Type' => 'application/json'], JSON_NUMERIC_CHECK);
 	}
 
 	public function PrintInvoice($id){
 		$data['invoice'] = InvoiceMaster::findOrfail($id);
-//		return PDF::loadView('admin.printable.view_invoice', $data)->stream();
+		//		return PDF::loadView('admin.printable.view_invoice', $data)->stream();
 		return view('admin.printable.view_invoice', $data);
 	}
 
@@ -525,14 +546,14 @@ class FeesController extends Controller
 		$totalAmount = 0;
 		$consolidatedFees = [];
 		$uniqueMonths = [];
-		$totalDiscount = 0; 
+		$totalDiscount = 0;
 		$dueInvoice = null;
 
 		$groupInvoice->each(function ($student) use (&$totalAmount, &$consolidatedFees, &$uniqueMonths, &$totalDiscount, &$dueInvoice) {
 			if ($student->dueInvoice) {
 				$invoice = $student->dueInvoice;
 				$totalAmount += $invoice->net_amount;
-				$totalDiscount += $invoice->discount ?? 0; 
+				$totalDiscount += $invoice->discount ?? 0;
 
 				$dueInvoice = $dueInvoice? $dueInvoice : $invoice->due_date;
 
@@ -576,49 +597,49 @@ class FeesController extends Controller
 
 		// Validate request inputs
 		$validator = Validator::make($request->all(),[
-        'ids' => 'required_without:class_id|array',
-        'ids.*' => 'integer|exists:invoice_master,id',
-        'class_id' => 'required_without:ids|integer|exists:classes,id',
-    ], [
-        'ids.required_without' => 'Please select at least one invoice or provide a class.',
-        'class_id.required_without' => 'Please select a class or provide invoice IDs.',
-        'ids.*.exists' => 'One or more selected invoices do not exist.',
-        'class_id.exists' => 'The selected class does not exist.',
-    ]);
+			'ids' => 'required_without:class_id|array',
+			'ids.*' => 'integer|exists:invoice_master,id',
+			'class_id' => 'required_without:ids|integer|exists:classes,id',
+		], [
+			'ids.required_without' => 'Please select at least one invoice or provide a class.',
+			'class_id.required_without' => 'Please select a class or provide invoice IDs.',
+			'ids.*.exists' => 'One or more selected invoices do not exist.',
+			'class_id.exists' => 'The selected class does not exist.',
+		]);
 
 		// ✅ Redirect to 'fee' on validation failure with custom toastr message
-    if ($validator->fails()) {
-        return redirect('fee')->with([
-            'toastrmsg' => [
-                'type'  => 'error',
-                'title' => 'Bulk Print Invoices',
-                'msg'   => $validator->errors()->first(), // Show first validation error
-            ]
-        ]);
-    }
+		if ($validator->fails()) {
+			return redirect('fee')->with([
+				'toastrmsg' => [
+					'type'  => 'error',
+					'title' => 'Bulk Print Invoices',
+					'msg'   => $validator->errors()->first(), // Show first validation error
+				]
+			]);
+		}
 
 		$ids = $request->input('ids');
 		if($ids){
 			if (empty($ids) || !is_array($ids)) {
 				return redirect('fee')->with([
-				'toastrmsg' => [
-					'type'	=> 'error', 
-					'title'	=>  'Bulk Print Invoices',
-					'msg'	=>  'Please select at least one invoice.'		
-					
+					'toastrmsg' => [
+						'type'	=> 'error',
+						'title'	=>  'Bulk Print Invoices',
+						'msg'	=>  'Please select at least one invoice.'
+
 					]
 				]);
 			}
-				
+
 			if (count($ids) > 50) {
 				return redirect('fee')->with([
 					'toastrmsg' => [
-						'type'	=> 'error', 
+						'type'	=> 'error',
 						'title'	=>  'Bulk Print Invoices',
 						'msg'	=>  'You can not print more than 50 invoices at a time.'
-						]
-					]);
-				}
+					]
+				]);
+			}
 		} else {
 			$classe = Classe::findOrFail($request->input('class_id'));
 		}
@@ -683,19 +704,19 @@ class FeesController extends Controller
 			}
 
 			return response()->json($data['student'], 
-				200, 
+				200,
 				['Content-Type' => 'application/json'],
 				JSON_NUMERIC_CHECK);
 
 		}
 
 		return redirect('fee')->with([
-									'toastrmsg' => [
-										'type'	=> 'warning', 
-										'title'	=>  'Student Fee',
-										'msg'	=>  'Something is wrong!'
-									]
-								]);
+			'toastrmsg' => [
+				'type'	=> 'warning',
+				'title'	=>  'Student Fee',
+				'msg'	=>  'Something is wrong!'
+			]
+		]);
 
 	}
 
@@ -710,7 +731,7 @@ class FeesController extends Controller
 
 			if ($validator->fails()) {
 				return  [
-					'type'	=> 'error', 
+					'type'	=> 'error',
 					'title'	=>  'Student Fee',
 					'msg'	=>  'Something is wrong!'
 				];
@@ -725,21 +746,21 @@ class FeesController extends Controller
 			$Student->total_amount = $request->input('total_amount');
 			$Student->save();
 			$this->UpdateAdditionalFee($Student, $request);
-		
+
 			return	[
-				'type'	=> 'success', 
+				'type'	=> 'success',
 				'title'	=>  'Student Fee',
 				'msg'	=>  'Update Fee Successfull'
 			];
 		}
-	
+
 		return redirect('fee')->with([
-									'toastrmsg' => [
-										'type'	=> 'warning', 
-										'title'	=>  'Student Fee',
-										'msg'	=>  'Something is wrong!'
-									]
-								]);
+			'toastrmsg' => [
+				'type'	=> 'warning',
+				'title'	=>  'Student Fee',
+				'msg'	=>  'Something is wrong!'
+			]
+		]);
 	}
 
 	protected function UpdateAdditionalFee($Student, $request){
@@ -761,9 +782,9 @@ class FeesController extends Controller
 	protected function SaveInvoice($Student, $request){
 
 		$this->InvoiceMaster	=	InvoiceMaster::create(
-					[
-						'student_id' => $Student->id,
-						'gr_no' => $Student->gr_no,
+			[
+				'student_id' => $Student->id,
+				'gr_no' => $Student->gr_no,
 
 						'late_fee'	=>	$request['late_fee']?? 0,
 						'created_at'	=>	$request['issue_date']?? 0,
@@ -774,11 +795,11 @@ class FeesController extends Controller
 						'discount' => $request['discount']?? 0,
 						'net_amount'	=>	$request['net_amount']?? 0,
 
-/* 						'payment_type' => $request->input('payment_type'),
+				/* 						'payment_type' => $request->input('payment_type'),
 						'chalan_no' => ($request->input('payment_type') == 'Chalan')? $request->input('chalan_no') : null,
 						'date' => $request->input('date'), */
-					]
-				);
+			]
+		);
 		return $this->InvoiceMaster;
 	}
 
@@ -789,7 +810,7 @@ class FeesController extends Controller
 				'fee_name'		=>	'Tuition Fee'
 			],
 			[
-//				'amount'	=>	($this->Student->tuition_fee * COUNT($request->input('months')))
+				//				'amount'	=>	($this->Student->tuition_fee * COUNT($request->input('months')))
 				'amount'	=>	$request['total_tuition_fee']?? 0,
 			]
 		);
