@@ -541,66 +541,81 @@ class FeesController extends Controller
 
 	public function GetGroupInvoice(Request $request, $guardian_id)
 	{
-		$guardian = Guardian::findOrFail($guardian_id);
+    $guardian = Guardian::findOrFail($guardian_id);
 
-		$groupInvoice = Student::with([
-			'dueInvoice',
-			'dueInvoice.InvoiceDetail',
-			'dueInvoice.InvoiceMonths',
-			'std_class'
-		])
-			->where('guardian_id', $guardian_id)
-			->get();
+    $groupInvoice = Student::with([
+        'dueInvoice',
+        'dueInvoice.InvoiceDetail',
+        'dueInvoice.InvoiceMonths',
+        'std_class'
+    ])
+        ->where('guardian_id', $guardian_id)
+        ->get();
 
-		$studentNames = $groupInvoice->pluck('name')->all();
-		$classNames = $groupInvoice->pluck('std_class.name')->map(function ($name) {
-			return $name ?? 'N/A';
-		})->all();
+    // Filter students with due invoices
+    $studentsWithInvoices = $groupInvoice->filter(function ($student) {
+        return $student->dueInvoice !== null;
+    });
 
-		$totalAmount = 0;
-		$consolidatedFees = [];
-		$uniqueMonths = [];
-		$totalDiscount = 0;
-		$dueInvoice = null;
+    // Abort with 404 if no invoices found
+    if ($studentsWithInvoices->isEmpty()) {
+        abort(404, 'No due invoices found for this guardian.');
+    }
 
-		$groupInvoice->each(function ($student) use (&$totalAmount, &$consolidatedFees, &$uniqueMonths, &$totalDiscount, &$dueInvoice) {
-			if ($student->dueInvoice) {
-				$invoice = $student->dueInvoice;
-				$totalAmount += $invoice->net_amount;
-				$totalDiscount += $invoice->discount ?? 0;
+    $studentNames = $studentsWithInvoices->pluck('name')->all();
+    $classNames = $studentsWithInvoices->pluck('std_class.name')->map(function ($name) {
+        return $name ?? 'N/A';
+    })->all();
 
-				$dueInvoice = $dueInvoice? $dueInvoice : $invoice->due_date;
+    $totalAmount = 0;
+    $consolidatedFees = [];
+    $uniqueMonths = [];
+    $totalDiscount = 0;
+    $dueDate = null;
 
-				// Unique months
-				collect($invoice->InvoiceMonths)
-					->pluck('month')
-					->each(function ($month) use (&$uniqueMonths) {
-						if (!in_array($month, $uniqueMonths)) {
-							$uniqueMonths[] = $month;
-						}
-					});
+    $studentsWithInvoices->each(function ($student) use (
+        &$totalAmount,
+        &$consolidatedFees,
+        &$uniqueMonths,
+        &$totalDiscount,
+        &$dueDate
+    ) {
+        $invoice = $student->dueInvoice;
 
-				// Consolidated fees
-				collect($invoice->InvoiceDetail)->each(function ($detail) use (&$consolidatedFees) {
-					$consolidatedFees[$detail->fee_name] = ($consolidatedFees[$detail->fee_name] ?? 0) + $detail->amount;
-				});
-			}
-		});
+        $totalAmount += $invoice->net_amount;
+        $totalDiscount += $invoice->discount ?? 0;
 
-		$data = [
-			'dueDate' => $dueInvoice,
-			'groupInvoice' => $groupInvoice,
-			'guardian' => $guardian,
-			'totalAmount' => $totalAmount,
-			'totalDiscount' => $totalDiscount,
-			'consolidatedFees' => $consolidatedFees,
-			'uniqueMonths' => $uniqueMonths,
-			'studentNames' => array_unique($studentNames),
-			'classNames' => array_unique($classNames),
-			'invoiceCount' => $groupInvoice->filter(function ($student) {
-				return $student->dueInvoice !== null;
-			})->count()
-		];
+        if (!$dueDate) {
+            $dueDate = $invoice->due_date;
+        }
+
+        // Unique months
+        collect($invoice->InvoiceMonths ?? [])
+            ->pluck('month')
+            ->each(function ($month) use (&$uniqueMonths) {
+                if (!in_array($month, $uniqueMonths)) {
+                    $uniqueMonths[] = $month;
+                }
+            });
+
+        // Consolidated fees
+        collect($invoice->InvoiceDetail ?? [])->each(function ($detail) use (&$consolidatedFees) {
+            $consolidatedFees[$detail->fee_name] = ($consolidatedFees[$detail->fee_name] ?? 0) + $detail->amount;
+        });
+    });
+
+    $data = [
+        'dueDate' => $dueDate,
+        'groupInvoice' => $studentsWithInvoices->values(),
+        'guardian' => $guardian,
+        'totalAmount' => $totalAmount,
+        'totalDiscount' => $totalDiscount,
+        'consolidatedFees' => $consolidatedFees,
+        'uniqueMonths' => $uniqueMonths,
+        'studentNames' => array_unique($studentNames),
+        'classNames' => array_unique($classNames),
+        'invoiceCount' => $studentsWithInvoices->count()
+    ];
 
 		// ddd($data);
 		return view('admin.printable.view_group_chalan', $data);
