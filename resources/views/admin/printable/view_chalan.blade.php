@@ -93,7 +93,7 @@
                 <table style="margin-top: 15px">
                     <tbody>
                         <tr>
-                            <td width="250px">R.No. <u>@{{ Invoice.id }}</u></td>
+                            <td width="250px">Bill No. <u>@{{ Invoice.id }}</u></td>
                             <td width="250px">Issue Date. <u>@{{ formatDate(Invoice.created_at) }}</u></td>
                         </tr>
                         <tr>
@@ -106,7 +106,7 @@
                             <td>Father's Name. <u>{{ $student->father_name }}</u></td>
                         </tr>
                         <tr>
-                            <td>Class. <u>{{ $student->std_class->name }}</u></td>
+                            <td>Class. <u>{{ $student->std_class->prifix }}</u></td>
                             <td>G.R No. <u>{{ $student->gr_no }}</u></td>
                         </tr>
                         <tr>

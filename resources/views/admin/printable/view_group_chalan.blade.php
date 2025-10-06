@@ -169,7 +169,7 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td width="250px">R.No. <u>@{{ invoiceIds }}</u></td>
+                            <td width="250px">Bill No. <u>@{{ invoiceIds }}</u></td>
                             <td width="250px">Issue Date. <u>@{{ formatDate(new Date()) }}</u></td>
                         </tr>
                         <tr>
@@ -278,7 +278,7 @@
                 },
                 classNames(){
                     if (this.hasAnyDueInvoice) {
-                        return this.filteredInvoices.map(group => group.std_class.name).join(', ');
+                        return this.filteredInvoices.map(group => group.std_class.prifix).join(', ');
                     } else {
                         return this.classNamesForNull.join(', ');
                     }
