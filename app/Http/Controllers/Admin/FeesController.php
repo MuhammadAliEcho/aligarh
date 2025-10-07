@@ -98,6 +98,9 @@ class FeesController extends Controller
 			];
 			$month = Carbon::createFromFormat('Y-m-d', $month)->addMonth()->format('Y-m-d');
 		}
+
+		$data['guardians'] = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
+
 		return view('admin.fee', $data);
 	}
 
@@ -447,6 +450,118 @@ class FeesController extends Controller
 			'no_of_invoices'	=>	collect($createdInvoices)->count(),
 			'created_invoices' => $createdInvoices,
 			'print_voucher' => route('fee.bulk.print.invoice', ['class_id' => $request->input('class_id'), 'paid' => 0, 'due' => 1])
+		]);
+
+	}
+
+		function CreateGroupInvoice(Request $request){
+
+		$validator = Validator::make($request->all(), [
+			'guardian'	=>	'required|exists:guardians,id',
+			'months'  			=>  'required|array',
+			'months.*'  			=>  'required|date',
+			'issue_date'		=>	'required|date',
+			'due_date'			=>	'required|date|after_or_equal:issue_date',
+		]);
+
+		if($validator->fails()){
+			return redirect('fee')
+				->withErrors($validator)
+				->withInput()
+				->with([
+					'toastrmsg' => [
+						'form' => 'fee.bulk.create.invoice',
+						'type' 	=> 'error',
+						'title' =>  'Invoice',
+						'msg' 	=>  'There was an issue while Creating Invoice'
+					]
+				]);
+		}
+
+		// $classe = Classe::with('ActiveStudents', 'ActiveStudents.AdditionalFee')->find($request->input('class_id'));
+		$guardian = Guardian::with('ActiveStudents', 'ActiveStudents.AdditionalFee')->find($request->input('guardian'));
+		$monthsCount = collect($request->input('months'))->count();
+		$createdInvoices = [];
+
+		foreach ($guardian->ActiveStudents as $key => $student) {
+
+			$invoiceMonthCount = InvoiceMonth::where('student_id', $student->id)
+				->whereIn('month', $request->input('months'))->count();
+
+			if($invoiceMonthCount){
+				continue;	// continue to next
+			}
+
+			$previousInvoice =	InvoiceMaster::where('student_id', $student->id)->orderBy('id', 'desc')->first();
+
+			if($previousInvoice && $previousInvoice->getRawOriginal('due_date') >= now()->toDateString()){
+				continue; // continue to next
+			}
+
+			// Normalize dates
+			$issueDate = Carbon::parse($request->input('issue_date'))->startOfDay();
+			$dueDate = Carbon::parse($request->input('due_date'))->toDateString(); // Assuming DATE column
+
+			// Months
+			$months = $request->input('months', []);
+			$monthsCount = count($months);
+
+			// Calculate arrears
+			$arrears = 0;
+			if ($previousInvoice) {
+					$paidAfterDue = $previousInvoice->getRawOriginal('date_of_payment') > $previousInvoice->getRawOriginal('due_date');
+					$arrears = ($previousInvoice->net_amount + ($paidAfterDue ? $previousInvoice->late_fee : 0)) - $previousInvoice->paid_amount;
+			}
+
+			// Financial calculations
+			$tuitionFeeTotal = $student->tuition_fee * $monthsCount;
+			$discountTotal = $student->discount * $monthsCount;
+			$totalAmount = ($student->total_amount * $monthsCount) + $arrears;
+			$netAmount = $totalAmount - $discountTotal;
+
+			// Final invoice data
+			$data = [
+					'student_id'         => $student->id,
+					'gr_no'              => $student->gr_no,
+					'late_fee'           => $student->late_fee,
+					'months'             => $months,
+
+					'created_at'         => $issueDate,
+					'date'               => $issueDate->toDateString(),
+					'issue_date'         => $issueDate->toDateString(),
+					'due_date'           => $dueDate,
+
+					'arrears'            => $arrears,
+					'total_tuition_fee'  => $tuitionFeeTotal,
+					'total_amount'       => $totalAmount,
+					'discount'           => $discountTotal,
+					'net_amount'         => $netAmount,
+			];
+
+			$invoice = $this->SaveInvoice($student, $data);
+
+			$this->SaveDetails($data, $student->AdditionalFee?? [], $student);
+
+			$this->SaveMonths($data, $student);
+
+			$createdInvoices[] = [
+				'invoice_id'	=>	$invoice->id,
+				'student_id'	=>	$student->id
+			];
+
+		}
+
+		$no_of_invoices = collect($createdInvoices)->count();
+
+		return redirect('fee')->with([
+			'toastrmsg' => [
+				'type' => 'success',
+				'title'  =>  'Invoice',
+				'msg' =>  $no_of_invoices . ' Invoices were created successfully'
+			],
+			'no_of_invoices'	=>	collect($createdInvoices)->count(),
+			'created_invoices' => $createdInvoices,
+			'print_voucher' => route('fee.group.chalan.print', ['guardian_id' => $request->input('guardian')])
 		]);
 
 	}

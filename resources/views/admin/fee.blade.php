@@ -128,7 +128,7 @@
 
 								</div>
 							</div>
-							@can('fee.bulk.create.invoice')
+							@canany(['fee.bulk.create.invoice', 'fee.bulk.create.group.invoice'])
 								<div id="tab-14" class="tab-pane fade make-fee">
 									<div id="createfeeApp" class="panel-body">
 									<h2> Create Bulk Invoice </h2>
@@ -156,7 +156,7 @@
 										<div class="form-group{{ $errors->has('months') ? ' has-error' : '' }}">
 											<label class="col-md-2 control-label">Months</label>
 											<div class="col-md-6">
-												<select class="form-control" id="select2_bulk_months" multiple="multiple" name="months[]" required="true" style="width: 100%">
+												<select class="form-control select2_bulk_months" multiple="multiple" name="months[]" required="true" style="width: 100%">
 													@foreach($months as $month)
 													<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
 													@endforeach
@@ -172,9 +172,9 @@
 										<div class="form-group{{ $errors->has('issue_date') ? ' has-error' : '' }}">
 											<label class="col-md-2 control-label">Issue Date</label>
 											<div class="col-md-6">
-													<input type="text" id="datetimepicker_issuedate" name="issue_date"
+													<input type="text" name="issue_date"
 															placeholder="Issue Date" value="{{ old('issue_date') }}"
-															class="form-control" required />
+															class="form-control datetimepicker_issuedate" required />
 													@if ($errors->has('issue_date'))
 															<span class="help-block">
 																	<strong><span class="fa fa-exclamation-triangle"></span>
@@ -187,9 +187,9 @@
 										<div class="form-group{{ $errors->has('due_date') ? ' has-error' : '' }}">
 											<label class="col-md-2 control-label">Due Date</label>
 											<div class="col-md-6">
-													<input type="text" id="datetimepicker_duedate" name="due_date"
+													<input type="text"  name="due_date"
 															placeholder="Due Date" value="{{ old('due_date') }}"
-															class="form-control" required />
+															class="form-control datetimepicker_duedate" required />
 													@if ($errors->has('due_date'))
 															<span class="help-block">
 																	<strong><span class="fa fa-exclamation-triangle"></span>
@@ -204,6 +204,87 @@
 												<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Create </button>
 											</div>
 										</div>
+
+										</form>
+
+										<h2> From Guardian </h2>
+										<form id="crt_group_invoice_frm" method="POST" action="{{ route('fee.bulk.create.group.invoice') }}" class="form-horizontal jumbotron" role="form" >
+											@csrf
+
+											<div class="form-group{{ $errors->has('guardian') ? ' has-error' : '' }}">
+													<label class="col-md-2 control-label">Guardian</label>
+													<div class="col-md-6">
+															<select class="form-control select2" name="guardian" id="guardian-select">
+																	<option value="" disabled selected>Guardian</option>
+																	@foreach ($guardians as $guardian)
+																			<option 
+																					value="{{ $guardian->id }}"
+																					data-address="{{ e($guardian->address ?? '') }}"
+																					data-phone="{{ e($guardian->phone ?? '') }}">
+																					{{ $guardian->name . ' | ' . $guardian->email }}
+																			</option>
+																	@endforeach
+															</select>
+															@if ($errors->has('guardian'))
+																	<span class="help-block">
+																			<strong><span class="fa fa-exclamation-triangle"></span>
+																					{{ $errors->first('guardian') }}</strong>
+																	</span>
+															@endif
+													</div>
+											</div>
+
+											<div class="form-group{{ $errors->has('months') ? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">Months</label>
+												<div class="col-md-6">
+													<select class="form-control select2_bulk_months" multiple="multiple" name="months[]" required="true" style="width: 100%">
+														@foreach($months as $month)
+														<option value="{{ $month['value'] }}">{{ $month['title'] }}</option>
+														@endforeach
+													</select>
+													@if ($errors->has('months'))
+														<span class="help-block">
+															<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('months') }} </strong>
+														</span>
+													@endif
+												</div>
+											</div>
+
+											<div class="form-group{{ $errors->has('issue_date') ? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">Issue Date</label>
+												<div class="col-md-6">
+														<input type="text" name="issue_date"
+																placeholder="Issue Date" value="{{ old('issue_date') }}"
+																class="form-control datetimepicker_issuedate" required />
+														@if ($errors->has('issue_date'))
+																<span class="help-block">
+																		<strong><span class="fa fa-exclamation-triangle"></span>
+																				{{ $errors->first('issue_date') }}</strong>
+																</span>
+														@endif
+												</div>
+											</div>
+
+											<div class="form-group{{ $errors->has('due_date') ? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">Due Date</label>
+												<div class="col-md-6">
+														<input type="text" name="due_date"
+																placeholder="Due Date" value="{{ old('due_date') }}"
+																class="form-control datetimepicker_duedate" required />
+														@if ($errors->has('due_date'))
+																<span class="help-block">
+																		<strong><span class="fa fa-exclamation-triangle"></span>
+																				{{ $errors->first('due_date') }}</strong>
+																</span>
+														@endif
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-md-offset-2 col-md-6">
+													<button class="btn btn-primary btn-block" type="submit"><span class="glyphicon glyphicon-save"></span> Create </button>
+												</div>
+											</div>
 
 										</form>
 									</div>
@@ -643,7 +724,8 @@
 
 	  @if((COUNT($errors) >= 1 && session('toastrmsg.form') == 'fee.bulk.create.invoice'))
 			$('a[href="#tab-14"]').tab('show');
-			$('#select2_bulk_months').val(@json(old('months', [])));
+			$('.select2_bulk_months').val(@json(old('months', [])));
+			$('#crt_group_invoice_frm [name="guardian"]').val({{old('guardian_id')}});
 		@elseif((COUNT($errors) >= 1 && !$errors->has('toastrmsg')))
 			$('a[href="#tab-11"]').tab('show');
 				@if(isset($Input))
@@ -816,15 +898,20 @@
 			// templateResult: select2template,
 		});
 
-		$("#select2_bulk_months").select2({
+		$(".select2_bulk_months").select2({
 			placeholder: "select months"
 		}).change();
 
-		$('#datetimepicker_issuedate').datetimepicker({
+		$('#crt_group_invoice_frm [name="guardian"]').attr('style', 'width:100%').select2({
+					placeholder: "Nothing Selected",
+					allowClear: true,
+			});
+
+		$('.datetimepicker_issuedate').datetimepicker({
 				format: 'YYYY-MM-DD',
 				defaultDate: moment()
 		});
-		$('#datetimepicker_duedate').datetimepicker({
+		$('.datetimepicker_duedate').datetimepicker({
 				format: 'YYYY-MM-DD',
 		});
 

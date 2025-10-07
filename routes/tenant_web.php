@@ -310,6 +310,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/create ', [FeesController::class, 'FindInvoice'])->name('.create');
         Route::post('/create/{id}', [FeesController::class, 'CreateInvoice'])->name('.create.store');
         Route::post('/bulk-create-invoice', [FeesController::class, 'CreateBulkInvoice'])->name('.bulk.create.invoice');
+        Route::post('/bulk-create-group-invoice', [FeesController::class, 'CreateGroupInvoice'])->name('.bulk.create.group.invoice');
         Route::get('/collect', [FeesController::class, 'GetInvoice'])->name('.get.invoice.collect');
         Route::post('/collect ', [FeesController::class, 'CollectInvoice'])->name('.collect.store');
         Route::get('/update ', [FeesController::class, 'GetStudentFee'])->name('.get.student.fee');
