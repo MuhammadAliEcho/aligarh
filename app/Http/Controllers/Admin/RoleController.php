@@ -334,6 +334,7 @@ class RoleController extends Controller
 				'fee.invoice.print' 		=> 'Invoice Print',
 				'fee.bulk.print.invoice' 	=> 'Bulk Print Invoice',
 				'fee.bulk.create.invoice' 	=> 'Bulk Create Invoice',
+				'fee.bulk.create.group.invoice'	=>	'Bulk Group Invoice',
 				//lnk with create and update invoice
 				'fee.findstu' 				=> 'Find Student Fee',
 			],
