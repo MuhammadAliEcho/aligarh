@@ -25,8 +25,9 @@ class RouteNamePermissionsMiddleware
 
         $routeName = $request->route()->getName();
         $permission = Permission::where('name', $routeName)->first();
-        
-        if (!$permission || Auth::user()->hasPermissionTo($permission)) {
+        $ignored = config('permission.ignore_routes', []);
+
+        if (!$permission || Auth::user()->hasPermissionTo($permission) || in_array($routeName, $ignored)) {
             return $next($request);
         }
 

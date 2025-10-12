@@ -214,5 +214,6 @@ return [
         'notifications.log',
         'notifications.log.read',
         'system-setting.logo',
+        'exam-reports.update.rank' // will update.
     ]
 ];

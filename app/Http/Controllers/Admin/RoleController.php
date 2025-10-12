@@ -368,6 +368,7 @@ class RoleController extends Controller
 				
 				'exam-reports.index' => 'Exam Reports View',
 				'exam-reports.tabulation.sheet' => 'Tabulation Sheet',
+				// 'exam-reports.update.rank' => 'Exam Update Rank',
 				'exam-reports.award.list' => 'Award List',
 				'exam-reports.average.result' => 'Average Result',
 				'exam-reports.find.student' => 'Find Student',

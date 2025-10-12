@@ -130,7 +130,7 @@
 							</div>
 							@canany(['fee.bulk.create.invoice', 'fee.bulk.create.group.invoice'])
 								<div id="tab-14" class="tab-pane fade make-fee">
-									<div id="createfeeApp" class="panel-body">
+									<div class="panel-body">
 									<h2> Create Bulk Invoice </h2>
 									<div class="hr-line-dashed"></div>
 
@@ -731,6 +731,11 @@
 				@if(isset($Input))
 					$('[name="gr_no"]').val('{{ $Input['gr_no'] }}');
 				@endif
+		@elseif($root == 'create')
+			$('a[href="#tab-11"]').tab('show');
+			@if(isset($Input) && $Input['gr_no'])
+				$('[name="gr_no"]').val('{{ $Input['gr_no'] }}');
+			@endif
 		@else
 			$('a[href="#tab-10"]').tab('show');
 	  @endif

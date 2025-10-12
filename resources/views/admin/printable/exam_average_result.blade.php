@@ -2,74 +2,55 @@
 @section('title', 'Average Result | ')
 
 @section('head')
-
-	<style type="text/css">
-		.invoice-title h2, .invoice-title h3 {
-			display: inline-block;
-		}
-
-		.table > tbody > tr > .no-line {
-			border-top: none;
-		}
-
-		.table > thead > tr > .no-line {
-			border-bottom: none;
-		}
-
-		.table > tbody > tr > .thick-line {
-			border-top: 1px solid;
-		}
-
-
-    body {
-      padding: 0px 10px;
-      margin: 0px;
-      font-size: 12px;
-      }
-    .table-bordered th,
-    .table-bordered td {
-      border: 1px solid black !important;
-      padding: 0px;
-    }   
-
-  .table > tbody > tr > td {
-      padding: 1px;
-    }
+<style type="text/css">
+	body {
+		padding: 0 10px;
+		margin: 0;
+		font-size: 12px;
+	}
+	.invoice-title h2, .invoice-title h3 {
+		display: inline-block;
+	}
+	.table > tbody > tr > .no-line,
+	.table > thead > tr > .no-line {
+		border: none;
+	}
+	.table > tbody > tr > .thick-line {
+		border-top: 1px solid;
+	}
+	.table-bordered th,
+	.table-bordered td {
+		border: 1px solid black !important;
+		padding: 2px;
+	}
+	.table > tbody > tr > td,
 	.table > thead > tr > th {
 		padding: 2px;
-    }
-    a[href]:after {
-      content: none;
-/*      content: " (" attr(href) ")";*/
-    }
-
-	</style>
-
+	}
+	a[href]:after {
+		content: none;
+	}
+</style>
 @endsection
 
 @section('content')
 <div class="container-fluid">
-
 	<div class="row">
-	<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
-	<h4 class="text-center">AVERAGE RESULT</h4>
-	<h4 class="text-center"><u>@{{ exam_title }}</u></h4>
-	<h4 class="text-center"><u>Session: @{{ selected_exams[0].academic_session.title }}</u></h4>
+		<h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
+		<h4 class="text-center">AVERAGE RESULT</h4>
+		<h4 class="text-center"><u>@{{ exam_title }}</u></h4>
+		<h4 class="text-center"><u>Session: @{{ selected_exams[0].academic_session.title }}</u></h4>
 
-	<div class="">
 		<table class="table">
 			<tbody>
 				<tr>
-					<td>
-						<h4>Class: @{{ selected_class.name }}</h4>
-					</td>
-					<td>
-						<h4 class="text-right"><u>Date: {{ Carbon\Carbon::now()->format('d-M-Y') }}</u></h4>
+					<td><h4>Class: @{{ selected_class.name }}</h4></td>
+					<td class="text-right">
+						<h4><u>Date: {{ \Carbon\Carbon::now()->format('d-M-Y') }}</u></h4>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-	</div>
 
 		<table class="table table-bordered">
 			<thead>
@@ -84,22 +65,19 @@
 					<th>Rank</th>
 					<th>Remarks</th>
 				</tr>
-
 			</thead>
 			<tbody>
-				<template v-for="(student, k) in computed_result" :key="student.id">
-					<tr :class="[(student.rank < 4 && student.rank > 0)? 'success' : '']">
-						<td>@{{ k+1 }}</td>
+				<template v-for="(student, index) in computed_result" :key="student.id">
+					<tr :class="{ success: student.rank > 0 && student.rank < 4 }">
+						<td>@{{ index + 1 }}</td>
 						<td>@{{ student.gr_no }}</td>
 						<td>@{{ student.name }}</td>
 
-						<td>@{{ student.total_obtain_marks[0] }}</td>
-						<td>@{{ student.total_obtain_marks[1] }}</td>
+						<td v-for="mark in student.total_obtain_marks">@{{ mark }}</td>
 
 						<td>@{{ student.total_obtain_marks_sum }}</td>
 						<td>@{{ student.percentage }}</td>
-						<td v-if="student.pass">@{{ Grade(student.percentage) }}</td>
-						<td v-else>F</td>
+						<td>@{{ student.pass ? Grade(student.percentage) : 'F' }}</td>
 						<td>@{{ student.rank }}</td>
 						<td>@{{ student.remarks }}</td>
 					</tr>
@@ -107,185 +85,143 @@
 			</tbody>
 		</table>
 
-		<table class="table">
+		<table class="table" v-if="computed_result.length">
 			<tbody>
 				<tr>
 					<td>
 						<u>
-							<p>Total No Of Student: @{{ computed_result.length }}</p>
-							<p>Total No Of Student: @{{ computed_result[0].rank }}</p>
-						</u></br>
-							1st Position Name <u> @{{ computed_result[0].name }}  % @{{ computed_result[0].percentage }}</u> </br>
-							2nd Position Name <u> @{{ computed_result[1].name }}  % @{{ computed_result[0].percentage }} </u> </br>
-							3rd Position Name <u> @{{ computed_result[2].name }}  % @{{ computed_result[0].percentage }} </u> </br>
+							<p>Total No Of Students: @{{ computed_result.length }}</p>
+						</u><br>
+						<p>1st Position: <u>@{{ computed_result[0]?.name }} (% @{{ computed_result[0]?.percentage }})</u></p>
+						<p v-if="computed_result.length > 1">2nd Position: <u>@{{ computed_result[1]?.name }} (% @{{ computed_result[1]?.percentage }})</u></p>
+						<p v-if="computed_result.length > 2">3rd Position: <u>@{{ computed_result[2]?.name }} (% @{{ computed_result[2]?.percentage }})</u></p>
 					</td>
 					<td class="text-center" width="100px">
-						<h3 style="margin-top: 50px">__________________</h3><p><b>Teacher's Sign</b></p>
-						<h3 style="margin-top: 50px">__________________</h3><p><b>Rechecker's Sign</b></p>						
+						<h3 style="margin-top: 50px">__________________</h3>
+						<p><b>Teacher's Sign</b></p>
+						<h3 style="margin-top: 50px">__________________</h3>
+						<p><b>Rechecker's Sign</b></p>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-
 	</div>
-
 </div>
-
-
-
-@endsection
-
-
-@section('script')
-
 @endsection
 
 @section('vue')
-
 <script type="text/javascript">
-
-	var app = new Vue({
+	new Vue({
 		el: '#app',
-		data: { 
-			selected_exams: {!! json_encode($selected_exams) !!},
-			selected_class: {!! json_encode($selected_class) !!},
-			results: {!! json_encode($results, JSON_NUMERIC_CHECK) !!},
-			grades: {!! json_encode($grades, JSON_NUMERIC_CHECK) !!},
+		data: {
+			selected_exams: @json($selected_exams),
+			selected_class: @json($selected_class),
+			results: @json($results, JSON_NUMERIC_CHECK),
+			grades: @json($grades, JSON_NUMERIC_CHECK),
 			exam_title: '{{ $exam_title }}',
-			rankcounter: 0,
 			computed_result: [],
 		},
-		mounted: function(){
-			this.computed_result = 	this.compute_result();
-			this.RankCounter();
+		mounted() {
+			this.computed_result = this.compute_result();
+			this.calculateRank();
+
+			// conssole.log(this.computed_result);
 			window.print();
 		},
-		computed: {
-
-		},
 		methods: {
-			Grade: function (percentage) {
-				grad = '-';
-				this.grades.forEach(function(grade){
-					if(Number(grade.from_percent) <= percentage  && percentage <= Number(grade.to_percent)){
-						grad = grade.prifix;
-						return grad;
+			Grade(percentage) {
+				for (const grade of this.grades) {
+					if (Number(grade.from_percent) <= percentage && percentage <= Number(grade.to_percent)) {
+						return grade.prifix;
 					}
-				});
-				return grad;
+				}
+				return '-';
 			},
-			RankCounter: function(){
-				vm = this;
-				var rankno = 0;
-				this.computed_result.forEach(function(result, i){
-					if(result.total_obtain_marks[0] && result.total_obtain_marks[1] && result.pass){
-						if (i == 0) {
-							vm.computed_result[i].rank	=	rankno	= 1;
-						} else if (vm.computed_result[i-1].percentage > result.percentage) {
-							vm.computed_result[i].rank	=	++rankno;
-						} else {
-							vm.computed_result[i].rank	=	rankno;
+			calculateRank() {
+				let rank = 0;
+				this.computed_result?.forEach((result, index) => {
+					if (result.pass && result.total_obtain_marks.every(mark => mark !== 0)) {
+						if (index === 0) {
+							rank = 1;
+						} else if (this.computed_result[index - 1].percentage > result.percentage) {
+							rank++;
 						}
+						result.rank = rank;
 					}
 				});
 			},
-/*			RankCounter: function(i){
-				if (i == 0) {
-					this.rankcounter = 1;
-				} else if (this.computed_result[i-1].percentage > this.computed_result[i].percentage) {
-					this.rankcounter++;
-				}
-				return this.rankcounter;
-			},
-*/
-			compute_result:		function(){
-				if (this.results[0].length >= this.results[1].length) {
-					mainloop = 0;
-					subloop = 1;
-				} else {
-					mainloop = 1;
-					subloop = 0;
-				}
-				computed_result = [];
-				vm = this;
-				this.results[mainloop].forEach(function(result, k){
-					computed_result.push({
-						name: result.student.name,
-						remarks: (result.remarks == null)? '' : result.remarks,
-						father_name: result.student.father_name,
-						gr_no: result.student.gr_no,
+			compute_result() {
+
+				// let mainIdx = this.results[0].length >= this.results[1]?.length ? 0 : 1;
+				let mainIdx = 0;
+				let subIdx = 1 - mainIdx;
+
+				const computed = [];
+
+				this.results[mainIdx]?.forEach(result => {
+					const student = {
 						id: result.id,
-						total_marks: [],
-						total_obtain_marks: [],
+						name: result.student.name,
+						gr_no: result.student.gr_no,
+						father_name: result.student.father_name,
+						remarks: result.remarks || '',
+						// total_marks: [0, 0],
+						total_marks: [0],
+						// total_obtain_marks: [0, 0],
+						total_obtain_marks: [0],
 						total_marks_sum: 0,
 						total_obtain_marks_sum: 0,
 						percentage: 0,
-						rank:	0,
-						pass: true,
-					});
-//					console.log(vm.results);
-					computed_result[k].total_marks[mainloop]	=	result.student_result.reduce((a, b) => a + Number(b.subject_result_attribute.total_marks), 0);
-					computed_result[k].total_marks[subloop]		=	0;
+						rank: 0,
+						pass: true
+					};
 
-					computed_result[k].total_obtain_marks[mainloop]	=	result.student_result.reduce((a, b) => a + Number(b.total_obtain_marks), 0);
-					computed_result[k].total_obtain_marks[subloop]	=	0;
+					student.total_marks[mainIdx] = result.student_result.reduce((sum, r) => sum + Number(r.subject_result_attribute.total_marks), 0);
+					student.total_obtain_marks[mainIdx] = result.student_result.reduce((sum, r) => sum + Number(r.total_obtain_marks), 0);
 
-					if (vm.results[subloop]) {
-						result2 = vm.results[subloop].find(function(rslt){
-							return result.student_id == rslt.student_id;
-						});
-						if (result2) {
-							computed_result[k].total_marks[subloop] = result2.student_result.reduce((a, b) => a + Number(b.subject_result_attribute.total_marks), 0);
-							computed_result[k].total_obtain_marks[subloop] = result2.student_result.reduce((a, b) => a + Number(b.total_obtain_marks), 0);
-							if(result2.remarks != null){
-								computed_result[k].remarks += ' ,' + result2.remarks;
-							}
-						
-							computed_result[k].pass = vm.IsPassed(result.student_result, result2.student_result);
+					const match = this.results[subIdx]?.find(r => r.student_id === result.student_id);
+					if (match) {
+						student.total_marks[subIdx] = match.student_result.reduce((sum, r) => sum + Number(r.subject_result_attribute.total_marks), 0);
+						student.total_obtain_marks[subIdx] = match.student_result.reduce((sum, r) => sum + Number(r.total_obtain_marks), 0);
+						if (match.remarks) {
+							student.remarks += ', ' + match.remarks;
 						}
+						student.pass = this.isPassed(result.student_result, match.student_result);
 					}
 
-					computed_result[k].total_marks_sum = (computed_result[k].total_marks[mainloop] + computed_result[k].total_marks[subloop]);
-					computed_result[k].total_obtain_marks_sum = (computed_result[k].total_obtain_marks[mainloop] + computed_result[k].total_obtain_marks[subloop]);
-
-					computed_result[k].percentage = ((computed_result[k].total_obtain_marks_sum / computed_result[k].total_marks_sum)*100).toFixed(2);
+					student.total_marks_sum = student.total_marks.reduce((sum, mark) => sum + mark, 0);
+					student.total_obtain_marks_sum = student.total_obtain_marks.reduce((sum, mark) => sum + mark, 0);
+					student.percentage = ((student.total_obtain_marks_sum / student.total_marks_sum) * 100).toFixed(2);
+					computed.push(student);
 				});
-				computed_result = computed_result.slice().sort(function(a, b) { return b.percentage - a.percentage; });
 
-				return computed_result;
+				return computed.sort((a, b) => b.percentage - a.percentage);
 			},
+			isPassed(results1, results2) {
+				const longer = results1.length >= results2.length ? results1 : results2;
+				const shorter = results1.length >= results2.length ? results2 : results1;
 
-			IsPassed: function(r1, r2){
-				if(r1.length >= r2.length){
-					result1 = r1;
-					result2 = r2;
-				} else {
-					result1 = r2;
-					result2 = r1;
-				}
-				total_obtain_marks = total_marks = 0;
-				var rtrn = true;
-				_.forEach(result1, function(value, key){
-					r2k =	_.findIndex(result2, {subject_id: value.subject_id});
-					if(r2k >= 0){
-						total_marks = value.subject_result_attribute.total_marks + result2[r2k].subject_result_attribute.total_marks;
-						total_obtain_marks = value.total_obtain_marks + result2[r2k].total_obtain_marks;
-					} else {
-						total_marks = value.subject_result_attribute.total_marks;
-						total_obtain_marks = value.total_obtain_marks;
+				for (const res1 of longer) {
+					let total = res1.subject_result_attribute.total_marks;
+					let obtained = res1.total_obtain_marks;
+
+					const match = shorter.find(r => r.subject_id === res1.subject_id);
+					if (match) {
+						total += match.subject_result_attribute.total_marks;
+						obtained += match.total_obtain_marks;
 					}
-					rtrn = ((vm.Grade(((total_obtain_marks/total_marks)*100).toFixed(2))).toLowerCase() == 'f')? false : true;
 
-					if(rtrn == false){
+					const percentage = ((obtained / total) * 100).toFixed(2);
+					if (this.Grade(percentage).toLowerCase() === 'f') {
 						return false;
 					}
-//						total_marks = value.subject_result_attribute.total_marks 
-				});
-
-				return rtrn;
-			},
+				}
+				return true;
+			}
 		}
 	});
 </script>
+@endsection
 
+@section('script')
 @endsection

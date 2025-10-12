@@ -350,6 +350,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
 
     Route::prefix('exam-reports')->name('exam-reports')->group(function(){
         Route::get('/', [ExamReportController::class, 'Index'])->name('.index');
+        Route::post('/', [ExamReportController::class, 'UpdateRank'])->name('.update.rank');
         Route::post('/tabulation-sheet', [ExamReportController::class, 'GetExamTabulation'])->name('.tabulation.sheet');
         Route::post('/award-list', [ExamReportController::class, 'AwardList'])->name('.award.list');
         Route::post('/average-result', [ExamReportController::class, 'AverageResult'])->name('.average.result');

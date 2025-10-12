@@ -212,7 +212,7 @@
 			RankCounter: function(){
 				vm = this;
 				vm.computed_transcripts.forEach(function(transcript, i){
-					if (vm.computed_transcripts[i].grade.toLowerCase() != 'f') {
+					if (vm.computed_transcripts[i].grade.toLowerCase() != 'f' && vm.computed_transcripts[i].grade.toLowerCase() != '-') {
 						if (i == 0) {
 							vm.computed_transcripts[i].rank	=	1;
 						} else if (vm.computed_transcripts[i-1].percentage > transcript.percentage) {

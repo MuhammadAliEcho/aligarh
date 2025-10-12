@@ -25,6 +25,10 @@ class Exam extends Model
 		return $this->belongsTo('App\AcademicSession');
 	}
 
+	public function ExamRemarks(){
+		return $this->hasMany('App\ExamRemark');
+	}
+
 	public function scopeCurrentSession($query){
 		return $query->where('academic_session_id', Auth::user()->academic_session);
 	}

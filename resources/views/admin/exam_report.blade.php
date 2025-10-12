@@ -163,12 +163,28 @@
 									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/average-result') }}" class="form-horizontal" target="_blank">
 										{{ csrf_field() }}
 
-										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+										{{-- <div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
 											<label class="col-md-2 control-label"> Exam </label>
 											<div class="col-md-6">
 												<div class="i-checks"><label> <input type="radio" value="1" name="exam" required=""> <i></i> 1st Ass/Half Year </label></div>
 												<div class="i-checks"><label> <input type="radio" value="2" name="exam"> <i></i> 2nd Ass/Final Year </label></div>
 											</div>
+										</div> --}}
+
+										<div class="form-group{{ $errors->has('exams') ? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">Exams</label>
+												<div class="col-md-6">
+													<select class="form-control select2_exams" multiple="multiple" name="exams[]" max="2" required="true" style="width: 100%">
+														@foreach($exams as $exam)
+														<option value="{{ $exam['id'] }}">{{ $exam['name'] }}</option>
+														@endforeach
+													</select>
+													@if ($errors->has('exams'))
+														<span class="help-block">
+															<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('exams') }} </strong>
+														</span>
+													@endif
+												</div>
 										</div>
 
 										<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
@@ -208,12 +224,28 @@
 									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/result-transcript') }}" class="form-horizontal" target="_blank">
 										{{ csrf_field() }}
 
-										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+										{{-- <div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
 											<label class="col-md-2 control-label"> Exam </label>
 											<div class="col-md-6">
 												<div class="i-checks"><label> <input type="radio" value="1" name="exam" required=""> <i></i> 1st Ass/Half Year </label></div>
 												<div class="i-checks"><label> <input type="radio" value="2" name="exam"> <i></i> 2nd Ass/Final Year </label></div>
 											</div>
+										</div> --}}
+
+										<div class="form-group{{ $errors->has('exams') ? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">Exams</label>
+												<div class="col-md-6">
+													<select class="form-control select2_exams" multiple="multiple" name="exams[]" max="2" required="true" style="width: 100%">
+														@foreach($exams as $exam)
+														<option value="{{ $exam['id'] }}">{{ $exam['name'] }}</option>
+														@endforeach
+													</select>
+													@if ($errors->has('exams'))
+														<span class="help-block">
+															<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('exams') }} </strong>
+														</span>
+													@endif
+												</div>
 										</div>
 
 										<div class="form-group{{ ($errors->has('gr_no'))? ' has-error' : '' }}">
@@ -297,6 +329,11 @@
 						tags: true,
 					});
 
+					$(".select2_exams").select2({
+						placeholder: "Select Max 2 Exams",
+						maximumSelectionLength: 2,
+					}).change();
+
 
 			});
 		</script>
@@ -308,9 +345,9 @@
 			var app = new Vue({
 				el: "#app",
 				data: {
-					Exams: {!! json_encode($exams) !!},
-					Classes: {!! json_encode($classes) !!},
-					Subjects: {!! json_encode($subjects ?? '') !!},
+					Exams: @json($exams),
+					Classes: @json($classes),
+					Subjects: @json($subjects ?? []),
 					filtered_subjects: [],
 					selected_class: '',
 					selected_exam: '',

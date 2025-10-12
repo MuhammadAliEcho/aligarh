@@ -20,9 +20,11 @@ use Validator;
 class ExamReportController extends Controller
 {
 	public function Index(){
-		$data['exams'] = Exam::Active()->with('AcademicSession')->CurrentSession()->get();
+		$data['exams'] = Exam::Active()->CurrentSession()
+		->has('ExamRemarks')
+		->with('AcademicSession')->get();
 		$data['classes'] = Classe::select('id', 'name')->get();
-		$data['Subjects']	=	Subject::select('id', 'name', 'class_id')->get();
+		$data['subjects']	=	Subject::select('id', 'name', 'class_id')->get();
 		return view('admin.exam_report', $data);
 	}
 
@@ -113,22 +115,14 @@ class ExamReportController extends Controller
 	public function AverageResult(Request $request){
 		
 		$this->validate($request,[
-			'exam'			=>	'required',
+			'exams'			=>	'required|array',
+			'exams.*'			=>	'required|exists:App\Exam,id', //check exists in exam table with id 
 			'class'			=>	'required'
 		]);
+		$data['selected_exams']	=	Exam::wherein('id', $request->input('exams'))->CurrentSession()->with('AcademicSession')->orderBy('start_date')->get();
+		
+		$data['exam_title'] = $data['selected_exams']->pluck('name')->implode(' / ');
 
-		$exam_category = [
-			1	=>	[1,2],
-			2	=>	[3,4]
-		];
-
-		if ($request->input('exam') == 1) {
-			$data['exam_title']	=	'1st Assessment / Half Year';
-		} else {
-			$data['exam_title']	=	'2nd Assessment / Final Year';
-		}
-
-		$data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
 		$data['selected_class']	=	Classe::findOrFail($request->input('class'));
 		$data['grades']			=	Grade::all();
 
@@ -150,48 +144,49 @@ class ExamReportController extends Controller
 	public function ResultTranscript(Request $request){
 
 		$this->validate($request, [
-			'exam'			=>	'required',
+			'exams'			=>	'required|array',
+			'exams.*'			=>	'required|exists:App\Exam,id', //check exists in exam table with id 
 			'student_id'	=>	'required'
 		]);
 
+		$data['selected_exams']	=	Exam::wherein('id', $request->input('exams'))->CurrentSession()->with('AcademicSession')->orderBy('start_date')->get();
 
-		$exam_category = [
-			1	=>	[1,2],
-			2	=>	[3,4]
-		];
+		$data['exam_title'] = $data['selected_exams']->pluck('name')->implode(' / ');
 
-		if ($request->input('exam') == 1) {
-			$data['exam_title']	=	'1st Assessment / Half Year';
-		} else {
-			$data['exam_title']	=	'2nd Assessment / Final Year';
-		}
-
-		$data['selected_exams']	=	Exam::wherein('category_id', $exam_category[$request->input('exam')])->CurrentSession()->with('AcademicSession')->get();
-
-		if($data['selected_exams']->count() !== 2){
+		if($data['selected_exams']->count() == 0){
 			return redirect('exam-reports')->with([
 				'toastrmsg' => [
 					'type' => 'error', 
 					'title'  =>  'Result Reports',
-					'msg' =>  'Combine exam not found'
+					'msg' =>  'Exam not found in selected Session'
 				]
 			]);
 		}
 		
 		$data['student']			=	Student::findOrFail($request->input('student_id'));
-		$data['attendance']['total']		=	StudentAttendance::select('id', 'student_id', 'status', 'date')
-												->where('student_id', $data['student']->id)
-												->whereBetween('date', [$data['selected_exams'][0]->getRawOriginal('start_date'), $data['selected_exams'][1]->getRawOriginal('end_date')])
-//												->whereBetween('date', ['2018-04-01', '2019-03-31'])
-												->get();
-		$data['attendance']['first_exam']	=	StudentAttendance::select('id', 'student_id', 'status', 'date')
-													->where('student_id', $data['student']->id)
-													->whereBetween('date', [$data['selected_exams'][0]->getRawOriginal('start_date'), $data['selected_exams'][0]->getRawOriginal('end_date')])
-													->get();
-		$data['attendance']['second_exam']	=	StudentAttendance::select('id', 'student_id', 'status', 'date')
-														->where('student_id', $data['student']->id)
-														->whereBetween('date', [$data['selected_exams'][1]->getRawOriginal('start_date'), $data['selected_exams'][1]->getRawOriginal('end_date')])
-														->get();
+
+		$data['attendance'] = [];
+
+		// Individual attendance per exam
+		foreach ($data['selected_exams'] as $exam) {
+				$data['attendance'][$exam->id] = StudentAttendance::select('id', 'student_id', 'status', 'date')
+						->where('student_id', $data['student']->id)
+						->whereBetween('date', [
+								$exam->getRawOriginal('start_date'),
+								$exam->getRawOriginal('end_date')
+						])
+						->get();
+		}
+
+		// Total attendance across all selected exams
+		$startDate = optional($data['selected_exams']->first())->getRawOriginal('start_date');
+		$endDate = optional($data['selected_exams']->sortByDesc('end_date')->first())->getRawOriginal('end_date');
+
+		$data['attendance']['total'] = StudentAttendance::select('id', 'student_id', 'status', 'date')
+				->where('student_id', $data['student']->id)
+				->whereBetween('date', [$startDate, $endDate])
+				->get();
+
 		$AcademicSessionHistory			=	AcademicSessionHistory::where('student_id', $data['student']->id)->CurrentSession()->with('classe')->first();
 
 		if($AcademicSessionHistory == null){
@@ -246,8 +241,8 @@ class ExamReportController extends Controller
 					'msg'	=>  'Something is wrong!'
 				];
 			}
-
-			foreach ($request->input('rank') as $id => $rank) {
+			$ranks = collect($request->input('rank'))->filter(fn($r) => $r != '-');
+			foreach ($ranks as $id => $rank) {
 				ExamRemark::findOrFail($id)->update(['rank'	=>	$rank]);
 			}
 
