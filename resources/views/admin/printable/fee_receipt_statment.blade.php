@@ -109,7 +109,12 @@
 							@{{ month.month }}
 						</span>
 					</td>
-					<td v-if="statment.paid_amount">@{{ statment.paid_amount }}</td>
+
+					<td v-if="(statment.net_amount - statment.paid_amount) != 0">
+						Net: @{{ statment.net_amount }} | 
+						Paid: @{{ statment.paid_amount }}
+					</td>
+					<td v-else-if="statment.paid_amount">Paid: @{{ statment.paid_amount }}</td>
 					<td v-else>@{{ statment.net_amount }} (not paid)</td>
 				</tr>
 
@@ -123,11 +128,11 @@
 
 				<tr v-for="sum in _.orderBy(ComputedSummary, 'month')">
 					<td colspan="7" class="text-right">@{{ GetDate(sum.month) }}</td>
-					<td>@{{ sum.net_amount }}/-</td>
+					<td>Net: @{{ sum.net_amount }}/- Paid: @{{ sum.paid_amount }}/-</td>
 				</tr>
 				<tr>
 					<th colspan="7" class="text-right">Total </th>
-					<th  class="text-center"> @{{ TotalComputedSummary.net_amount }}/- </th>
+					<th  class="text-center">Net: @{{ TotalComputedSummary.net_amount }}/- Paid: @{{ TotalComputedSummary.paid_amount }}/-</th>
 				</tr>
 		</table>
 	</div>
