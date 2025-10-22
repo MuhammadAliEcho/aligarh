@@ -708,6 +708,8 @@
 	<!-- require with bootstrap-datetimepicker -->
 	<script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
 	<script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+	<!-- Select2 -->
+	<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 	<script type="text/javascript">
 	var tbl;
@@ -958,9 +960,6 @@
 	@endsection
 
 	@section('vue')
-
-	<!-- Select2 -->
-	<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
 
 	@if($root == 'create')
 	<script type="text/javascript">

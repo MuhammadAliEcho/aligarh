@@ -373,7 +373,7 @@
                                             <div class="form-group{{ $errors->has('type') ? ' has-error' : '' }}">
                                                 <label class="col-md-2 control-label"> Type </label>
                                                 <div class="col-md-6">
-                                                    <select class="form-control select2" v-model="type" name="type"
+                                                    <select class="form-control" v-model="type" name="type"
                                                         required="true">
                                                         <option value="">{{ '--- Select Type ---' }}</option>
                                                         <option value="{{ 'Student' }}">{{ 'Student' }}</option>
@@ -524,6 +524,8 @@
     <script src="{{ asset('src/js/plugins/moment/moment.min.js') }}"></script>
     <script src="{{ asset('src/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
     <script src="{{ asset('src/js/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    	<!-- Select2 -->
+	<script src="{{ asset('src/js/plugins/select2/select2.full.min.js') }}"></script>
     @if ($errors->any())
         <script>
             @foreach ($errors->all() as $error)
@@ -560,6 +562,10 @@
             @else
                 $('a[href="#tab-10"]').tab('show');
             @endif
+
+            $('.select2').attr('style', 'width:100%').select2({
+    			placeholder: 'Search contacts',
+            });
         });
     </script>
 @endsection
