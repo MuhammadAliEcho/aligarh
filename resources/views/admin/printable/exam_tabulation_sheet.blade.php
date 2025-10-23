@@ -142,34 +142,57 @@
 			computed_transcripts: []
 		},
 		mounted: function(){
-			for(k in this.transcripts){
+			for (let k in this.transcripts) {
+				const total_marks = this.transcripts[k].student_result
+					.reduce((a, b) => a + Number(b.subject_result_attribute.total_marks), 0);
+
+				const total_obtain_marks_raw = this.transcripts[k].student_result
+					.reduce((a, b) => a + Number(b.total_obtain_marks), 0);
+
+				// Format total_obtain_marks with up to 2 decimals (no trailing zeros)
+				const total_obtain_marks = Number(total_obtain_marks_raw.toFixed(2));
+
 				this.computed_transcripts.push({
 					name: this.transcripts[k].student.name,
 					remarks: this.transcripts[k].remarks,
 					father_name: this.transcripts[k].student.father_name,
 					gr_no: this.transcripts[k].student.gr_no,
 					id: this.transcripts[k].id,
-					total_marks: this.transcripts[k].student_result.reduce((a, b) => a + Number(b.subject_result_attribute.total_marks), 0),
-					total_obtain_marks: this.transcripts[k].student_result.reduce((a, b) => a + Number(b.total_obtain_marks), 0),
-					student_atten: _.filter(this.transcripts[k].student.student_attendance, function(atten) { if (atten.status) return atten }).length,
+					total_marks: total_marks,
+					total_obtain_marks: total_obtain_marks,
+					student_atten: _.filter(
+						this.transcripts[k].student.student_attendance,
+						function (atten) {
+							if (atten.status) return atten;
+						}
+					).length,
 					total_atten: this.transcripts[k].student.student_attendance.length,
 					percentage: 0,
-					rank:	0,
+					rank: 0,
 					result: {},
 					grade: '-',
 				});
-					this.computed_transcripts[k].result	=	this.Result(this.transcripts[k].student_result, k);
 
-				if (this.computed_transcripts[k].grade.toLowerCase() != 'f') {	
-					this.computed_transcripts[k].percentage = ((this.computed_transcripts[k].total_obtain_marks / this.computed_transcripts[k].total_marks)*100).toFixed(2);
-					this.computed_transcripts[k].grade	=	this.Grade(this.computed_transcripts[k].percentage);
+				this.computed_transcripts[k].result = this.Result(this.transcripts[k].student_result, k);
+
+				if (this.computed_transcripts[k].grade.toLowerCase() != 'f') {
+					const percentage = (
+						(this.computed_transcripts[k].total_obtain_marks /
+							this.computed_transcripts[k].total_marks) *
+						100
+					).toFixed(2);
+
+					this.computed_transcripts[k].percentage = Number(percentage);
+					this.computed_transcripts[k].grade = this.Grade(this.computed_transcripts[k].percentage);
 				}
 			}
 
-			this.computed_transcripts = this.computed_transcripts.slice().sort(function(a, b) {
-				return b.percentage - a.percentage;
-			});
-			
+			this.computed_transcripts = this.computed_transcripts
+				.slice()
+				.sort(function (a, b) {
+					return b.percentage - a.percentage;
+				});
+
 			this.RankCounter();
 
 			window.print();
