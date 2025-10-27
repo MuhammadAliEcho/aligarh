@@ -204,10 +204,11 @@ class ExamReportController extends Controller
 			$data['results'][]			=	ExamRemark::where([
 													'exam_id'		=>	$value->id,
 													'student_id'	=>	$data['student']->id,
+													'class_id'	=>	$data['student_class']->id
 												])->with(['StudentResult'	=>	function($qry){
 													$qry->with('Subject')->with('SubjectResultAttribute');
 													}]
-												)->with('Classe')->first();
+												)->with('Classe')->firstOrFail();
 		}
 
 //		$data['selected_class']	=	Classe::findOrFail($request->input('class'));

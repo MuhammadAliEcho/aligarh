@@ -51,8 +51,29 @@
 
 <body>
   <div id="app">
+    @if(!isset($watermark) || $watermark !== false)
   	@if( tenancy()->tenant->system_info['general']['validity'] < now()->toDateString())
       <img src="{{ asset('img/expired-stamp.png') }}" style="opacity: 0.5; width: -webkit-fill-available; position: absolute" id="expired-stamp" >
+    @else
+    <img 
+      src="{{ tenancy()->tenant->system_info['general']['logo'] 
+              ? route('system-setting.logo') 
+              : URL('/img/logo-1.png') }}" 
+      alt="Watermark"
+      id="watermark-logo"
+      style="
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70%;
+        opacity: 0.1;
+        pointer-events: none;
+        ">
+        {{-- /* allows interaction with content */ --}}
+        {{-- /* z-index: 0; */ --}}
+      {{-- <img src="{{ tenancy()->tenant->system_info['general']['logo'] ? route('system-setting.logo') : URL('/img/logo-1.png')}}" style="opacity: 0.3; width: -webkit-fill-available; position: absolute" id="watermark-logo" > --}}
+    @endif
     @endif
   
     @yield('content')

@@ -309,7 +309,7 @@ class StudentsController extends Controller
 		$Student->updated_by  = Auth::user()->id;
 		$Student->save();
 
-//		$this->UpdateAcademicSessionHistory();
+		$this->UpdateAcademicSessionHistory($Student);
 //		$this->UpdateAdditionalFee();
 
 		return redirect('students')->with([

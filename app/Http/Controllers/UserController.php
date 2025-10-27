@@ -23,7 +23,7 @@ class UserController extends Controller {
 
     // Attempt to find the user
     $user = User::where($this->LoginUserIDKey, $request->input('userid'))->first();
-    if (!$user->active) {
+    if ($user && !$user->active) {
         return redirect()->back()->withInput()
             ->withErrors([
                 'invalid' => 'You must be Active to login',
