@@ -29,6 +29,19 @@ return [
     'students_status_transferred' => 'Transferred',
     'students_status_left' => 'Left',
     'students_status_promoted' => 'Promoted',
+    
+    // Student Registration Messages
+    'students_add_success' => 'Registration Successful',
+    'students_add_error_limit' => 'Over students limit',
+    'students_already_admitted' => 'Student already Admitted',
+    'students_update_success' => 'Save Changes Successful',
+    'students_certificate_updated' => 'Certificate is Updated!',
+    'students_error_generic' => 'Something went wrong',
+    'students_error_validation' => 'Something is wrong!',
+    
+    // Parent Interview
+    'parent_interview' => 'Parent Interview',
+    'parent_interview_update' => 'Update Interview Successful',
 
     // ==================== FEES MODULE ====================
     'fees_management' => 'Fee Management',

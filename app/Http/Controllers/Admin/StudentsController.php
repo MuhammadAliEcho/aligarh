@@ -161,17 +161,15 @@ class StudentsController extends Controller
 
 		$this->PostValidate($request);
 
-		if(Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']){
-			return redirect('students')->with([
-									'toastrmsg' => [
-										'type'	=> 'error', 
-										'title'	=>  'Students',
-										'msg'	=>  'Over students limit'
-									]
-								]);
-		}
-
-		$Student = new Student;
+	if(Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']){
+		return redirect('students')->with([
+								'toastrmsg' => [
+									'type'	=> 'error', 
+									'title'	=>  __('modules.students_management'),
+									'msg'	=>  __('modules.students_add_error_limit')
+								]
+							]);
+	}		$Student = new Student;
 		$this->SetAttributes($Student, $request);
 		$Student->created_by  = Auth::user()->id;
 		$Student->session_id  = Auth::user()->academic_session;
@@ -190,8 +188,8 @@ class StudentsController extends Controller
 		return redirect('students')->with([
 				'toastrmsg' => [
 					'type' => 'success', 
-					'title'  =>  'Student Registration',
-					'msg' =>  'Registration Successfull'
+					'title'  =>  __('modules.students_management'),
+					'msg' =>  __('modules.students_add_success')
 					]
 			]);
 
@@ -202,16 +200,14 @@ class StudentsController extends Controller
 
 		if ($data['visitorStudents']->student_id) {
 
-			return redirect('students')->with([
-				'toastrmsg' => [
-					'type'	=> 'error',
-					'title'	=>  'Students',
-					'msg'	=>  'Student already Admitted'
-				]
-			]);
-		}
-
-		$data['classes'] = Classe::select('id', 'name')->get();
+		return redirect('students')->with([
+			'toastrmsg' => [
+				'type'	=> 'error',
+				'title'	=>  __('modules.students_management'),
+				'msg'	=>  __('modules.students_already_admitted')
+			]
+		]);
+	}		$data['classes'] = Classe::select('id', 'name')->get();
 		$data['guardians'] = Guardian::select('id', 'name', 'email', 'phone', 'address')->get();
 		$data['no_of_active_students'] = Student::active()->count();
 
@@ -221,19 +217,17 @@ class StudentsController extends Controller
 		return view('admin.add_visitor_student', $data);
 	}
 
-	public function CreateVistor(Request $request, $visitor_id)
-	{
-		if (Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']) {
-			return redirect('students')->with([
-				'toastrmsg' => [
-					'type'  => 'error',
-					'title' => 'Students',
-					'msg'   => 'Over students limit'
-				]
-			]);
-		}
-
-		DB::beginTransaction();
+public function CreateVistor(Request $request, $visitor_id)
+{
+	if (Student::active()->count() >= tenancy()->tenant->system_info['general']['student_capacity']) {
+		return redirect('students')->with([
+			'toastrmsg' => [
+				'type'  => 'error',
+				'title' => __('modules.students_management'),
+				'msg'   => __('modules.students_add_error_limit')
+			]
+		]);
+	}		DB::beginTransaction();
 
 		try {
 			$visitorStudents = VisitorStudent::findOrFail($visitor_id);
@@ -261,27 +255,25 @@ class StudentsController extends Controller
 			return redirect('students')->with([
 				'toastrmsg' => [
 					'type'  => 'success',
-					'title' => 'Student Registration',
-					'msg'   => 'Registration Successful'
+					'title' => __('modules.students_management'),
+					'msg'   => __('modules.students_add_success')
 				]
 			]);
 		} catch (\Exception $e) {
 			DB::rollBack();
 			Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage(). " Full Trace: " . $e);
 
-			return redirect('students')->with([
-				'toastrmsg' => [
-					'type'  => 'error',
-					'title' => 'Students',
-					'msg'   => 'Something went wrong'
-				]
-			]);
-		}
+		return redirect('students')->with([
+			'toastrmsg' => [
+				'type'  => 'error',
+				'title' => __('modules.students_management'),
+				'msg'   => __('modules.students_error_generic')
+			]
+		]);
 	}
+}
 
-	public function EditStudent($id){
-
-		$data['guardians'] = Guardian::select('id', 'name', 'email')->get();
+public function EditStudent($id){		$data['guardians'] = Guardian::select('id', 'name', 'email')->get();
 		$data['classes'] = Classe::select('id', 'name')->get();
 		foreach ($data['classes'] as $key => $class) {
 			$data['sections']['class_'.$class->id] = Section::select('name', 'id')->where(['class_id' => $class->id])->get();
@@ -313,18 +305,16 @@ class StudentsController extends Controller
 		$this->UpdateAcademicSessionHistory($Student);
 //		$this->UpdateAdditionalFee();
 
-		return redirect('students')->with([
-				'toastrmsg' => [
-					'type' => 'success', 
-					'title'  =>  'Students Registration',
-					'msg' =>  'Save Changes Successfull'
-					]
-			]);
-	}
+	return redirect('students')->with([
+			'toastrmsg' => [
+				'type' => 'success', 
+				'title'  =>  __('modules.students_management'),
+				'msg' =>  __('modules.students_update_success')
+				]
+		]);
+}
 
-	public function PostLeaveStudent(Request $request, $id){
-
-		if($request->ajax()){
+public function PostLeaveStudent(Request $request, $id){		if($request->ajax()){
 			$validator = Validator::make($request->all(), [
 				'id'				=>	'required|numeric',
 				'date_of_leaving'	=>	'required|date'
@@ -335,8 +325,8 @@ class StudentsController extends Controller
 					'updated'	=>	false,
 					'toastrmsg'	=>	[
 						'type'	=> 'error', 
-						'title'	=>  'Students',
-						'msg'	=>  'Something is wrong!'
+						'title'	=>  __('modules.students_management'),
+						'msg'	=>  __('modules.students_error_validation')
 					]
 				];
 			}
@@ -347,28 +337,25 @@ class StudentsController extends Controller
 			$student->active = 0;
 			$student->save();
 
-				return  [
-					'updated'	=>	true,
-					'toastrmsg'	=>	[
-						'type'	=> 'success', 
-						'title'	=>  'Students',
-						'msg'	=>  'Update Successfull'
-					]
-				];
-		}
-
-		return redirect('students')->with([
-									'toastrmsg' => [
-										'type'	=> 'warning', 
-										'title'	=>  'Students',
-										'msg'	=>  'Something is wrong!'
-									]
-								]);
-
-
+			return  [
+				'updated'	=>	true,
+				'toastrmsg'	=>	[
+					'type'	=> 'success', 
+					'title'	=>  __('modules.students_management'),
+					'msg'	=>  __('modules.students_update_success')
+				]
+			];
 	}
+	return redirect('students')->with([
+								'toastrmsg' => [
+									'type'	=> 'warning', 
+									'title'	=>  __('modules.students_management'),
+									'msg'	=>  __('modules.students_error_validation')
+								]
+							]);
 
-	public function Certificates(){
+
+}	public function Certificates(){
 
 		$this->validate($this->Request, [
 			'id' => 'required|numeric'
@@ -454,15 +441,13 @@ class StudentsController extends Controller
 			]);
 		}
 
-		return redirect('students/profile/'.$request->input('student_id'))->with([
-									'toastrmsg' => [
-										'type'	=> 'success', 
-										'title'	=>  'Students',
-										'msg'	=>  'Certificate is Updated!'
-									]
-								]);
-
-	}
+	return redirect('students/profile/'.$request->input('student_id'))->with([
+								'toastrmsg' => [
+									'type'	=> 'success', 
+									'title'	=>  __('modules.students_management'),
+									'msg'	=>  __('modules.students_certificate_updated')
+								]
+							]);	}
 
 	public function GetInterview(Request $request, $id){
 
@@ -479,15 +464,13 @@ class StudentsController extends Controller
 				'student_id' => 'required'
 			]);
 
-			if ($validator->fails()) {
-				return  [
-					'type'	=> 'error', 
-					'title'	=>  'Parent Interview',
-					'msg'	=>  'Something is wrong!'
-				];
-			}
-
-			ParentInterview::updateOrCreate(
+		if ($validator->fails()) {
+			return  [
+				'type'	=> 'error', 
+				'title'	=>  __('modules.parent_interview'),
+				'msg'	=>  __('modules.students_error_validation')
+			];
+		}			ParentInterview::updateOrCreate(
 				['student_id'	=>	$request->input('student_id')],
 				[
 					'father_qualification'	=>	$request->input('father_qualification'),
@@ -506,23 +489,21 @@ class StudentsController extends Controller
 				]
 			);
 			
-			return	[
-				'type'	=> 'success', 
-				'title'	=>  'Parent Interview',
-				'msg'	=>  'Update Interview Successfull'
-			];
-		}
-	
-		return redirect('Students')->with([
+		return	[
+			'type'	=> 'success', 
+			'title'	=>  __('modules.parent_interview'),
+			'msg'	=>  __('modules.parent_interview_update')
+		];
+	}		return redirect('Students')->with([
 									'toastrmsg' => [
-										'type'	=> 'warning', 
-										'title'	=>  'Students',
-										'msg'	=>  'Something is wrong!'
-									]
-								]);
+return redirect('Students')->with([
+								'toastrmsg' => [
+									'type'	=> 'warning', 
+									'title'	=>  __('modules.students_management'),
+									'msg'	=>  __('modules.students_error_validation')
+								]
+							]);
 //		dd($this->Request);
-	}
-
 	protected function SetAttributes($Student, $request, $new = true){
 		$Student->name = $request->input('name');
 		$Student->father_name = $request->input('father_name');
