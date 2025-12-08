@@ -35,10 +35,10 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-8 col-md-6">
-                <h2>Notifications</h2>
+                <h2>{{ __('modules.pages_notifications_title') }}</h2>
                 <ol class="breadcrumb">
                     <li>{{ __("common.home") }}</li>
-                    <li class="active"><a>Send</a></li>
+                    <li class="active"><a>{{ __('modules.forms_send_notification') }}</a></li>
                 </ol>
             </div>
             <div class="col-lg-4 col-md-6">
@@ -51,7 +51,7 @@
                 <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-title">
-                            <h2>Messsage Send</h2>
+                            <h2>{{ __('modules.forms_send_notification') }}</h2>
                         </div>
                         <div class="ibox-content">
                             <form id="notification" method="post" action="{{ route('msg-notifications.send') }}"
@@ -59,7 +59,7 @@
                                 {{ csrf_field() }}
 
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="type">Type</label>
+                                    <label class="col-sm-2 control-label" for="type">{{ __('labels.type') }}</label>
                                     <div class="col-sm-8">
                                         <select name="type" id="type" class="form-control" v-model="type"
                                             @change="handleTypeChange" required>

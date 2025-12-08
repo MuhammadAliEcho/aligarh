@@ -277,4 +277,44 @@ return [
     'new_password_placeholder' => 'New Password',
     'password_placeholder' => 'Password',
     'phone_placeholder_v2' => 'Phone',
+    
+    // System Settings & Configuration
+    'system_name' => 'System Name',
+    'system_title' => 'System Title',
+    'student_capacity' => 'Student Capacity',
+    'available_sms' => 'Available SMS',
+    'next_chalan_no' => 'Next Chalan No',
+    
+    // SMTP Settings
+    'smtp_host' => 'SMTP Host',
+    'smtp_port' => 'SMTP Port',
+    'smtp_username' => 'SMTP Username',
+    'smtp_password' => 'SMTP Password',
+    'encryption' => 'Encryption',
+    
+    // SMS Settings
+    'sms_url' => 'SMS URL',
+    'sms_api_key' => 'SMS API Key',
+    'sms_api_secret' => 'SMS API Secret',
+    'sender_id' => 'Sender ID',
+    
+    // WhatsApp Settings
+    'whatsapp_url' => 'WhatsApp URL',
+    'whatsapp_api_key' => 'WhatsApp API Key',
+    'whatsapp_phone' => 'WhatsApp Phone Number',
+    'whatsapp_message' => 'WhatsApp Message',
+    'webhook_url' => 'Webhook URL',
+    
+    // Contact Information
+    'contact_name' => 'Contact Name',
+    'contact_no' => 'Contact No',
+    'email_address' => 'E-Mail',
+    
+    // Bank Information
+    'bank_name' => 'Bank Name',
+    'bank_account' => 'Bank Account',
+    'bank_code' => 'Bank Code',
+    
+    // Notification/Type field
+    'type' => 'Type',
 ];

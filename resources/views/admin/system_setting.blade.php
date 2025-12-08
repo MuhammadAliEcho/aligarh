@@ -66,11 +66,11 @@
         <!-- Heading -->
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-8 col-md-6">
-                <h2>Settings</h2>
+                <h2>{{ __('modules.pages_settings_title') }}</h2>
                 <ol class="breadcrumb">
                     <li>{{ __("common.home") }}</li>
                     <li Class="active">
-                        <a>System Settings</a>
+                        <a>{{ __('modules.pages_settings_title') }}</a>
                     </li>
                 </ol>
             </div>
@@ -89,17 +89,17 @@
                         <ul class="nav nav-tabs">
                             @can('system-setting.update')
                                 <li class="active">
-                                    <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> General Info</a>
+                                    <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span {{ __('modules.tabs_general_info') }} </a>
                                 </li>
                             @endcan
                             @can('system-setting.print.invoice.history')
                                 <li>
-                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-list"></span> Package Info</a>
+                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-list"></span {{ __('modules.tabs_package_info') }} </a>
                                 </li>
                             @endcan
                             @can('system-setting.history')
                                 <li>
-                                    <a data-toggle="tab" href="#tab-12"><span class="fa fa-list"></span> SMS Package Info</a>
+                                    <a data-toggle="tab" href="#tab-12"><span class="fa fa-list"></span {{ __('modules.tabs_sms_package') }} </a>
                                 </li>
                             @endcan
                             @can('system-setting.notification.settings')
@@ -265,7 +265,7 @@
                                                                         <div class="col-md-2"> 
                                                                             <span class="btn btn-default btn-block btn-file">
                                                                                 <input type="file" name="logo" accept="image/*" id="logoinp" /> 
-                                                                                <span class="fa fa-image"></span> Upload Logo
+                                                                                <span class="fa fa-image"></span>  {{ __('modules.settings_upload_logo') }}
                                                                             </span> 
                                                                         </div>
                                                                         <div class="col-md-6"> 
@@ -408,7 +408,7 @@
                                                                     <div
                                                                         class="form-group{{ $errors->has('smtp_encryption') ? ' has-error' : '' }}">
                                                                         <label
-                                                                            class="col-md-2 control-label">Encryption</label>
+                                                                            class="col-md-2 control-label">{{ __('labels.encryption') }}</label>
                                                                         <div class="col-md-6">
                                                                             <select name="smtp_encryption"
                                                                                 class="form-control">
@@ -458,7 +458,7 @@
 
                                                                     <div
                                                                         class="form-group{{ $errors->has('sms_url') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">URL</label>
+                                                                        <label class="col-md-2 control-label">{{ __('labels.sms_url') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="sms_url"
                                                                                 placeholder="{{ __('labels.api_key_placeholder') }}" class="form-control"
@@ -511,7 +511,7 @@
 
                                                                     <div
                                                                         class="form-group{{ $errors->has('sms_sender') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Sender</label>
+                                                                        <label class="col-md-2 control-label">{{ __('labels.sender_id') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="sms_sender"
                                                                                 placeholder="Sender Name" class="form-control"
@@ -553,7 +553,7 @@
                                                                     </div>
                                                                     <div
                                                                         class="form-group{{ $errors->has('whatsapp_url') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">URL</label>
+                                                                        <label class="col-md-2 control-label">{{ __('labels.sms_url') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="whatsapp_url"
                                                                                 placeholder="URL" class="form-control"
@@ -629,7 +629,7 @@
                                                                     {{-- <div
                                                                         class="form-group{{ $errors->has('whatsapp_webhook') ? ' has-error' : '' }}">
                                                                         <label class="col-md-2 control-label">Webhook
-                                                                            URL</label>
+                                                                            {{ __('labels.sms_url') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="whatsapp_webhook"
                                                                                 placeholder="Webhook URL"
@@ -651,7 +651,7 @@
                                                                 <div id="contact" class="tab-pane fade">
                                                                     <div
                                                                         class="form-group{{ $errors->has('contact_name') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Contact Name</label>
+                                                                        <label class="col-md-2 control-label">{{ __('labels.contact_name') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="contact_name"
                                                                                 placeholder="{{ __('labels.contact_name_placeholder') }}"
@@ -692,7 +692,7 @@
 
                                                                     <div
                                                                         class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">E-Mail</label>
+                                                                        <label class="col-md-2 control-label">{{ __('labels.email_address') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="email"
                                                                                 placeholder="E-Mail"
@@ -714,7 +714,7 @@
                                                                 <div id="bank" class="tab-pane fade">
                                                                     <div
                                                                         class="form-group{{ $errors->has('bank_name') ? ' has-error' : '' }}">
-                                                                        <label class="col-md-2 control-label">Bank Name</label>
+                                                                        <label class="col-md-2 control-label">{{ __('labels.bank_name') }}</label>
                                                                         <div class="col-md-6">
                                                                             <input type="text" name="bank_name"
                                                                                 placeholder="{{ __("labels.name_placeholder") }}"

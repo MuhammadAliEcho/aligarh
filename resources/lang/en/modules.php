@@ -658,6 +658,7 @@ return [
     'pages_guardians_title' => 'Guardians',
     'pages_routines_title' => 'Routines',
     'pages_notice_board_title' => 'Notice Board',
+    'pages_settings_title' => 'Settings',
 
     // Edit page titles
     'pages_edit_teacher' => 'Edit Teacher',
@@ -717,4 +718,31 @@ return [
     'tabs_add_section' => 'Add Section',
     'tabs_users' => 'Users',
     'tabs_add_user' => 'Add Users',
+    
+    // Settings tabs
+    'tabs_general_info' => 'General Info',
+    'tabs_package_info' => 'Package Info',
+    'tabs_sms_package' => 'SMS Package Info',
+    'tabs_notification_settings' => 'Notification Settings',
+    
+    // Settings sub-tabs (left navigation)
+    'settings_general' => 'General',
+    'settings_smtp' => 'SMTP',
+    'settings_sms' => 'SMS',
+    'settings_whatsapp' => 'WhatsApp',
+    'settings_contact' => 'Contact',
+    'settings_bank' => 'Bank Info',
+    'settings_miscellaneous' => 'Miscellaneous',
+    
+    // Settings form labels
+    'settings_upload_logo' => 'Upload Logo',
+    'settings_smtp_mailer' => 'SMTP Mailer',
+    'settings_sms_provider' => 'SMS Provider',
+    'settings_whatsapp_provider' => 'WhatsApp Provider',
+    'settings_from_email' => 'From Email',
+    'settings_from_name' => 'From Name',
+    
+    // Notification pages
+    'pages_notifications_title' => 'Notifications',
+    'forms_send_notification' => 'Send Message',
 ];
