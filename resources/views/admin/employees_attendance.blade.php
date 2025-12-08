@@ -43,7 +43,7 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="make-attendance">
-                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Attendance </a>
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_make_attendance') }} </a>
                             </li>
                             @can('employee-attendance.report')
                                 <li class="get-attendance">
@@ -79,7 +79,7 @@
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-6">
                                                 <button class="btn btn-primary" type="submit"><span
-                                                        class="glyphicon glyphicon-save"></span> Make Attendance </button>
+                                                        class="glyphicon glyphicon-save"></span> {{ __('modules.tabs_make_attendance') }} </button>
                                             </div>
                                         </div>
 

@@ -44,12 +44,12 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Vouchers</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_vouchers') }}</a>
                             </li>
 
                             @can('vouchers.add')
                               <li class="add-voucher">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Vouchers</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_voucher') }}</a>
                               </li>
                             @endcan
 

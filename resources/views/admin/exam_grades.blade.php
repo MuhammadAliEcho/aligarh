@@ -43,7 +43,7 @@
 												<ul class="nav nav-tabs">
 													@can('exam-grades.update')
 														<li class="active">
-															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Exam Grades</a>
+															<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_exam_grades') }}</a>
 														</li>
 													@endcan
 												</ul>

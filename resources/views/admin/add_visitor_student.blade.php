@@ -202,7 +202,7 @@
                         <ul class="nav nav-tabs">
                             @can('students.add')
                                 <li class="add-student">
-                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Admit Students</a>
+                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_admit_students') }}</a>
                                 </li>
                             @endcan
                         </ul>

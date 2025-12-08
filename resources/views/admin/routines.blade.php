@@ -51,11 +51,11 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="active">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Routines</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_routines') }}</a>
                             </li>
                             @can('routines.add')
                               <li class="add-routine-tab">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Routine</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_routine') }}</a>
                               </li>
                             @endcan
                         </ul>
@@ -184,7 +184,7 @@
                                         </div>
 
                                         <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Subject</label>
+                                          <label class="col-md-2 control-label">{{ __('labels.subject') }}</label>
                                           <div class="col-md-6 select2-div">
                                             <select class="form-control select2" name="subject">
                                             </select>

@@ -350,12 +350,12 @@
                         <ul class="nav nav-tabs">
                             @canany(['employee.index','employee.grid'])
                               <li class="">
-                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Employees</a>
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_employees') }}</a>
                               </li>
                             @endcanany  
                             @can('employee.add')
                               <li class="add-employee">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Employee</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_employee') }}</a>
                               </li>
                             @endcan
                         </ul>

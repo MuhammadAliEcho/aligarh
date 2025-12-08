@@ -213,4 +213,42 @@ return [
     'date_of_joining_placeholder' => 'Date Of Joining',
     'search_placeholder_ellipsis' => 'Search...',
     'professional_designation' => 'Profession',
+    
+    // Gender options
+    'male' => 'Male',
+    'female' => 'Female',
+    
+    // Image & File Upload
+    'upload_image' => 'Upload Image',
+    'upload_file' => 'Upload File',
+    'duration' => 'Duration',
+    
+    // Additional form labels
+    'api_key' => 'API Key',
+    'available_balance' => 'Available Balance',
+    'bank_name' => 'Bank Name',
+    'message' => 'Message',
+    'next_due_date' => 'Next Due Date',
+    'phone_number' => 'Phone Number',
+    'sms_key' => 'SMS Key',
+    'smtp_settings' => 'SMTP Settings',
+    'system_settings' => 'System Settings',
+    'webhook_url' => 'Webhook URL',
+    'whatsapp_settings' => 'WhatsApp Settings',
+    'class' => 'Class',
+    'date' => 'Date',
+    'date_month' => 'Date Month',
+    'employee' => 'Employee',
+    'exam' => 'Exam',
+    'gr_no' => 'GR No',
+    'guardians' => 'Guardians',
+    'invoice_no' => 'Invoice No',
+    'payment_mode' => 'Payment Mode',
+    'person' => 'Person',
+    'remarks' => 'Remarks',
+    'section' => 'Section',
+    'select_one' => 'Select One',
+    'student' => 'Student',
+    'students' => 'Students',
+    'subject' => 'Subject',
 ];

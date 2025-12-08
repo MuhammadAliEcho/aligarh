@@ -46,7 +46,7 @@
                             </li>
                             @can('items.add')
                               <li class="add-item">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Items</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_items') }}</a>
                               </li>
                             @endcan
                         </ul>

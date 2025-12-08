@@ -59,11 +59,11 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                              <a data-toggle="tab" onClick="drawTable()" href="#tab-10"><span class="fa fa-list"></span> Users</a>
+                              <a data-toggle="tab" onClick="drawTable()" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_users') }}</a>
                             </li>
                             @can('users.create')
                               <li class="add-user">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Users</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_user') }}</a>
                               </li>
                             @endcan
                         </ul>

@@ -349,12 +349,12 @@
                         <ul class="nav nav-tabs">
                           @canany(['guardian.index','guardian.grid'])
                             <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Guardians</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_guardians') }}</a>
                             </li>
                           @endcanany
                             @can('guardian.add')
                               <li class="add-guardian">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Guardians</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_guardian') }}</a>
                               </li>
                             @endcan
                         </ul>

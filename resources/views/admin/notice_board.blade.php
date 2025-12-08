@@ -44,7 +44,7 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li>
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-clipboard"></span> Notices</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-clipboard"></span> {{ __('modules.tabs_notices') }}</a>
                             </li>
                             @can('noticeboard.create')
                               <li class="make-notice">

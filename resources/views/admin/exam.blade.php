@@ -39,13 +39,13 @@
 				<div class="col-lg-12">
 					<div class="tabs-container">
 						<ul class="nav nav-tabs">
-							<li class="">
-								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Exam List</a>
-							</li>
-							@can('exam.add')
-								<li class="add-exam">
-									<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Create Exam</a>
+								<li class="">
+									<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_exam_list') }}</a>
 								</li>
+							@can('exam.add')
+									<li class="add-exam">
+										<a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_create_exam') }}</a>
+									</li>
 							@endcan
 						</ul>
 						<div class="tab-content">
@@ -54,12 +54,12 @@
 									<div class="table-responsive">
 									<table class="table table-striped table-bordered table-hover dataTables-teacher" >
 										<thead>
-										<tr>
-											<th>Title</th>
-											<th>Description</th>
-											<th>Duration</th>
-											<th>{{ __("labels.options") }}</th>
-										</tr>
+									<tr>
+										<th>{{ __('labels.title') }}</th>
+										<th>{{ __('labels.description') }}</th>
+										<th>{{ __('labels.duration') }}</th>
+										<th>{{ __("labels.options") }}</th>
+									</tr>
 										</thead>
 									</table>
 									</div>
@@ -75,9 +75,9 @@
 										<form id="tchr_rgstr" method="post" action="{{ URL('exam/add') }}" class="form-horizontal" >
 											{{ csrf_field() }}
 
-											<div class="form-group{{ ($errors->has('exam_category'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label">Select Category</label>
-											<div class="col-md-6">
+									<div class="form-group{{ ($errors->has('exam_category'))? ' has-error' : '' }}">
+									<label class="col-md-2 control-label">{{ __('modules.labels_select_exam_category') }}</label>
+									<div class="col-md-6">
 												<select name="exam_category" class="form-control">
 													@foreach(config('examcategories') AS $k=>$exam)
 													<option value="{{ $k }}">{{ $exam }}</option>
@@ -92,10 +92,10 @@
 											</div>
 											
 
-											<div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label">Title</label>
-											<div class="col-md-6">
-											<input type="text" name="name" class="form-control" placeholder="Title" value="{{ old('name') }}">
+									<div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
+									<label class="col-md-2 control-label">{{ __('labels.title') }}</label>
+									<div class="col-md-6">
+									<input type="text" name="name" class="form-control" placeholder="{{ __('labels.title') }}" value="{{ old('name') }}">
 												@if ($errors->has('name'))
 													<span class="help-block">
 														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
@@ -104,10 +104,10 @@
 											</div>
 											</div>
 
-											<div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label">Description</label>
-											<div class="col-md-6">
-												<textarea type="text" name="description" placeholder="Description" class="form-control" required="true">{{ old('description') }}</textarea>
+									<div class="form-group{{ ($errors->has('description'))? ' has-error' : '' }}">
+									<label class="col-md-2 control-label">{{ __('labels.description') }}</label>
+									<div class="col-md-6">
+										<textarea type="text" name="description" placeholder="{{ __('labels.description') }}" class="form-control" required="true">{{ old('description') }}</textarea>
 												@if ($errors->has('description'))
 													<span class="help-block">
 														<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('description') }}</strong>

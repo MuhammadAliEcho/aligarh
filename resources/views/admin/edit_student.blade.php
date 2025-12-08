@@ -81,8 +81,8 @@
 												<div class="col-md-6">
 													<select class="form-control" name="gender" placeholder="{{ __('labels.gender') }}">
 														<option value="" disabled selected>{{ __('labels.gender') }}</option>
-															<option>Male</option>
-															<option>Female</option>
+															<option>{{ __('labels.male') }}</option>
+															<option>{{ __('labels.female') }}</option>
 														</select>
 														@if ($errors->has('gender'))
 																<span class="help-block">
@@ -104,10 +104,10 @@
 													</div>
 												</div>
 
-												<div class="form-group{{ ($errors->has('place_of_birth'))? ' has-error' : '' }}">
-													<label class="col-md-2 control-label">Place Of Birth</label>
-													<div class="col-md-6">
-														<input type="text" name="place_of_birth" placeholder="Place Of Birth" value="{{ old('place_of_birth', $student->place_of_birth) }}" class="form-control"/>
+											<div class="form-group{{ ($errors->has('place_of_birth'))? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">{{ __('labels.place_of_birth') }}</label>
+												<div class="col-md-6">
+													<input type="text" name="place_of_birth" placeholder="{{ __('labels.place_of_birth') }}" value="{{ old('place_of_birth', $student->place_of_birth) }}" class="form-control"/>
 														@if ($errors->has('place_of_birth'))
 																<span class="help-block">
 																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('place_of_birth') }}</strong>
@@ -116,10 +116,10 @@
 													</div>
 												</div>
 
-												<div class="form-group{{ ($errors->has('religion'))? ' has-error' : '' }}">
-													<label class="col-md-2 control-label">Religion</label>
-													<div class="col-md-6">
-														<input type="text" name="religion" placeholder="Religion" value="{{ old('religion', $student->religion) }}" class="form-control"/>
+											<div class="form-group{{ ($errors->has('religion'))? ' has-error' : '' }}">
+												<label class="col-md-2 control-label">{{ __('labels.religion') }}</label>
+												<div class="col-md-6">
+													<input type="text" name="religion" placeholder="{{ __('labels.religion') }}" value="{{ old('religion', $student->religion) }}" class="form-control"/>
 														@if ($errors->has('religion'))
 																<span class="help-block">
 																		<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('religion') }}</strong>
@@ -130,11 +130,11 @@
 
 												<div class="form-group {{ ($errors->has('img'))? ' has-error' : '' }}">
 													<div class="col-md-2">
-														<span class="btn btn-default btn-block btn-file">
-															<input type="file" name="img" accept="image/*" id="imginp" />
-																<span class="fa fa-image"></span>
-																Upload Image
-														</span>
+													<span class="btn btn-default btn-block btn-file">
+														<input type="file" name="img" accept="image/*" id="imginp" />
+															<span class="fa fa-image"></span>
+															{{ __('labels.upload_image') }}
+													</span>
 													</div>
 													<div class="col-md-6">
 														<input type="hidden" name="removeImage" v-model="removeImage" />

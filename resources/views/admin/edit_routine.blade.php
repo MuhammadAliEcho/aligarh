@@ -92,7 +92,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Subject</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.subject') }}</label>
                                         <div class="col-md-6 select2-div">
                                           <select class="form-control select2" name="subject">
                                             <option></option>

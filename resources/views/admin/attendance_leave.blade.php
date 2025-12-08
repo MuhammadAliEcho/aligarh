@@ -253,7 +253,7 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Attendance Leave</a>
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_attendance_leave') }}</a>
                             </li>
                             @can('attendance-leave.make')
                                 <li class="add-role">

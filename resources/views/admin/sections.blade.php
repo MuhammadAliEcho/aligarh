@@ -43,11 +43,11 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Sections</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_sections') }}</a>
                             </li>
                             @can('manage-sections.add')
                               <li class="add-section">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Section</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_section') }}</a>
                               </li>
                             @endcan
                         </ul>

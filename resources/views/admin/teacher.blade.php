@@ -348,12 +348,12 @@
                         <ul class="nav nav-tabs">
                             @canany(['teacher.index','teacher.grid'])
                               <li class="">
-                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Teachers</a>
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_teachers') }}</a>
                               </li>
                             @endcanany
                             @can('teacher.add')
                               <li class="add-teacher">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Teachers</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_teacher') }}</a>
                               </li>
                             @endcan
                         </ul>
@@ -576,7 +576,7 @@
                                           </div>
                                         </div>
                                         <div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Subject</label>
+                                          <label class="col-md-2 control-label">{{ __('labels.subject') }}</label>
                                           <div class="col-md-6">
                                             <input type="text" name="subject" placeholder="Subject" value="{{ old('subject') }}" class="form-control"/>
                                             @if ($errors->has('subject'))

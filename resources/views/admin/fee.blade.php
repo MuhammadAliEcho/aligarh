@@ -43,16 +43,16 @@
 					<div class="tabs-container">
 						<ul class="nav nav-tabs">
 							<li class="">
-								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Invoice</a>
+								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_invoice') }}</a>
 							</li>
 							@can('fee.create.store')
 								<li class="make-fee">
-									<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> Create Invoice</a>
+									<a data-toggle="tab" href="#tab-11"><span class="fa fa-edit"></span> {{ __('modules.tabs_create_invoice') }}</a>
 								</li>
 							@endcan
 							@can('fee.bulk.create.invoice')
 								<li class="make-fee">
-									<a data-toggle="tab" href="#tab-14"><span class="fa fa-edit"></span> Create Bulk Invoice</a>
+									<a data-toggle="tab" href="#tab-14"><span class="fa fa-edit"></span> {{ __('modules.tabs_create_bulk_invoice') }}</a>
 								</li>
 							@endcan
 							@can('fee.collect.store')

@@ -76,11 +76,11 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Roles</a>
+                                <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_roles') }}</a>
                             </li>
                             @can('roles.create')
                                 <li class="add-role">
-                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Roles</a>
+                                    <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_role') }}</a>
                                 </li>
                             @endcan
                         </ul>

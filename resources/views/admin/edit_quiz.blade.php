@@ -131,7 +131,7 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('date') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Date </label>
+                                    <label class="col-md-2 control-label">{{ __('labels.date') }} </label>
                                     <div class="col-md-6">
                                         <input id="datetimepicker" type="text" name="date" class="form-control"
                                             placeholder="From Date"

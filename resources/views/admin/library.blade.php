@@ -42,11 +42,11 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Books</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.tabs_books') }}</a>
                             </li>
                             @can('library.add')
                               <li class="add-item">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Book</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.tabs_add_book') }}</a>
                               </li>
                             @endcan                   
                         </ul>
