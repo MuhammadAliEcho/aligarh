@@ -745,4 +745,18 @@ return [
     // Notification pages
     'pages_notifications_title' => 'Notifications',
     'forms_send_notification' => 'Send Message',
+    
+    // ==================== PERMISSION DEPENDENCIES ====================
+    'permission_dependencies_title' => 'Permission Dependencies',
+    'permission_dependency_auto_grant' => 'Auto-Granted',
+    'permission_dependency_required' => 'Required Permissions',
+    'permission_dependency_granted_success' => 'Permission granted with dependencies',
+    'permission_dependency_revoked_success' => 'Permission revoked with dependent permissions',
+    'permission_dependency_warning_incomplete' => 'Incomplete permission set detected',
+    'permission_dependency_warning_message' => 'The following permissions are missing required dependencies:',
+    'permission_dependency_missing_dependencies' => 'Missing dependencies',
+    'permission_dependency_auto_fix' => 'Auto-fix incomplete permissions',
+    'permission_dependency_fixed_success' => 'Auto-fixed missing permissions',
+    'permission_dependency_audit_log' => 'Permission Changes Audit Log',
+    'permission_dependency_validation_failed' => 'Permission validation failed',
 ];

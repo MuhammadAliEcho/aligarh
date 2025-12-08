@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Role;
+use App\Services\PermissionDependencyService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,6 +13,13 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
 {
+	protected $depService;
+
+	public function __construct(PermissionDependencyService $depService)
+	{
+		$this->depService = $depService;
+	}
+
 	public function index(Request $request)
 	{
 		$data = [];
@@ -42,26 +50,47 @@ class RoleController extends Controller
 
 		DB::beginTransaction();
 		try {
-			$Role =	Role::create(['name' => $request->input('name'), 'guard_name' => 'web']);
-			$Role->syncPermissions($request->input('permissions'));
+			$Role = Role::create(['name' => $request->input('name'), 'guard_name' => 'web']);
+			$permissions = $request->input('permissions', []);
+			
+			// Option 2: Auto-grant dependent permissions
+			$allPermissions = [];
+			foreach ($permissions as $perm) {
+				$allPermissions[] = $perm;
+				$allPermissions = array_merge($allPermissions, $this->depService->getAllDependencies($perm));
+			}
+			$allPermissions = array_unique($allPermissions);
+			
+			$Role->syncPermissions($allPermissions);
+			
+			// Option 4: Validate completeness and warn if incomplete
+			$validation = $this->depService->validatePermissionCompleteness($Role);
+			
+			// Audit log
+			$this->depService->auditPermissionChange($Role, 'create', $allPermissions, [
+				'auto_granted_count' => count($allPermissions) - count($permissions)
+			]);
+			
 			DB::commit();
 		} catch (\Exception $e) {
 			DB::rollBack();
-		Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+			Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+			return redirect('roles')->with([
+				'toastrmsg' => [
+					'type' => 'error', 
+					'title'  =>  'Roles',
+					'msg' =>  __('modules.roles_update_error')
+				]
+			]);
+		}
+		
 		return redirect('roles')->with([
-			'toastrmsg' => [
-				'type' => 'error', 
-				'title'  =>  'Roles',
-				'msg' =>  __('modules.roles_update_error')
-			]
-		]);
-	}		return redirect('roles')->with([
-        'toastrmsg' => [
-          'type' 	=> 'success', 
-          'title'  	=>  'Role Registration',
-          'msg' 	=>  __('modules.common_register_success')
-          ]
-      	]);
+	        'toastrmsg' => [
+	          'type' 	=> 'success', 
+	          'title'  	=>  'Role Registration',
+	          'msg' 	=>  __('modules.common_register_success')
+	          ]
+	      	]);
 	}
 
 	public function edit($id)
@@ -85,16 +114,35 @@ class RoleController extends Controller
 		DB::beginTransaction();
 		try {
 			$Role = Role::NotDeveloper()->findOrFail($id);
-			$Role->syncPermissions($request->input('permissions'));
+			$permissions = $request->input('permissions', []);
+			
+			// Option 2: Auto-grant dependent permissions
+			$allPermissions = [];
+			foreach ($permissions as $perm) {
+				$allPermissions[] = $perm;
+				$allPermissions = array_merge($allPermissions, $this->depService->getAllDependencies($perm));
+			}
+			$allPermissions = array_unique($allPermissions);
+			
+			$Role->syncPermissions($allPermissions);
 
 			if (filled($request->sync_permissions)) {
 				$rolesToSync = Role::NotDeveloper()
 					// ->where('id', '!=', $Role->id)
 					->get();
 				foreach ($rolesToSync as $role) {
-					$role->syncPermissions($request->input('permissions'));
+					// Apply same dependency logic to all roles
+					$role->syncPermissions($allPermissions);
 				}
 			}
+			
+			// Option 4: Validate completeness and warn if incomplete
+			$validation = $this->depService->validatePermissionCompleteness($Role);
+			
+			// Audit log
+			$this->depService->auditPermissionChange($Role, 'update', $allPermissions, [
+				'auto_granted_count' => count($allPermissions) - count($permissions)
+			]);
 
 			DB::commit();
 		} catch (\Exception $e) {
@@ -107,14 +155,15 @@ class RoleController extends Controller
 					'msg' =>  'There was an issue while Updating Role'
 				]
 			]);
-	}
-	return redirect('roles')->with([
-        'toastrmsg' => [
-          'type' 	=> 'success', 
-          'title'  	=>  'Role Updated',
-          'msg' 	=>  __('modules.roles_update_success')
-          ]
-      	]);
+		}
+		
+		return redirect('roles')->with([
+	        'toastrmsg' => [
+	          'type' 	=> 'success', 
+	          'title'  	=>  'Role Updated',
+	          'msg' 	=>  __('modules.roles_update_success')
+	          ]
+	      	]);
 	}	// public function delete(Request $request, $id)
 	// {
 	// 	$Role = Role::NotDeveloper()->findOrFail($id);
@@ -130,7 +179,269 @@ class RoleController extends Controller
 
 	private function getPermissions()
 	{
-		return [
+		$dependencies = config('permission_dependencies', []);
+		$permissionLabels = $this->buildPermissionLabelMap();
+		
+		$permissions = [
+			'Dashboard & Settings' => [
+				'dashboard' => 'Dashboard',
+				'dashboard.top_content' => 'Show Total Students, Teacher etc..',
+				'dashboard.timeline' => 'Show TimeLins (Notice Board)',
+				'dashboard.monthly_attendance' => 'Show Monthly Attendance',
+				'dashboard.fee_Collection' => 'Show Fee Collection',
+				'dashboard.monthly_expenses' => 'Show Monthly Expenses',
+				'user-settings.index' => 'User Settings View',
+				'user-settings.password.update' => 'Password Update',
+				'user-settings.change.session' => 'Change Session',
+			],
+			'Users' => [
+				'users.index' => 'User View',
+				'users.create' => ['label' => 'User Create', 'dependencies' => $this->transformDependencies($dependencies['users.create'] ?? [], $permissionLabels)],
+				'users.edit' => ['label' => 'User Edit', 'dependencies' => $this->transformDependencies($dependencies['users.edit'] ?? [], $permissionLabels)],
+				'users.update' => 'User Update',
+				'users.update.update_password' => 'Update Password (User Update)'
+			],
+			'Roles' => [
+				'roles.index' => 'Role View',
+				'roles.create' => ['label' => 'Role Create', 'dependencies' => $this->transformDependencies($dependencies['roles.create'] ?? [], $permissionLabels)],
+				'roles.edit' => ['label' => 'Role Edit', 'dependencies' => $this->transformDependencies($dependencies['roles.edit'] ?? [], $permissionLabels)],
+				'roles.update' => 'Role update',
+			],
+			'Students' => [
+				'students.index' => 'Students View',
+				'students.grid' => 'Students Gird View',
+				'students.add' => ['label' => 'Students Create', 'dependencies' => $this->transformDependencies($dependencies['students.create'] ?? [], $permissionLabels)],
+				'students.edit' => ['label' => 'Students Edit', 'dependencies' => $this->transformDependencies($dependencies['students.edit'] ?? [], $permissionLabels)],
+				'students.card' => 'Student View Card',
+				'students.class_edit' => 'Edit Class',
+				'students.edit.post' => 'Students Update',
+				'students.profile' => 'Students Profile',
+				'students.image' => 'Students Image',
+				'students.interview.get' => 'Interview View',
+				'students.interview.update.create' => 'Interview Update',
+				'students.certificate.get' => 'Certificate View',
+				'students.certificate.create' => 'Certificate Create',
+				'students.leave' => 'Students Leave',
+			],
+
+			'Visitors' => [
+				'visitors.index' => 'Visitors View',
+				'visitors.grid' => 'Visitors Gird View',
+				'visitors.profile' => 'Visitors Profile',
+				'visitors.create' => 'Visitors Create',	
+				'students.show.visitor' => 'Show  Addmissison Visitors',
+				'students.create.visitor' => 'Create Addmissison Visitors',
+				'visitors.edit' => 'Visitors Edit',
+				'visitors.update' => 'Visitors Update',	
+				'visitors.delete' => 'Visitors Delete',
+			],
+			
+			'Teachers' => [
+				'teacher.index' => 'Teachers View',
+				'teacher.grid' => 'Teachers Gird View',
+				'teacher.add' => 'Teachers Create',
+				'teacher.edit' => 'Teachers Edit',
+				'teacher.edit.post' => 'Teachers Update',
+				'teacher.profile' => 'Teachers Profile',
+				'teacher.image' => 'Teachers Image',
+				'teacher.find' => 'Find Teachers',
+			],
+			'Employees' => [
+				'employee.index' => 'Employees View',
+				'employee.grid' => 'Employees Gird View',
+				'employee.add' => 'Employees Create',
+				'employee.edit' => 'Employees Edit',
+				'employee.edit.post' => 'Employees Update',
+				'employee.profile' => 'Employees Profile',
+				'employee.image' => 'Employees Image',
+				'employee.find' => 'Find Employees',
+			],
+			'Guardians' => [
+				'guardian.index' => 'Guardians View',
+				'guardian.grid' => 'Guardians Gird View',
+				'guardian.add' => 'Guardians Create',
+				'guardian.edit' => 'Guardians Edit',
+				'guardian.edit.post' => 'Guardians Update',
+				'guardian.profile' => 'Guardians Profile',
+			],
+			'Classes & Sections' => [
+				'manage-classes.index' => 'Classes View',
+				'manage-classes.add' => 'Classes Create',
+				'manage-classes.edit' => 'Classes Edit',
+				'manage-classes.edit.post' => 'Classes Update',
+				'manage-sections.index' => 'Sections View',
+				'manage-sections.add' => 'Sections Create',
+				'manage-sections.edit' => 'Sections Edit',
+				'manage-sections.edit.post' => 'Sections Update',
+			],
+			'Subjects' => [
+				'manage-subjects.index' => 'Subjects View',
+				'manage-subjects.add' => ['label' => 'Subjects Create', 'dependencies' => $this->transformDependencies($dependencies['subjects.add'] ?? [], $permissionLabels)],
+				'manage-subjects.edit' => ['label' => 'Subjects Edit', 'dependencies' => $this->transformDependencies($dependencies['subjects.edit'] ?? [], $permissionLabels)],
+				'manage-subjects.edit.post' => 'Subjects Update',
+			],
+			'Vendors & Items' => [
+				'vendors.index' => 'Vendors View',
+				'vendors.add' => ['label' => 'Vendors Create', 'dependencies' => $this->transformDependencies($dependencies['vendors.add'] ?? [], $permissionLabels)],
+				'vendors.edit' => ['label' => 'Vendors Edit', 'dependencies' => $this->transformDependencies($dependencies['vendors.edit'] ?? [], $permissionLabels)],
+				'vendors.edit.post' => 'Vendors Update',
+				'items.index' => 'Items View',
+				'items.add' => ['label' => 'Items Create', 'dependencies' => $this->transformDependencies($dependencies['items.add'] ?? [], $permissionLabels)],
+				'items.edit' => ['label' => 'Items Edit', 'dependencies' => $this->transformDependencies($dependencies['items.edit'] ?? [], $permissionLabels)],
+				'items.edit.post' => 'Items Update',
+			],
+			'Vouchers' => [
+				'vouchers.index' => 'Vouchers View',
+				'vouchers.add' => ['label' => 'Vouchers Create', 'dependencies' => $this->transformDependencies($dependencies['vouchers.add'] ?? [], $permissionLabels)],
+				'vouchers.edit' => ['label' => 'Vouchers Edit', 'dependencies' => $this->transformDependencies($dependencies['vouchers.edit'] ?? [], $permissionLabels)],
+				'vouchers.edit.post' => 'Vouchers Update',
+				'vouchers.detail' => 'Vouchers Detail',
+			],
+			'Routines' => [
+				'routines.index' => 'Routines View',
+				'routines.add' => ['label' => 'Routines Create', 'dependencies' => $this->transformDependencies($dependencies['routines.add'] ?? [], $permissionLabels)],
+				'routines.edit' => ['label' => 'Routines Edit', 'dependencies' => $this->transformDependencies($dependencies['routines.edit'] ?? [], $permissionLabels)],
+				'routines.edit.post' => 'Routines Update',
+				'routines.delete' => ['label' => 'Routines Delete', 'dependencies' => $this->transformDependencies($dependencies['routines.delete'] ?? [], $permissionLabels)],
+			],
+			'Attendance' => [
+				'student-attendance.index' => 'Student Attendance View',
+				'student-attendance.make' => 'Student Attendance Get',
+				'student-attendance.make.post' => 'Student Attendance Make',
+				'student-attendance.report' => 'Student Attendance Report',
+				'teacher-attendance.index' => 'Teacher Attendance View',
+				'teacher-attendance.make' => 'Teacher Attendance Get',
+				'teacher-attendance.make.post' => 'Teacher Attendance Make',
+				'teacher-attendance.report' => 'Teacher Attendance Report',
+				'employee-attendance.index' => 'Employee Attendance View',
+				'employee-attendance.make' => 'Employee Attendance Get',
+				'employee-attendance.make.post' => 'Employee Attendance Make',
+				'employee-attendance.report' => 'Employee Attendance Report',
+			],
+			'Attendance Leave' => [
+				'attendance-leave.index' => 'Leave View',
+				'attendance-leave.get.data' => 'get Data',
+				'attendance-leave.make' => 'Leave Make',
+				'attendance-leave.edit' => 'Leave Edit',
+				'attendance-leave.update' => 'Leave Update',
+				'attendance-leave.delete' => 'Leave Delete',
+			],
+			'Student Migrations' => [
+				'student-migrations.index' => 'Migrations View',
+				'student-migrations.get' => 'Migrations Get',
+				'student-migrations.create' => 'Migrations Create',
+			],
+			'Exams & Results' => [
+				'exam.index' => 'Exams View',
+				'exam.add' => ['label' => 'Exams Create', 'dependencies' => $this->transformDependencies($dependencies['exam.add'] ?? [], $permissionLabels)],
+				'exam.edit' => ['label' => 'Exams Edit', 'dependencies' => $this->transformDependencies($dependencies['exam.edit'] ?? [], $permissionLabels)],
+				'exam.edit.post' => 'Exams Update',
+				'manage-result.index' => 'Results View',
+				'manage-result.make' => ['label' => 'Results Make', 'dependencies' => $this->transformDependencies($dependencies['manage-result.make'] ?? [], $permissionLabels)],
+				'manage-result.attributes' => 'Results Attributes',
+				'manage-result.maketranscript' => 'Make Transcript',
+				'manage-result.maketranscript.create' => 'Create Transcript',
+				'manage-result.result' => 'View Result',
+			],
+
+			'Quizzes' => [
+				'quizzes.index' => 'Quizzess View',
+				'quizzes.get.data' => 'Get Data',
+				'quizzes.create' => 'Quiz Create',
+				'quizzes.edit' => 'Quiz Edit',
+				'quizzes.update' => 'Quiz Update',
+				'quizzes.delete' => 'Quiz Delete',
+
+				'quizresult.index' => 'Quiz Result View',
+				'quizresult.create' => 'Quiz Result Create',
+			],
+			'Library' => [
+				'library.index' => 'Library View',
+				'library.add' => ['label' => 'Library Create', 'dependencies' => $this->transformDependencies($dependencies['library.add'] ?? [], $permissionLabels)],
+				'library.edit' => ['label' => 'Library Edit', 'dependencies' => $this->transformDependencies($dependencies['library.edit'] ?? [], $permissionLabels)],
+				'library.edit.post' => 'Library Update',
+			],
+			'Notice Board' => [
+				'noticeboard.index' => 'Notice View',
+				'noticeboard.create' => 'Notice Create',
+				'noticeboard.delete' => 'Notice Delete',
+			],
+			'Fee Management' => [
+				'fee.index' 				=> 'Fee View',
+				'fee.create' 				=> 'Get Student',
+				'fee.create.store' 			=> 'Fee Create',
+				'fee.get.invoice.collect' 	=> 'Get Invoice Collect',
+				'fee.collect.store' 		=> 'Store Invoice Collect',
+				'fee.edit.invoice' 			=> 'Edit Invoice',
+				'fee.edit.invoice.post' 	=> 'Update Invoice',
+				'fee.get.student.fee' 		=> 'Get Student Fee',
+				'fee.update' 				=> 'Student Fee Update',
+				'fee.chalan.print' 			=> 'Chalan Print',
+				'fee.group.chalan.print'	=> 'Group Chalan Print',
+				'fee.invoice.print' 		=> 'Invoice Print',
+				'fee.bulk.print.invoice' 	=> 'Bulk Print Invoice',
+				'fee.bulk.create.invoice' 	=> 'Bulk Create Invoice',
+				'fee.bulk.create.group.invoice'	=>	'Bulk Group Invoice',
+				'fee.findstu' 				=> 'Find Student Fee',
+			],
+			'Expenses' => [
+				'expense.index' => 'Expenses View',
+				'expense.add' => ['label' => 'Expenses Create', 'dependencies' => $this->transformDependencies($dependencies['expense.add'] ?? [], $permissionLabels)],
+				'expense.edit' => ['label' => 'Expenses Edit', 'dependencies' => $this->transformDependencies($dependencies['expense.edit'] ?? [], $permissionLabels)],
+				'expense.edit.post' => 'Expenses Update',
+				'expense.summary' => 'Expenses Summary',
+			],
+			'SMS Notifications' => [
+				'smsnotifications.index' => 'SMS View',
+				'smsnotifications.sendsms' => 'Send SMS',
+				'smsnotifications.sendbulksms' => 'Send Bulk SMS',
+				'smsnotifications.history' => 'SMS History',
+			],
+			'Message Notifications' => [
+				'msg-notifications.index' => 'View',
+				'msg-notifications.get.data' => 'Get Data',
+				'msg-notifications.send' => 'Messsage Send',
+				'msg-notifications.msg.log' => 'View Message Logs',
+			],
+			'Reports' => [
+				'seatsreport' => 'Seats Report',
+				'fee-collection-reports.index' => 'Fee Collection View',
+				'fee-collection-reports.fee.receipts.statment' => 'Fee Receipts Statement',
+				'fee-collection-reports.daily.fee.collection' => 'Daily Fee Collection',
+				'fee-collection-reports.free.ship.students' => 'Freeship Students',
+				'fee-collection-reports.unpaid.fee.statment' => 'Unpaid Fee Statement',
+				'fee-collection-reports.yearly.collection.statment' => 'Yearly Collection Statement',
+				
+				'exam-reports.index' => 'Exam Reports View',
+				'exam-reports.tabulation.sheet' => 'Tabulation Sheet',
+				'exam-reports.award.list' => 'Award List',
+				'exam-reports.average.result' => 'Average Result',
+				'exam-reports.find.student' => 'Find Student',
+				'exam-reports.result.transcript' => 'Result Transcript',
+			],
+			'System Settings' => [
+				'system-setting.index' => 'System Settings View',
+				'system-setting.update' => 'System Settings Update',
+				'system-setting.print.invoice.history' => 'Print Invoice History',
+				'system-setting.history' => 'System History',
+				'system-setting.notification.settings' => 'Notification Settings',
+				'fee-scenario.index' => 'Fee Scenario View',
+				'fee-scenario.update.scenario' => 'Fee Scenario Update',
+				'exam-grades.index' => 'Exam Grades View',
+				'exam-grades.update' => 'Exam Grades Update',
+			],
+		];
+		
+		return $permissions;
+	}
+
+	/**
+	 * Build a mapping of permission technical names to user-friendly labels
+	 * This enables dependency display to show readable names instead of technical IDs
+	 */
+	private function buildPermissionLabelMap()
+	{
+		$permissions = [
 			'Dashboard & Settings' => [
 				'dashboard' => 'Dashboard',
 				'dashboard.top_content' => 'Show Total Students, Teacher etc..',
@@ -170,8 +481,8 @@ class RoleController extends Controller
 				'students.certificate.get' => 'Certificate View',
 				'students.certificate.create' => 'Certificate Create',
 				'students.leave' => 'Students Leave',
+				'students.show' => 'Student Details View',
 			],
-
 			'Visitors' => [
 				'visitors.index' => 'Visitors View',
 				'visitors.grid' => 'Visitors Gird View',
@@ -183,7 +494,6 @@ class RoleController extends Controller
 				'visitors.update' => 'Visitors Update',	
 				'visitors.delete' => 'Visitors Delete',
 			],
-			
 			'Teachers' => [
 				'teacher.index' => 'Teachers View',
 				'teacher.grid' => 'Teachers Gird View',
@@ -291,7 +601,6 @@ class RoleController extends Controller
 				'manage-result.maketranscript.create' => 'Create Transcript',
 				'manage-result.result' => 'View Result',
 			],
-
 			'Quizzes' => [
 				'quizzes.index' => 'Quizzess View',
 				'quizzes.get.data' => 'Get Data',
@@ -299,10 +608,8 @@ class RoleController extends Controller
 				'quizzes.edit' => 'Quiz Edit',
 				'quizzes.update' => 'Quiz Update',
 				'quizzes.delete' => 'Quiz Delete',
-
 				'quizresult.index' => 'Quiz Result View',
 				'quizresult.create' => 'Quiz Result Create',
-				// .....
 			],
 			'Library' => [
 				'library.index' => 'Library View',
@@ -331,7 +638,6 @@ class RoleController extends Controller
 				'fee.bulk.print.invoice' 	=> 'Bulk Print Invoice',
 				'fee.bulk.create.invoice' 	=> 'Bulk Create Invoice',
 				'fee.bulk.create.group.invoice'	=>	'Bulk Group Invoice',
-				//lnk with create and update invoice
 				'fee.findstu' 				=> 'Find Student Fee',
 			],
 			'Expenses' => [
@@ -361,19 +667,13 @@ class RoleController extends Controller
 				'fee-collection-reports.free.ship.students' => 'Freeship Students',
 				'fee-collection-reports.unpaid.fee.statment' => 'Unpaid Fee Statement',
 				'fee-collection-reports.yearly.collection.statment' => 'Yearly Collection Statement',
-				
 				'exam-reports.index' => 'Exam Reports View',
 				'exam-reports.tabulation.sheet' => 'Tabulation Sheet',
-				// 'exam-reports.update.rank' => 'Exam Update Rank',
 				'exam-reports.award.list' => 'Award List',
 				'exam-reports.average.result' => 'Average Result',
 				'exam-reports.find.student' => 'Find Student',
 				'exam-reports.result.transcript' => 'Result Transcript',
 			],
-			// 'Academic Sessions' => [
-			// 	'academic-sessions.index' => 'Sessions View',
-			// 	'academic-sessions.create' => 'Sessions create',
-			// ],
 			'System Settings' => [
 				'system-setting.index' => 'System Settings View',
 				'system-setting.update' => 'System Settings Update',
@@ -386,5 +686,33 @@ class RoleController extends Controller
 				'exam-grades.update' => 'Exam Grades Update',
 			],
 		];
+
+		// Flatten the nested array into a single key-value map
+		$labelMap = [];
+		foreach ($permissions as $group) {
+			foreach ($group as $permissionName => $label) {
+				// Extract label if it's an array (newer format)
+				if (is_array($label) && isset($label['label'])) {
+					$labelMap[$permissionName] = $label['label'];
+				} else {
+					$labelMap[$permissionName] = $label;
+				}
+			}
+		}
+
+		return $labelMap;
+	}
+
+	/**
+	 * Transform dependency permission names to human-readable format with labels
+	 * 
+	 * Input: ['students.index', 'students.show']
+	 * Output: ['Students View', 'Student Details View']
+	 */
+	private function transformDependencies($dependencies, $labelMap)
+	{
+		return array_map(function($dep) use ($labelMap) {
+			return $labelMap[$dep] ?? $dep;
+		}, $dependencies);
 	}
 }
