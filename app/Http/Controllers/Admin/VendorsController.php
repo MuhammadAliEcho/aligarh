@@ -31,7 +31,7 @@ class VendorsController extends Controller
       return  redirect('vendors')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
+          'title'  =>  __('modules.vendors_invalid_url_title'),
           'msg' =>  __('modules.common_url_error')
           ]
       ]);
@@ -49,7 +49,7 @@ class VendorsController extends Controller
       return  redirect('vendors')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
+          'title'  =>  __('modules.vendors_invalid_url_title'),
           'msg' =>  __('modules.common_url_error')
           ]
       ]);
@@ -63,7 +63,7 @@ class VendorsController extends Controller
       return redirect('vendors')->with([
         'toastrmsg' => [
           'type' => 'success', 
-          'title'  =>  'Parents Registration',
+          'title'  =>  __('modules.vendors_registration_title'),
           'msg' =>  __('modules.common_save_success')
           ]
       ]);
@@ -79,7 +79,7 @@ class VendorsController extends Controller
       return redirect('vendors')->with([
         'toastrmsg' => [
           'type' => 'success', 
-          'title'  =>  'Parents Registration',
+          'title'  =>  __('modules.vendors_registration_title'),
           'msg' =>  __('modules.common_register_success')
           ]
       ]);

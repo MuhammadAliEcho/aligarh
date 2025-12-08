@@ -395,4 +395,21 @@ return [
 
     // Employee Management
     'employee_not_editable' => 'Sorry {{name}} Employee Can\'t be Editable',
+
+    // Additional Titles for Registration/Management
+    'guardians_invalid_url_title' => '# Invalid URL',
+    'guardians_registration_title' => 'Guardians Registration',
+    'subjects_invalid_url_title' => '# Invalid URL',
+    'subjects_registration_title' => 'Subjects Registration',
+    'subject_registration_title' => 'Subject Registration',
+    'vendors_invalid_url_title' => '# Invalid URL',
+    'vendors_registration_title' => 'Parents Registration',
+    'employee_invalid_url_title' => '# Invalid URL',
+    'employee_registration_title' => 'Employees Registration',
+    'employee_update_title' => 'Employee Update',
+    'exam_grades_title' => 'System Settings',
+    'user_settings_title' => 'User Settings',
+    'quiz_title' => 'Quiz',
+    'student_results_title' => 'Student Results',
+    'bulk_print_invoices_title' => 'Bulk Print Invoices',
 ];

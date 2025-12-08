@@ -26,7 +26,7 @@ class ExamGradesController extends Controller
 		return redirect('exam-grades')->with([
 			'toastrmsg' => [
 				'type' => 'success', 
-				'title'  =>  'System Settings',
+				'title'  =>  __('modules.exam_grades_title'),
 				'msg' =>  __('modules.exams_update_success')
 			]
 		]);

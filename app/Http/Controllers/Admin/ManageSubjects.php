@@ -36,7 +36,7 @@ class ManageSubjects extends Controller
 		return  redirect('manage-subjects')->with([
 				'toastrmsg' => [
 					'type' => 'warning', 
-					'title'  =>  '# Invalid URL',
+					'title'  =>  __('modules.subjects_invalid_url_title'),
 					'msg' =>  __('modules.common_url_error')
 					]
 			]);
@@ -59,7 +59,7 @@ class ManageSubjects extends Controller
 		return redirect('manage-subjects')->with([
 				'toastrmsg' => [
 					'type' => 'success', 
-					'title'  =>  'Subjects Registration',
+					'title'  =>  __('modules.subjects_registration_title'),
 					'msg' =>  __('modules.common_register_success')
 					]
 			]);
@@ -74,7 +74,7 @@ class ManageSubjects extends Controller
 		return  redirect('manage-subjects')->with([
 				'toastrmsg' => [
 					'type' => 'warning',
-					'title'  =>  '# Invalid URL',
+					'title'  =>  __('modules.subjects_invalid_url_title'),
 					'msg' =>  __('modules.common_url_error')
 					]
 			]);
@@ -89,7 +89,7 @@ class ManageSubjects extends Controller
 		return redirect('manage-subjects')->with([
 				'toastrmsg' => [
 					'type' => 'success',
-					'title'  =>  'Subject Registration',
+					'title'  =>  __('modules.subject_registration_title'),
 					'msg' =>  __('modules.common_save_success')
 					]
 			]);

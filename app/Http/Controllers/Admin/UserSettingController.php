@@ -33,7 +33,7 @@ class UserSettingController extends Controller
               ->with([
                   'toastrmsg' => [
                     'type' => 'error',
-                    'title'  =>  'User Settings',
+                    'title'  =>  __('modules.user_settings_title'),
                     'msg' =>  __('modules.common_demo_restriction')
                     ],
                   ]);
@@ -44,7 +44,7 @@ class UserSettingController extends Controller
           ->with([
               'toastrmsg' => [
                 'type' => 'success',
-                'title'  =>  'User Settings',
+                'title'  =>  __('modules.user_settings_title'),
                 'msg' =>  __('modules.common_password_change_success')
                 ],
               ]);
@@ -65,7 +65,7 @@ class UserSettingController extends Controller
         return redirect()->back()->with([
           'toastrmsg' => [
             'type' => 'success',
-            'title'  =>  'User Settings',
+            'title'  =>  __('modules.user_settings_title'),
             'msg' =>  __('modules.common_session_change_success')
           ],
           ]);
@@ -74,7 +74,7 @@ class UserSettingController extends Controller
       return redirect()->back()->with([
                   'toastrmsg' => [
                     'type' => 'error',
-                    'title'  =>  'User Settings',
+                    'title'  =>  __('modules.user_settings_title'),
                     'msg' =>  __('modules.common_session_change_error')
                     ],
                   ]);
@@ -98,7 +98,7 @@ class UserSettingController extends Controller
       return response([
               'toastrmsg' => [
                 'type' => 'success',
-                'title'  =>  'User Settings',
+                'title'  =>  __('modules.user_settings_title'),
                 'msg' =>  __('modules.common_skin_update')
                 ],
               ]);

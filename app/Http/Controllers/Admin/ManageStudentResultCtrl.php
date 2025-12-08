@@ -264,7 +264,7 @@ class ManageStudentResultCtrl extends Controller
             if ($validator->fails()) {
                 return [
                     'type' => 'error',
-                    'title' => 'Student Results',
+                    'title' => __('modules.student_results_title'),
                     'msg' => __('modules.exams_validation_error'),
                 ];
             }
@@ -275,7 +275,7 @@ class ManageStudentResultCtrl extends Controller
 
             return [
                 'type' => 'success',
-                'title' => 'Student Results',
+                'title' => __('modules.student_results_title'),
                 'msg' => __('modules.exams_update_results_success'),
             ];
         }
@@ -283,7 +283,7 @@ class ManageStudentResultCtrl extends Controller
         return redirect('manage-result')->with([
             'toastrmsg' => [
                 'type' => 'warning',
-                'title' => 'Student Results',
+                'title' => __('modules.student_results_title'),
                 'msg' => __('modules.exams_validation_error'),
             ],
         ]);

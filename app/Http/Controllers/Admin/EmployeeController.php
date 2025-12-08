@@ -123,7 +123,7 @@ class EmployeeController extends Controller
     return  redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
+          'title'  =>  __('modules.employee_invalid_url_title'),
           'msg' =>  __('modules.common_url_error')
           ]
       ]);
@@ -139,7 +139,7 @@ class EmployeeController extends Controller
     return  redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
+          'title'  =>  __('modules.employee_invalid_url_title'),
           'msg' =>  __('modules.common_url_error')
           ]
       ]);
@@ -150,7 +150,7 @@ class EmployeeController extends Controller
         return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  'Employees Registration',
+          'title'  =>  __('modules.employee_registration_title'),
           'msg' =>  str_replace('{{name}}', $Employee->name, __('modules.employee_not_editable'))
           ]
         ]);
@@ -176,7 +176,7 @@ class EmployeeController extends Controller
     return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'success',
-          'title'  =>  'Employee Update',
+          'title'  =>  __('modules.employee_update_title'),
           'msg' =>  __('modules.common_save_success')
           ]
       ]);
@@ -197,7 +197,7 @@ class EmployeeController extends Controller
     return redirect('employee')->with([
         'toastrmsg' => [
           'type' => 'success', 
-          'title'  =>  'Employee Registration',
+          'title'  =>  __('modules.employee_registration_title'),
           'msg' =>  __('modules.common_register_success')
           ]
       ]);

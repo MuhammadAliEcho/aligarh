@@ -760,7 +760,7 @@ class FeesController extends Controller
 			return redirect('fee')->with([
 				'toastrmsg' => [
 					'type'  => 'error',
-					'title' => 'Bulk Print Invoices',
+					'title' => __('modules.bulk_print_invoices_title'),
 					'msg'   => $validator->errors()->first(), // Show first validation error
 				]
 			]);

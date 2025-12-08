@@ -79,7 +79,7 @@ class QuizController extends Controller
                 ->with([
                     'toastrmsg' => [
                         'type' => 'error',
-                        'title' => 'Quiz',
+                        'title' => __('modules.quiz_title'),
                         'msg' => __('modules.quiz_create_error'),
                     ],
                 ]);
@@ -97,7 +97,7 @@ class QuizController extends Controller
         return redirect('quizzes')->with([
             'toastrmsg' => [
                 'type' => 'success',
-                'title' => 'Quiz',
+                'title' => __('modules.quiz_title'),
                 'msg' => __('modules.common_quiz_created'),
             ],
         ]);
@@ -140,7 +140,7 @@ class QuizController extends Controller
         return redirect('quizzes')->with([
             'toastrmsg' => [
                 'type' => 'success',
-                'title' => 'Quiz',
+                'title' => __('modules.quiz_title'),
                 'msg' => __('modules.common_quiz_updated'),
             ],
         ]);
@@ -162,7 +162,7 @@ class QuizController extends Controller
                 ->with([
                     'toastrmsg' => [
                         'type' => 'Error',
-                        'title' => 'Quiz',
+                        'title' => __('modules.quiz_title'),
                         'msg' => __('modules.common_quiz_delete_error'),
                     ],
                 ]);
@@ -176,7 +176,7 @@ class QuizController extends Controller
         return redirect('attendance-leave')->with([
             'toastrmsg' => [
                 'type' => 'success',
-                'title' => 'Quiz',
+                'title' => __('modules.quiz_title'),
                 'msg' => __('modules.common_delete_success'),
             ],
         ]);

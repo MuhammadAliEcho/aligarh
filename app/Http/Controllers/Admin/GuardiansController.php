@@ -64,7 +64,7 @@ class GuardiansController extends Controller
       return  redirect('guardians')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
+          'title'  =>  __('modules.guardians_invalid_url_title'),
           'msg' =>  __('modules.common_url_error')
           ]
       ]);
@@ -82,7 +82,7 @@ class GuardiansController extends Controller
       return  redirect('guardians')->with([
         'toastrmsg' => [
           'type' => 'warning', 
-          'title'  =>  '# Invalid URL',
+          'title'  =>  __('modules.guardians_invalid_url_title'),
           'msg' =>  __('modules.common_url_error')
           ]
       ]);
@@ -96,7 +96,7 @@ class GuardiansController extends Controller
       return redirect('guardians')->with([
         'toastrmsg' => [
           'type' => 'success', 
-          'title'  =>  'Guardians Registration',
+          'title'  =>  __('modules.guardians_registration_title'),
           'msg' =>  __('modules.common_save_success')
           ]
       ]);
@@ -117,7 +117,7 @@ class GuardiansController extends Controller
       return redirect('guardians')->with([
         'toastrmsg' => [
           'type' => 'success', 
-          'title'  =>  'guardians Registration',
+          'title'  =>  __('modules.guardians_registration_title'),
           'msg' =>  __('modules.common_register_success')
           ]
       ]);
