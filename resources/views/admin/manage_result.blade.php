@@ -362,7 +362,7 @@
 		  }
 	  });
 
-	  @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+	  @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
 		$('[name="class"]').val("{{ old('class') }}");
 		$('[name="class"]').change();
 		$('[name="exam"]').val("{{ old('exam') }}");

@@ -201,7 +201,7 @@ class StudentAttendanceCtrl extends Controller
 			}
 		}
 
-		$data['noofweekends'] = COUNT($data['weekends']);
+		$data['noofweekends'] = count($data['weekends']);
 		$data['input']['date'] = $dbdate->format('M-Y');
 
 		return view(PrintableViewHelper::resolve('students_attendance'), $data);

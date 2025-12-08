@@ -73,13 +73,13 @@ class FeeScenarioController extends Controller
 				$student->late_fee	=	$request->input('late_fee');
 				$student->save();
 
-				$student->AdditionalFee()->delete();
-				if ($request->input('fee') && COUNT($request->input('fee')) >= 1) {
-					foreach ($request->input('fee') as $key => $value) {
-						$AdditionalFee = new AdditionalFee;
-						$AdditionalFee->student_id = $student->id;
-						$AdditionalFee->fee_name = $value['fee_name'];
-						$AdditionalFee->amount = $value['amount'];
+			$student->AdditionalFee()->delete();
+			if ($request->input('fee') && count($request->input('fee')) >= 1) {
+				foreach ($request->input('fee') as $key => $value) {
+					$AdditionalFee = new AdditionalFee;
+					$AdditionalFee->student_id = $student->id;
+					$AdditionalFee->fee_name = $value['fee_name'];
+					$AdditionalFee->amount = $value['amount'];
 						$AdditionalFee->onetime = isset($value['onetime'])? 1 : 0;
 						$AdditionalFee->active = isset($value['active'])? 1 : 0;
 						$AdditionalFee->save();

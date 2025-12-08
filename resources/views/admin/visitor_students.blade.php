@@ -869,14 +869,14 @@
 
            
 
-            @if (COUNT($errors) >= 1)
+            @if (count($errors) >= 1)
                 $('#tchr_rgstr [name="gender"]').val('{{ old('gender') }}');
                 $('#tchr_rgstr [name="class"]').val("{{ old('class') }}");
                 $('#tchr_rgstr [name="class"]').change();
             @endif
 
 
-            @if (COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+            @if (count($errors) >= 1 && !$errors->has('toastrmsg'))
                 $('.nav-tabs a[href="#tab-11"]').tab('show');
             @else
                 $('.nav-tabs a[href="#tab-10"]').tab('show');

@@ -260,7 +260,7 @@
         $('#tchr_rgstr [name="day"]').select2('val', "{{ old('subject', $routine->day) }}");
 
 
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+      @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
         $('a[href="#tab-11"]').click();
       @endif
 

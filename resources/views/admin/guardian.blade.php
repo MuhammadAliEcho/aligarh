@@ -743,7 +743,7 @@
            }
         });
 
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+      @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
         $('.nav-tabs a[href="#tab-11"]').tab('show');
       @else
         $('.nav-tabs a[href="#tab-10"]').tab('show');

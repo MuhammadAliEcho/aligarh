@@ -328,7 +328,7 @@ class SmsController extends Controller
 
     protected function ValidateBalance($phoneInfo)
     {
-        return tenancy()->tenant->system_info['general']['available_sms'] >= COUNT($phoneInfo);
+        return tenancy()->tenant->system_info['general']['available_sms'] >= count($phoneInfo);
     }
 
     protected function ValidateExpireDate()

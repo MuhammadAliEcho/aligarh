@@ -236,7 +236,7 @@
                                       @if($job)
                                       <div class="row">
                                       <h3>Class: {{ $selected_class->name.' '.$section_nick }} ({{ $input['date'] }})</h3>
-                                      <h4>No Of Students: {{ COUNT($students) }}</h3>
+                                      <h4>No Of Students: {{ count($students) }}</h3>
                                       <h4>Teacher: {{ $selected_class->Teacher->name }}</h3>
                                         <div class="hr-line-dashed"></div>
                                           <div class="table-responsive">
@@ -322,7 +322,7 @@
           }
       });
 
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+      @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
         $('#mk_att_frm [name="class"]').val("{{ old('class') }}");
         $('[name="class"]').change();
         $('[name="section"]').val('{{ old('section') }}');
@@ -340,7 +340,7 @@
 
       @endif
 {{--
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+      @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
         $('.nav-tabs a[href="#tab-11"]').tab('show');
       @else
 

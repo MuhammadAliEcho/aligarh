@@ -726,11 +726,11 @@
 
 	  $(document).ready(function(){
 
-	  @if((COUNT($errors) >= 1 && session('toastrmsg.form') == 'fee.bulk.create.invoice'))
+	  @if((count($errors) >= 1 && session('toastrmsg.form') == 'fee.bulk.create.invoice'))
 			$('a[href="#tab-14"]').tab('show');
 			$('.select2_bulk_months').val(@json(old('months', [])));
 			$('#crt_group_invoice_frm [name="guardian"]').val({{old('guardian_id')}});
-		@elseif((COUNT($errors) >= 1 && !$errors->has('toastrmsg')))
+		@elseif((count($errors) >= 1 && !$errors->has('toastrmsg')))
 			$('a[href="#tab-11"]').tab('show');
 				@if(isset($Input))
 					$('[name="gr_no"]').val('{{ $Input['gr_no'] }}');

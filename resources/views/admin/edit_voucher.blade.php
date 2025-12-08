@@ -266,7 +266,7 @@
         Calc();
       });
 
-      @if(COUNT($errors) >= 1)
+      @if(count($errors) >= 1)
         $('#vchr_rgstr [name="vendor"]').val('{{ old('vendor') }}');
       @else
         $('#vchr_rgstr [name="vendor"]').val('{{ $voucher->vendor_id }}');

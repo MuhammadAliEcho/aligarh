@@ -256,7 +256,7 @@
         $('#tchr_rgstr [name="class"]').val("{{ old('class') }}");
         $('[data-toggle="tooltip"]').tooltip();
 
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+      @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
         $('a[href="#tab-11"]').tab('show');
       @else
         $('a[href="#tab-10"]').tab('show');

@@ -158,7 +158,7 @@
 				});
 
 				$('#tchr_rgstr [name="gender"]').val('{{ old('gender') }}');
-			@if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+			@if(count($errors) >= 1 && !$errors->has('toastrmsg'))
 				$('a[href="#tab-11"]').click();
 			@endif
 

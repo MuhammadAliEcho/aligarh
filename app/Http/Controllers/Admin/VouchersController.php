@@ -133,7 +133,7 @@ class VouchersController extends Controller
 			$Item->save();
 		}
 
-		if (COUNT($request->input('items')) >= 1) {
+		if (count($request->input('items')) >= 1) {
 			foreach ($request->input('items') as $key => $value) {
 				$VoucherDetail = new VoucherDetail;
 				$Item = Item::find($value['id']);

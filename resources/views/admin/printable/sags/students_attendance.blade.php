@@ -59,7 +59,7 @@
             <h3 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h3>
             <div class="col-md-4">
                 <h4>Attendance Of Class: {{ $selected_class->name . ' ' . $section_nick }} ({{ $input['date'] }})</h4>
-                <h4>No Of Students: {{ COUNT($students) }}</h4>
+                <h4>No Of Students: {{ count($students) }}</h4>
                 <h4>Teacher: {{ $selected_class->Teacher->name ?? '' }}</h4>
             </div>
             <div class="col-md-4 pull-right">

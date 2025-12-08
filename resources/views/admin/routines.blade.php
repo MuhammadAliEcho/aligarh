@@ -370,7 +370,7 @@
 
         });
 
-        @if(COUNT($errors) >= 1)
+        @if(count($errors) >= 1)
           $('#tchr_rgstr [name="class"]').val("{{ old('class') }}");
           $('#tchr_rgstr [name="class"]').change();
           $('#tchr_rgstr [name="section"]').val("{{ old('section') }}");
@@ -427,7 +427,7 @@
             });
         });
 
-      @if(COUNT($errors) >= 1 && !$errors->has('toastrmsg'))
+      @if(count($errors) >= 1 && !$errors->has('toastrmsg'))
         $('a[href="#tab-11"]').tab('show');
       @endif
 
