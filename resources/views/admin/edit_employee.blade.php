@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Edit Employee |')
+  @section('title', __('modules.pages_edit_employee_title').' |')
 
   @section('head')
   <!-- Input Mask-->
@@ -46,7 +46,7 @@
                <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h2>Edit Employee</h2>
+                        <h2>{{ __('modules.forms_edit_employee') }}</h2>
                         <div class="hr-line-dashed"></div>
                     </div>
 

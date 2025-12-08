@@ -1,8 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Users |')
-
-  @section('head')
+	@section('title', __('modules.pages_users_title').' |')  @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
   <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">

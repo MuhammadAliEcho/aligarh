@@ -1,9 +1,7 @@
 @php use Illuminate\Support\Str; @endphp
 @extends('admin.layouts.master')
 
-@section('title', 'Edit Quiz |')
-
-@section('head')
+  @section('title', __('modules.pages_edit_quiz_title').' |')@section('head')
     <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
     <style type="text/css">

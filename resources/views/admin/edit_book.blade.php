@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Edit Book |')
+  @section('title', __('modules.pages_edit_book_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
@@ -43,7 +43,7 @@
                <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h2>Edit Book</h2>
+                        <h2>{{ __('modules.forms_edit_book') }}</h2>
                         <div class="hr-line-dashed"></div>
                     </div>
 

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Library |')
+  @section('title', __('modules.pages_library_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -73,7 +73,7 @@
                             @can('library.add')
                               <div id="tab-11" class="tab-pane fade add-item">
                                   <div class="panel-body">
-                                    <h2> Book Registration </h2>
+                                    <h2> {{ __('modules.forms_book_registration') }} </h2>
                                     <div class="hr-line-dashed"></div>
 
                                       <form id="vdr_rgstr" method="post" action="{{ URL('library/add') }}" class="form-horizontal" >

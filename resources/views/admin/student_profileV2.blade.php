@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Students |')
+  @section('title', __('modules.pages_students_title').' |')
 
   @section('head')
   <!-- HEAD -->

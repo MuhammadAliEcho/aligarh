@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Classes |')
+  @section('title', __('modules.pages_classes_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -73,7 +73,7 @@
                             @can('manage-classes.add')
                               <div id="tab-11" class="tab-pane add-class">
                                   <div class="panel-body">
-                                    <h2> Class Registration </h2>
+                                    <h2> {{ __('modules.forms_class_registration') }} </h2>
                                     <div class="hr-line-dashed"></div>
 
                                       <form id="tchr_rgstr" method="post" action="{{ URL('manage-classes/add') }}" class="form-horizontal" >

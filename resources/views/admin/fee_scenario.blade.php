@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Fee Scenario |')
+	@section('title', __('modules.pages_fee_scenario_title').' |')
 
 	@section('head')
 

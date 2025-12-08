@@ -1,8 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Fee Collection Report |')
-
-	@section('head')
+  @section('title', __('modules.pages_fee_collection_report_title').' |')	@section('head')
 		<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
 		<link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
 		<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
@@ -80,10 +78,10 @@
 								</div>
 							</div>
 						@endcan
-						@can('fee-collection-reports.fee.receipts.statment')
-							<div class="ibox">
-								<div class="ibox-title">
-										<h2>Daily Fee Collection Report</h2>
+					@can('fee-collection-reports.fee.receipts.statment')
+						<div class="ibox">
+							<div class="ibox-title">
+									<h2>{{ __('modules.reports_daily_fee_collection') }}</h2>
 										<div class="hr-line-dashed"></div>
 								</div>
 								<div class="ibox-content">

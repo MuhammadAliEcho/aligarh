@@ -1,8 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Student Certificates |')
-
-  @section('head')
+	@section('title', __('modules.pages_student_certificates_title').' |')  @section('head')
   <!-- HEAD -->
 	<script type="text/javascript" src="{{ asset('src/js/plugins/ckeditor_4.10.1/ckeditor.js') }}"></script>
   @endsection

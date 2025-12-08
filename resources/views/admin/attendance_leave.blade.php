@@ -1,7 +1,7 @@
 @php use Illuminate\Support\Str; @endphp
 @extends('admin.layouts.master')
 
-@section('title', 'Attendance Leave |')
+@section('title', __('modules.pages_attendance_leave_title').' |')
 
 @section('head')
     <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
@@ -365,7 +365,7 @@
                             @can('attendance-leave.make')
                                 <div id="tab-11" class="tab-pane fade make-attendance">
                                     <div class="panel-body" style="min-height: 400px">
-                                        <h2> Make Attendance </h2>
+                                        <h2> {{ __('modules.forms_make_attendance') }} </h2>
                                         <div class="hr-line-dashed"></div>
                                         <form method="post" id="mk_att_frm" action="{{ route('attendance-leave.make') }}"
                                             class="form-horizontal jumbotron" role="form">

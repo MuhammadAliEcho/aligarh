@@ -210,7 +210,7 @@
                             @can('students.add')
                                 <div id="tab-11" class="tab-pane fade add-student">
                                     <div class="panel-body">
-                                        <h2> Admit Student </h2>
+                                        <h2> {{ __('modules.forms_admit_student') }} </h2>
                                         <div class="hr-line-dashed"></div>
 
                                         <form v-if="admission_allow" id="tchr_rgstr" method="post"

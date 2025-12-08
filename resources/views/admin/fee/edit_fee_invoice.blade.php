@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Edit Fees Invoice |')
+  @section('title', __('modules.pages_edit_fees_invoice_title').' |')
 
   @section('head')
 	<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">

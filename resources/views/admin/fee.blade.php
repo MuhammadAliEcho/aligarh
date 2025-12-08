@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Fees |')
+  @section('title', __('modules.pages_fees_title').' |')
 
   @section('head')
 	<link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -295,7 +295,7 @@
 							@can('fee.create.store')
 								<div id="tab-11" class="tab-pane fade make-fee">
 									<div id="createfeeApp" class="panel-body">
-									<h2> Create Invoice </h2>
+									<h2> {{ __('modules.forms_create_invoice') }} </h2>
 									<div class="hr-line-dashed"></div>
 
 										<form id="crt_invoice_frm" method="GET" action="{{ URL('fee/create') }}" class="form-horizontal jumbotron" role="form" >

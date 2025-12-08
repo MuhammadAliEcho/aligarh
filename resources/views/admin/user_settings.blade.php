@@ -38,7 +38,7 @@
                <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h2>Change Password</h2>
+                        <h2>{{ __('modules.forms_change_password') }}</h2>
                         <div class="hr-line-dashed"></div>
                     </div>
 

@@ -1,9 +1,7 @@
 @php use Illuminate\Support\Str; @endphp
 @extends('admin.layouts.master')
 
-@section('title', 'Quizzes |')
-
-@section('head')
+  @section('title', __('modules.pages_quizzes_title').' |')@section('head')
     <link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
@@ -487,7 +485,7 @@
                             @can('quizzes.create')
                                 <div id="tab-11" class="tab-pane fade make-quiz">
                                     <div class="panel-body" style="min-height: 400px">
-                                        <h2> Create Quiz</h2>
+                                        <h2> {{ __('modules.forms_create_quiz') }}</h2>
                                         <div class="hr-line-dashed"></div>
                                         <form method="post" id="create_quiz" action="{{ route('quizzes.create') }}"
                                             class="form-horizontal jumbotron" role="form">

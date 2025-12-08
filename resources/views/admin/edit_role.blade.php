@@ -1,9 +1,7 @@
 @php use Illuminate\Support\Str; @endphp
 @extends('admin.layouts.master')
 
-@section('title', 'Edit Role |')
-
-@section('head')
+  @section('title', __('modules.pages_edit_role_title').' |')@section('head')
     <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">

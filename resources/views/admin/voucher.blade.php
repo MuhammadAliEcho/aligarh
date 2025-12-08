@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Vouchers |')
+  @section('title', __('modules.pages_vouchers_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -85,7 +85,7 @@
                             @can('vouchers.add')
                               <div id="tab-11" class="tab-pane fade add-voucher">
                                   <div class="panel-body">
-                                    <h2> Add Voucher </h2>
+                                    <h2> {{ __('modules.forms_add_voucher') }} </h2>
                                     <div class="hr-line-dashed"></div>
 
                                       <form id="vchr_rgstr" method="post" action="{{ URL('vouchers/add') }}" class="form-horizontal" >

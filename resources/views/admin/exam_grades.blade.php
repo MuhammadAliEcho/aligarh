@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Exam Grades |')
+	@section('title', __('modules.pages_exam_grades_title').' |')
 
 	@section('head')
 

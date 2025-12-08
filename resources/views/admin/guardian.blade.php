@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Guardians |')
+  @section('title', __('modules.pages_guardians_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -516,7 +516,7 @@
                             @can('guardian.add')
                               <div id="tab-11" class="tab-pane fade add-guardian">
                                   <div class="panel-body">
-                                    <h2> Guardian Registration </h2>
+                                    <h2> {{ __('modules.forms_role_registration') }} </h2>
                                     <div class="hr-line-dashed"></div>
 
                                       <form id="tchr_rgstr" method="post" action="{{ URL('guardians/add') }}" class="form-horizontal" >

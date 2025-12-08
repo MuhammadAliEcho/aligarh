@@ -1,7 +1,7 @@
 @php use Illuminate\Support\Str; @endphp
 @extends('admin.layouts.master')
 
-@section('title', 'Roles |')
+@section('title', __('modules.pages_roles_title').' |')
 
 @section('head')
     <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -104,7 +104,7 @@
                             @can('roles.create')
                                 <div id="tab-11" class="tab-pane fade add-role">
                                     <div class="panel-body">
-                                        <h2> Role Registration </h2>
+                                        <h2> {{ __('modules.forms_role_registration') }} </h2>
                                         <div class="hr-line-dashed"></div>
 
                                         <form id="tchr_rgstr" method="post" action="{{ URL('roles/create') }}"

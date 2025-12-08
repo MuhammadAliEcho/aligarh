@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Student Restults Manage |')
+  @section('title', __('modules.pages_student_results_manage_title').' |')
 
   @section('head')
 	<link href="{{ asset('src/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">

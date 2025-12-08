@@ -57,7 +57,7 @@
                         <div class="tab-content">
                             <div id="tab-10" class="tab-pane fade make-attendance">
                                 <div class="panel-body" style="min-height: 400px">
-                                  <h2> Make Attendance </h2>
+                                  <h2> {{ __('modules.forms_make_attendance') }} </h2>
                                   <div class="hr-line-dashed"></div>
 
                                     <form id="mk_att_frm" method="GET" action="{{ URL('student-attendance/make') }}" class="form-horizontal jumbotron" role="form" >

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Vendors |')
+  @section('title', __('modules.pages_vendors_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">

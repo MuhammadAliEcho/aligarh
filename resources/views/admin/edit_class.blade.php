@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Classes |')
+	@section('title', __('modules.pages_classes_title').' |')
 
 	@section('head')
 	<link href="{{ asset('src/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
@@ -41,7 +41,7 @@
 							 <div class="col-lg-12">
 								<div class="ibox float-e-margins">
 										<div class="ibox-title">
-												<h2>Edit Class</h2>
+												<h2>{{ __('modules.forms_edit_class') }}</h2>
 												<div class="hr-line-dashed"></div>
 										</div>
 

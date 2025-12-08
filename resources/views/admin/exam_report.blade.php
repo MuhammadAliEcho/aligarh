@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Exam Reports |')
+	@section('title', __('modules.pages_exam_reports_title').' |')
 
 	@section('head')
 		<link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
@@ -41,7 +41,7 @@
 						@can('exam-reports.tabulation.sheet')
 							<div class="ibox">
 								<div class="ibox-title">
-									<h2>Generate Exam Tabulation Sheet</h2>
+										<h2>{{ __('modules.reports_generate_tabulation_sheet') }}</h2>
 									<div class="hr-line-dashed"></div>
 								</div>
 								<div class="ibox-content">
@@ -87,7 +87,7 @@
 						@can('exam-reports.award.list')
 							<div class="ibox">
 								<div class="ibox-title">
-									<h2>Award List</h2>
+										<h2>{{ __('modules.reports_exam_award_list') }}</h2>
 									<div class="hr-line-dashed"></div>
 								</div>
 
@@ -154,7 +154,7 @@
 						@can('exam-reports.average.result')
 							<div class="ibox">
 								<div class="ibox-title">
-									<h2>Average Result</h2>
+										<h2>{{ __('modules.reports_exam_average_result') }}</h2>
 									<div class="hr-line-dashed"></div>
 								</div>
 

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Exams |')
+	@section('title', __('modules.pages_exams_title').' |')
 
 	@section('head')
 	<link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
@@ -69,7 +69,7 @@
 							@can('exam.add')
 								<div id="tab-11" class="tab-pane fade add-exam">
 									<div class="panel-body">
-										<h2> Create Exam </h2>
+										<h2> {{ __('modules.forms_create_exam') }} </h2>
 										<div class="hr-line-dashed"></div>
 
 										<form id="tchr_rgstr" method="post" action="{{ URL('exam/add') }}" class="form-horizontal" >

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Notice |')
+  @section('title', __('modules.pages_notice_title').' |')
 
   @section('head')
 
@@ -82,7 +82,7 @@
                             @can('noticeboard.create')
                               <div id="tab-11" class="tab-pane fade make-notice">
                                   <div class="panel-body">
-                                    <h2> Create Notice </h2>
+                                    <h2> {{ __('modules.forms_create_notice') }} </h2>
                                     <div class="hr-line-dashed"></div>
 
                                       <form id="tchr_rgstr" method="POST" action="{{ URL('noticeboard/create') }}" class="form-horizontal" >

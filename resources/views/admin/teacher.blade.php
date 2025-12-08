@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-  @section('title', 'Teacher |')
+  @section('title', __('modules.pages_teachers_title').' |')
 
   @section('head')
   <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">

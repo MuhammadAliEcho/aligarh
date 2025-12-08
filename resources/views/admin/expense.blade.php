@@ -1,8 +1,6 @@
 @extends('admin.layouts.master')
 
-	@section('title', 'Expense |')
-
-	@section('head')
+        @section('title', __('modules.pages_expense_title').' |')	@section('head')
 	<link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('src/css/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
 	@endsection
@@ -75,7 +73,7 @@
 														@can('expense.add')
 															<div id="tab-11" class="tab-pane fade add-expense">
 																	<div class="panel-body">
-																		<h2> Add Expense </h2>
+																		<h2> {{ __('modules.forms_add_expense') }} </h2>
 																		<div class="hr-line-dashed"></div>
 
 																			<form id="tchr_rgstr" method="post" action="{{ URL('expense/add') }}" class="form-horizontal" >

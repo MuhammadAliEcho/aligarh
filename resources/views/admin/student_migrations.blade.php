@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-    @section('title', 'Student Migrations |')
+    @section('title', __('modules.pages_student_migrations_title').' |')
 
 	@section('content')
 

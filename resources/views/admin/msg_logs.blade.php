@@ -1,8 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Message Logs |')
-
-@section('head')
+	@section('title', __('modules.pages_message_logs_title').' |')@section('head')
     <link href="{{ asset('src/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('src/css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <style type="text/css">
