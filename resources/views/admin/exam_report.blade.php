@@ -47,11 +47,11 @@
 								<div class="ibox-content">
 									<form id="tabulation_sheet" method="POST" action="{{ URL('exam-reports/tabulation-sheet') }}" class="form-horizontal" target="_blank">
 										{{ csrf_field() }}
-										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label"> Exam </label>
-											<div class="col-md-6">
-											<select class="form-control select2" name="exam" v-model="selected_exam" required="true">
-												<option value="" disabled selected>Exam</option>
+									<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+										<label class="col-md-2 control-label"> {{ __('modules.pages_exams_title') }} </label>
+										<div class="col-md-6">
+										<select class="form-control select2" name="exam" v-model="selected_exam" required="true">
+											<option value="" disabled selected>{{ __('modules.pages_exams_title') }}</option>
 												<option v-for="exam in Exams" :value="exam.id">@{{ exam.name+' "'+exam.academic_session.title+'"' }}</option>
 											</select>
 											@if ($errors->has('exam'))

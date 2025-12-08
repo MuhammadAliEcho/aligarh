@@ -45,10 +45,10 @@
                                     <thead>
                                       <tr>
                                         <th>ID</th>
-                                        <th>Date</th>
+                                        <th>{{ __('modules.labels_date') }}</th>
                                         <th>Type</th>
                                         <th>Desc</th>
-                                        <th>Amount</th>
+                                        <th>{{ __('modules.labels_amount') }}</th>
                                       </tr>
                                     </thead>
                                     <tbody>

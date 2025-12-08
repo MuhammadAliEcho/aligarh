@@ -165,7 +165,7 @@
 
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-6">
-                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Add Book </button>
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> {{ __('modules.buttons_add') }} {{ __('modules.forms_add_book') }} </button>
                                             </div>
                                         </div>
                                       </form>
@@ -208,7 +208,7 @@
       opthtm = '';
       //  opthtm = '<a href="{{ URL('items/profile') }}/'+full.id+'" data-toggle="tooltip" title="Profile" class="btn btn-default btn-circle btn-xs profile"><span class="fa fa-user"></span></a>';
       @can('library.edit.post')
-      opthtm += '<a href="{{ URL('library/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Book" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+      opthtm += '<a href="{{ URL('library/edit') }}/'+full.id+'" data-toggle="tooltip" title="{{ __('modules.buttons_edit') }}" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
       @endcan     
 
         return opthtm;

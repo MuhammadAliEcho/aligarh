@@ -97,7 +97,7 @@
                                           <label class="col-md-2 control-label">Vendor</label>
                                           <div class="col-md-6">
                                             <select class="form-control" name="vendor">
-                                              <option value="" disabled selected>Vendor</option>
+                                              <option value="" disabled selected>{{ __('modules.pages_vendors_title') }}</option>
                                               @foreach($vendors as $vendor)
                                                 <option value="{{ $vendor->id }}">{{ $vendor->v_name.' | '.$vendor->email }}</option>
                                               @endforeach
@@ -113,7 +113,7 @@
                                         <div class="form-group{{ ($errors->has('voucher_date'))? ' has-error' : '' }}">
                                           <label class="col-md-2 control-label">Voucher Date</label>
                                           <div class="col-md-6">
-                                            <input type="text" id="datetimepicker4" name="voucher_date" placeholder="Voucher Date" value="{{ old('voucher_date') }}" class="form-control"/>
+                                            <input type="text" id="datetimepicker4" name="voucher_date" placeholder="{{ __('modules.labels_date') }}" value="{{ old('voucher_date') }}" class="form-control"/>
                                             @if ($errors->has('voucher_date'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('voucher_date') }}</strong>
@@ -161,7 +161,7 @@
                                                   </select>
                                                 </td>
                                                 <td>
-                                                  <input type="text" placeholder="Category" class="form-control category" disabled="true">
+                                                  <input type="text" placeholder="{{ __('modules.labels_class') }}" class="form-control category" disabled="true">
                                                 </td>
                                                 <td>
                                                   <input type="number" name="items[1][qty]" placeholder="{{ __('modules.labels_qty') }}" onchange="Calc()" class="form-control qty" required="true">
@@ -173,7 +173,7 @@
                                           </tbody>
                                           <tfoot>
                                             <tr>
-                                              <th>Total</th>
+                                              <th>{{ __('modules.table_total') }}</th>
                                               <th></th>
                                               <th></th>
                                               <th id="net_amount">{{ old('net_amount') }}</th>
@@ -360,7 +360,7 @@
 
       $('#additemrow').click(function(){
         var $row = $('#additionalfeetbl tbody').children('tr:first').html();
-        $row  += '<td><a href="javascript:void(0);" class="btn btn-default text-danger remove" data-toggle="tooltip" title="Remove" ><span class="fa fa-trash"></span></a></td>';
+        $row  += '<td><a href="javascript:void(0);" class="btn btn-default text-danger remove" data-toggle="tooltip" title="{{ __('modules.buttons_remove') }}" ><span class="fa fa-trash"></span></a></td>';;
 //        console.log($row);
 
         $('#additionalfeetbl tbody').append('<tr>'+$row+'</tr>');

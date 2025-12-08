@@ -595,4 +595,67 @@ return [
     'table_actions' => 'Actions',
     'nav_reports' => 'Reports',
     'nav_make_attendance' => 'Make Attendance',
+
+    // Additional Module Pages
+    'pages_classes_title' => 'Classes',
+    'forms_add_class' => 'Add Class',
+    'forms_class_registration' => 'Class Registration',
+    'pages_make_result' => 'Make Result',
+    'pages_result_attributes' => 'Result Attributes',
+    'pages_student_results_manage_title' => 'Manage Student Results',
+
+    // Form Titles & Actions
+    'forms_teacher_registration' => 'Teacher Registration',
+    'forms_employee_registration' => 'Employee Registration',
+    'buttons_register' => 'Register',
+    'buttons_update' => 'Update',
+    'buttons_save_changes' => 'Save Changes',
+    'buttons_upload_image' => 'Upload Image',
+
+    // Student/Teacher/Employee Related
+    'pages_students_title' => 'Students',
+    'pages_teachers_title' => 'Teachers',
+    'pages_employees_title' => 'Employees',
+    'pages_employee_singular' => 'Employee',
+    'pages_edit_teacher' => 'Edit Teacher',
+    'pages_edit_student' => 'Edit Student',
+    'pages_edit_employee' => 'Edit Employee',
+
+    // Status & Messages
+    'status_student' => 'Student',
+    'status_unpaid' => 'Unpaid',
+    'status_fee_paid' => 'Fee Paid',
+    'status_please_pay_fee' => 'Please Pay Fee',
+
+    // UI Elements
+    'ui_grid_layout' => 'Grid Layout',
+    'ui_list_layout' => 'List Layout',
+    'ui_id_card' => 'ID Card',
+    'ui_edit' => 'Edit',
+    'ui_show' => 'Show',
+    'ui_entries' => 'entries',
+    'ui_showing' => 'Showing',
+    'ui_to' => 'to',
+    'ui_of' => 'of',
+    'ui_guardian_information' => 'Guardian Information',
+    'ui_add_guardian' => 'Add Guardian',
+    'ui_add_guardian_information' => 'Add Guardian Information',
+    'ui_add_fee' => 'Add Fee',
+    'ui_note' => 'Note!',
+    'ui_note_class_immutable' => 'Once the class is set, it cannot be edited until the session ends.',
+    'ui_note_admission_limit' => 'Student admission limit is over.',
+
+    // Additional Pages for Medium Priority Files
+    'pages_items_title' => 'Items',
+    'pages_exams_title' => 'Exams',
+    'pages_fees_title' => 'Fees',
+    'pages_subjects_title' => 'Subjects',
+    'pages_roles_title' => 'Roles',
+    'pages_sections_title' => 'Sections',
+    'pages_vouchers_title' => 'Vouchers',
+    'pages_expenses_title' => 'Expenses',
+    'pages_library_title' => 'Library',
+    'pages_guardians_title' => 'Guardians',
+    'pages_routines_title' => 'Routines',
+    'pages_notice_board_title' => 'Notice Board',
 ];

@@ -15,16 +15,16 @@
 
 		  @include('admin.includes.top_navbar')
 
-		  <!-- Heading -->
-		  <div class="row wrapper border-bottom white-bg page-heading">
-			  <div class="col-lg-8 col-md-6">
-				  <h2>Students Result</h2>
-				  <ol class="breadcrumb">
-					<li>Home</li>
-					  <li Class="active">
-						  <a>Students Result</a>
-					  </li>
-				  </ol>
+	  <!-- Heading -->
+	  <div class="row wrapper border-bottom white-bg page-heading">
+		  <div class="col-lg-8 col-md-6">
+			  <h2>{{ __('modules.pages_student_results_manage_title') }}</h2>
+			  <ol class="breadcrumb">
+				<li>{{ __('common.home') }}</li>
+				  <li Class="active">
+					  <a>{{ __('modules.pages_student_results_manage_title') }}</a>
+				  </li>
+			  </ol>
 			  </div>
 			  <div class="col-lg-4 col-md-6">
 				@include('admin.includes.academic_session')
@@ -41,12 +41,12 @@
 						<ul class="nav nav-tabs">
 							@can('manage-result.result')
 								<li class="make-result">
-								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Make Result </a>
+								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.pages_make_result') }} </a>
 								</li>
 							@endcan
 							@can('manage-result.maketranscript.create')
 							<li class="get-result">
-							  <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> Result Attributes</a>
+							  <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> {{ __('modules.pages_result_attributes') }}</a>
 							</li>
 							@endcan
 						</ul>
@@ -54,16 +54,16 @@
 							@can('manage-result.result')
 								<div id="tab-10" class="tab-pane fade make-result">
 									<div class="panel-body" style="min-height: 400px">
-									<h2> Make Result </h2>
+									<h2> {{ __('modules.pages_make_result') }} </h2>
 									<div class="hr-line-dashed"></div>
 
 										<form id="mk_result_frm" method="GET" action="{{ URL('manage-result/make') }}" class="form-horizontal jumbotron" role="form" >
 
-										<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label"> Exam </label>
-											<div class="col-md-6">
-											<select class="form-control select2" name="exam" required="true">
-												<option value="" disabled selected>Exam</option>
+									<div class="form-group{{ ($errors->has('exam'))? ' has-error' : '' }}">
+										<label class="col-md-2 control-label"> {{ __('labels.exam') }} </label>
+										<div class="col-md-6">
+										<select class="form-control select2" name="exam" required="true">
+											<option value="" disabled selected>{{ __('labels.exam') }}</option>
 												@foreach($exams AS $exam)
 												<option value="{{ $exam->id }}">{{ $exam->name }}</option>
 												@endforeach
@@ -76,11 +76,11 @@
 											</div>
 										</div>
 
-										<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label"> Class </label>
-											<div class="col-md-6">
-											<select class="form-control select2" name="class" required="true">
-												<option value="" disabled selected>Class</option>
+									<div class="form-group{{ ($errors->has('class'))? ' has-error' : '' }}">
+										<label class="col-md-2 control-label"> {{ __('labels.class') }} </label>
+										<div class="col-md-6">
+										<select class="form-control select2" name="class" required="true">
+											<option value="" disabled selected>{{ __('labels.class') }}</option>
 												@foreach($classes AS $class)
 												<option value="{{ $class->id }}">{{ $class->name }}</option>
 												@endforeach
@@ -93,11 +93,11 @@
 											</div>
 										</div>
 
-										<div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
-											<label class="col-md-2 control-label"> Subject </label>
-											<div class="col-md-6">
-											<select class="form-control select2" name="subject" required="true">
-											<option value="" disabled selected>Subject</option>
+									<div class="form-group{{ ($errors->has('subject'))? ' has-error' : '' }}">
+										<label class="col-md-2 control-label"> {{ __('labels.subject') }} </label>
+										<div class="col-md-6">
+										<select class="form-control select2" name="subject" required="true">
+										<option value="" disabled selected>{{ __('labels.subject') }}</option>
 											</select>
 											@if ($errors->has('subject'))
 												<span class="help-block">
@@ -107,13 +107,11 @@
 											</div>
 										</div>
 
-										<div class="form-group">
-											<div class="col-md-offset-2 col-md-6">
-												<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Make Result </button>
-											</div>
+									<div class="form-group">
+										<div class="col-md-offset-2 col-md-6">
+											<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> {{ __('modules.pages_make_result') }} </button>
 										</div>
-
-										</form>
+									</div>										</form>
 
 										@if($root == 'make')
 										<div class="row">
@@ -133,17 +131,17 @@
 											<div class="row">
 												<div class="col-md-offset-2 col-md-6">
 													<div class="panel panel-success">
-														<div class="panel-heading">Result Attributes <a href="#" style="color: white" title="Add" data-toggle="tooltip" @click="addAttribute()"><span class="fa fa-plus"></span></a> | <a href="#" title="Remove" style="color: white" data-toggle="tooltip" @click="removeAttribute((ResutlAttributes.length - 1))"><span class="fa fa-remove"></span></a></div>
+														<div class="panel-heading">{{ __('modules.pages_result_attributes') }} <a href="#" style="color: white" title="{{ __('labels.add') }}" data-toggle="tooltip" @click="addAttribute()"><span class="fa fa-plus"></span></a> | <a href="#" title="{{ __('labels.remove') }}" style="color: white" data-toggle="tooltip" @click="removeAttribute((ResutlAttributes.length - 1))"><span class="fa fa-remove"></span></a></div>
 														<div class="panel-body">
 															<table class="table">
 																<tr v-for="(attribute, k) in ResutlAttributes">
-																	<td><input type="text" class="form-control" placeholder="Written/Oral/Practical" :name="'attributes['+k+'][name]'" v-model="attribute.name" required="true"></td>
-																	<td><input type="number" class="form-control" :name="'attributes['+k+'][marks]'" min="0" v-model="attribute.marks" required="true" placeholder="Marks" /></td>
+																	<td><input type="text" class="form-control" placeholder="{{ __('labels.result_attribute') }}" :name="'attributes['+k+'][name]'" v-model="attribute.name" required="true"></td>
+																	<td><input type="number" class="form-control" :name="'attributes['+k+'][marks]'" min="0" v-model="attribute.marks" required="true" placeholder="{{ __('labels.marks') }}" /></td>
 																</tr>
-																<tr>
-																	<th>Total Marks</th>
-																	<th><input type="number" name="total_marks" v-model="total_marks" class="form-control" readonly="true"></th>
-																</tr>
+															<tr>
+																<th>{{ __('labels.total_marks') }}</th>
+																<th><input type="number" name="total_marks" v-model="total_marks" class="form-control" readonly="true"></th>
+															</tr>
 															</table>
 														</div>
 													</div>
@@ -153,9 +151,9 @@
 											<table class="table table-striped table-bordered table-hover">
 											<thead>
 												<tr>
-													<th rowspan="2">GR No</th>
-													<th rowspan="2">Name</th>
-													<th colspan="3" class="text-center">Obtain Marks</th>
+													<th rowspan="2">{{ __('labels.gr_no') }}</th>
+													<th rowspan="2">{{ __('labels.name') }}</th>
+													<th colspan="3" class="text-center">{{ __('labels.obtain_marks') }}</th>
 												</tr>
 												<tr>
 													<th v-for="attribute in ResutlAttributes">@{{ attribute.name }}</th>
@@ -185,13 +183,11 @@
 											</tbody>
 											</table>
 
-											<div class="form-group">
-												<div class="col-md-offset-4 col-md-4">
-													<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Make Result </button>
-												</div>
+										<div class="form-group">
+											<div class="col-md-offset-4 col-md-4">
+												<button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> {{ __('modules.pages_make_result') }} </button>
 											</div>
-
-										</form>
+										</div>										</form>
 										</div>
 										@endif
 									</div>

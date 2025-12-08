@@ -18,11 +18,11 @@
           <!-- Heading -->
           <div class="row wrapper border-bottom white-bg page-heading">
               <div class="col-lg-8 col-md-6">
-                  <h2>Items</h2>
+                  <h2>{{ __('modules.pages_items_title') }}</h2>
                   <ol class="breadcrumb">
-                    <li>Home</li>
+                    <li>{{ __('common.home') }}</li>
                       <li Class="active">
-                          <a>Items</a>
+                          <a>{{ __('modules.pages_items_title') }}</a>
                       </li>
                   </ol>
               </div>

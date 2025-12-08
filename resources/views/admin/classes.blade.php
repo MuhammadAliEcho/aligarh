@@ -19,11 +19,11 @@
           <!-- Heading -->
           <div class="row wrapper border-bottom white-bg page-heading">
               <div class="col-lg-8 col-md-6">
-                  <h2>Classes</h2>
+                  <h2>{{ __('modules.pages_classes_title') }}</h2>
                   <ol class="breadcrumb">
-                    <li>Home</li>
+                    <li>{{ __('common.home') }}</li>
                       <li Class="active">
-                          <a>Classes</a>
+                          <a>{{ __('modules.pages_classes_title') }}</a>
                       </li>
                   </ol>
               </div>
@@ -43,11 +43,11 @@
                     <div class="tabs-container">
                         <ul class="nav nav-tabs">
                             <li class="">
-                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> Classes</a>
+                              <a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.pages_classes_title') }}</a>
                             </li>
                             @can('manage-classes.add')
                               <li class="add-class">
-                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> Add Classes</a>
+                                <a data-toggle="tab" href="#tab-11"><span class="fa fa-plus"></span> {{ __('modules.forms_add_class') }}</a>
                               </li>
                             @endcan
                         </ul>
@@ -58,11 +58,11 @@
                                     <table class="table table-striped table-bordered table-hover dataTables-teacher" >
                                       <thead>
                                         <tr>
-                                          <th>Name</th>
-                                          <th>Prifix</th>
-                                          <th>Numeric Name</th>
-                                          <th>Class Teacher</th>
-                                          <th>Options</th>
+                                          <th>{{ __('labels.name') }}</th>
+                                          <th>{{ __('labels.prifix') }}</th>
+                                          <th>{{ __('labels.numeric_name') }}</th>
+                                          <th>{{ __('labels.class_teacher') }}</th>
+                                          <th>{{ __('labels.options') }}</th>
                                         </tr>
                                       </thead>
                                     </table>
@@ -80,9 +80,9 @@
                                         {{ csrf_field() }}
 
                                         <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Name</label>
+                                          <label class="col-md-2 control-label">{{ __('labels.name') }}</label>
                                           <div class="col-md-6">
-                                            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" class="form-control"/>
+                                            <input type="text" name="name" placeholder="{{ __('labels.name_placeholder') }}" value="{{ old('name') }}" class="form-control"/>
                                             @if ($errors->has('name'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>
@@ -92,9 +92,9 @@
                                         </div>
 
                                         <div class="form-group{{ ($errors->has('numeric_name'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Name Numeric</label>
+                                          <label class="col-md-2 control-label">{{ __('labels.numeric_name') }}</label>
                                           <div class="col-md-6">
-                                            <input type="number" name="numeric_name" placeholder="Numeric Name" value="{{ old('numeric_name') }}" class="form-control"/>
+                                            <input type="number" name="numeric_name" placeholder="{{ __('labels.numeric_name_placeholder') }}" value="{{ old('numeric_name') }}" class="form-control"/>
                                             @if ($errors->has('numeric_name'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('numeric_name') }}</strong>
@@ -104,9 +104,9 @@
                                         </div>
 
                                         <div class="form-group{{ ($errors->has('prifix'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Prifix</label>
+                                          <label class="col-md-2 control-label">{{ __('labels.prifix') }}</label>
                                           <div class="col-md-6">
-                                            <input type="text" name="prifix" placeholder="Prifix" value="{{ old('prifix') }}" class="form-control" required="true" />
+                                            <input type="text" name="prifix" placeholder="{{ __('labels.prifix') }}" value="{{ old('prifix') }}" class="form-control" required="true" />
                                             @if ($errors->has('prifix'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('prifix') }}</strong>
@@ -116,7 +116,7 @@
                                         </div>
 
                                         <div class="form-group{{ ($errors->has('teacher'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Teacher</label>
+                                          <label class="col-md-2 control-label">{{ __('labels.class_teacher') }}</label>
                                           <div class="col-md-6 select2-div">
                                             <select class="form-control select2" name="teacher">
                                               <option></option>
@@ -134,7 +134,7 @@
 
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-6">
-                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> Register </button>
+                                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-save"></span> {{ __('modules.buttons_submit') }} </button>
                                             </div>
                                         </div>
                                       </form>
@@ -176,7 +176,7 @@
 
         opthtm = '';
         @can('manage-classes.edit.post')
-        opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="Edit Class" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
+        opthtm += '<a href="{{ URL('manage-classes/edit') }}/'+full.id+'" data-toggle="tooltip" title="{{ __('modules.buttons_edit') }}" class="btn btn-default btn-circle btn-xs"><span class="fa fa-edit"></span></a>';
         @endcan
         return opthtm;
     }
