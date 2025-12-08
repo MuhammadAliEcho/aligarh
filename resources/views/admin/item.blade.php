@@ -80,9 +80,9 @@
                                         {{ csrf_field() }}
 
                                         <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                          <label class="col-md-2 control-label">Item Name</label>
+                                            <label class="col-md-2 control-label">{{ __('modules.labels_item_name') }}</label>
                                           <div class="col-md-6">
-                                            <input type="text" name="name" placeholder="Item Name" value="{{ old('name') }}" class="form-control"/>
+                                            <input type="text" name="name" placeholder="{{ __('modules.labels_item_name') }}" value="{{ old('name') }}" class="form-control"/>
                                             @if ($errors->has('name'))
                                                 <span class="help-block">
                                                     <strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('name') }}</strong>

@@ -433,14 +433,12 @@
 												<div class="stats-label">Vendors</div>
 											</div>
 
-											<!-- Items -->
-											<div class="col-xs-4">
-												<i class="fa fa-cube card-icon purple"></i>
-												<div class="stats-number purple" style="font-size: 16px;">{{$no_of_items}}</div>
-												<div class="stats-label">Items</div>
-											</div>
-
-											<!-- Vouchers -->
+										<!-- Items -->
+										<div class="col-xs-4">
+											<i class="fa fa-cube card-icon purple"></i>
+											<div class="stats-number purple" style="font-size: 16px;">{{$no_of_items}}</div>
+											<div class="stats-label">{{ __('modules.table_items') }}</div>
+										</div>											<!-- Vouchers -->
 											<div class="col-xs-4">
 												<i class="fa fa-ticket card-icon orange"></i>
 												<div class="stats-number orange" style="font-size: 16px;">{{$no_of_vouchers}}</div>

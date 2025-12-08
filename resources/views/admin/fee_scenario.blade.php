@@ -62,7 +62,7 @@
 																		<div class="col-lg-8">
 																			<div class="panel panel-info">
 																				<div class="panel-heading">
-																					Additional Feeses <a href="#" id="addfee" data-toggle="tooltip" title="Add Fee" @click="addAdditionalFee()" style="color: #ffffff"><span class="fa fa-plus"></span></a>
+																									Additional {{ __('modules.labels_additional_fees') }} <a href="#" id="addfee" data-toggle="tooltip" title="Add Fee" @click="addAdditionalFee()" style="color: #ffffff"><span class="fa fa-plus"></span></a>
 																				</div>
 																				<div class="panel-body">
 																					<table id="additionalfeetbl" class="table table-bordered table-hover table-striped">
@@ -117,7 +117,7 @@
 																								<td>Late Fee</td>
 																								<td>
 																									<div>
-																										<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="Late Fee" min="0" required="true" class="form-control"/>
+																																			<input title="leave it '0' if not apply" type="number" name="late_fee" v-model.number="fee.late_fee" placeholder="{{ __('modules.labels_late_fee') }}" min="0" required="true" class="form-control"/>
 																										@if ($errors->has('late_fee'))
 																											<span class="help-block">
 																											<strong><span class="fa fa-exclamation-triangle"></span> {{ $errors->first('late_fee') }}</strong>
@@ -137,8 +137,8 @@
 																		@can('fee-scenario.update.scenario')
 																			<div class="form-group">
 																				<div class="col-md-offset-2 col-md-6">
-																						<button class="btn btn-primary" name="type" value="1" type="submit"><span class="glyphicon glyphicon-save"></span> Only For New Student </button>
-																						<button class="btn btn-primary" name="type" value="2" type="submit"><span class="glyphicon glyphicon-save"></span> Apply All Student </button>
+																											<button class="btn btn-primary" name="type" value="1" type="submit"><span class="glyphicon glyphicon-save"></span> {{ __('modules.buttons_only_for_new_student') }} </button>
+																											<button class="btn btn-primary" name="type" value="2" type="submit"><span class="glyphicon glyphicon-save"></span> {{ __('modules.buttons_apply_all_student') }} </button>
 																				</div>
 																			</div>
 																		@endcan

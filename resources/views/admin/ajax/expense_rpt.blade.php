@@ -6,25 +6,25 @@
                                       <tbody>
                                         @if($sum_salary > 0)
                                         <tr>
-                                          <th>Salary</th>
+                                          <th>{{ __('modules.expense_salary') }}</th>
                                           <th>{{ $sum_salary }}</th>
                                         </tr>
                                         @endif
                                         @if($sum_bills > 0)
                                         <tr>
-                                          <th>Bills</th>
+                                          <th>{{ __('modules.expense_bills') }}</th>
                                           <th>{{ $sum_bills }}</th>
                                         </tr>
                                         @endif
                                         @if($sum_maintenance > 0)
                                         <tr>
-                                          <th>Maintenance</th>
+                                          <th>{{ __('modules.expense_maintenance') }}</th>
                                           <th>{{ $sum_maintenance }}</th>
                                         </tr>
                                         @endif
                                         @if($sum_others > 0)
                                         <tr>
-                                          <th>Others</th>
+                                          <th>{{ __('modules.expense_others') }}</th>
                                           <th>{{ $sum_others }}</th>
                                         </tr>
                                         @endif
@@ -79,19 +79,19 @@
                                                 value: {{ $sum_salary }},
                                                 color: "#a3e1d4",
                                                 highlight: "#1ab394",
-                                                label: "Salary"
+                                                label: "{{ __('modules.expense_salary') }}"
                                             },
                                             {
                                                 value: {{ $sum_bills }},
                                                 color: "#dedede",
                                                 highlight: "#1ab394",
-                                                label: "Bills"
+                                                label: "{{ __('modules.expense_bills') }}"
                                             },
                                             {
                                                 value: {{ $sum_maintenance }},
                                                 color: "#A4CEE8",
                                                 highlight: "#1ab394",
-                                                label: "Maintenance"
+                                                label: "{{ __('modules.expense_maintenance') }}"
                                             },
                                             {
                                                 value: {{ $sum_others }},

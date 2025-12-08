@@ -154,7 +154,7 @@
                                               <tr>
                                                 <td>
                                                   <select class="form-control item" onchange="ItemChanged(this)" name="items[1][id]" required="true">
-                                                    <option value="" disabled selected>Items</option>
+                                                    <option value="" disabled selected>{{ __('modules.table_items') }}</option>
                                                     @foreach($items as $item)
                                                       <option value="{{ $item->id }}" category="{{ $item->category }}">{{ $item->name.' | '.$item->category }}</option>
                                                     @endforeach
@@ -164,10 +164,10 @@
                                                   <input type="text" placeholder="Category" class="form-control category" disabled="true">
                                                 </td>
                                                 <td>
-                                                  <input type="number" name="items[1][qty]" placeholder="Qty" onchange="Calc()" class="form-control qty" required="true">
+                                                  <input type="number" name="items[1][qty]" placeholder="{{ __('modules.labels_qty') }}" onchange="Calc()" class="form-control qty" required="true">
                                                 </td>
                                                 <td>
-                                                  <input type="number" name="items[1][rate]" placeholder="Rate" onchange="Calc()" class="form-control rate" required="true">
+                                                  <input type="number" name="items[1][rate]" placeholder="{{ __('modules.labels_rate') }}" onchange="Calc()" class="form-control rate" required="true">
                                                 </td>
                                               </tr>
                                           </tbody>
