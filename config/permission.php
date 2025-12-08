@@ -214,6 +214,32 @@ return [
         'notifications.log',
         'notifications.log.read',
         'system-setting.logo',
-        'exam-reports.update.rank' // will update.
+        'exam-reports.update.rank', // will update.
+        
+        // AJAX Data Endpoints (SELECT2/DROPDOWN)
+        'students.guardians.list', // Fetch guardians for student form dropdown
+        'teacher.find',             // Find teacher for select2
+        'employee.find',            // Find employee for select2
+        'student-migrations.get',   // Get students for migration
+        'exam-reports.find.student',// Find student for exam reports
+        'fee.findstu',              // Find student for fees
+        
+        // Image Endpoints (Profile/Avatar)
+        'students.image',           // Return student image
+        'teacher.image',            // Return teacher image
+        'employee.image',           // Return employee image
+        
+        // Report/Print Endpoints (PDF)
+        'fee.chalan.print',         // Print chalan PDF
+        'fee.invoice.print',        // Print invoice PDF
+        'fee.group.chalan.print',   // Print group chalan PDF
+        'fee.bulk.print.invoice',   // Print bulk invoices PDF
+        'students.card',            // Print student ID card
+        
+        // Note: These are currently in ignore list because:
+        // - They return public/non-sensitive data
+        // - They are AJAX helper endpoints for UI
+        // - They don't modify data (GET requests)
+        // - Future: Consider adding route names for full permission tracking
     ]
 ];

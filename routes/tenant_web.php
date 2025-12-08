@@ -111,7 +111,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/', [StudentsController::class, 'Index'])->name('.index');
         Route::get('/{id}/visitor', [StudentsController::class, 'ShowVistor'])->name('.show.visitor');
         Route::post('/{id}/visitor', [StudentsController::class, 'CreateVistor'])->name('.create.visitor');
-        Route::get('/guardians/list', [StudentsController::class, 'getGuardians']);
+        Route::get('/guardians/list', [StudentsController::class, 'getGuardians'])->name('.guardians.list');
         Route::get('/grid', [StudentsController::class, 'Grid'])->name('.grid');
         Route::get('/image/{id}', [StudentsController::class, 'GetImage'])->name('.image');
         Route::get('/profile/{id}', [StudentsController::class, 'GetProfile'])->name('.profile');
