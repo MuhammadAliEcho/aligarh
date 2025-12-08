@@ -39,7 +39,7 @@
                                 {{ csrf_field() }}
 
                                 <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Name</label>
+                                    <label class="col-md-2 control-label">{{ __('labels.name') }}</label>
                                     <div class="col-md-6">
                                         <input type="text" name="name" placeholder="{{ __("labels.name_placeholder") }}"
                                             value="{{ old('name', $visitorStudents->name) }}" class="form-control" />
@@ -53,7 +53,7 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('father_name') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Father Name</label>
+                                    <label class="col-md-2 control-label">{{ __('labels.father_name') }}</label>
                                     <div class="col-md-6">
                                         <input type="text" name="father_name" placeholder="Father Name"
                                             value="{{ old('father_name', $visitorStudents->father_name) }}"
@@ -68,7 +68,7 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Gender</label>
+                                    <label class="col-md-2 control-label">{{ __('labels.gender') }}</label>
                                     <div class="col-md-6">
                                         <select class="form-control" name="gender" placeholder="Gender">
                                             <option value="" disabled selected>Gender</option>
@@ -115,7 +115,7 @@
                                 </div>
 
                                 <div class="form-group{{ $errors->has('religion') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Religion</label>
+                                    <label class="col-md-2 control-label">{{ __('labels.religion') }}</label>
                                     <div class="col-md-6">
                                         <input type="text" name="religion" placeholder="Religion"
                                             value="{{ old('religion', $visitorStudents->religion) }}"
@@ -177,14 +177,14 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-md-2 control-label">Address</label>
+                                    <label class="col-md-2 control-label">{{ __('labels.address') }}</label>
                                     <div class="col-md-6">
                                         <textarea type="text" name="address" placeholder="{{ __("labels.address_placeholder_ellipsis") }}" class="form-control">{{ old('address', $visitorStudents->address) }}</textarea>
                                     </div>
                                 </div>
 
                                 <div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
-                                    <label class="col-md-2 control-label">Contact No</label>
+                                    <label class="col-md-2 control-label">{{ __('labels.contact_no') }}</label>
                                     <div class="col-md-6">
                                         <div class="input-group m-b">
                                             <span class="input-group-addon">+92</span>

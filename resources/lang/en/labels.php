@@ -317,4 +317,12 @@ return [
     
     // Notification/Type field
     'type' => 'Type',
+    
+    // Additional teacher/employee fields
+    'qualification' => 'Qualification',
+    'husband_name' => 'Husband Name',
+    'id_label' => 'ID',
+    'salary' => 'Salary',
+    'dob' => 'DOB',
+    'e_mail' => 'E-Mail',
 ];

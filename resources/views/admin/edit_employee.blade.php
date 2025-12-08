@@ -56,7 +56,7 @@
                                       {{ csrf_field() }}
 
                                       <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Name</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.name') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="name" placeholder="{{ __("labels.name_placeholder") }}" value="{{ old('name', $employee['name']) }}" class="form-control"/>
                                           @if ($errors->has('name'))
@@ -68,7 +68,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Religion</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.religion') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="religion" placeholder="religion" value="{{ old('religion', $employee['religion']) }}" class="form-control"/>
                                           @if ($errors->has('religion'))
@@ -107,7 +107,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('gender'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Gender</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.gender') }}</label>
                                         <div class="col-md-6">
                                           <select class="form-control" name="gender">
                                             <option></option>
@@ -123,7 +123,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">E-Mail</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.e_mail') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="email" placeholder="E-Mail" value="{{ old('email', $employee['email']) }}" class="form-control"/>
                                           @if ($errors->has('email'))
@@ -147,7 +147,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('qualification'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Qualification</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.qualification') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="qualification" placeholder="Qualification" value="{{ old('qualification', $employee['qualification']) }}" class="form-control"/>
                                           @if ($errors->has('qualification'))
@@ -159,14 +159,14 @@
                                       </div>
 
                                       <div class="form-group">
-                                        <label class="col-md-2 control-label">Address</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.address') }}</label>
                                         <div class="col-md-6">
                                           <textarea type="text" name="address" placeholder="{{ __("labels.address_placeholder_ellipsis") }}" class="form-control">{{ old('address', $employee['address']) }}</textarea>
                                         </div>
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Contact No</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.contact_no') }}</label>
                                         <div class="col-md-6">
                                           <div class="input-group m-b">
                                             <span class="input-group-addon">+92</span>
@@ -181,7 +181,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('salary'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Salary</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.salary') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="salary" value="{{ old('salary', $employee['salary']) }}" placeholder="Salary" class="form-control"/>
                                           @if ($errors->has('salary'))
@@ -193,7 +193,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('date_of_birth'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">DOB</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.dob') }}</label>
                                         <div class="col-md-6">
                                           <input id="date_of_birth" type="text" name="date_of_birth" value="{{ old('date_of_birth', $employee['date_of_birth']) }}" placeholder="Date Of Birth" class="form-control"/>
                                           @if ($errors->has('date_of_birth'))
@@ -205,7 +205,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('id_card'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">ID:</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.id_label') }}:</label>
                                         <div class="col-md-6">
                                           <input type="text" name="id_card" value="{{ old('id_card', $employee['id_card']) }}" placeholder="Enter ID CNIC/Passport etc..." class="form-control"/>
                                           @if ($errors->has('id_card'))
@@ -217,7 +217,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('date_of_joining'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Date Of Joining</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.date_of_joining') }}</label>
                                         <div class="col-md-6">
                                           <input id="date_of_joining" type="text" name="date_of_joining" value="{{ old('date_of_joining', $employee['date_of_joining']) }}" placeholder="Date Of Joining" class="form-control"/>
                                           @if ($errors->has('date_of_joining'))

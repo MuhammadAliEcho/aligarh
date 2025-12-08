@@ -77,7 +77,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('email'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">E-Mail</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.e_mail') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="email" placeholder="E-Mail" value="{{ old('email', $vendor['email']) }}" class="form-control"/>
                                           @if ($errors->has('email'))
@@ -89,7 +89,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Contact No</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.contact_no') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="phone" value="{{ old('phone', $vendor['phone']) }}" placeholder="{{ __('labels.contact_no_placeholder') }}" class="form-control" data-mask="(999) 999-9999"/>
                                           @if ($errors->has('phone'))
@@ -101,7 +101,7 @@
                                       </div>
 
                                       <div class="form-group">
-                                        <label class="col-md-2 control-label">Address</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.address') }}</label>
                                         <div class="col-md-6">
                                           <textarea type="text" name="address" placeholder="{{ __("labels.address_placeholder_ellipsis") }}" class="form-control">{{ old('address', $vendor['address']) }}</textarea>
                                         </div>

@@ -68,7 +68,7 @@
                                       </div>
 
                                       <div class="form-group{{ ($errors->has('name'))? ' has-error' : '' }}">
-                                        <label class="col-md-2 control-label">Name</label>
+                                        <label class="col-md-2 control-label">{{ __('labels.name') }}</label>
                                         <div class="col-md-6">
                                           <input type="text" name="name" placeholder="{{ __("labels.name_placeholder") }}" value="{{ old('name', $section['name']) }}" class="form-control"/>
                                           @if ($errors->has('name'))

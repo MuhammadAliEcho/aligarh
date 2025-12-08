@@ -253,14 +253,14 @@
 												</div>
 
 												<div class="form-group">
-													<label class="col-md-2 control-label">Address</label>
+													<label class="col-md-2 control-label">{{ __('labels.address') }}</label>
 													<div class="col-md-6">
 														<textarea type="text" name="address" placeholder="{{ __("labels.address_placeholder_ellipsis") }}" class="form-control">{{ old('address', $student->address) }}</textarea>
 													</div>
 												</div>
 
 												<div class="form-group{{ ($errors->has('phone'))? ' has-error' : '' }}">
-													<label class="col-md-2 control-label">Contact No</label>
+													<label class="col-md-2 control-label">{{ __('labels.contact_no') }}</label>
 													<div class="col-md-6">
 														<div class="input-group m-b">
 															<span class="input-group-addon">+92</span>
