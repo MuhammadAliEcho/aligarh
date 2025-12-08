@@ -26,6 +26,12 @@
 - **Base class**: `App\User` extends Laravel Authenticatable with `HasRoles` (Spatie Permission)
 - **User types**: 'employee', 'teacher', 'student', 'guardian' - stored in `user_type` column
 - **Permissions**: Spatie/Laravel-Permission v6.20 via `route_has_permission` middleware
+- **Route-Based Permissions**: Each permission is based on a route name and each route has a name assigned for permission
+  - **RouteNamePermissionMiddleware** (`app/Http/Middleware/RouteNamePermissionMiddleware.php`): Middleware that allows or blocks routes based on permissions assigned to roles
+  - **Permission naming convention**: Route names map to permission names (e.g., route `students.index` requires permission `students.index`)
+  - **Role assignment**: Permissions are assigned to roles in `config/permission.php` or via database seeders
+  - **Route group setup**: All tenant routes wrapped in `Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']])` to enforce permission checks
+  - **Usage in routes**: `Route::get('/students', 'StudentsController@index')->name('students.index');` automatically checks for `students.index` permission
 - **Session tracking**: Users have `academic_session` field (links to AcademicSession model) for session-scoped data
 - **Key trait**: `HasRoles` automatically loaded on User model
 
