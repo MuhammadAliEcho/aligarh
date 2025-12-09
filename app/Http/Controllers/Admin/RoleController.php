@@ -105,6 +105,30 @@ class RoleController extends Controller
 
 	public function update(Request $request, $id)
 	{
+
+		$submitted = $request->permissions ?? [];
+
+$valid = \DB::table('permissions')
+            ->whereIn('name', $submitted)
+            ->pluck('name')
+            ->toArray();
+
+$invalid = array_diff($submitted, $valid);
+
+if (!empty($invalid)) {
+
+    // Log invalid permissions
+    \Log::warning('Invalid permissions submitted', [
+        'invalid_permissions' => $invalid,
+        'user_id' => auth()->id(), // optional
+        'submitted_permissions' => $submitted,
+    ]);
+
+    return back()->withErrors([
+        'permissions' => 'These permissions do not exist: ' . implode(', ', $invalid),
+    ])->withInput();
+}
+
 		$request->validate([
 			'permissions.*' => 'exists:permissions,name',
 		], [
@@ -203,28 +227,21 @@ class RoleController extends Controller
 			],
 			'Roles' => [
 				'roles.index' => 'Role View',
-				'roles.create' => ['label' => 'Role Create', 'dependencies' => $this->transformDependencies($dependencies['roles.create'] ?? [], $permissionLabels)],
-				'roles.edit' => ['label' => 'Role Edit', 'dependencies' => $this->transformDependencies($dependencies['roles.edit'] ?? [], $permissionLabels)],
-				'roles.update' => 'Role update',
 			],
-			'Students' => [
-				'students.index' => 'Students View',
-				'students.grid' => 'Students Gird View',
-				'students.add' => ['label' => 'Students Create', 'dependencies' => $this->transformDependencies($dependencies['students.create'] ?? [], $permissionLabels)],
-				'students.edit' => ['label' => 'Students Edit', 'dependencies' => $this->transformDependencies($dependencies['students.edit'] ?? [], $permissionLabels)],
-				'students.card' => 'Student View Card',
-				'students.class_edit' => 'Edit Class',
-				'students.edit.post' => 'Students Update',
-				'students.profile' => 'Students Profile',
-				'students.image' => 'Students Image',
-				'students.interview.get' => 'Interview View',
-				'students.interview.update.create' => 'Interview Update',
-				'students.certificate.get' => 'Certificate View',
-				'students.certificate.create' => 'Certificate Create',
-				'students.leave' => 'Students Leave',
-			],
-
-			'Visitors' => [
+		'Students' => [
+			'students.index' => 'Students View',
+			'students.grid' => 'Students Gird View',
+			'students.add' => ['label' => 'Students Create', 'dependencies' => $this->transformDependencies($dependencies['students.create'] ?? [], $permissionLabels)],
+			'students.edit' => ['label' => 'Students Edit', 'dependencies' => $this->transformDependencies($dependencies['students.edit'] ?? [], $permissionLabels)],
+			'students.class_edit' => 'Edit Class',
+			'students.edit.post' => 'Students Update',
+			'students.profile' => 'Students Profile',
+			'students.interview.get' => 'Interview View',
+			'students.interview.update.create' => 'Interview Update',
+			'students.certificate.get' => 'Certificate View',
+			'students.certificate.create' => 'Certificate Create',
+			'students.leave' => 'Students Leave',
+		],			'Visitors' => [
 				'visitors.index' => 'Visitors View',
 				'visitors.grid' => 'Visitors Gird View',
 				'visitors.profile' => 'Visitors Profile',
@@ -236,26 +253,22 @@ class RoleController extends Controller
 				'visitors.delete' => 'Visitors Delete',
 			],
 			
-			'Teachers' => [
-				'teacher.index' => 'Teachers View',
-				'teacher.grid' => 'Teachers Gird View',
-				'teacher.add' => 'Teachers Create',
-				'teacher.edit' => 'Teachers Edit',
-				'teacher.edit.post' => 'Teachers Update',
-				'teacher.profile' => 'Teachers Profile',
-				'teacher.image' => 'Teachers Image',
-				'teacher.find' => 'Find Teachers',
-			],
-			'Employees' => [
-				'employee.index' => 'Employees View',
-				'employee.grid' => 'Employees Gird View',
-				'employee.add' => 'Employees Create',
-				'employee.edit' => 'Employees Edit',
-				'employee.edit.post' => 'Employees Update',
-				'employee.profile' => 'Employees Profile',
-				'employee.image' => 'Employees Image',
-				'employee.find' => 'Find Employees',
-			],
+		'Teachers' => [
+			'teacher.index' => 'Teachers View',
+			'teacher.grid' => 'Teachers Gird View',
+			'teacher.add' => 'Teachers Create',
+			'teacher.edit' => 'Teachers Edit',
+			'teacher.edit.post' => 'Teachers Update',
+			'teacher.profile' => 'Teachers Profile',
+		],
+		'Employees' => [
+			'employee.index' => 'Employees View',
+			'employee.grid' => 'Employees Gird View',
+			'employee.add' => 'Employees Create',
+			'employee.edit' => 'Employees Edit',
+			'employee.edit.post' => 'Employees Update',
+			'employee.profile' => 'Employees Profile',
+		],
 			'Guardians' => [
 				'guardian.index' => 'Guardians View',
 				'guardian.grid' => 'Guardians Gird View',
@@ -328,7 +341,6 @@ class RoleController extends Controller
 			],
 			'Student Migrations' => [
 				'student-migrations.index' => 'Migrations View',
-				'student-migrations.get' => 'Migrations Get',
 				'student-migrations.create' => 'Migrations Create',
 			],
 			'Exams & Results' => [
@@ -366,31 +378,30 @@ class RoleController extends Controller
 				'noticeboard.create' => 'Notice Create',
 				'noticeboard.delete' => 'Notice Delete',
 			],
-			'Fee Management' => [
-				'fee.index' 				=> 'Fee View',
-				'fee.create' 				=> 'Get Student',
-				'fee.create.store' 			=> 'Fee Create',
-				'fee.get.invoice.collect' 	=> 'Get Invoice Collect',
-				'fee.collect.store' 		=> 'Store Invoice Collect',
-				'fee.edit.invoice' 			=> 'Edit Invoice',
-				'fee.edit.invoice.post' 	=> 'Update Invoice',
-				'fee.get.student.fee' 		=> 'Get Student Fee',
-				'fee.update' 				=> 'Student Fee Update',
-				'fee.chalan.print' 			=> 'Chalan Print',
-				'fee.group.chalan.print'	=> 'Group Chalan Print',
-				'fee.invoice.print' 		=> 'Invoice Print',
-				'fee.bulk.print.invoice' 	=> 'Bulk Print Invoice',
-				'fee.bulk.create.invoice' 	=> 'Bulk Create Invoice',
-				'fee.bulk.create.group.invoice'	=>	'Bulk Group Invoice',
-				'fee.findstu' 				=> 'Find Student Fee',
-			],
-			'Expenses' => [
-				'expense.index' => 'Expenses View',
-				'expense.add' => ['label' => 'Expenses Create', 'dependencies' => $this->transformDependencies($dependencies['expense.add'] ?? [], $permissionLabels)],
-				'expense.edit' => ['label' => 'Expenses Edit', 'dependencies' => $this->transformDependencies($dependencies['expense.edit'] ?? [], $permissionLabels)],
-				'expense.edit.post' => 'Expenses Update',
-				'expense.summary' => 'Expenses Summary',
-			],
+		'Fee Management' => [
+			'fee.index' 				=> 'Fee View',
+			'fee.create' 				=> 'Get Student',
+			'fee.create.store' 			=> 'Fee Create',
+			'fee.get.invoice.collect' 	=> 'Get Invoice Collect',
+			'fee.collect.store' 		=> 'Store Invoice Collect',
+			'fee.edit.invoice' 			=> 'Edit Invoice',
+			'fee.edit.invoice.post' 	=> 'Update Invoice',
+			'fee.get.student.fee' 		=> 'Get Student Fee',
+			'fee.update' 				=> 'Student Fee Update',
+			'fee.chalan.print' 			=> 'Chalan Print',
+			'fee.group.chalan.print'	=> 'Group Chalan Print',
+			'fee.invoice.print' 		=> 'Invoice Print',
+			'fee.bulk.print.invoice' 	=> 'Bulk Print Invoice',
+			'fee.bulk.create.invoice' 	=> 'Bulk Create Invoice',
+			'fee.bulk.create.group.invoice'	=>	'Bulk Group Invoice',
+		],
+		'Expenses' => [
+			'expense.index' => 'Expenses View',
+			'expense.add' => ['label' => 'Expenses Create', 'dependencies' => $this->transformDependencies($dependencies['expense.add'] ?? [], $permissionLabels)],
+			'expense.edit' => ['label' => 'Expenses Edit', 'dependencies' => $this->transformDependencies($dependencies['expense.edit'] ?? [], $permissionLabels)],
+			'expense.edit.post' => 'Expenses Update',
+			'expense.summary' => 'Expenses Summary',
+		],
 			'SMS Notifications' => [
 				'smsnotifications.index' => 'SMS View',
 				'smsnotifications.sendsms' => 'Send SMS',
@@ -416,7 +427,6 @@ class RoleController extends Controller
 				'exam-reports.tabulation.sheet' => 'Tabulation Sheet',
 				'exam-reports.award.list' => 'Award List',
 				'exam-reports.average.result' => 'Average Result',
-				'exam-reports.find.student' => 'Find Student',
 				'exam-reports.result.transcript' => 'Result Transcript',
 			],
 			'System Settings' => [
@@ -462,20 +472,15 @@ class RoleController extends Controller
 			],
 			'Roles' => [
 				'roles.index' => 'Role View',
-				'roles.create' => 'Role Create',
-				'roles.edit' => 'Role Edit',
-				'roles.update' => 'Role update',
 			],
 			'Students' => [
 				'students.index' => 'Students View',
 				'students.grid' => 'Students Gird View',
 				'students.add' => 'Students Create',
 				'students.edit' => 'Students Edit',
-				'students.card' => 'Student View Card',
 				'students.class_edit' => 'Edit Class',
 				'students.edit.post' => 'Students Update',
 				'students.profile' => 'Students Profile',
-				'students.image' => 'Students Image',
 				'students.interview.get' => 'Interview View',
 				'students.interview.update.create' => 'Interview Update',
 				'students.certificate.get' => 'Certificate View',
@@ -501,8 +506,6 @@ class RoleController extends Controller
 				'teacher.edit' => 'Teachers Edit',
 				'teacher.edit.post' => 'Teachers Update',
 				'teacher.profile' => 'Teachers Profile',
-				'teacher.image' => 'Teachers Image',
-				'teacher.find' => 'Find Teachers',
 			],
 			'Employees' => [
 				'employee.index' => 'Employees View',
@@ -511,8 +514,6 @@ class RoleController extends Controller
 				'employee.edit' => 'Employees Edit',
 				'employee.edit.post' => 'Employees Update',
 				'employee.profile' => 'Employees Profile',
-				'employee.image' => 'Employees Image',
-				'employee.find' => 'Find Employees',
 			],
 			'Guardians' => [
 				'guardian.index' => 'Guardians View',
@@ -632,13 +633,8 @@ class RoleController extends Controller
 				'fee.edit.invoice.post' 	=> 'Update Invoice',
 				'fee.get.student.fee' 		=> 'Get Student Fee',
 				'fee.update' 				=> 'Student Fee Update',
-				'fee.chalan.print' 			=> 'Chalan Print',
-				'fee.group.chalan.print'	=> 'Group Chalan Print',
-				'fee.invoice.print' 		=> 'Invoice Print',
-				'fee.bulk.print.invoice' 	=> 'Bulk Print Invoice',
 				'fee.bulk.create.invoice' 	=> 'Bulk Create Invoice',
 				'fee.bulk.create.group.invoice'	=>	'Bulk Group Invoice',
-				'fee.findstu' 				=> 'Find Student Fee',
 			],
 			'Expenses' => [
 				'expense.index' => 'Expenses View',
@@ -671,7 +667,6 @@ class RoleController extends Controller
 				'exam-reports.tabulation.sheet' => 'Tabulation Sheet',
 				'exam-reports.award.list' => 'Award List',
 				'exam-reports.average.result' => 'Average Result',
-				'exam-reports.find.student' => 'Find Student',
 				'exam-reports.result.transcript' => 'Result Transcript',
 			],
 			'System Settings' => [
