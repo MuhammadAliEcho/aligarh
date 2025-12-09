@@ -7,6 +7,9 @@
  * When a parent permission is granted to a role, dependent permissions are automatically granted.
  * This ensures users have all necessary permissions for complete module access.
  * 
+ * IMPORTANT: Only use permissions that exist in the form (from getPermissions() method)
+ * Do NOT reference permissions that don't have routes or are in ignore_routes list
+ * 
  * Structure:
  * 'parent_permission' => [
  *     'child_1',
@@ -21,205 +24,265 @@
 return [
     
     // ==================== STUDENTS MODULE ====================
-    'students.create' => [
-        'students.index',    // Must be able to view list to create
-        'students.show',     // Must be able to view details
+    'students.add' => [
+        'students.index',     // Must be able to view list to create
     ],
     
-    'students.edit' => [
-        'students.index',    // Must be able to view list
-        'students.show',     // Must be able to view details
+    'students.edit.post' => [
+        'students.index',     // Must be able to view list to edit
     ],
     
-    'students.delete' => [
-        'students.index',    // Must be able to view list
-        'students.show',     // Must be able to view details
+    'students.grid' => [
+        'students.index',     // Grid view is alternative display of index
     ],
     
-    'students.import' => [
-        'students.index',    // Must be able to view list
-        'students.create',   // Must be able to create
+    'students.profile' => [
+        'students.index',     // Profile view needs list context
     ],
     
-    'students.bulk.action' => [
-        'students.index',    // Must be able to view list
-        'students.edit',     // May need to edit during bulk action
+    // ==================== TEACHER MODULE ====================
+    'teacher.add' => [
+        'teacher.index',      // Must be able to view list to create
     ],
     
-    'students.attendance' => [
-        'students.index',    // Must be able to view student list
+    'teacher.edit.post' => [
+        'teacher.index',      // Must be able to view list to edit
     ],
     
-    'students.result' => [
-        'students.index',    // Must be able to view student list
+    'teacher.grid' => [
+        'teacher.index',      // Grid view is alternative display of index
     ],
     
-    'students.fee' => [
-        'students.index',    // Must be able to view student list
+    'teacher.profile' => [
+        'teacher.index',      // Profile view needs list context
     ],
     
-    // ==================== USERS MODULE ====================
-    'users.create' => [
-        'users.index',       // Must be able to view list to create
+    // ==================== EMPLOYEE MODULE ====================
+    'employee.add' => [
+        'employee.index',     // Must be able to view list to create
     ],
     
-    'users.edit' => [
-        'users.index',       // Must be able to view list
+    'employee.edit.post' => [
+        'employee.index',     // Must be able to view list to edit
     ],
     
-    'users.delete' => [
-        'users.index',       // Must be able to view list
+    'employee.grid' => [
+        'employee.index',     // Grid view is alternative display of index
     ],
     
-    // ==================== ROLES MODULE ====================
-    'roles.create' => [
-        'roles.index',       // Must be able to view list to create
+    'employee.profile' => [
+        'employee.index',     // Profile view needs list context
     ],
     
-    'roles.edit' => [
-        'roles.index',       // Must be able to view list
+    // ==================== GUARDIAN MODULE ====================
+    'guardian.add' => [
+        'guardian.index',     // Must be able to view list to create
     ],
     
-    'roles.delete' => [
-        'roles.index',       // Must be able to view list
+    'guardian.edit.post' => [
+        'guardian.index',     // Must be able to view list to edit
     ],
     
-    // ==================== TEACHERS MODULE ====================
-    'teachers.create' => [
-        'teachers.index',    // Must be able to view list
+    'guardian.grid' => [
+        'guardian.index',     // Grid view is alternative display of index
     ],
     
-    'teachers.edit' => [
-        'teachers.index',    // Must be able to view list
+    'guardian.profile' => [
+        'guardian.index',     // Profile view needs list context
     ],
     
-    'teachers.delete' => [
-        'teachers.index',    // Must be able to view list
+    // ==================== VISITORS MODULE ====================
+    'visitors.create' => [
+        'visitors.index',     // Must be able to view list to create
     ],
     
+    'visitors.update' => [
+        'visitors.index',     // Must be able to view list to edit
+    ],
+    
+    'visitors.grid' => [
+        'visitors.index',     // Grid view is alternative display of index
+    ],
+    
+    'visitors.profile' => [
+        'visitors.index',     // Profile view needs list context
+    ],
+    
+    'visitors.delete' => [
+        'visitors.index',     // Must see list to delete
+    ],
+    
+    // ==================== MANAGE CLASSES MODULE ====================
+    'manage-classes.add' => [
+        'manage-classes.index', // Must be able to view list to create
+    ],
+    
+    'manage-classes.edit.post' => [
+        'manage-classes.index', // Must be able to view list to edit
+    ],
+    
+    // ==================== MANAGE SECTIONS MODULE ====================
+    'manage-sections.add' => [
+        'manage-sections.index', // Must be able to view list to create
+    ],
+    
+    'manage-sections.edit.post' => [
+        'manage-sections.index', // Must be able to view list to edit
+    ],
+    
+    // ==================== VENDORS MODULE ====================
+    'vendors.add' => [
+        'vendors.index',      // Must be able to view list to create
+    ],
+    
+    'vendors.edit.post' => [
+        'vendors.index',      // Must be able to view list to edit
+    ],
+    
+    // ==================== ITEMS MODULE ====================
+    'items.add' => [
+        'items.index',        // Must be able to view list to create
+    ],
+    
+    'items.edit.post' => [
+        'items.index',        // Must be able to view list to edit
+    ],
+    
+    // ==================== VOUCHERS MODULE ====================
+    'vouchers.add' => [
+        'vouchers.index',     // Must be able to view list to create
+    ],
+    
+    'vouchers.edit.post' => [
+        'vouchers.index',     // Must be able to view list to edit
+    ],
+    
+    'vouchers.detail' => [
+        'vouchers.index',     // Must see list to view details
+    ],
+    
+    // ==================== ROUTINES MODULE ====================
     'routines.add' => [
-        'routines.index',    // Must be able to view list
+        'routines.index',     // Must be able to view list to create
     ],
     
-    'routines.edit' => [
-        'routines.index',    // Must be able to view list
+    'routines.edit.post' => [
+        'routines.index',     // Must be able to view list to edit
     ],
     
     'routines.delete' => [
-        'routines.index',    // Must be able to view list
+        'routines.index',     // Must see list to delete
     ],
     
-    // ==================== ACADEMICS MODULE ====================
-    'subjects.add' => [
-        'subjects.index',    // Must be able to view list
+    // ==================== MANAGE SUBJECTS MODULE ====================
+    'manage-subjects.add' => [
+        'manage-subjects.index', // Must be able to view list to create
     ],
     
-    'subjects.edit' => [
-        'subjects.index',    // Must be able to view list
+    'manage-subjects.edit.post' => [
+        'manage-subjects.index', // Must be able to view list to edit
     ],
     
-    'subjects.delete' => [
-        'subjects.index',    // Must be able to view list
-    ],
-    
-    'classes.add' => [
-        'classes.index',     // Must be able to view list
-    ],
-    
-    'classes.edit' => [
-        'classes.index',     // Must be able to view list
-    ],
-    
-    'classes.delete' => [
-        'classes.index',     // Must be able to view list
-    ],
-    
-    // ==================== FEES MODULE ====================
-    'fees.add' => [
-        'fees.index',        // Must be able to view list
-    ],
-    
-    'fees.edit' => [
-        'fees.index',        // Must be able to view list
-    ],
-    
-    'fees.delete' => [
-        'fees.index',        // Must be able to view list
-    ],
-    
-    'invoice.add' => [
-        'invoice.index',     // Must be able to view list
-    ],
-    
-    'invoice.edit' => [
-        'invoice.index',     // Must be able to view list
-    ],
-    
-    // ==================== EXAMS MODULE ====================
+    // ==================== EXAM MODULE ====================
     'exam.add' => [
-        'exam.index',        // Must be able to view list
+        'exam.index',         // Must be able to view list to create
     ],
     
-    'exam.edit' => [
-        'exam.index',        // Must be able to view list
+    'exam.edit.post' => [
+        'exam.index',         // Must be able to view list to edit
     ],
     
-    'exam.delete' => [
-        'exam.index',        // Must be able to view list
+    // ==================== QUIZZES MODULE ====================
+    'quizzes.create' => [
+        'quizzes.index',      // Must be able to view list to create
     ],
     
-    'manage-result.make' => [
-        'manage-result.index', // Must be able to view list
+    'quizzes.update' => [
+        'quizzes.index',      // Must be able to view list to edit
+    ],
+    
+    'quizzes.delete' => [
+        'quizzes.index',      // Must see list to delete
     ],
     
     // ==================== LIBRARY MODULE ====================
     'library.add' => [
-        'library.index',     // Must be able to view list
+        'library.index',      // Must be able to view list to create
     ],
     
-    'library.edit' => [
-        'library.index',     // Must be able to view list
+    'library.edit.post' => [
+        'library.index',      // Must be able to view list to edit
     ],
     
-    'library.delete' => [
-        'library.index',     // Must be able to view list
+    // ==================== FEE MODULE ====================
+    'fee.create.store' => [
+        'fee.index',          // Must be able to view fee dashboard to create
     ],
     
-    // ==================== ACCOUNTING MODULE ====================
-    'vouchers.add' => [
-        'vouchers.index',    // Must be able to view list
+    'fee.collect.store' => [
+        'fee.index',          // Must be able to view fee dashboard to collect
     ],
     
-    'vouchers.edit' => [
-        'vouchers.index',    // Must be able to view list
+    'fee.edit.invoice.post' => [
+        'fee.index',          // Must be able to view fee dashboard to edit invoice
     ],
     
-    'vouchers.delete' => [
-        'vouchers.index',    // Must be able to view list
+    // ==================== EXPENSE MODULE ====================
+    'expense.add' => [
+        'expense.index',      // Must be able to view list to create
     ],
     
-    'vendors.add' => [
-        'vendors.index',     // Must be able to view list
+    'expense.edit.post' => [
+        'expense.index',      // Must be able to view list to edit
     ],
     
-    'vendors.edit' => [
-        'vendors.index',     // Must be able to view list
+    // ==================== USERS MODULE ====================
+    'users.create' => [
+        'users.index',        // Must be able to view list to create
     ],
     
-    'vendors.delete' => [
-        'vendors.index',     // Must be able to view list
+    'users.update' => [
+        'users.index',        // Must be able to view list to edit
     ],
     
-    'items.add' => [
-        'items.index',       // Must be able to view list
+    // ==================== ROLES MODULE ====================
+    'roles.create' => [
+        'roles.index',        // Must be able to view list to create
     ],
     
-    'items.edit' => [
-        'items.index',       // Must be able to view list
+    'roles.update' => [
+        'roles.index',        // Must be able to view list to edit
     ],
     
-    'items.delete' => [
-        'items.index',       // Must be able to view list
+    // ==================== MANAGE RESULT MODULE ====================
+    'manage-result.make' => [
+        'manage-result.index', // Must see dashboard to make result
+    ],
+    
+    'manage-result.maketranscript' => [
+        'manage-result.index', // Must see dashboard to make transcript
+    ],
+    
+    // ==================== ATTENDANCE LEAVE MODULE ====================
+    'attendance-leave.make' => [
+        'attendance-leave.index', // Must see leave list to add leave
+    ],
+    
+    'attendance-leave.update' => [
+        'attendance-leave.index', // Must see leave list to edit
+    ],
+    
+    'attendance-leave.delete' => [
+        'attendance-leave.index', // Must see leave list to delete
+    ],
+    
+    // ==================== NOTICEBOARD MODULE ====================
+    'noticeboard.create' => [
+        'noticeboard.index',  // Must see notices to post new
+    ],
+    
+    'noticeboard.delete' => [
+        'noticeboard.index',  // Must see notices to delete
     ],
     
 ];

@@ -228,13 +228,13 @@ return [
         'students.image',           // Return student image
         'teacher.image',            // Return teacher image
         'employee.image',           // Return employee image
-        
+
         // Report/Print Endpoints (PDF)
-        'fee.chalan.print',         // Print chalan PDF
-        'fee.invoice.print',        // Print invoice PDF
-        'fee.group.chalan.print',   // Print group chalan PDF
-        'fee.bulk.print.invoice',   // Print bulk invoices PDF
-        'students.card',            // Print student ID card
+        // 'fee.chalan.print',         // Print chalan PDF
+        // 'fee.invoice.print',        // Print invoice PDF
+        // 'fee.group.chalan.print',   // Print group chalan PDF
+        // 'fee.bulk.print.invoice',   // Print bulk invoices PDF
+        // 'students.card',            // Print student ID card
         
         // Note: These are currently in ignore list because:
         // - They return public/non-sensitive data
