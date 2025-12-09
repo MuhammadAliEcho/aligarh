@@ -320,27 +320,6 @@ class PermissionDependencyService
         ];
     }
     
-    /**
-     * Generate audit log entry for permission changes
-     * 
-     * @param Role $role
-     * @param string $action ('grant'|'revoke'|'create'|'update')
-     * @param array $permissions
-     * @param array $auditData
-     * @return void
-     */
-    public function auditPermissionChange(Role $role, string $action, array $permissions, array $auditData = []): void
-    {
-        Log::channel('permissions')->info("Permission {$action} for role '{$role->name}'", [
-            'role_id' => $role->id,
-            'action' => $action,
-            'permissions' => $permissions,
-            'user_id' => auth()?->user()?->id,
-            'timestamp' => now(),
-            'audit_data' => $auditData
-        ]);
-    }
-    
     // ==================== Private Helper Methods ====================
     
     /**

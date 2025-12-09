@@ -57,9 +57,8 @@ class RoleController extends Controller
 
             $role->syncPermissions($allPermissions);
 
-            // Validate and audit
+            // Validate completeness
             $this->depService->validatePermissionCompleteness($role);
-            $this->auditRoleCreation($role, $request->input('permissions', []), $allPermissions);
 
             DB::commit();
 
@@ -110,9 +109,8 @@ class RoleController extends Controller
                 $this->syncPermissionsToAllRoles($allPermissions);
             }
 
-            // Validate and audit
+            // Validate completeness
             $this->depService->validatePermissionCompleteness($role);
-            $this->auditRoleUpdate($role, $request->input('permissions', []), $allPermissions);
 
             DB::commit();
 
@@ -219,26 +217,6 @@ class RoleController extends Controller
         foreach ($roles as $role) {
             $role->syncPermissions($permissions);
         }
-    }
-
-    /**
-     * Audit role creation
-     */
-    private function auditRoleCreation(Role $role, array $requestedPermissions, array $allPermissions)
-    {
-        $this->depService->auditPermissionChange($role, 'create', $allPermissions, [
-            'auto_granted_count' => count($allPermissions) - count($requestedPermissions)
-        ]);
-    }
-
-    /**
-     * Audit role update
-     */
-    private function auditRoleUpdate(Role $role, array $requestedPermissions, array $allPermissions)
-    {
-        $this->depService->auditPermissionChange($role, 'update', $allPermissions, [
-            'auto_granted_count' => count($allPermissions) - count($requestedPermissions)
-        ]);
     }
 
     /**
