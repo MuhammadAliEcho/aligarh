@@ -10,206 +10,279 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
-
 class RoleController extends Controller
 {
-	protected $depService;
+    protected $depService;
 
-	public function __construct(PermissionDependencyService $depService)
-	{
-		$this->depService = $depService;
-	}
+    public function __construct(PermissionDependencyService $depService)
+    {
+        $this->depService = $depService;
+    }
 
-	public function index(Request $request)
-	{
-		$data = [];
-		if ($request->ajax()) {
-			return DataTables::eloquent(
-				Role::select('id', 'name', 'created_at')->notDeveloper()
-			)
-				->editColumn('created_at', function ($role) {
-					return $role->created_at->format('Y-m-d');
-				})
-				->make(true);
-		}
-		$data['content'] = null;
-		$data['permissions'] = $this->getPermissions();
-		return view('admin.roles', $data);
-	}
+    /**
+     * Display roles listing and create form
+     * Handles DataTables AJAX requests for role list
+     */
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            return $this->getRolesDataTable();
+        }
 
+        return view('admin.roles', [
+            'content' => null,
+            'permissions' => $this->getPermissions(),
+            'permissionLabels' => $this->depService->buildPermissionLabelMap(),
+        ]);
+    }
 
-	public function create(Request $request)
-	{
+    /**
+     * Create a new role with permissions
+     * Auto-grants dependent permissions based on service logic
+     */
+    public function create(Request $request)
+    {
+        $this->validateRoleCreation($request);
 
-		$request->validate([
-			'name' => 'required|unique:roles,name',
-			'permissions.*' => 'exists:permissions,name',
-		], [
-			'permissions.*.exists' => 'The selected permission is invalid.',
-		]);
+        DB::beginTransaction();
+        try {
+            $role = Role::create([
+                'name' => $request->input('name'),
+                'guard_name' => 'web'
+            ]);
 
-		DB::beginTransaction();
-		try {
-			$Role = Role::create(['name' => $request->input('name'), 'guard_name' => 'web']);
-			$permissions = $request->input('permissions', []);
-			
-			// Option 2: Auto-grant dependent permissions
-			$allPermissions = [];
-			foreach ($permissions as $perm) {
-				$allPermissions[] = $perm;
-				$allPermissions = array_merge($allPermissions, $this->depService->getAllDependencies($perm));
-			}
-			$allPermissions = array_unique($allPermissions);
-			
-			$Role->syncPermissions($allPermissions);
-			
-			// Option 4: Validate completeness and warn if incomplete
-			$validation = $this->depService->validatePermissionCompleteness($Role);
-			
-			// Audit log
-			$this->depService->auditPermissionChange($Role, 'create', $allPermissions, [
-				'auto_granted_count' => count($allPermissions) - count($permissions)
-			]);
-			
-			DB::commit();
-		} catch (\Exception $e) {
-			DB::rollBack();
-			Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-			return redirect('roles')->with([
-				'toastrmsg' => [
-					'type' => 'error', 
-					'title'  =>  'Roles',
-					'msg' =>  __('modules.roles_update_error')
-				]
-			]);
-		}
-		
-		return redirect('roles')->with([
-	        'toastrmsg' => [
-	          'type' 	=> 'success', 
-	          'title'  	=>  'Role Registration',
-	          'msg' 	=>  __('modules.common_register_success')
-	          ]
-	      	]);
-	}
+            $allPermissions = $this->resolvePermissionsWithDependencies(
+                $request->input('permissions', [])
+            );
 
-	public function edit($id)
-	{
-		$role = Role::notDeveloper()->findOrFail($id); 
-		$rolePermissions = $role->permissions->pluck('name')->toArray();
-		$permissions = $this->getPermissions();
+            $role->syncPermissions($allPermissions);
 
+            // Validate and audit
+            $this->depService->validatePermissionCompleteness($role);
+            $this->auditRoleCreation($role, $request->input('permissions', []), $allPermissions);
 
-      	return view('admin.edit_role', compact('role', 'rolePermissions', 'permissions'));
-	}
+            DB::commit();
 
-	public function update(Request $request, $id)
-	{
+            return $this->successResponse('roles', __('modules.common_register_success'), 'Role Registration');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->logError($e);
+            return $this->errorResponse('roles', __('modules.roles_update_error'), 'Roles');
+        }
+    }
 
-		$submitted = $request->permissions ?? [];
+    /**
+     * Show the edit form for a role
+     */
+    public function edit($id)
+    {
+        $role = Role::notDeveloper()->findOrFail($id);
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
 
-$valid = \DB::table('permissions')
+        return view('admin.edit_role', [
+            'role' => $role,
+            'rolePermissions' => $rolePermissions,
+            'permissions' => $this->getPermissions(),
+            'permissionLabels' => $this->depService->buildPermissionLabelMap(),
+        ]);
+    }
+
+    /**
+     * Update role permissions
+     * Optionally sync permissions to all roles (Developer only)
+     */
+    public function update(Request $request, $id)
+    {
+        $this->validatePermissions($request);
+
+        DB::beginTransaction();
+        try {
+            $role = Role::notDeveloper()->findOrFail($id);
+
+            $allPermissions = $this->resolvePermissionsWithDependencies(
+                $request->input('permissions', [])
+            );
+
+            $role->syncPermissions($allPermissions);
+
+            // Sync to all roles if requested (Developer feature)
+            if ($request->filled('sync_permissions')) {
+                $this->syncPermissionsToAllRoles($allPermissions);
+            }
+
+            // Validate and audit
+            $this->depService->validatePermissionCompleteness($role);
+            $this->auditRoleUpdate($role, $request->input('permissions', []), $allPermissions);
+
+            DB::commit();
+
+            return $this->successResponse('roles', __('modules.roles_update_success'), 'Role Updated');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->logError($e);
+            return $this->errorResponse('roles', 'There was an issue while Updating Role', 'Roles');
+        }
+    }
+
+    // ==================== Private Helper Methods ====================
+
+    /**
+     * Get DataTable for roles listing
+     */
+    private function getRolesDataTable()
+    {
+        return DataTables::eloquent(
+            Role::select('id', 'name', 'created_at')->notDeveloper()
+        )
+            ->editColumn('created_at', function ($role) {
+                return $role->created_at->format('Y-m-d');
+            })
+            ->make(true);
+    }
+
+    /**
+     * Validate role creation request
+     */
+    private function validateRoleCreation(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|unique:roles,name',
+            'permissions.*' => 'exists:permissions,name',
+        ], [
+            'permissions.*.exists' => 'The selected permission is invalid.',
+        ]);
+    }
+
+    /**
+     * Validate permissions in update request
+     * Includes pre-validation to catch non-existent permissions
+     */
+    private function validatePermissions(Request $request)
+    {
+        $submitted = $request->input('permissions', []);
+
+        // Pre-validation: Check if permissions exist in database
+        $valid = DB::table('permissions')
             ->whereIn('name', $submitted)
             ->pluck('name')
             ->toArray();
 
-$invalid = array_diff($submitted, $valid);
+        $invalid = array_diff($submitted, $valid);
 
-if (!empty($invalid)) {
+        if (!empty($invalid)) {
+            Log::warning('Invalid permissions submitted', [
+                'invalid_permissions' => $invalid,
+                'user_id' => auth()->id(),
+                'submitted_permissions' => $submitted,
+            ]);
 
-    // Log invalid permissions
-    \Log::warning('Invalid permissions submitted', [
-        'invalid_permissions' => $invalid,
-        'user_id' => auth()->id(), // optional
-        'submitted_permissions' => $submitted,
-    ]);
+            return back()->withErrors([
+                'permissions' => 'These permissions do not exist: ' . implode(', ', $invalid),
+            ])->withInput();
+        }
 
-    return back()->withErrors([
-        'permissions' => 'These permissions do not exist: ' . implode(', ', $invalid),
-    ])->withInput();
-}
+        // Formal validation
+        $request->validate([
+            'permissions.*' => 'exists:permissions,name',
+        ], [
+            'permissions.*.exists' => 'The selected permission is invalid.',
+        ]);
+    }
 
-		$request->validate([
-			'permissions.*' => 'exists:permissions,name',
-		], [
-			'permissions.*.exists' => 'The selected permission is invalid.',
-		]);
+    /**
+     * Resolve permissions with their dependencies
+     * Uses PermissionDependencyService to auto-grant required permissions
+     */
+    private function resolvePermissionsWithDependencies(array $permissions): array
+    {
+        $allPermissions = [];
 
-		DB::beginTransaction();
-		try {
-			$Role = Role::NotDeveloper()->findOrFail($id);
-			$permissions = $request->input('permissions', []);
-			
-			// Option 2: Auto-grant dependent permissions
-			$allPermissions = [];
-			foreach ($permissions as $perm) {
-				$allPermissions[] = $perm;
-				$allPermissions = array_merge($allPermissions, $this->depService->getAllDependencies($perm));
-			}
-			$allPermissions = array_unique($allPermissions);
-			
-			$Role->syncPermissions($allPermissions);
+        foreach ($permissions as $permission) {
+            $allPermissions[] = $permission;
+            $allPermissions = array_merge(
+                $allPermissions,
+                $this->depService->getAllDependencies($permission)
+            );
+        }
 
-			if (filled($request->sync_permissions)) {
-				$rolesToSync = Role::NotDeveloper()
-					// ->where('id', '!=', $Role->id)
-					->get();
-				foreach ($rolesToSync as $role) {
-					// Apply same dependency logic to all roles
-					$role->syncPermissions($allPermissions);
-				}
-			}
-			
-			// Option 4: Validate completeness and warn if incomplete
-			$validation = $this->depService->validatePermissionCompleteness($Role);
-			
-			// Audit log
-			$this->depService->auditPermissionChange($Role, 'update', $allPermissions, [
-				'auto_granted_count' => count($allPermissions) - count($permissions)
-			]);
+        return array_unique($allPermissions);
+    }
 
-			DB::commit();
-		} catch (\Exception $e) {
-			DB::rollBack();
-			Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-			return redirect('roles')->with([
-				'toastrmsg' => [
-					'type' => 'error', 
-					'title'  =>  'Roles',
-					'msg' =>  'There was an issue while Updating Role'
-				]
-			]);
-		}
-		
-		return redirect('roles')->with([
-	        'toastrmsg' => [
-	          'type' 	=> 'success', 
-	          'title'  	=>  'Role Updated',
-	          'msg' 	=>  __('modules.roles_update_success')
-	          ]
-	      	]);
-	}	// public function delete(Request $request, $id)
-	// {
-	// 	$Role = Role::NotDeveloper()->findOrFail($id);
+    /**
+     * Sync permissions to all non-Developer roles
+     * (Developer-only feature)
+     */
+    private function syncPermissionsToAllRoles(array $permissions)
+    {
+        $roles = Role::notDeveloper()->get();
 
-	// 	if ($Role->users()->count('id')) {
-	// 		return response()->json(['message' => "Sorry users have this Role " . $Role->name], 422);
-	// 	}
+        foreach ($roles as $role) {
+            $role->syncPermissions($permissions);
+        }
+    }
 
-	// 	$Role->syncPermissions([]);
-	// 	$Role->delete();
-	// 	return response()->json(['success' => 'Role Deleted successfully']);
-	// }
+    /**
+     * Audit role creation
+     */
+    private function auditRoleCreation(Role $role, array $requestedPermissions, array $allPermissions)
+    {
+        $this->depService->auditPermissionChange($role, 'create', $allPermissions, [
+            'auto_granted_count' => count($allPermissions) - count($requestedPermissions)
+        ]);
+    }
 
-	/**
-	 * Get permissions from centralized config
-	 * 
-	 * Returns permission structure with labels and dependencies
-	 * from config/permission.php for role management UI
-	 */
-	private function getPermissions()
-	{
-		return config('permission.permissions', []);
-	}
+    /**
+     * Audit role update
+     */
+    private function auditRoleUpdate(Role $role, array $requestedPermissions, array $allPermissions)
+    {
+        $this->depService->auditPermissionChange($role, 'update', $allPermissions, [
+            'auto_granted_count' => count($allPermissions) - count($requestedPermissions)
+        ]);
+    }
 
+    /**
+     * Log exception error
+     */
+    private function logError(\Exception $e)
+    {
+        Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+    }
+
+    /**
+     * Success redirect response with toast message
+     */
+    private function successResponse(string $route, string $message, string $title)
+    {
+        return redirect($route)->with([
+            'toastrmsg' => [
+                'type' => 'success',
+                'title' => $title,
+                'msg' => $message
+            ]
+        ]);
+    }
+
+    /**
+     * Error redirect response with toast message
+     */
+    private function errorResponse(string $route, string $message, string $title)
+    {
+        return redirect($route)->with([
+            'toastrmsg' => [
+                'type' => 'error',
+                'title' => $title,
+                'msg' => $message
+            ]
+        ]);
+    }
+
+    /**
+     * Get permissions from centralized config
+     * Returns permission structure with labels and dependencies
+     */
+    private function getPermissions(): array
+    {
+        return config('permission.permissions', []);
+    }
 }

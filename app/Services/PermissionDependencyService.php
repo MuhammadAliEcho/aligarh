@@ -5,42 +5,55 @@ namespace App\Services;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Collection;
 
 /**
  * Permission Dependency Service
  * 
- * Handles:
- * 1. Auto-cascading dependent permissions (Option 2)
- * 2. Validating permission completeness (Option 4)
- * 3. Generating warnings for incomplete permission sets
- * 4. Auditing dependency changes
+ * Centralized service for managing permission dependencies and relationships.
+ * 
+ * Features:
+ * - Auto-cascading dependent permissions
+ * - Permission completeness validation
+ * - Reverse dependency tracking
+ * - Permission label mapping for UI
+ * - Audit logging for permission changes
+ * 
+ * @package App\Services
  */
 class PermissionDependencyService
 {
     /**
-     * Get all dependencies for a permission
-     * Extracts from config('permission.permissions') merged structure
+     * Cached dependency tree to avoid repeated config reads
+     */
+    private ?array $dependencyTreeCache = null;
+
+    /**
+     * Cached label map to avoid repeated config reads
+     */
+    private ?array $labelMapCache = null;
+
+    /**
+     * Get all direct dependencies for a permission
      * 
      * @param string $permissionName
      * @return array
      */
-    public function getDependencies($permissionName): array
+    public function getDependencies(string $permissionName): array
     {
-        $dependencyTree = $this->buildDependencyTree();
+        $dependencyTree = $this->getDependencyTree();
         return $dependencyTree[$permissionName] ?? [];
     }
     
     /**
-     * Get all permissions that depend on a given permission
-     * (reverse dependencies)
+     * Get all permissions that depend on a given permission (reverse dependencies)
+     * Useful for cascading permission revocations
      * 
      * @param string $permissionName
      * @return array
      */
-    public function getReverseDependencies($permissionName): array
+    public function getReverseDependencies(string $permissionName): array
     {
-        $dependencyTree = $this->buildDependencyTree();
+        $dependencyTree = $this->getDependencyTree();
         $reverseDeps = [];
         
         foreach ($dependencyTree as $parent => $children) {
@@ -53,16 +66,17 @@ class PermissionDependencyService
     }
     
     /**
-     * Recursively get all dependent permissions (tree)
+     * Recursively get all dependent permissions (full dependency tree)
+     * Prevents circular dependencies through visited tracking
      * 
      * @param string $permissionName
      * @param array $visited
      * @return array
      */
-    public function getAllDependencies($permissionName, $visited = []): array
+    public function getAllDependencies(string $permissionName, array $visited = []): array
     {
         if (in_array($permissionName, $visited)) {
-            return [];
+            return []; // Circular dependency protection
         }
         
         $visited[] = $permissionName;
@@ -77,13 +91,14 @@ class PermissionDependencyService
     }
     
     /**
-     * Grant permission to role with auto-cascading dependencies (Option 2)
+     * Grant permission to role with auto-cascading dependencies
+     * Automatically grants all required dependencies
      * 
      * @param Role $role
      * @param string $permissionName
      * @return array ['granted' => [], 'already_had' => [], 'failed' => []]
      */
-    public function grantPermissionWithDependencies(Role $role, $permissionName): array
+    public function grantPermissionWithDependencies(Role $role, string $permissionName): array
     {
         $result = [
             'granted' => [],
@@ -101,21 +116,20 @@ class PermissionDependencyService
                 
                 if (!$permission) {
                     $result['failed'][] = $perm;
-                    Log::warning("PermissionDependencyService: Permission '{$perm}' not found for role '{$role->name}'");
+                    Log::warning("Permission '{$perm}' not found for role '{$role->name}'");
                     continue;
                 }
                 
-                // Check if already has permission
                 if ($role->hasPermissionTo($permission)) {
                     $result['already_had'][] = $perm;
                 } else {
                     $role->givePermissionTo($permission);
                     $result['granted'][] = $perm;
-                    Log::info("PermissionDependencyService: Granted '{$perm}' to role '{$role->name}'");
+                    Log::info("Granted '{$perm}' to role '{$role->name}'");
                 }
             } catch (\Exception $e) {
                 $result['failed'][] = $perm;
-                Log::error("PermissionDependencyService: Error granting '{$perm}' to role '{$role->name}': {$e->getMessage()}");
+                Log::error("Error granting '{$perm}' to role '{$role->name}': {$e->getMessage()}");
             }
         }
         
@@ -123,14 +137,14 @@ class PermissionDependencyService
     }
     
     /**
-     * Revoke permission from role with auto-cascading (Option 2)
+     * Revoke permission from role with cascading dependents
      * Also revokes permissions that depend on this one
      * 
      * @param Role $role
      * @param string $permissionName
      * @return array ['revoked' => [], 'dependent_revoked' => [], 'failed' => []]
      */
-    public function revokePermissionWithDependencies(Role $role, $permissionName): array
+    public function revokePermissionWithDependencies(Role $role, string $permissionName): array
     {
         $result = [
             'revoked' => [],
@@ -149,11 +163,11 @@ class PermissionDependencyService
                 if ($permission && $role->hasPermissionTo($permission)) {
                     $role->revokePermissionTo($permission);
                     $result['dependent_revoked'][] = $dependent;
-                    Log::info("PermissionDependencyService: Revoked dependent '{$dependent}' from role '{$role->name}'");
+                    Log::info("Revoked dependent '{$dependent}' from role '{$role->name}'");
                 }
             } catch (\Exception $e) {
                 $result['failed'][] = $dependent;
-                Log::error("PermissionDependencyService: Error revoking dependent '{$dependent}': {$e->getMessage()}");
+                Log::error("Error revoking dependent '{$dependent}': {$e->getMessage()}");
             }
         }
         
@@ -164,27 +178,27 @@ class PermissionDependencyService
             if ($permission) {
                 $role->revokePermissionTo($permission);
                 $result['revoked'][] = $permissionName;
-                Log::info("PermissionDependencyService: Revoked '{$permissionName}' from role '{$role->name}'");
+                Log::info("Revoked '{$permissionName}' from role '{$role->name}'");
             }
         } catch (\Exception $e) {
             $result['failed'][] = $permissionName;
-            Log::error("PermissionDependencyService: Error revoking '{$permissionName}': {$e->getMessage()}");
+            Log::error("Error revoking '{$permissionName}': {$e->getMessage()}");
         }
         
         return $result;
     }
     
     /**
-     * Validate permission completeness (Option 4)
-     * Check if a role has all required dependencies for granted permissions
+     * Validate permission completeness
+     * Check if a role has all required dependencies for its granted permissions
      * 
      * @param Role $role
-     * @return array ['complete' => [], 'incomplete' => []]
+     * @return array ['complete' => [], 'incomplete' => [permission => [missing_deps]]]
      */
     public function validatePermissionCompleteness(Role $role): array
     {
         $rolePermissions = $role->permissions->pluck('name')->toArray();
-        $dependencyTree = $this->buildDependencyTree();
+        $dependencyTree = $this->getDependencyTree();
         
         $result = [
             'complete' => [],
@@ -192,14 +206,14 @@ class PermissionDependencyService
         ];
         
         foreach ($rolePermissions as $permission) {
-            $deps = $dependencyTree[$permission] ?? [];
+            $dependencies = $dependencyTree[$permission] ?? [];
             
-            if (empty($deps)) {
+            if (empty($dependencies)) {
                 $result['complete'][] = $permission;
                 continue;
             }
             
-            $missingDeps = array_diff($deps, $rolePermissions);
+            $missingDeps = array_diff($dependencies, $rolePermissions);
             
             if (empty($missingDeps)) {
                 $result['complete'][] = $permission;
@@ -212,8 +226,8 @@ class PermissionDependencyService
     }
     
     /**
-     * Auto-fix incomplete permissions (Option 4)
-     * Automatically grant missing dependencies
+     * Auto-fix incomplete permissions
+     * Automatically grant missing dependencies to make role permissions complete
      * 
      * @param Role $role
      * @return array ['fixed' => [], 'failed' => []]
@@ -234,17 +248,100 @@ class PermissionDependencyService
                             'parent' => $permission,
                             'dependency' => $missingDep
                         ];
-                        Log::info("PermissionDependencyService: Auto-fixed missing '{$missingDep}' for role '{$role->name}' (required by '{$permission}')");
+                        Log::info("Auto-fixed missing '{$missingDep}' for role '{$role->name}' (required by '{$permission}')");
                     }
                 } catch (\Exception $e) {
                     $result['failed'][] = $missingDep;
-                    Log::error("PermissionDependencyService: Error fixing '{$missingDep}': {$e->getMessage()}");
+                    Log::error("Error fixing '{$missingDep}': {$e->getMessage()}");
                 }
             }
         }
         
         return $result;
     }
+    
+    // ==================== UI Helper Methods ====================
+    
+    /**
+     * Get permission dependency tree (for UI display)
+     * Uses caching to avoid repeated config reads
+     * 
+     * @return array ['permission.name' => ['dep1', 'dep2'], ...]
+     */
+    public function getDependencyTree(): array
+    {
+        if ($this->dependencyTreeCache === null) {
+            $this->dependencyTreeCache = $this->buildDependencyTree();
+        }
+        
+        return $this->dependencyTreeCache;
+    }
+    
+    /**
+     * Build permission label map
+     * Creates a flat map of permission names to their human-readable labels
+     * Uses caching for performance
+     * 
+     * @return array ['permission.name' => 'Human Label', ...]
+     */
+    public function buildPermissionLabelMap(): array
+    {
+        if ($this->labelMapCache === null) {
+            $this->labelMapCache = $this->buildLabelMap();
+        }
+        
+        return $this->labelMapCache;
+    }
+    
+    /**
+     * Get label for a single permission
+     * 
+     * @param string $permissionName
+     * @return string
+     */
+    public function getPermissionLabel(string $permissionName): string
+    {
+        $labelMap = $this->buildPermissionLabelMap();
+        return $labelMap[$permissionName] ?? $permissionName;
+    }
+    
+    /**
+     * Get permissions with enhanced metadata for UI
+     * Adds label map and dependency info for view rendering
+     * 
+     * @return array
+     */
+    public function getPermissionsWithMetadata(): array
+    {
+        return [
+            'permissions' => config('permission.permissions', []),
+            'labelMap' => $this->buildPermissionLabelMap(),
+            'dependencyTree' => $this->getDependencyTree()
+        ];
+    }
+    
+    /**
+     * Generate audit log entry for permission changes
+     * 
+     * @param Role $role
+     * @param string $action ('grant'|'revoke'|'create'|'update')
+     * @param array $permissions
+     * @param array $auditData
+     * @return void
+     */
+    public function auditPermissionChange(Role $role, string $action, array $permissions, array $auditData = []): void
+    {
+        Log::channel('permissions')->info("Permission {$action} for role '{$role->name}'", [
+            'role_id' => $role->id,
+            'action' => $action,
+            'permissions' => $permissions,
+            'user_id' => auth()?->user()?->id,
+            'timestamp' => now(),
+            'audit_data' => $auditData
+        ]);
+    }
+    
+    // ==================== Private Helper Methods ====================
     
     /**
      * Build dependency tree from permissions config
@@ -257,10 +354,8 @@ class PermissionDependencyService
         $permissionsConfig = config('permission.permissions', []);
         $dependencyTree = [];
         
-        // Flatten permission groups and extract dependencies
         foreach ($permissionsConfig as $group => $permissions) {
             foreach ($permissions as $permName => $permData) {
-                // Check if permission has dependencies (array format with 'label' and 'dependencies')
                 if (is_array($permData) && isset($permData['dependencies'])) {
                     $dependencyTree[$permName] = $permData['dependencies'];
                 }
@@ -271,33 +366,34 @@ class PermissionDependencyService
     }
     
     /**
-     * Get permission dependency tree (for UI display)
+     * Build label map from permissions config
      * 
      * @return array
      */
-    public function getDependencyTree(): array
+    private function buildLabelMap(): array
     {
-        return $this->buildDependencyTree();
+        $permissionsConfig = config('permission.permissions', []);
+        $labelMap = [];
+        
+        foreach ($permissionsConfig as $group => $permissions) {
+            foreach ($permissions as $permName => $permData) {
+                // Extract label: either from array['label'] or direct string value
+                $label = is_array($permData) ? ($permData['label'] ?? $permName) : $permData;
+                $labelMap[$permName] = $label;
+            }
+        }
+        
+        return $labelMap;
     }
     
     /**
-     * Generate audit log entry for permission changes
+     * Clear internal caches (useful for testing or dynamic config changes)
      * 
-     * @param Role $role
-     * @param string $action ('grant'|'revoke')
-     * @param array $permissions
-     * @param array $auditData
      * @return void
      */
-    public function auditPermissionChange(Role $role, $action, $permissions, $auditData = []): void
+    public function clearCache(): void
     {
-        Log::channel('permissions')->info("Permission {$action} for role '{$role->name}'", [
-            'role_id' => $role->id,
-            'action' => $action,
-            'permissions' => $permissions,
-            'user_id' => auth()?->user()?->id,
-            'timestamp' => now(),
-            'audit_data' => $auditData
-        ]);
+        $this->dependencyTreeCache = null;
+        $this->labelMapCache = null;
     }
 }

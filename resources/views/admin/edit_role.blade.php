@@ -245,7 +245,7 @@
                                                             <div class="dependency-list">
                                                                 <strong>Requires:</strong><br>
                                                                 @foreach($dependencies as $dep)
-                                                                    <span class="dependency-item" data-dependency="{{ $dep }}">✓ {{ $dep }}</span>
+                                                                    <span class="dependency-item" data-dependency="{{ $dep }}">✓ {{ $permissionLabels[$dep] ?? $dep }}</span>
                                                                 @endforeach
                                                             </div>
                                                             @endif
