@@ -89,217 +89,457 @@
 		  <!-- main Section -->
 		<div class="wrapper wrapper-content">
 			<div class="row animated fadeInRight">
+				<!-- Profile Card -->
 				<div class="col-md-4">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<h5>Profile Detail</h5>
-						</div>
-						<div>
-							<div class="ibox-content no-padding border-left-right">
-							  <center>
-								<img alt="image" class="img-responsive" src="{{ URL(($student->image_url == '')? 'img/avatar.jpg' : $student->image_url) }}">
-							  </center>
+					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100">
+						<!-- Profile Header with Gradient -->
+						<div class="tw-bg-gradient-to-br tw-from-blue-500 tw-to-indigo-600 tw-h-32"></div>
+						
+						<!-- Profile Image -->
+						<div class="tw-relative tw--mt-16 tw-mb-4">
+							<div class="tw-flex tw-justify-center">
+								<img alt="@{{ student.name }}" 
+									 class="tw-w-32 tw-h-32 tw-rounded-full tw-border-4 tw-border-white tw-shadow-xl tw-object-cover" 
+									 src="{{ URL(($student->image_url == '')? 'img/avatar.jpg' : $student->image_url) }}">
 							</div>
-							<div class="ibox-content profile-content">
-								<h4><strong>@{{ student.name }}</strong></h4>
-								<p><i class="fa fa-map-marker"></i> @{{ student.address }}</p>
-								<p v-if="student.active == false"><b>Date Of Leaving:</b> @{{  student.date_of_leaving }}</p>
-								<template v-if="student.active && allow_user_leave">
-									<hr>
-									<a href="#" v-on:dblclick="leavingfrm = !leavingfrm" data-toggle="tooltip" title="DoubleClick to Inactive"><b>Actvie</b></a>
-									<form v-show="leavingfrm" method="post" v-on:submit.prevent="formSubmit($event)" :action="URL+'/students/leave/'+student.id" class="form-horizontal">
+						</div>
+						
+						<!-- Profile Info -->
+						<div class="tw-px-6 tw-pb-6 tw-text-center">
+							<h3 class="tw-text-2xl tw-font-bold tw-text-gray-800 tw-mb-1">@{{ student.name }}</h3>
+							<p class="tw-text-sm tw-font-medium tw-text-indigo-600 tw-mb-2 tw-bg-indigo-50 tw-inline-block tw-px-4 tw-py-1 tw-rounded-full">
+								GR: @{{ student.gr_no }}
+							</p>
+							
+							<!-- Status Badge -->
+							<div class="tw-mb-3">
+								<span v-if="student.active" class="tw-inline-flex tw-items-center tw-gap-1 tw-px-3 tw-py-1 tw-bg-green-50 tw-text-green-700 tw-text-xs tw-font-semibold tw-rounded-full">
+									<i class="fa fa-check-circle"></i> Active
+								</span>
+								<span v-else class="tw-inline-flex tw-items-center tw-gap-1 tw-px-3 tw-py-1 tw-bg-red-50 tw-text-red-700 tw-text-xs tw-font-semibold tw-rounded-full">
+									<i class="fa fa-times-circle"></i> Inactive
+								</span>
+							</div>
+							
+							<p v-if="student.active == false" class="tw-text-sm tw-text-gray-600 tw-mb-4">
+								<b>Date Of Leaving:</b> @{{ student.date_of_leaving }}
+							</p>
+							
+							<!-- Quick Stats -->
+							<div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-mt-6 tw-pt-4 tw-border-t tw-border-gray-200">
+								<div class="tw-text-center">
+									<div class="tw-text-xs tw-text-gray-500 tw-uppercase tw-tracking-wide tw-mb-1">Class</div>
+									<div class="tw-text-sm tw-font-semibold tw-text-gray-800">@{{ student.std_class.name }} @{{ student.section.nick_name }}</div>
+								</div>
+								<div class="tw-text-center">
+									<div class="tw-text-xs tw-text-gray-500 tw-uppercase tw-tracking-wide tw-mb-1">Fee</div>
+									<div class="tw-text-sm tw-font-semibold tw-text-gray-800">@{{ student.net_amount }} /=</div>
+								</div>
+							</div>
+							
+							<!-- Contact Actions -->
+							<div class="tw-mt-6 tw-space-y-2">
+								<a v-if="student.email" :href="'mailto:' + student.email" 
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 tw-bg-indigo-50 hover:tw-bg-indigo-100 tw-text-indigo-600 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
+									<i class="fa fa-envelope"></i>
+									Send Email
+								</a>
+								<a v-if="student.phone" :href="'tel:' + student.phone" 
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 tw-bg-green-50 hover:tw-bg-green-100 tw-text-green-600 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
+									<i class="fa fa-phone"></i>
+									Call Now
+								</a>
+								<a :href="URL+'/guardians/profile/'+student.guardian.id"
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 tw-bg-purple-50 hover:tw-bg-purple-100 tw-text-purple-600 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
+									<i class="fa fa-users"></i>
+									View Guardian
+								</a>
+							</div>
+							
+							<!-- Active/Leave Status -->
+							<template v-if="student.active && allow_user_leave">
+								<div class="tw-mt-6 tw-pt-4 tw-border-t tw-border-gray-200">
+									<a href="#" v-on:dblclick="leavingfrm = !leavingfrm" 
+									   class="tw-text-sm tw-font-medium tw-text-gray-600 hover:tw-text-gray-800"
+									   data-toggle="tooltip" title="DoubleClick to Inactive">
+										<i class="fa fa-info-circle"></i> Double-click to mark inactive
+									</a>
+									<form v-show="leavingfrm" method="post" v-on:submit.prevent="formSubmit($event)" :action="URL+'/students/leave/'+student.id" class="tw-mt-4">
 										{{ csrf_field() }}
 										<input type="hidden" name="id" v-model="student.id">
-										<div class="alert alert-warning ">
-											<h4><span class="fa fa-exclamation-triangle"></span> Important </h4>
-											<p>
-												Once the Date of Leaving is set, the student becomes inactive and cannot be reactivated.
-												<br>
-												<b>To rejoin,</b> a new registration form is required.
-											</p>
-										</div>
-										<div class="form-group">
-											<div class="col-md-offset-1 col-md-10">
-												<span>Cause Of Leaving</span>
-												<textarea class="form-control" name="cause_of_leaving" rows="3" style="resize: none"></textarea>
+										<div class="tw-bg-yellow-50 tw-border tw-border-yellow-200 tw-rounded-lg tw-p-4 tw-mb-4">
+											<div class="tw-flex tw-gap-2 tw-mb-2">
+												<i class="fa fa-exclamation-triangle tw-text-yellow-600 tw-mt-1"></i>
+												<div>
+													<h4 class="tw-text-sm tw-font-bold tw-text-yellow-800 tw-mb-1">Important</h4>
+													<p class="tw-text-xs tw-text-yellow-700 tw-leading-relaxed">
+														Once the Date of Leaving is set, the student becomes inactive and cannot be reactivated.
+														<br><b>To rejoin,</b> a new registration form is required.
+													</p>
+												</div>
 											</div>
 										</div>
-										<div class="form-group">
-											<div class="col-md-offset-1 col-md-10">
-												<input type="text" name="date_of_leaving" v-model="student.date_of_leaving" autocomplete="off" placeholder="date of leaving" class="form-control" readonly="true">
-											</div>
+										<div class="tw-mb-4">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-700 tw-mb-2 tw-block">Cause Of Leaving</label>
+											<textarea class="form-control tw-text-sm" name="cause_of_leaving" rows="3" style="resize: none"></textarea>
 										</div>
-										<div v-if="student.date_of_leaving" class="form-group">
-											<div class="col-md-offset-2 col-md-10">
-												<button v-if="loading" class="btn btn-primary" disabled="true" type="submit"><span class="fa fa-pulse fa-spin fa-spinner"></span> Loading... </button>
-												<button v-else class="btn btn-primary" type="submit">{{ __("modules.buttons_save") }}</button>
-											</div>
+										<div class="tw-mb-4">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-700 tw-mb-2 tw-block">Date of Leaving</label>
+											<input type="text" name="date_of_leaving" v-model="student.date_of_leaving" autocomplete="off" placeholder="date of leaving" class="form-control tw-text-sm" readonly="true">
+										</div>
+										<div v-if="student.date_of_leaving" class="tw-mb-2">
+											<button v-if="loading" class="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-500 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium" disabled="true" type="submit">
+												<span class="fa fa-pulse fa-spin fa-spinner"></span> Loading...
+											</button>
+											<button v-else class="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors" type="submit">
+												{{ __("modules.buttons_save") }}
+											</button>
 										</div>
 									</form>
-								</template>
+								</div>
+							</template>
+						</div>
+					</div>
+
+					<!-- Siblings Card -->
+					<div v-if="siblings.length" class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100 tw-mt-4">
+						<div class="tw-bg-gradient-to-r tw-from-gray-50 tw-to-gray-100 tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+							<h5 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-flex tw-items-center tw-gap-2">
+								<i class="fa fa-users tw-text-indigo-600"></i>
+								Siblings
+							</h5>
+						</div>
+						<div class="tw-p-4">
+							<div class="tw-space-y-2">
+								<div v-for="(std, k) in siblings" :key="std.id" 
+									 class="tw-flex tw-items-center tw-gap-3 tw-p-3 tw-bg-gray-50 hover:tw-bg-gray-100 tw-rounded-lg tw-transition-colors">
+									<div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-indigo-100 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0">
+										<span class="tw-text-sm tw-font-bold tw-text-indigo-600">@{{ k + 1 }}</span>
+									</div>
+									<div class="tw-flex-1">
+										<a :href="'/students/profile/' + std.id" class="tw-text-sm tw-font-semibold tw-text-gray-800 hover:tw-text-indigo-600 tw-transition-colors">
+											@{{ std.name }}
+										</a>
+										<p class="tw-text-xs tw-text-gray-500">GR: @{{ std.gr_no }}</p>
+									</div>
+									<a :href="'/students/profile/' + std.id" class="tw-text-indigo-600 hover:tw-text-indigo-700">
+										<i class="fa fa-arrow-right"></i>
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<div v-if="siblings.length" class="ibox float-e-margins">
-						<div class="ibox-title">
-							<h5>Siblings</h5>
+					<!-- Certificates Card -->
+					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100 tw-mt-4">
+						<div class="tw-bg-gradient-to-r tw-from-gray-50 tw-to-gray-100 tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+							<h5 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-flex tw-items-center tw-gap-2">
+								<i class="fa fa-certificate tw-text-indigo-600"></i>
+								Certificates
+							</h5>
 						</div>
-						<div class="ibox-content">
-							<table class="table">
-								<thead>
-									<th>S.No</th>
-									<th>Gr No</th>
-									<th>{{ __("labels.name") }}</th>
-								</thead>
-								<tbody>
-									<tr v-for="(std, k) in siblings" :key="std.id">
-										<td><a :href="'/students/profile/' + std.id">@{{ k + 1 }}</a></td>
-										<td><a :href="'/students/profile/' + std.id">@{{ std.gr_no }}</a></td>
-										<td><a :href="'/students/profile/' + std.id">@{{ std.name }}</a></td>
-									</tr>
-								</tbody>
-								
-							</table>
-						</div>
-					</div>
-
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<h5>Certificates</h5>
-						</div>
-						<div class="ibox-content">
-							<table class="table" v-if="student.certificates.length">
-								<thead>
-									<tr>
-										<th>Title</th>
-										<th>{{ __("labels.action") }}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="certificate in student.certificates">
-										<td>@{{ certificate.title }}</td>
-										<td>
-											@can('students.certificate.create')
-											<a :href="URL+'/students/certificate/update?certificate_id='+certificate.id" title="view" data-toggle="tooltip"><span class="fa fa-file-pdf-o"></span></a>
-											@endcan
-										</td>
-									</tr>
-								</tbody>
-							</table>
+						<div class="tw-p-4">
+							<div v-if="student.certificates.length" class="tw-space-y-2 tw-mb-4">
+								<div v-for="certificate in student.certificates" 
+									 class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-gray-50 tw-rounded-lg">
+									<span class="tw-text-sm tw-font-medium tw-text-gray-800">@{{ certificate.title }}</span>
+									@can('students.certificate.create')
+									<a :href="URL+'/students/certificate/update?certificate_id='+certificate.id" 
+									   class="tw-text-red-600 hover:tw-text-red-700 tw-transition-colors"
+									   title="view" data-toggle="tooltip">
+										<i class="fa fa-file-pdf-o tw-text-lg"></i>
+									</a>
+									@endcan
+								</div>
+							</div>
 							@can('students.certificate.create')
 							<form :action="URL+'/students/certificate/new'" method="get">
 								<input type="hidden" name="student_id" v-model="student.id">
-								<button class="btn btn-primary btn-block">Create Certificate</button>
+								<button class="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors">
+									<i class="fa fa-plus-circle"></i> Create Certificate
+								</button>
 							</form>
 							@endcan
-						</div>
-					</div>
-
-					<div v-if="allow_user_certificate" class="ibox float-e-margins hidden">
-						<div class="ibox-title">
-							<h5>Certificates</h5>
-						</div>
-						<div class="ibox-content profile-content">
-							<form :action="URL+'/students/certificate/transfercertificate'" method="post" target="_blank">
-								{{ csrf_field() }}
-								<input type="hidden" name="id" :value="student.id">
-								<button type="submit" class="btn btn-primary btn-block"><span class="fa fa-file-pdf-o"></span> Transfer Certificate</button>
-							</form>
 						</div>
 					</div>
 
 				</div>
+				
+				<!-- Details Card -->
 				<div class="col-md-8">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<h5>Details <a v-on:click.stop.prevent="print()" title="Profile Print" data-toggle="tooltip"><span class="fa fa-print"></span></a> </h5>
+					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100">
+						<!-- Header -->
+						<div class="tw-bg-gradient-to-r tw-from-gray-50 tw-to-gray-100 tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+							<div class="tw-flex tw-items-center tw-justify-between">
+								<h5 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-flex tw-items-center tw-gap-2">
+									<i class="fa fa-user-circle tw-text-indigo-600"></i>
+									Student Details
+								</h5>
+								<a v-on:click.stop.prevent="print()" 
+								   class="tw-px-4 tw-py-2 tw-bg-white tw-border tw-border-gray-300 hover:tw-bg-gray-50 tw-text-gray-700 tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors tw-cursor-pointer"
+								   title="Profile Print" data-toggle="tooltip">
+									<i class="fa fa-print"></i> Print
+								</a>
+							</div>
 						</div>
-						<div class="ibox-content">
-
-							<table class="table table-hover">
-								<tbody>
-									<tr>
-										<th>Name :</th>
-										<td>@{{ student.name }}</td>
-									</tr>
-									<tr>
-										<th>Father Name :</th>
-										<td>@{{ student.father_name }}</td>
-									</tr>
-									<tr>
-										<th>Religion :</th>
-										<td>@{{ student.religion }}</td>
-									</tr>
-									<tr>
-										<th>GR NO :</th>
-										<td>@{{ student.gr_no }}</td>
-									</tr>
-									<tr>
-										<th>Gender :</th>
-										<td>@{{ student.gender }}</td>
-									</tr>
-									<tr>
-										<th>Date Of Birth :</th>
-										<td>@{{ student.date_of_birth }}</td>
-									</tr>
-									<tr>
-										<th>Date Of Admission :</th>
-										<td>@{{ student.date_of_admission }}</td>
-									</tr>
-									<tr>
-										<th>Date Of Enrolled :</th>
-										<td>@{{ student.date_of_enrolled }}</td>
-									</tr>
-									<tr>
-										<th>Place Of Birth :</th>
-										<td>@{{ student.place_of_birth }}</td>
-									</tr>
-									<tr>
-										<th>Last Attend School :</th>
-										<td>@{{ student.last_school }}</td>
-									</tr>
-									<tr>
-										<th>Seeking Class :</th>
-										<td>@{{ student.seeking_class }}</td>
-									</tr>
-									<tr>
-										<th>Receipt No :</th>
-										<td>@{{ student.receipt_no }}</td>
-									</tr>
-									<tr>
-										<th>Class :</th>
-										<td>@{{ student.std_class.name }} @{{ student.section.nick_name }}</td>
-									</tr>
-									<tr>
-										<th>Parent :</th>
-										<td>
-										  <a :href="URL+'/guardians/profile/'+student.guardian.id">
-											@{{ student.guardian.name }}. ( @{{ student.guardian_relation }})
-										  </a>
-										</td>
-									</tr>
-									<tr>
-										<th>Email :</th>
-										<td>@{{ student.email }}</td>
-									</tr>
-									<tr>
-										<th>Contact :</th>
-										<td>@{{ student.phone }}</td>
-									</tr>
-									<tr>
-										<th>Fee :</th>
-										<td>@{{ student.net_amount }} /=</td>
-									</tr>
-								</tbody>
-							</table>
+						
+						<!-- Details Grid -->
+						<div class="tw-p-6">
+							<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+								
+								<!-- Full Name -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-blue-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-blue-100 tw-transition-colors">
+											<i class="fa fa-user tw-text-blue-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Full Name</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.name }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Father Name -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-cyan-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-cyan-100 tw-transition-colors">
+											<i class="fa fa-male tw-text-cyan-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Father Name</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.father_name }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Religion -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-teal-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-teal-100 tw-transition-colors">
+											<i class="fa fa-book tw-text-teal-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Religion</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.religion }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- GR NO -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-indigo-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-indigo-100 tw-transition-colors">
+											<i class="fa fa-id-card tw-text-indigo-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">GR NO</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.gr_no }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Gender -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-purple-100 tw-transition-colors">
+											<i class="fa fa-venus-mars tw-text-purple-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Gender</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.gender }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Date of Birth -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-pink-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-pink-100 tw-transition-colors">
+											<i class="fa fa-birthday-cake tw-text-pink-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Date Of Birth</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.date_of_birth }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Date of Admission -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-green-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-green-100 tw-transition-colors">
+											<i class="fa fa-calendar-check-o tw-text-green-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Date Of Admission</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.date_of_admission }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Date of Enrolled -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-lime-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-lime-100 tw-transition-colors">
+											<i class="fa fa-calendar-plus-o tw-text-lime-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Date Of Enrolled</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.date_of_enrolled }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Place of Birth -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-orange-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-orange-100 tw-transition-colors">
+											<i class="fa fa-map-marker tw-text-orange-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Place Of Birth</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.place_of_birth }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Last School -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-amber-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-amber-100 tw-transition-colors">
+											<i class="fa fa-university tw-text-amber-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Last Attend School</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.last_school || 'N/A' }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Seeking Class -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-sky-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-sky-100 tw-transition-colors">
+											<i class="fa fa-level-up tw-text-sky-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Seeking Class</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.seeking_class }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Receipt No -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-violet-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-violet-100 tw-transition-colors">
+											<i class="fa fa-file-text tw-text-violet-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Receipt No</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.receipt_no }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Class -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-blue-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-blue-100 tw-transition-colors">
+											<i class="fa fa-graduation-cap tw-text-blue-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Class</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.std_class.name }} @{{ student.section.nick_name }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Guardian -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-purple-100 tw-transition-colors">
+											<i class="fa fa-users tw-text-purple-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Guardian</label>
+											<p class="tw-text-sm tw-font-medium tw-mt-1">
+												<a :href="URL+'/guardians/profile/'+student.guardian.id" class="tw-text-indigo-600 hover:tw-text-indigo-700 tw-transition-colors">
+													@{{ student.guardian.name }} (@{{ student.guardian_relation }})
+												</a>
+											</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Email -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-red-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-red-100 tw-transition-colors">
+											<i class="fa fa-envelope tw-text-red-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Email</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1 tw-break-all">@{{ student.email || 'Not provided' }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Contact -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-green-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-green-100 tw-transition-colors">
+											<i class="fa fa-phone tw-text-green-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Contact</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.phone }}</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Fee -->
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-emerald-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-emerald-100 tw-transition-colors">
+											<i class="fa fa-money tw-text-emerald-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Fee</label>
+											<p class="tw-text-sm tw-font-bold tw-text-emerald-600 tw-mt-1">@{{ student.net_amount }} /=</p>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							
+							<!-- Address - Full Width -->
+							<div class="tw-mt-6 tw-pt-6 tw-border-t tw-border-gray-200">
+								<div class="tw-group">
+									<div class="tw-flex tw-items-start tw-gap-3">
+										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-orange-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-orange-100 tw-transition-colors">
+											<i class="fa fa-map-marker tw-text-orange-600"></i>
+										</div>
+										<div class="tw-flex-1">
+											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Address</label>
+											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1 tw-leading-relaxed">@{{ student.address }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<!-- Action Button -->
 							@can('students.interview.update.create')
-							<a :href="URL+'/students/interview/'+student.id" class=" btn btn-primary btn-block"><span class="fa fa-podcast"></span> Parent Interview</a>
+							<div class="tw-mt-6">
+								<a :href="URL+'/students/interview/'+student.id" 
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-6 tw-py-3 tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors">
+									<i class="fa fa-podcast"></i> Parent Interview
+								</a>
+							</div>
 							@endcan
-
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
