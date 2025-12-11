@@ -4,7 +4,7 @@
         <label class="col-xs-6 col-md-6 col-lg-6 control-label">Current Session :</label>
         <div class="col-xs-6 col-md-6 col-lg-6">
         <select class="form-control" name="current_session">
-            @foreach(App\AcademicSession::UserAllowSession()->get() AS $session)
+            @foreach(App\Model\AcademicSession::UserAllowSession()->get() AS $session)
                 <option value="{{ $session->id }}">{{ $session->title }}</option>
             @endforeach
         </select>

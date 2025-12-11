@@ -1,7 +1,7 @@
 <?php
 namespace App\Observers;
 
-use App\ExamRemark;
+use App\Model\ExamRemark;
 use Auth;
 
 class ExamRemarkObserver {

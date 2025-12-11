@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 
-use App\Classe;
-use App\Student;
-use App\Teacher;
-use App\Employee;
-use App\Guardian;
-use App\Notification;
-use App\NotificationLog;
-use App\NotificationsSetting;
+use App\Model\Classe;
+use App\Model\Student;
+use App\Model\Teacher;
+use App\Model\Employee;
+use App\Model\Guardian;
+use App\Model\Notification;
+use App\Model\NotificationLog;
+use App\Model\NotificationsSetting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMsgJob;

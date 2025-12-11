@@ -7,22 +7,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use App\Item;
-use App\User;
-use App\StudentAttendance;
-use App\TeacherAttendance;
-use App\EmployeeAttendance;
-use App\Student;
-use App\Employee;
-use App\Teacher;
-use App\Guardian;
-use App\Book;
-use App\Classe;
-use App\Expense;
-use App\InvoiceMaster;
-use App\Vendor;
-use App\Voucher;
-use App\NoticeBoard;
+use App\Model\Item;
+use App\Model\User;
+use App\Model\StudentAttendance;
+use App\Model\TeacherAttendance;
+use App\Model\EmployeeAttendance;
+use App\Model\Student;
+use App\Model\Employee;
+use App\Model\Teacher;
+use App\Model\Guardian;
+use App\Model\Book;
+use App\Model\Classe;
+use App\Model\Expense;
+use App\Model\InvoiceMaster;
+use App\Model\Vendor;
+use App\Model\Voucher;
+use App\Model\NoticeBoard;
 
 class DashboardController extends Controller
 {

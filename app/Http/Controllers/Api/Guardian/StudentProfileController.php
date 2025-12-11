@@ -7,16 +7,16 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-use App\Guardian;
-use App\Student;
-use App\AcademicSession;
-use App\AcademicSessionHistory;
-use App\StudentAttendance;
-use App\AdditionalFee;
-use App\InvoiceMaster;
-use App\Exam;
-use App\ExamRemark;
-use App\Grade;
+use App\Model\Guardian;
+use App\Model\Student;
+use App\Model\AcademicSession;
+use App\Model\AcademicSessionHistory;
+use App\Model\StudentAttendance;
+use App\Model\AdditionalFee;
+use App\Model\InvoiceMaster;
+use App\Model\Exam;
+use App\Model\ExamRemark;
+use App\Model\Grade;
 
 class StudentProfileController extends Controller
 {

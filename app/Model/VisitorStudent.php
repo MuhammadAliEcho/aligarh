@@ -41,11 +41,11 @@ class VisitorStudent extends Model
 
     public function StdClass()
     {
-        return $this->hasOne('App\Classe', 'id', 'class_id');
+        return $this->hasOne('App\Model\Classe', 'id', 'class_id');
     }
 
     public function session()
     {
-        return $this->belongsTo('App\Session', 'session_id');
+        return $this->belongsTo('App\Model\Session', 'session_id');
     }
 }

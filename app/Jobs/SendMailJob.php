@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\NotificationLog;
+use App\Model\NotificationLog;
 
 class SendMailJob implements ShouldQueue
 {

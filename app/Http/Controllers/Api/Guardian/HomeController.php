@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 //use Illuminate\Support\Facades\Auth;
-use App\Guardian;
+use App\Model\Guardian;
 
 class HomeController extends Controller
 {

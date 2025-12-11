@@ -177,7 +177,7 @@
                                           <label class="col-md-2 control-label">Allow Session</label>
                                           <div class="col-md-6">
                                             <select class="select2 form-control" multiple="multiple" name="allow_session[]" style="width: 100%">
-                                            @foreach(App\AcademicSession::UserAllowSession()->get() AS $session)
+                                            @foreach(App\Model\AcademicSession::UserAllowSession()->get() AS $session)
                                                 <option value="{{ $session->id }}">{{ $session->title }}</option>
                                             @endforeach
                                             </select>

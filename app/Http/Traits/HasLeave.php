@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Traits;
 
-use App\AttendanceLeave;
+use App\Model\AttendanceLeave;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasLeave

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Guardian;
 
 use Carbon\Carbon;
-use App\StudentAttendance;
+use App\Model\StudentAttendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

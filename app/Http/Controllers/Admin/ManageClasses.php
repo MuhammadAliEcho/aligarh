@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Teacher;
-use App\Section;
-use App\Classe;
+use App\Model\Teacher;
+use App\Model\Section;
+use App\Model\Classe;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Illuminate\Support\Str;

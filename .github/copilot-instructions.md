@@ -23,7 +23,7 @@
 - **Example**: `Student::query()` in tenant context only returns that tenant's students
 
 ### 2. User & Permission System
-- **Base class**: `App\User` extends Laravel Authenticatable with `HasRoles` (Spatie Permission)
+- **Base class**: `App\Model\User` extends Laravel Authenticatable with `HasRoles` (Spatie Permission)
 - **User types**: 'employee', 'teacher', 'student', 'guardian' - stored in `user_type` column
 - **Permissions**: Spatie/Laravel-Permission v6.20 via `route_has_permission` middleware
 - **Route-Based Permissions**: Each permission is based on a route name and each route has a name assigned for permission

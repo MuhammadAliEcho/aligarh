@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Role;
-use App\User;
+use App\Model\Role;
+use App\Model\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;

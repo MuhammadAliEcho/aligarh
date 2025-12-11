@@ -10,12 +10,12 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 
-use App\Student;
-use App\Guardian;
-use App\Teacher;
-use App\Classe;
-use App\Employee;
-use App\SmsLog;
+use App\Model\Student;
+use App\Model\Guardian;
+use App\Model\Teacher;
+use App\Model\Classe;
+use App\Model\Employee;
+use App\Model\SmsLog;
 
 use Validator;
 use Auth;

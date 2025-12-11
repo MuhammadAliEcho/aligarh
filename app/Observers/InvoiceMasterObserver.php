@@ -1,7 +1,7 @@
 <?php
 namespace App\Observers;
 
-use App\InvoiceMaster;
+use App\Model\InvoiceMaster;
 use Auth;
 
 class InvoiceMasterObserver {

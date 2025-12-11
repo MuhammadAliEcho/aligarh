@@ -9,12 +9,12 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-use App\Student;
-use App\StudentAttendance;
-use App\Teacher;
-use App\TeacherAttendance;
-use App\Employee;
-use App\EmployeeAttendance;
+use App\Model\Student;
+use App\Model\StudentAttendance;
+use App\Model\Teacher;
+use App\Model\TeacherAttendance;
+use App\Model\Employee;
+use App\Model\EmployeeAttendance;
 
 class AttendanceController extends Controller
 {

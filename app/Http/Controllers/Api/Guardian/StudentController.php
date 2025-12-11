@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Guardian;
 
-use App\Student;
-use App\StudentAttendance;
+use App\Model\Student;
+use App\Model\StudentAttendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;

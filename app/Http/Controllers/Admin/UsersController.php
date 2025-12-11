@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Employee;
-use App\Role;
-use App\Teacher;
-use App\User;
+use App\Model\Employee;
+use App\Model\Role;
+use App\Model\Teacher;
+use App\Model\User;
 
 class UsersController extends Controller
 {

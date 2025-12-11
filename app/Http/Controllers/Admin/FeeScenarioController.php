@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Larapack\ConfigWriter\Repository as ConfigWriter;
 
-use App\Student;
-use App\AdditionalFee;
+use App\Model\Student;
+use App\Model\AdditionalFee;
 
 class FeeScenarioController extends Controller
 {

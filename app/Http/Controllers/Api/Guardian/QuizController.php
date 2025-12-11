@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Guardian;
 
-use App\Student;
+use App\Model\Student;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

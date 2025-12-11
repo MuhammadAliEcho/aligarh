@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\AcademicSession;
-use App\Classe;
-use App\Student;
+use App\Model\AcademicSession;
+use App\Model\Classe;
+use App\Model\Student;
 use Auth;
-use App\AcademicSessionHistory;
+use App\Model\AcademicSessionHistory;
 
 class StudentMigrationsController extends Controller
 {

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Guardian;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\InvoiceMaster;
+use App\Model\InvoiceMaster;
 use Illuminate\Support\Facades\Validator;
 
 class StudentFeeController extends Controller

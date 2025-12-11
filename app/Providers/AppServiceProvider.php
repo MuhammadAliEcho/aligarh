@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 
-use App\StudentResult;
-use App\ExamRemark;
-use App\StudentAttendance;
-use App\InvoiceMaster;
+use App\Model\StudentResult;
+use App\Model\ExamRemark;
+use App\Model\StudentAttendance;
+use App\Model\InvoiceMaster;
 
 use App\Observers\StudentResultObserver;
 use App\Observers\ExamRemarkObserver;

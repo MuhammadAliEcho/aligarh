@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Jobs\SendMailJob;
 use App\Jobs\SendSmsJob;
 use App\Jobs\SendWhatsAppJob;
-use App\NotificationsSetting;
+use App\Model\NotificationsSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

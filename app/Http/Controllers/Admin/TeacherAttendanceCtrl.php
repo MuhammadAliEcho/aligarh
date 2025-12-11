@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Teacher;
-use App\TeacherAttendance;
-use App\Classe;
-use App\Section;
+use App\Model\Teacher;
+use App\Model\TeacherAttendance;
+use App\Model\Classe;
+use App\Model\Section;
 use DB;
 use Carbon\Carbon;
 use Auth;

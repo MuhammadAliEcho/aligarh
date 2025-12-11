@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Classe;
-use App\AcademicSession;
+use App\Model\Classe;
+use App\Model\AcademicSession;
 use App\Helpers\PrintableViewHelper;
 use Auth;
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Classe;
-use App\Section;
+use App\Model\Classe;
+use App\Model\Section;
 use Illuminate\Http\Request;
 use App\Model\VisitorStudent;
 use App\Http\Controllers\Controller;

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Teacher;
-use App\Classe;
-use App\Section;
-use App\Routine;
-use App\Subject;
+use App\Model\Teacher;
+use App\Model\Classe;
+use App\Model\Section;
+use App\Model\Routine;
+use App\Model\Subject;
 use DB;
 use Auth;
 use App\Http\Controllers\Controller;

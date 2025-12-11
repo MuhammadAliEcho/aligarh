@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\SubjectResultAttribute;
+use App\Model\SubjectResultAttribute;
 use Illuminate\Http\Request;
-use App\AcademicSessionHistory;
-use App\ExamRemark;
-use App\Classe;
-use App\Exam;
-use App\AcademicSession;
-use App\Grade;
-use App\Subject;
-use App\Student;
-use App\StudentAttendance;
+use App\Model\AcademicSessionHistory;
+use App\Model\ExamRemark;
+use App\Model\Classe;
+use App\Model\Exam;
+use App\Model\AcademicSession;
+use App\Model\Grade;
+use App\Model\Subject;
+use App\Model\Student;
+use App\Model\StudentAttendance;
 use App\Helpers\PrintableViewHelper;
 use Auth;
 use Validator;

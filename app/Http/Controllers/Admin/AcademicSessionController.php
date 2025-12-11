@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
-use App\AcademicSession;
+use App\Model\AcademicSession;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 

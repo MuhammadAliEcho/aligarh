@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\TMS;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Model\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 

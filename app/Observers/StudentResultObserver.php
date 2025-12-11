@@ -1,7 +1,7 @@
 <?php
 namespace App\Observers;
 
-use App\StudentResult;
+use App\Model\StudentResult;
 use Auth;
 
 class StudentResultObserver {

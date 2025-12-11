@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\NoticeBoard;
-use App\SmsLog;
-use App\BulkSms;
+use App\Model\NoticeBoard;
+use App\Model\SmsLog;
+use App\Model\BulkSms;
 use Auth;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;

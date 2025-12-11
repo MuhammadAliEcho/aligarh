@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Guardian;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
-use App\Guardian;
+use App\Model\User;
+use App\Model\Guardian;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 

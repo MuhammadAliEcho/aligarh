@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Classe;
-use App\Section;
-use App\Quiz;
+use App\Model\Classe;
+use App\Model\Section;
+use App\Model\Quiz;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Teacher;
+use App\Model\Teacher;
 use Illuminate\Support\Facades\Validator;
 
 

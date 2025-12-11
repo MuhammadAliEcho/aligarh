@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api\Guardian;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use App\Student;
-use App\Exam;
-use App\Grade;
-use App\StudentResult;
+use App\Model\Student;
+use App\Model\Exam;
+use App\Model\Grade;
+use App\Model\StudentResult;
 use Illuminate\Support\Facades\Validator;
 
 class ExamController extends Controller

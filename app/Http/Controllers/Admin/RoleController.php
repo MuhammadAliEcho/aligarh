@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Role;
+use App\Model\Role;
 use App\Services\PermissionDependencyService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;

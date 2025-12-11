@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Teacher;
-use App\Classe;
-use App\Section;
+use App\Model\Teacher;
+use App\Model\Classe;
+use App\Model\Section;
 use DB;
 use Auth;
 use App\Http\Controllers\Controller;

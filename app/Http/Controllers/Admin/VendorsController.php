@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Vendor;
+use App\Model\Vendor;
 use Auth;
 use App\Http\Controllers\Controller;
 

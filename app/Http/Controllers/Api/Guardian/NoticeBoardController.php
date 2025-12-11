@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
-use App\NoticeBoard;
+use App\Model\NoticeBoard;
 
 class NoticeBoardController extends Controller
 {

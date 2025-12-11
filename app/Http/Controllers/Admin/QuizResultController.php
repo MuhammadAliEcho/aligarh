@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\QuizResult;
-use App\Quiz;
-use App\Student;
+use App\Model\QuizResult;
+use App\Model\Quiz;
+use App\Model\Student;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;

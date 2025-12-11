@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Employee;
-use App\EmployeeAttendance;
+use App\Model\Employee;
+use App\Model\EmployeeAttendance;
 use DB;
 use Carbon\Carbon;
 use Auth;

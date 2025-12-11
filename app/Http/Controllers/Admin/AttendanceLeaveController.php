@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Classe;
-use App\Section;
-use App\Student;
-use App\Teacher;
-use App\Employee;
+use App\Model\Classe;
+use App\Model\Section;
+use App\Model\Student;
+use App\Model\Teacher;
+use App\Model\Employee;
 use Carbon\Carbon;
-use App\AttendanceLeave;
+use App\Model\AttendanceLeave;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;

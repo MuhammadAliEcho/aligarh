@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
-use App\Routine;
-use App\Classe;
+use App\Model\Routine;
+use App\Model\Classe;
 
 class RoutineController extends Controller
 {

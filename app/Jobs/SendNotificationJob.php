@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Notification;
-use App\User;
+use App\Model\Notification;
+use App\Model\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
