@@ -4,6 +4,62 @@
 
 @section('head')
     <!-- HEAD -->
+	<style type="text/css">
+		/* Gradient Header */
+		.gradient-header {
+			background: linear-gradient(135deg, #009486 0%, #1ab394 100%);
+		}
+
+		/* Hover effect for cards */
+		.profile-card-hover:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15) !important;
+		}
+
+		.detail-item-hover:hover {
+			background: rgba(26, 179, 148, 0.05) !important;
+			border-color: #1ab394 !important;
+		}
+
+		/* Detail Item Styling */
+		.detail-item {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.detail-content {
+			display: flex;
+			align-items: flex-start;
+			gap: 12px;
+		}
+
+		.detail-icon {
+			width: 40px;
+			height: 40px;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+			background: rgba(26, 179, 148, 0.1);
+		}
+
+		.detail-label {
+			font-size: 12px;
+			font-weight: 600;
+			color: #1ab394;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			margin-bottom: 4px;
+		}
+
+		.detail-value {
+			font-size: 14px;
+			font-weight: 500;
+			color: #333333;
+			margin: 0;
+		}
+	</style>
 @endsection
 
 @section('content')
@@ -42,10 +98,10 @@
             <div class="row">
                 <!-- Profile Card -->
                 <div class="col-md-4">
-                    <div class="tw-bg-white tw-rounded-2xl tw-shadow-lg tw-overflow-hidden tw-transition-all tw-duration-300 hover:tw-shadow-2xl">
+                    <div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-transition-all tw-duration-300 hover:tw-shadow-2xl profile-card-hover">
                         <!-- Gradient Header -->
 
-                        <div class="tw-bg-gradient-to-br tw-from-purple-500 tw-to-indigo-600 tw-h-32"></div>
+                        <div class="gradient-header tw-h-32"></div>
                         
                         <!-- Profile Image -->
                         <div class="tw-relative tw--mt-16 tw-mb-4">
@@ -60,13 +116,13 @@
                         <div class="tw-px-6 tw-pb-6 tw-text-center">
                             <h3 class="tw-text-2xl tw-font-bold tw-text-gray-800 tw-mb-2">{{ $visitorStudents->name }}</h3>
                             <p class="tw-text-gray-600 tw-flex tw-items-center tw-justify-center tw-gap-2">
-                                <i class="fa fa-map-marker tw-text-purple-500"></i>
+                                <i class="fa fa-map-marker text-primary"></i>
                                 <span>{{ $visitorStudents->address }}</span>
                             </p>
                             
                             <!-- Status Badge -->
                             <div class="tw-mt-4">
-                                <span class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-rounded-full tw-text-sm tw-font-semibold tw-bg-purple-100 tw-text-purple-800">
+                                <span class="tw-inline-flex tw-items-center tw-px-4 tw-py-2 tw-rounded-full tw-text-sm tw-font-semibold bg-light text-primary">
                                     <i class="fa fa-eye tw-mr-2"></i>
                                     Visitor
                                 </span>
@@ -77,15 +133,15 @@
 
                 <!-- Details Card -->
                 <div class="col-md-8">
-                    <div class="tw-bg-white tw-rounded-2xl tw-shadow-lg tw-overflow-hidden">
+                    <div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden">
                         <!-- Card Header -->
-                        <div class="tw-bg-gradient-to-r tw-from-purple-500 tw-to-indigo-600 tw-px-6 tw-py-4 tw-flex tw-justify-between tw-items-center">
+                        <div class="gradient-header tw-px-6 tw-py-4 tw-flex tw-justify-between tw-items-center">
                             <h3 class="tw-text-xl tw-font-bold tw-text-white tw-flex tw-items-center tw-gap-2">
                                 <i class="fa fa-info-circle"></i>
                                 Visitor Details
                             </h3>
                             <button @click="printForm()" 
-                                    class="tw-bg-white tw-text-purple-600 tw-px-4 tw-py-2 tw-rounded-lg tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-transition-all tw-duration-200 hover:tw-bg-purple-50 hover:tw-shadow-md"
+                                    class="tw-bg-white text-primary tw-px-4 tw-py-2 tw-rounded-lg tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-transition-all tw-duration-200 hover:bg-light hover:tw-shadow-md"
                                     title="Print Profile">
                                 <i class="fa fa-print"></i>
                                 Print
@@ -95,11 +151,12 @@
                         <!-- Details Grid -->
                         <div class="tw-p-6">
                             <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+
                                 <!-- Name -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-purple-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-user tw-text-purple-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-user tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -109,10 +166,10 @@
                                 </div>
 
                                 <!-- Father Name -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-indigo-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-indigo-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-male tw-text-indigo-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-male tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -122,10 +179,10 @@
                                 </div>
 
                                 <!-- Current Class -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-green-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-green-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-graduation-cap tw-text-green-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-graduation-cap tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -135,10 +192,10 @@
                                 </div>
 
                                 <!-- Seeking Class -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-yellow-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-yellow-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-bullseye tw-text-yellow-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-bullseye tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -148,10 +205,10 @@
                                 </div>
 
                                 <!-- Date of Birth -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-blue-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-blue-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-birthday-cake tw-text-blue-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-birthday-cake tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -161,10 +218,10 @@
                                 </div>
 
                                 <!-- Place of Birth -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-purple-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-map-marker tw-text-purple-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-map-marker tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -174,10 +231,10 @@
                                 </div>
 
                                 <!-- Last School -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-indigo-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-indigo-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-university tw-text-indigo-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-university tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -187,10 +244,10 @@
                                 </div>
 
                                 <!-- Religion -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-green-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-green-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-book tw-text-green-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-book tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -200,10 +257,10 @@
                                 </div>
 
                                 <!-- Gender -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-pink-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-pink-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-venus-mars tw-text-pink-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-venus-mars tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -213,10 +270,10 @@
                                 </div>
 
                                 <!-- Email -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-blue-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-blue-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-envelope tw-text-blue-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-envelope tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -226,10 +283,10 @@
                                 </div>
 
                                 <!-- Contact No -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-purple-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-phone tw-text-purple-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-phone tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -239,10 +296,10 @@
                                 </div>
 
                                 <!-- Date of Visiting -->
-                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-yellow-50 hover:tw-shadow-md">
+                                <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                     <div class="tw-flex-shrink-0">
-                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-yellow-100 tw-flex tw-items-center tw-justify-center">
-                                            <i class="fa fa-calendar tw-text-yellow-600"></i>
+                                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                            <i class="fa fa-calendar tw-text-gray-500"></i>
                                         </div>
                                     </div>
                                     <div class="tw-flex-1 tw-min-w-0">
@@ -253,10 +310,10 @@
                             </div>
 
                             <!-- Address - Full Width -->
-                            <div class="tw-mt-4 tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-indigo-50 hover:tw-shadow-md">
+                            <div class="tw-mt-4 tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                 <div class="tw-flex-shrink-0">
-                                    <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-indigo-100 tw-flex tw-items-center tw-justify-center">
-                                        <i class="fa fa-home tw-text-indigo-600"></i>
+                                    <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                        <i class="fa fa-home tw-text-gray-500"></i>
                                     </div>
                                 </div>
                                 <div class="tw-flex-1 tw-min-w-0">
@@ -266,10 +323,10 @@
                             </div>
 
                             <!-- Remarks - Full Width -->
-                            <div v-if="student.remarks" class="tw-mt-4 tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-amber-50 hover:tw-shadow-md">
+                            <div v-if="student.remarks" class="tw-mt-4 tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 tw-transition-all tw-duration-200 hover:tw-bg-gray-100 hover:tw-shadow-md">
                                 <div class="tw-flex-shrink-0">
-                                    <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-amber-100 tw-flex tw-items-center tw-justify-center">
-                                        <i class="fa fa-comment tw-text-amber-600"></i>
+                                    <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+                                        <i class="fa fa-comment tw-text-gray-500"></i>
                                     </div>
                                 </div>
                                 <div class="tw-flex-1 tw-min-w-0">

@@ -4,9 +4,64 @@
 
   @section('head')
   <!-- HEAD -->
-		<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+	<link href="{{ asset('src/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
 
 	<style type="text/css">
+		/* Gradient Header */
+		.gradient-header {
+			background: linear-gradient(135deg, #009486 0%, #1ab394 100%);
+		}
+
+		/* Hover effect for cards */
+		.profile-card-hover:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15) !important;
+		}
+
+		.detail-item-hover:hover {
+			background: rgba(26, 179, 148, 0.05) !important;
+			border-color: #1ab394 !important;
+		}
+
+		/* Detail Item Styling */
+		.detail-item {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.detail-content {
+			display: flex;
+			align-items: flex-start;
+			gap: 12px;
+		}
+
+		.detail-icon {
+			width: 40px;
+			height: 40px;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+			background: rgba(26, 179, 148, 0.1);
+		}
+
+		.detail-label {
+			font-size: 12px;
+			font-weight: 600;
+			color: #1ab394;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			margin-bottom: 4px;
+		}
+
+		.detail-value {
+			font-size: 14px;
+			font-weight: 500;
+			color: #333333;
+			margin: 0;
+		}
+
 		@media print{
 			body {
 				padding: 0px 10px;
@@ -91,9 +146,9 @@
 			<div class="row animated fadeInRight">
 				<!-- Profile Card -->
 				<div class="col-md-4">
-					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100">
+					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100 profile-card-hover">
 						<!-- Profile Header with Gradient -->
-						<div class="tw-bg-gradient-to-br tw-from-blue-500 tw-to-indigo-600 tw-h-32"></div>
+						<div class="gradient-header tw-h-32"></div>
 						
 						<!-- Profile Image -->
 						<div class="tw-relative tw--mt-16 tw-mb-4">
@@ -107,7 +162,7 @@
 						<!-- Profile Info -->
 						<div class="tw-px-6 tw-pb-6 tw-text-center">
 							<h3 class="tw-text-2xl tw-font-bold tw-text-gray-800 tw-mb-1">@{{ student.name }}</h3>
-							<p class="tw-text-sm tw-font-medium tw-text-indigo-600 tw-mb-2 tw-bg-indigo-50 tw-inline-block tw-px-4 tw-py-1 tw-rounded-full">
+							<p class="tw-text-sm tw-font-medium text-primary tw-mb-2 bg-light tw-inline-block tw-px-4 tw-py-1 tw-rounded-full">
 								GR: @{{ student.gr_no }}
 							</p>
 							
@@ -140,17 +195,17 @@
 							<!-- Contact Actions -->
 							<div class="tw-mt-6 tw-space-y-2">
 								<a v-if="student.email" :href="'mailto:' + student.email" 
-								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 tw-bg-indigo-50 hover:tw-bg-indigo-100 tw-text-indigo-600 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 bg-light hover:bg-light text-primary tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
 									<i class="fa fa-envelope"></i>
 									Send Email
 								</a>
 								<a v-if="student.phone" :href="'tel:' + student.phone" 
-								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 tw-bg-green-50 hover:tw-bg-green-100 tw-text-green-600 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 bg-light hover:bg-light text-primary tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
 									<i class="fa fa-phone"></i>
 									Call Now
 								</a>
 								<a :href="URL+'/guardians/profile/'+student.guardian.id"
-								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 tw-bg-purple-50 hover:tw-bg-purple-100 tw-text-purple-600 tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 bg-light hover:bg-light text-primary tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
 									<i class="fa fa-users"></i>
 									View Guardian
 								</a>
@@ -188,10 +243,10 @@
 											<input type="text" name="date_of_leaving" v-model="student.date_of_leaving" autocomplete="off" placeholder="date of leaving" class="form-control tw-text-sm" readonly="true">
 										</div>
 										<div v-if="student.date_of_leaving" class="tw-mb-2">
-											<button v-if="loading" class="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-500 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium" disabled="true" type="submit">
+											<button v-if="loading" class="tw-w-full tw-px-4 tw-py-2 bg-light0 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium" disabled="true" type="submit">
 												<span class="fa fa-pulse fa-spin fa-spinner"></span> Loading...
 											</button>
-											<button v-else class="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors" type="submit">
+											<button v-else class="tw-w-full tw-px-4 tw-py-2 tw-bg-teal-600 hover:tw-bg-teal-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors" type="submit">
 												{{ __("modules.buttons_save") }}
 											</button>
 										</div>
@@ -203,9 +258,9 @@
 
 					<!-- Siblings Card -->
 					<div v-if="siblings.length" class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100 tw-mt-4">
-						<div class="tw-bg-gradient-to-r tw-from-gray-50 tw-to-gray-100 tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
-							<h5 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-flex tw-items-center tw-gap-2">
-								<i class="fa fa-users tw-text-indigo-600"></i>
+						<div class="gradient-header tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+							<h5 class="tw-text-lg tw-font-bold tw-text-white tw-flex tw-items-center tw-gap-2">
+								<i class="fa fa-users text-primary"></i>
 								Siblings
 							</h5>
 						</div>
@@ -213,16 +268,16 @@
 							<div class="tw-space-y-2">
 								<div v-for="(std, k) in siblings" :key="std.id" 
 									 class="tw-flex tw-items-center tw-gap-3 tw-p-3 tw-bg-gray-50 hover:tw-bg-gray-100 tw-rounded-lg tw-transition-colors">
-									<div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-indigo-100 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0">
-										<span class="tw-text-sm tw-font-bold tw-text-indigo-600">@{{ k + 1 }}</span>
+									<div class="tw-w-8 tw-h-8 tw-rounded-full bg-light tw-flex tw-items-center tw-justify-center tw-flex-shrink-0">
+										<span class="tw-text-sm tw-font-bold text-primary">@{{ k + 1 }}</span>
 									</div>
 									<div class="tw-flex-1">
-										<a :href="'/students/profile/' + std.id" class="tw-text-sm tw-font-semibold tw-text-gray-800 hover:tw-text-indigo-600 tw-transition-colors">
+										<a :href="'/students/profile/' + std.id" class="tw-text-sm tw-font-semibold tw-text-gray-800 hover:text-primary tw-transition-colors">
 											@{{ std.name }}
 										</a>
 										<p class="tw-text-xs tw-text-gray-500">GR: @{{ std.gr_no }}</p>
 									</div>
-									<a :href="'/students/profile/' + std.id" class="tw-text-indigo-600 hover:tw-text-indigo-700">
+									<a :href="'/students/profile/' + std.id" class="text-primary hover:tw-text-teal-700">
 										<i class="fa fa-arrow-right"></i>
 									</a>
 								</div>
@@ -232,9 +287,9 @@
 
 					<!-- Certificates Card -->
 					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100 tw-mt-4">
-						<div class="tw-bg-gradient-to-r tw-from-gray-50 tw-to-gray-100 tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
-							<h5 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-flex tw-items-center tw-gap-2">
-								<i class="fa fa-certificate tw-text-indigo-600"></i>
+						<div class="gradient-header tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+							<h5 class="tw-text-lg tw-font-bold tw-text-white tw-flex tw-items-center tw-gap-2">
+								<i class="fa fa-certificate text-primary"></i>
 								Certificates
 							</h5>
 						</div>
@@ -255,7 +310,7 @@
 							@can('students.certificate.create')
 							<form :action="URL+'/students/certificate/new'" method="get">
 								<input type="hidden" name="student_id" v-model="student.id">
-								<button class="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors">
+								<button class="tw-w-full btn btn-primary" type="submit">
 									<i class="fa fa-plus-circle"></i> Create Certificate
 								</button>
 							</form>
@@ -269,10 +324,10 @@
 				<div class="col-md-8">
 					<div class="tw-bg-white tw-rounded-xl tw-shadow-lg tw-overflow-hidden tw-border tw-border-gray-100">
 						<!-- Header -->
-						<div class="tw-bg-gradient-to-r tw-from-gray-50 tw-to-gray-100 tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
+						<div class="gradient-header tw-px-6 tw-py-4 tw-border-b tw-border-gray-200">
 							<div class="tw-flex tw-items-center tw-justify-between">
-								<h5 class="tw-text-lg tw-font-bold tw-text-gray-800 tw-flex tw-items-center tw-gap-2">
-									<i class="fa fa-user-circle tw-text-indigo-600"></i>
+								<h5 class="tw-text-lg tw-font-bold tw-text-white tw-flex tw-items-center tw-gap-2">
+								<i class="fa fa-user-circle text-primary"></i>
 									Student Details
 								</h5>
 								<a v-on:click.stop.prevent="print()" 
@@ -285,255 +340,222 @@
 						
 						<!-- Details Grid -->
 						<div class="tw-p-6">
-							<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
-								
-								<!-- Full Name -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-blue-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-blue-100 tw-transition-colors">
-											<i class="fa fa-user tw-text-blue-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Full Name</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.name }}</p>
-										</div>
+
+							<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+
+									<!-- Full Name -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-user tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Full Name</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.name }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Father Name -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-cyan-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-cyan-100 tw-transition-colors">
-											<i class="fa fa-male tw-text-cyan-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Father Name</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.father_name }}</p>
-										</div>
+
+									<!-- Father Name -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-male tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Father Name</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.father_name }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Religion -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-teal-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-teal-100 tw-transition-colors">
-											<i class="fa fa-book tw-text-teal-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Religion</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.religion }}</p>
-										</div>
+
+									<!-- Religion -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-book tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Religion</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.religion }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- GR NO -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-indigo-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-indigo-100 tw-transition-colors">
-											<i class="fa fa-id-card tw-text-indigo-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">GR NO</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.gr_no }}</p>
-										</div>
+
+									<!-- GR NO -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-id-card tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">GR NO</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.gr_no }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Gender -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-purple-100 tw-transition-colors">
-											<i class="fa fa-venus-mars tw-text-purple-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Gender</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.gender }}</p>
-										</div>
+
+									<!-- Gender -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-venus-mars tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Gender</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.gender }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Date of Birth -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-pink-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-pink-100 tw-transition-colors">
-											<i class="fa fa-birthday-cake tw-text-pink-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Date Of Birth</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.date_of_birth }}</p>
-										</div>
+
+									<!-- Date of Birth -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-birthday-cake tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Date Of Birth</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.date_of_birth }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Date of Admission -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-green-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-green-100 tw-transition-colors">
-											<i class="fa fa-calendar-check-o tw-text-green-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Date Of Admission</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.date_of_admission }}</p>
-										</div>
+
+									<!-- Date of Admission -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-calendar-check-o tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Date Of Admission</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.date_of_admission }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Date of Enrolled -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-lime-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-lime-100 tw-transition-colors">
-											<i class="fa fa-calendar-plus-o tw-text-lime-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Date Of Enrolled</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.date_of_enrolled }}</p>
-										</div>
+
+									<!-- Date of Enrolled -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-calendar-plus-o tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Date Of Enrolled</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.date_of_enrolled }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Place of Birth -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-orange-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-orange-100 tw-transition-colors">
-											<i class="fa fa-map-marker tw-text-orange-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Place Of Birth</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.place_of_birth }}</p>
-										</div>
+
+									<!-- Place of Birth -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-map-marker tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Place Of Birth</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.place_of_birth }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Last School -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-amber-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-amber-100 tw-transition-colors">
-											<i class="fa fa-university tw-text-amber-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Last Attend School</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.last_school || 'N/A' }}</p>
-										</div>
+
+									<!-- Last School -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-university tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Last Attend School</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.last_school || 'N/A' }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Seeking Class -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-sky-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-sky-100 tw-transition-colors">
-											<i class="fa fa-level-up tw-text-sky-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Seeking Class</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.seeking_class }}</p>
-										</div>
+
+									<!-- Seeking Class -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-level-up tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Seeking Class</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.seeking_class }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Receipt No -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-violet-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-violet-100 tw-transition-colors">
-											<i class="fa fa-file-text tw-text-violet-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Receipt No</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.receipt_no }}</p>
-										</div>
+
+									<!-- Receipt No -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-file-text tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Receipt No</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">@{{ student.receipt_no }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Class -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-blue-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-blue-100 tw-transition-colors">
-											<i class="fa fa-graduation-cap tw-text-blue-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Class</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.std_class.name }} @{{ student.section.nick_name }}</p>
-										</div>
+
+									<!-- Class -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-graduation-cap tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Class</p>
+													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">
+															@{{ student.std_class.name }} @{{ student.section.nick_name }}
+													</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Guardian -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-purple-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-purple-100 tw-transition-colors">
-											<i class="fa fa-users tw-text-purple-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Guardian</label>
-											<p class="tw-text-sm tw-font-medium tw-mt-1">
-												<a :href="URL+'/guardians/profile/'+student.guardian.id" class="tw-text-indigo-600 hover:tw-text-indigo-700 tw-transition-colors">
-													@{{ student.guardian.name }} (@{{ student.guardian_relation }})
-												</a>
-											</p>
-										</div>
+
+									<!-- Guardian -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-users tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Guardian</p>
+													<p class="tw-text-sm tw-font-semibold">
+															<a :href="URL + '/guardians/profile/' + student.guardian.id"
+																class="tw-text-blue-600 hover:tw-text-teal-700 tw-transition-colors">
+																	@{{ student.guardian.name }} (@{{ student.guardian_relation }})
+															</a>
+													</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Email -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-red-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-red-100 tw-transition-colors">
-											<i class="fa fa-envelope tw-text-red-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Email</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1 tw-break-all">@{{ student.email || 'Not provided' }}</p>
-										</div>
+
+									<!-- Email -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-envelope tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Email</p>
+													<p class="tw-text-sm tw-font-semibold">@{{ student.email || 'Not provided' }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Contact -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-green-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-green-100 tw-transition-colors">
-											<i class="fa fa-phone tw-text-green-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Contact</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1">@{{ student.phone }}</p>
-										</div>
+
+									<!-- Contact -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-phone tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Contact</p>
+													<p class="tw-text-sm tw-font-semibold">@{{ student.phone }}</p>
+											</div>
 									</div>
-								</div>
-								
-								<!-- Fee -->
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-emerald-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-emerald-100 tw-transition-colors">
-											<i class="fa fa-money tw-text-emerald-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Fee</label>
-											<p class="tw-text-sm tw-font-bold tw-text-emerald-600 tw-mt-1">@{{ student.net_amount }} /=</p>
-										</div>
+
+									<!-- Fee -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-money tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Fee</p>
+													<p class="tw-text-sm tw-font-bold tw-text-gray-800">@{{ student.net_amount }} /=</p>
+											</div>
 									</div>
-								</div>
-								
-							</div>
-							
-							<!-- Address - Full Width -->
-							<div class="tw-mt-6 tw-pt-6 tw-border-t tw-border-gray-200">
-								<div class="tw-group">
-									<div class="tw-flex tw-items-start tw-gap-3">
-										<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-orange-50 tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 group-hover:tw-bg-orange-100 tw-transition-colors">
-											<i class="fa fa-map-marker tw-text-orange-600"></i>
-										</div>
-										<div class="tw-flex-1">
-											<label class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wide">Address</label>
-											<p class="tw-text-sm tw-font-medium tw-text-gray-800 tw-mt-1 tw-leading-relaxed">@{{ student.address }}</p>
-										</div>
+									
+
+									<!-- Address - Full Width -->
+									<div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-xl tw-bg-gray-50 hover:tw-bg-gray-100 hover:tw-shadow-md tw-transition-all tw-duration-200">
+											<div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-gray-200 tw-flex tw-items-center tw-justify-center">
+													<i class="fa fa-map-marker tw-text-gray-500"></i>
+											</div>
+											<div class="tw-flex-1 tw-min-w-0">
+													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Address</p>
+													<p class="tw-text-sm tw-font-bold tw-text-gray-800">@{{ student.address }}</p>
+											</div>
 									</div>
-								</div>
+
 							</div>
 							
 							<!-- Action Button -->
 							@can('students.interview.update.create')
 							<div class="tw-mt-6">
-								<a :href="URL+'/students/interview/'+student.id" 
-								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-6 tw-py-3 tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors">
+								<a  :href="URL+'/students/interview/'+student.id" 
+								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-6 tw-py-3 tw-bg-teal-600 hover:tw-bg-teal-700 tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors">
 									<i class="fa fa-podcast"></i> Parent Interview
 								</a>
 							</div>
