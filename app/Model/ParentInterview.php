@@ -22,7 +22,7 @@ class ParentInterview extends Model
 	];
 
 	public function Student(){
-		return belongsTo('App\Model\Student');
+		return $this->belongsTo('App\Model\Student');
 	}
 
 }

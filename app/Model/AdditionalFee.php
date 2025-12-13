@@ -13,7 +13,7 @@ class AdditionalFee extends Model
 	];
 
 	public function Student(){
-		return belongsTo('App\Model\Atudent');
+		return $this->belongsTo('App\Model\Student');
 	}
 
 	public function scopeActive($query){

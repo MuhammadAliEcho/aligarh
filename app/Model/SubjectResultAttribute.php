@@ -27,7 +27,7 @@ class SubjectResultAttribute extends Model
 	}
 
 	public function Student(){
-		return $this->belongsTo('app\Student');
+		return $this->belongsTo('App\Model\Student');
 	}
 
 }

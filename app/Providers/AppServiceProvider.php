@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Configure morphMap for polymorphic relationships
         Relation::morphMap([
+            'student' => 'App\Model\Student',
             'employee' => 'App\Model\Employee',
             'teacher' => 'App\Model\Teacher',
             'guardian' => 'App\Model\Guardian',
