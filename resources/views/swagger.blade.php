@@ -31,7 +31,7 @@
             const currentUrl = window.location.origin;
             
             const ui = SwaggerUIBundle({
-                url: "{{ asset('/api-docs/swagger.json') }}",
+                url: "{{ asset('/api-docs/api-docs.json') }}",
                 dom_id: '#swagger-ui',
                 deepLinking: true,
                 validatorUrl: null,  // Disable validator badge

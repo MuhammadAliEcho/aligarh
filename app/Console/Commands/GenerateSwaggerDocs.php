@@ -28,37 +28,38 @@ class GenerateSwaggerDocs extends Command
      */
     public function handle()
     {
-        $this->info('Publishing Swagger documentation...');
+        $this->info('Generating Swagger documentation...');
 
         try {
+            // Generate the docs using l5-swagger from annotations
+            $this->call('l5-swagger:generate');
+            
             $outputDir = storage_path('api-docs');
             $publicDir = public_path('api-docs');
 
-            if (!is_dir($outputDir)) {
-                mkdir($outputDir, 0755, true);
-            }
-            
             if (!is_dir($publicDir)) {
                 mkdir($publicDir, 0755, true);
             }
 
-            $jsonPath = $outputDir . '/swagger.json';
-            $publicJsonPath = $publicDir . '/swagger.json';
+            $jsonPath = $outputDir . '/api-docs.json';
+            $publicJsonPath = $publicDir . '/api-docs.json';
             
-            // Check if swagger.json exists
+            // Check if api-docs.json was generated
             if (!file_exists($jsonPath)) {
                 $this->error('Swagger JSON not found at: ' . $jsonPath);
-                $this->line('Please ensure swagger.json exists in storage/api-docs/');
+                $this->line('Please ensure annotations are properly configured in app/Http/Controllers/Api/Docs/');
                 return 1;
             }
 
             // Copy to public directory for web access
             copy($jsonPath, $publicJsonPath);
-            
-            $this->info("✓ Swagger documentation published");
-            $this->line("  Storage: $jsonPath");
-            $this->line("  Public:  $publicJsonPath");
-            $this->info('✓ Documentation ready!');
+
+            $this->info('✓ Swagger documentation generated successfully!');
+            $this->info('  Generated: ' . $jsonPath);
+            $this->info('  Published: ' . $publicJsonPath);
+            $this->info('✓ Access at: /api/documentation');
+
+            return 0;
             $this->line('Access at: ' . config('app.url') . '/api/documentation');
 
             return 0;
