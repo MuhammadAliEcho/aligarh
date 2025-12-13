@@ -1,0 +1,811 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Aligarh API Documentation",
+    "description": "Educational Institution Management System - Multi-tenant API",
+    "version": "1.0.0",
+    "contact": {
+      "email": "support@aligarh.test"
+    }
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current Tenant Server (Dynamic)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Guardian Authentication",
+      "description": "Guardian login and logout"
+    },
+    {
+      "name": "Guardian",
+      "description": "Guardian dashboard and student operations"
+    },
+    {
+      "name": "TMS Authentication",
+      "description": "Teacher Management System authentication"
+    },
+    {
+      "name": "TMS",
+      "description": "Teacher Management System operations"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Bearer token from login endpoint"
+      }
+    }
+  },
+  "paths": {
+    "/guardian/login": {
+      "post": {
+        "tags": ["Guardian Authentication"],
+        "summary": "Guardian Login",
+        "operationId": "guardianLogin",
+        "description": "Authenticate a guardian user with credentials and receive an access token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["user_id", "password"],
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "example": "guardian123"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "SecurePass@123"
+                  }
+                }
+              },
+              "example": {
+                "user_id": "guardian123",
+                "password": "SecurePass@123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "token": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...",
+                  "name": "Ahmed Khan"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/guardian/logout": {
+      "post": {
+        "tags": ["Guardian Authentication"],
+        "summary": "Guardian Logout",
+        "operationId": "guardianLogout",
+        "description": "Revoke the current access token and logout",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Successfully logged out"
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/user": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Guardian User Info",
+        "operationId": "guardianGetUser",
+        "description": "Get authenticated guardian user and profile information",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "User information retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "User": {
+                    "id": 15,
+                    "name": "Ahmed Khan",
+                    "email": "ahmed@example.com",
+                    "user_type": "guardian",
+                    "foreign_id": 10
+                  },
+                  "Profile": {
+                    "id": 10,
+                    "name": "Ahmed Khan",
+                    "phone": "03001234567",
+                    "address": "House 123, Block A, Aligarh"
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/home": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Guardian Dashboard",
+        "operationId": "guardianHome",
+        "description": "Retrieve guardian's home dashboard with profile, students, and images",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Dashboard data retrieved successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "User": {
+                    "User": {"id": 15, "name": "Ahmed Khan"},
+                    "Profile": {"id": 10, "name": "Ahmed Khan", "phone": "03001234567"}
+                  },
+                  "Students": [
+                    {
+                      "id": 101,
+                      "name": "Ali Ahmed",
+                      "gr_no": "GR-2024-101",
+                      "class_id": 5,
+                      "StdClass": {"id": 5, "name": "Grade 5"}
+                    }
+                  ],
+                  "ImagesBase64": {
+                    "101": "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/students": {
+      "post": {
+        "tags": ["Guardian"],
+        "summary": "Get Students List",
+        "operationId": "guardianGetStudents",
+        "description": "Retrieve list of students associated with the guardian",
+        "security": [{"bearerToken": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["guardian_id"],
+                "properties": {
+                  "guardian_id": {"type": "integer", "example": 10}
+                }
+              },
+              "example": {
+                "guardian_id": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Students list retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "students": [
+                    {
+                      "id": 101,
+                      "name": "Ali Ahmed",
+                      "gr_no": "GR-2024-101",
+                      "class_id": 5,
+                      "StdClass": {"id": 5, "name": "Grade 5"},
+                      "current_month_fee": 5000,
+                      "attendance_percentage": 92.5,
+                      "last_exam_grade": "A"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"},
+          "422": {"description": "Validation error"}
+        }
+      }
+    },
+    "/guardian/students/image/{image}": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Student Image",
+        "operationId": "guardianGetStudentImage",
+        "description": "Retrieve student profile image",
+        "security": [{"bearerToken": []}],
+        "parameters": [
+          {
+            "name": "image",
+            "in": "path",
+            "required": true,
+            "description": "Image filename",
+            "schema": {"type": "string"},
+            "example": "student_101.jpg"
+          }
+        ],
+        "responses": {
+          "200": {"description": "Image retrieved"},
+          "401": {"description": "Unauthenticated"},
+          "404": {"description": "Image not found"}
+        }
+      }
+    },
+    "/guardian/attendance/{student_id}": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Student Attendance",
+        "operationId": "guardianGetAttendance",
+        "description": "Retrieve attendance records for a specific student",
+        "security": [{"bearerToken": []}],
+        "parameters": [
+          {
+            "name": "student_id",
+            "in": "path",
+            "required": true,
+            "description": "Student ID",
+            "schema": {"type": "integer"},
+            "example": 101
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attendance records retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "attendance": [
+                    {"date": "2024-12-14", "status": "present"},
+                    {"date": "2024-12-13", "status": "present"},
+                    {"date": "2024-12-12", "status": "absent"}
+                  ],
+                  "percentage": 92.5
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/student-profile": {
+      "post": {
+        "tags": ["Guardian"],
+        "summary": "Get Student Short Profile",
+        "operationId": "guardianGetStudentProfile",
+        "description": "Get short profile information for a student",
+        "security": [{"bearerToken": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                  "id": {"type": "integer", "description": "Student ID"}
+                }
+              },
+              "example": {
+                "id": 101
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Student profile retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "Profile": {
+                    "Attendance": {"present": 85, "absent": 7, "percentage": 92.4},
+                    "WeekAttendance": [
+                      {"day": "Monday", "status": "present"},
+                      {"day": "Tuesday", "status": "present"}
+                    ],
+                    "Amount": 5000,
+                    "ExamResult": {"grade": "A", "percentage": 88}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/exams": {
+      "post": {
+        "tags": ["Guardian"],
+        "summary": "Get Exams",
+        "operationId": "guardianGetExams",
+        "description": "Retrieve exam information for guardian's students",
+        "security": [{"bearerToken": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["student_id", "session_id"],
+                "properties": {
+                  "student_id": {"type": "integer", "example": 101},
+                  "session_id": {"type": "integer", "example": 1}
+                }
+              },
+              "example": {
+                "student_id": 101,
+                "session_id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exam data retrieved",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 5,
+                    "name": "Mid Term Exam",
+                    "academic_session_id": 1,
+                    "student_results": [
+                      {
+                        "subject_id": 1,
+                        "Subject": {"id": 1, "name": "Mathematics"},
+                        "obtain_marks": 85,
+                        "total_marks": 100
+                      }
+                    ],
+                    "total_obtain_marks": 425,
+                    "total_full_marks": 500,
+                    "percentage": 85
+                  }
+                ]
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"},
+          "422": {"description": "Validation error"}
+        }
+      }
+    },
+    "/guardian/fee": {
+      "post": {
+        "tags": ["Guardian"],
+        "summary": "Get Fee Invoices",
+        "operationId": "guardianGetFeeInvoices",
+        "description": "Retrieve fee invoices for guardian's students",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Fee invoices retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "invoices": [
+                    {
+                      "id": 1001,
+                      "student_id": 101,
+                      "month": "December",
+                      "amount": 5000,
+                      "paid": 3000,
+                      "balance": 2000,
+                      "status": "partial"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/student-invoices": {
+      "post": {
+        "tags": ["Guardian"],
+        "summary": "Get Student Invoices",
+        "operationId": "guardianGetStudentInvoices",
+        "description": "Get detailed fee invoices for a specific student",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Student invoices retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "invoices": [
+                    {
+                      "id": 1001,
+                      "student_id": 101,
+                      "invoice_date": "2024-12-01",
+                      "total_amount": 5000,
+                      "paid_amount": 5000,
+                      "status": "paid"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/routines": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Class Routines",
+        "operationId": "guardianGetRoutines",
+        "description": "Get class routines/timetables for guardian's students",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Routines retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "routines": [
+                    {
+                      "day": "Monday",
+                      "periods": [
+                        {"time": "08:00-09:00", "subject": "Mathematics", "teacher": "Mr. Ali"},
+                        {"time": "09:00-10:00", "subject": "English", "teacher": "Ms. Fatima"}
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/noticeboard": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Notice Board",
+        "operationId": "guardianGetNotices",
+        "description": "Get notice board announcements and notifications",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Notices retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "notices": [
+                    {
+                      "id": 1,
+                      "title": "Parent-Teacher Meeting",
+                      "description": "PTM scheduled for December 20, 2024",
+                      "date": "2024-12-14",
+                      "priority": "high"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/guardian/quiz/{student_id}": {
+      "get": {
+        "tags": ["Guardian"],
+        "summary": "Get Student Quiz",
+        "operationId": "guardianGetQuiz",
+        "description": "Get quiz information for a specific student",
+        "security": [{"bearerToken": []}],
+        "parameters": [
+          {
+            "name": "student_id",
+            "in": "path",
+            "required": true,
+            "description": "Student ID",
+            "schema": {"type": "integer"},
+            "example": 101
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quiz data retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "quizzes": [
+                    {
+                      "id": 10,
+                      "subject": "Mathematics",
+                      "date": "2024-12-14",
+                      "score": 18,
+                      "total": 20,
+                      "percentage": 90
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/tms/login": {
+      "post": {
+        "tags": ["TMS Authentication"],
+        "summary": "TMS Login",
+        "operationId": "tmsLogin",
+        "description": "Authenticate a TMS user with credentials",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["user_id", "password"],
+                "properties": {
+                  "user_id": {"type": "string", "example": "teacher_ali"},
+                  "password": {"type": "string", "format": "password", "example": "TeacherPass@123"}
+                }
+              },
+              "example": {
+                "user_id": "teacher_ali",
+                "password": "TeacherPass@123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+                  "name": "Ali Hassan"
+                }
+              }
+            }
+          },
+          "401": {"description": "Invalid credentials"}
+        }
+      }
+    },
+    "/tms/logout": {
+      "post": {
+        "tags": ["TMS Authentication"],
+        "summary": "TMS Logout",
+        "operationId": "tmsLogout",
+        "description": "Logout the TMS user and revoke access token",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Successfully logged out"
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/tms/user": {
+      "get": {
+        "tags": ["TMS"],
+        "summary": "Get TMS User Info",
+        "operationId": "tmsGetUser",
+        "description": "Get authenticated TMS user information",
+        "security": [{"bearerToken": []}],
+        "responses": {
+          "200": {
+            "description": "User information retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "User": {
+                    "id": 25,
+                    "name": "Ali Hassan",
+                    "email": "ali.hassan@school.com",
+                    "user_type": "teacher",
+                    "foreign_id": 5
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"}
+        }
+      }
+    },
+    "/tms/attendance": {
+      "post": {
+        "tags": ["TMS"],
+        "summary": "Record Attendance",
+        "operationId": "tmsRecordAttendance",
+        "description": "Record student, teacher, or employee attendance via Teacher Management System",
+        "security": [{"bearerToken": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type", "id"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["student", "teacher", "employee"],
+                    "description": "Type of attendance to record"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "description": "ID of the student/teacher/employee"
+                  }
+                }
+              },
+              "examples": {
+                "student": {
+                  "summary": "Student Attendance",
+                  "value": {
+                    "type": "student",
+                    "id": 101
+                  }
+                },
+                "teacher": {
+                  "summary": "Teacher Attendance",
+                  "value": {
+                    "type": "teacher",
+                    "id": 5
+                  }
+                },
+                "employee": {
+                  "summary": "Employee Attendance",
+                  "value": {
+                    "type": "employee",
+                    "id": 12
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attendance recorded successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "id": 101,
+                    "name": "Ali Ahmed",
+                    "gr_no": "GR-2024-101",
+                    "class_id": 5
+                  },
+                  "time_stamp": "2024-12-14 10:30:45",
+                  "image_base64": "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"},
+          "422": {
+            "description": "Validation error or inactive record",
+            "content": {
+              "application/json": {
+                "example": {
+                  "msg": ["Inactive Student/Data Not Found!"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tms/cachedata": {
+      "post": {
+        "tags": ["TMS"],
+        "summary": "Cache Attendance Data",
+        "operationId": "tmsCacheData",
+        "description": "Cache multiple attendance records for offline sync and later processing",
+        "security": [{"bearerToken": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["data"],
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "description": "Array of JSON stringified attendance data",
+                    "items": {"type": "string"}
+                  }
+                }
+              },
+              "example": {
+                "data": [
+                  "{\"type\":\"student\",\"id\":101}",
+                  "{\"type\":\"student\",\"id\":102}",
+                  "{\"type\":\"teacher\",\"id\":5}"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Data cached and synced successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "msg": "Sync Successfull"
+                }
+              }
+            }
+          },
+          "401": {"description": "Unauthenticated"},
+          "422": {"description": "Validation error"}
+        }
+      }
+    }
+  }
+}

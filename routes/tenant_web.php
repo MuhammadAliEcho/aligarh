@@ -71,6 +71,11 @@ Route::group(['middleware' => 'guest'], function(){
 	Route::post('login', [UserController::class, 'PostLogin'])->name('login.post');
 });
 
+// Swagger/OpenAPI Documentation
+Route::get('/api/documentation', function() {
+    return view('swagger');
+})->middleware(['auth', 'auth.active', 'role:Developer'])->name('tenant.api.documentation');
+
 Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], function(){
 
     Route::get('/cmd', function () {

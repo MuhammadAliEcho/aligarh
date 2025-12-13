@@ -12,6 +12,11 @@ use App\Model\Guardian;
 class HomeController extends Controller
 {
 
+    /**
+     * Get Guardian Home Dashboard
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function Home(Request $request){
 //                return $request->user()->token()->id;
 //				return response('error',	404);

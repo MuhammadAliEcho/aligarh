@@ -29,7 +29,6 @@ use App\Model\Guardian;
 |
 */
 
-
 Route::get('/', function(){
 	return "welcome Tenants ... API";
 });
