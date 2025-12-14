@@ -247,10 +247,19 @@ return [
         'Dashboard & Settings' => [
             'dashboard' => 'Dashboard',
             'dashboard.top_content' => 'Show Total Students, Teacher etc..',
-            'dashboard.timeline' => 'Show TimeLins (Notice Board)',
+            'dashboard.timeline' => [
+                'label' => 'Show TimeLins (Notice Board)',
+                'dependencies' => ['dashboard']
+            ],
             'dashboard.monthly_attendance' => 'Show Monthly Attendance',
-            'dashboard.fee_Collection' => 'Show Fee Collection',
-            'dashboard.monthly_expenses' => 'Show Monthly Expenses',
+            'dashboard.fee_Collection' => [
+                'label' => 'Show Fee Collection',
+                'dependencies' => ['dashboard', 'fee.index']
+            ],
+            'dashboard.monthly_expenses' => [
+                'label' => 'Show Monthly Expenses',
+                'dependencies' => ['dashboard', 'expense.index']
+            ],
             'user-settings.index' => 'User Settings View',
             'user-settings.password.update' => 'Password Update',
             'user-settings.change.session' => 'Change Session',
@@ -264,13 +273,16 @@ return [
             ],
             'users.edit' => [
                 'label' => 'User Edit',
-                'dependencies' => ['users.index']
+                'dependencies' => ['users.index', 'users.update']
             ],
-            'users.update' => [
-                'label' => 'User Update',
-                'dependencies' => ['users.index']
-            ],
-            'users.update.update_password' => 'Update Password (User Update)'
+            // 'users.update' => [
+            //     'label' => 'User Update',
+            //     'dependencies' => ['users.index']
+            // ],
+            'users.update.update_password' => [
+                'label' => 'Update Password (User Update)',
+                'dependencies' => ['users.index', 'users.edit']
+            ]
         ],
 
         'Roles' => [
@@ -281,12 +293,12 @@ return [
             ],
             'roles.edit' => [
                 'label' => 'Role Edit',
-                'dependencies' => ['roles.index']
+                'dependencies' => ['roles.index', 'roles.update']
             ],
-            'roles.update' => [
-                'label' => 'Role update',
-                'dependencies' => ['roles.index']
-            ],
+            // 'roles.update' => [
+            //     'label' => 'Role update',
+            //     'dependencies' => ['roles.index']
+            // ],
         ],
 
         'Students' => [
@@ -301,22 +313,40 @@ return [
             ],
             'students.edit' => [
                 'label' => 'Students Edit',
-                'dependencies' => ['students.index']
+                'dependencies' => ['students.index', 'students.edit.post']
             ],
-            'students.class_edit' => 'Edit Class',
-            'students.edit.post' => [
-                'label' => 'Students Update',
-                'dependencies' => ['students.index']
+            'students.class_edit' => [
+                'label' => 'Edit Class',
+                'dependencies' => ['students.index', 'students.edit']
             ],
+            // 'students.edit.post' => [
+            //     'label' => 'Students Update',
+            //     'dependencies' => ['students.index']
+            // ],
             'students.profile' => [
                 'label' => 'Students Profile',
                 'dependencies' => ['students.index']
             ],
-            'students.interview.get' => 'Interview View',
-            'students.interview.update.create' => 'Interview Update',
-            'students.certificate.get' => 'Certificate View',
-            'students.certificate.create' => 'Certificate Create',
-            'students.leave' => 'Students Leave',
+            'students.interview.get' => [
+                'label' => 'Interview View',
+                'dependencies' => ['students.index', 'students.profile']
+            ],
+            'students.interview.update.create' => [
+                'label' => 'Interview Update',
+                'dependencies' => ['students.index', 'students.profile']
+            ],
+            'students.certificate.get' => [
+                'label' => 'Certificate View',
+                'dependencies' => ['students.index', 'students.profile']
+            ],
+            'students.certificate.create' => [
+                'label' => 'Certificate Create',
+                'dependencies' => ['students.index', 'students.profile', 'students.certificate.get']
+            ],
+            'students.leave' => [
+                'label' => 'Students Leave',
+                'dependencies' => ['students.index', 'students.profile']
+            ],
         ],
 
         'Visitors' => [
@@ -333,16 +363,22 @@ return [
                 'label' => 'Visitors Create',
                 'dependencies' => ['visitors.index']
             ],
-            'students.show.visitor' => 'Show Admission Visitors',
-            'students.create.visitor' => 'Create Admission Visitors',
+            'students.show.visitor' => [
+                'label' => 'Show Admission Visitors',
+                'dependencies' => ['visitors.index']
+            ],
+            'students.create.visitor' => [
+                'label' => 'Create Admission Visitors',
+                'dependencies' => ['visitors.index']
+            ],
             'visitors.edit' => [
                 'label' => 'Visitors Edit',
-                'dependencies' => ['visitors.index']
+                'dependencies' => ['visitors.index', 'visitors.update']
             ],
-            'visitors.update' => [
-                'label' => 'Visitors Update',
-                'dependencies' => ['visitors.index']
-            ],
+            // 'visitors.update' => [
+            //     'label' => 'Visitors Update',
+            //     'dependencies' => ['visitors.index']
+            // ],
             'visitors.delete' => [
                 'label' => 'Visitors Delete',
                 'dependencies' => ['visitors.index']
@@ -361,12 +397,12 @@ return [
             ],
             'teacher.edit' => [
                 'label' => 'Teachers Edit',
-                'dependencies' => ['teacher.index']
+                'dependencies' => ['teacher.index', 'teacher.edit.post']
             ],
-            'teacher.edit.post' => [
-                'label' => 'Teachers Update',
-                'dependencies' => ['teacher.index']
-            ],
+            // 'teacher.edit.post' => [
+            //     'label' => 'Teachers Update',
+            //     'dependencies' => ['teacher.index']
+            // ],
             'teacher.profile' => [
                 'label' => 'Teachers Profile',
                 'dependencies' => ['teacher.index']
@@ -385,12 +421,12 @@ return [
             ],
             'employee.edit' => [
                 'label' => 'Employees Edit',
-                'dependencies' => ['employee.index']
+                'dependencies' => ['employee.index', 'employee.edit.post']
             ],
-            'employee.edit.post' => [
-                'label' => 'Employees Update',
-                'dependencies' => ['employee.index']
-            ],
+            // 'employee.edit.post' => [
+            //     'label' => 'Employees Update',
+            //     'dependencies' => ['employee.index']
+            // ],
             'employee.profile' => [
                 'label' => 'Employees Profile',
                 'dependencies' => ['employee.index']
@@ -409,12 +445,12 @@ return [
             ],
             'guardian.edit' => [
                 'label' => 'Guardians Edit',
-                'dependencies' => ['guardian.index']
+                'dependencies' => ['guardian.index', 'guardian.edit.post']
             ],
-            'guardian.edit.post' => [
-                'label' => 'Guardians Update',
-                'dependencies' => ['guardian.index']
-            ],
+            // 'guardian.edit.post' => [
+            //     'label' => 'Guardians Update',
+            //     'dependencies' => ['guardian.index']
+            // ],
             'guardian.profile' => [
                 'label' => 'Guardians Profile',
                 'dependencies' => ['guardian.index']
@@ -427,21 +463,30 @@ return [
                 'label' => 'Classes Create',
                 'dependencies' => ['manage-classes.index']
             ],
-            'manage-classes.edit' => 'Classes Edit',
-            'manage-classes.edit.post' => [
-                'label' => 'Classes Update',
-                'dependencies' => ['manage-classes.index']
+            'manage-classes.edit' => [
+                'label' => 'Classes Edit',
+                'dependencies' => ['manage-classes.index', 'manage-classes.edit.post']
             ],
-            'manage-sections.index' => 'Sections View',
+            // 'manage-classes.edit.post' => [
+            //     'label' => 'Classes Update',
+            //     'dependencies' => ['manage-classes.index']
+            // ],
+            'manage-sections.index' => [
+                'label' => 'Sections View',
+                // 'dependencies' => ['manage-classes.index']
+            ],
             'manage-sections.add' => [
                 'label' => 'Sections Create',
                 'dependencies' => ['manage-sections.index']
             ],
-            'manage-sections.edit' => 'Sections Edit',
-            'manage-sections.edit.post' => [
-                'label' => 'Sections Update',
-                'dependencies' => ['manage-sections.index']
+            'manage-sections.edit' => [
+                'label' => 'Sections Edit',
+                'dependencies' => ['manage-sections.index', 'manage-sections.edit.post']
             ],
+            // 'manage-sections.edit.post' => [
+            //     'label' => 'Sections Update',
+            //     'dependencies' => ['manage-sections.index']
+            // ],
         ],
 
         'Subjects' => [
@@ -452,12 +497,12 @@ return [
             ],
             'manage-subjects.edit' => [
                 'label' => 'Subjects Edit',
-                'dependencies' => ['manage-subjects.index']
+                'dependencies' => ['manage-subjects.index', 'manage-subjects.edit.post']
             ],
-            'manage-subjects.edit.post' => [
-                'label' => 'Subjects Update',
-                'dependencies' => ['manage-subjects.index']
-            ],
+            // 'manage-subjects.edit.post' => [
+            //     'label' => 'Subjects Update',
+            //     'dependencies' => ['manage-subjects.index']
+            // ],
         ],
 
         'Vendors & Items' => [
@@ -468,12 +513,12 @@ return [
             ],
             'vendors.edit' => [
                 'label' => 'Vendors Edit',
-                'dependencies' => ['vendors.index']
+                'dependencies' => ['vendors.index', 'vendors.edit.post']
             ],
-            'vendors.edit.post' => [
-                'label' => 'Vendors Update',
-                'dependencies' => ['vendors.index']
-            ],
+            // 'vendors.edit.post' => [
+            //     'label' => 'Vendors Update',
+            //     'dependencies' => ['vendors.index']
+            // ],
             'items.index' => 'Items View',
             'items.add' => [
                 'label' => 'Items Create',
@@ -481,12 +526,12 @@ return [
             ],
             'items.edit' => [
                 'label' => 'Items Edit',
-                'dependencies' => ['items.index']
+                'dependencies' => ['items.index', 'items.edit.post']
             ],
-            'items.edit.post' => [
-                'label' => 'Items Update',
-                'dependencies' => ['items.index']
-            ],
+            // 'items.edit.post' => [
+            //     'label' => 'Items Update',
+            //     'dependencies' => ['items.index']
+            // ],
         ],
 
         'Vouchers' => [
@@ -497,12 +542,12 @@ return [
             ],
             'vouchers.edit' => [
                 'label' => 'Vouchers Edit',
-                'dependencies' => ['vouchers.index']
+                'dependencies' => ['vouchers.index', 'vouchers.edit.post']
             ],
-            'vouchers.edit.post' => [
-                'label' => 'Vouchers Update',
-                'dependencies' => ['vouchers.index']
-            ],
+            // 'vouchers.edit.post' => [
+            //     'label' => 'Vouchers Update',
+            //     'dependencies' => ['vouchers.index']
+            // ],
             'vouchers.detail' => [
                 'label' => 'Vouchers Detail',
                 'dependencies' => ['vouchers.index']
@@ -521,12 +566,12 @@ return [
             ],
             'routines.edit' => [
                 'label' => 'Routines Edit',
-                'dependencies' => ['routines.index']
+                'dependencies' => ['routines.index', 'routines.edit.post']
             ],
-            'routines.edit.post' => [
-                'label' => 'Routines Update',
-                'dependencies' => ['routines.index']
-            ],
+            // 'routines.edit.post' => [
+            //     'label' => 'Routines Update',
+            //     'dependencies' => ['routines.index']
+            // ],
             'routines.delete' => [
                 'label' => 'Routines Delete',
                 'dependencies' => ['routines.index']
@@ -535,31 +580,52 @@ return [
 
         'Attendance' => [
             'student-attendance.index' => 'Student Attendance View',
-            'student-attendance.make' => 'Student Attendance Get',
-            'student-attendance.make.post' => 'Student Attendance Make',
-            'student-attendance.report' => 'Student Attendance Report',
+            'student-attendance.make' => [
+                'label' => 'Student Attendance Get',
+                'dependencies' => ['student-attendance.index', 'student-attendance.make.post']
+            ],
+            // 'student-attendance.make.post' => 'Student Attendance Make',
+            'student-attendance.report' => [
+                'label' => 'Student Attendance Report',
+                'dependencies' => ['student-attendance.index']
+            ],
             'teacher-attendance.index' => 'Teacher Attendance View',
-            'teacher-attendance.make' => 'Teacher Attendance Get',
-            'teacher-attendance.make.post' => 'Teacher Attendance Make',
-            'teacher-attendance.report' => 'Teacher Attendance Report',
+            'teacher-attendance.make' => [
+                'label' => 'Teacher Attendance Get',
+                'dependencies' => ['teacher-attendance.index', 'teacher-attendance.make.post']
+            ],
+            // 'teacher-attendance.make.post' => 'Teacher Attendance Make',
+            'teacher-attendance.report' => [
+                'label' => 'Teacher Attendance Report',
+                'dependencies' => ['teacher-attendance.index']
+            ],
             'employee-attendance.index' => 'Employee Attendance View',
-            'employee-attendance.make' => 'Employee Attendance Get',
-            'employee-attendance.make.post' => 'Employee Attendance Make',
-            'employee-attendance.report' => 'Employee Attendance Report',
+            'employee-attendance.make' => [
+                'label' => 'Employee Attendance Get',
+                'dependencies' => ['employee-attendance.index', 'employee-attendance.make.post']
+            ],
+            // 'employee-attendance.make.post' => 'Employee Attendance Make',
+            'employee-attendance.report' => [
+                'label' => 'Employee Attendance Report',
+                'dependencies' => ['employee-attendance.index']
+            ],
         ],
 
         'Attendance Leave' => [
             'attendance-leave.index' => 'Leave View',
-            'attendance-leave.get.data' => 'get Data',
+            'attendance-leave.get.data' => 'Get Data',
             'attendance-leave.make' => [
                 'label' => 'Leave Make',
                 'dependencies' => ['attendance-leave.index']
             ],
-            'attendance-leave.edit' => 'Leave Edit',
-            'attendance-leave.update' => [
-                'label' => 'Leave Update',
-                'dependencies' => ['attendance-leave.index']
+            'attendance-leave.edit' => [
+                'label' => 'Leave Edit',
+                'dependencies' => ['attendance-leave.index', 'attendance-leave.update']
             ],
+            // 'attendance-leave.update' => [
+            //     'label' => 'Leave Update',
+            //     'dependencies' => ['attendance-leave.index']
+            // ],
             'attendance-leave.delete' => [
                 'label' => 'Leave Delete',
                 'dependencies' => ['attendance-leave.index']
@@ -568,7 +634,10 @@ return [
 
         'Student Migrations' => [
             'student-migrations.index' => 'Migrations View',
-            'student-migrations.create' => 'Migrations Create',
+            'student-migrations.create' => [
+                'label' => 'Migrations Create',
+                'dependencies' => ['student-migrations.index']
+            ],
         ],
 
         'Exams & Results' => [
@@ -579,24 +648,27 @@ return [
             ],
             'exam.edit' => [
                 'label' => 'Exams Edit',
-                'dependencies' => ['exam.index']
+                'dependencies' => ['exam.index', 'exam.edit.post']
             ],
-            'exam.edit.post' => [
-                'label' => 'Exams Update',
-                'dependencies' => ['exam.index']
-            ],
+            // 'exam.edit.post' => [
+            //     'label' => 'Exams Update',
+            //     'dependencies' => ['exam.index']
+            // ],
             'manage-result.index' => 'Results View',
             'manage-result.make' => [
                 'label' => 'Results Make',
-                'dependencies' => ['manage-result.index']
+                'dependencies' => ['manage-result.index', 'manage-result.attributes']
             ],
             'manage-result.attributes' => 'Results Attributes',
             'manage-result.maketranscript' => [
                 'label' => 'Make Transcript',
+                'dependencies' => ['manage-result.index', 'manage-result.make', 'manage-result.maketranscript.create']
+            ],
+            // 'manage-result.maketranscript.create' => 'Create Transcript',
+            'manage-result.result' => [
+                'label' => 'View Result',
                 'dependencies' => ['manage-result.index']
             ],
-            'manage-result.maketranscript.create' => 'Create Transcript',
-            'manage-result.result' => 'View Result',
         ],
 
         'Quizzes' => [
@@ -606,17 +678,20 @@ return [
                 'label' => 'Quiz Create',
                 'dependencies' => ['quizzes.index']
             ],
-            'quizzes.edit' => 'Quiz Edit',
-            'quizzes.update' => [
-                'label' => 'Quiz Update',
-                'dependencies' => ['quizzes.index']
+            // 'quizzes.edit' => 'Quiz Edit',
+            'quizzes.edit' => [
+                'label' => 'Quiz Edit',
+                'dependencies' => ['quizzes.index', 'quizzes.update']
             ],
             'quizzes.delete' => [
                 'label' => 'Quiz Delete',
                 'dependencies' => ['quizzes.index']
             ],
             'quizresult.index' => 'Quiz Result View',
-            'quizresult.create' => 'Quiz Result Create',
+            'quizresult.create' => [
+                'label' => 'Quiz Result Create',
+                'dependencies' => ['quizresult.index']
+            ],
         ],
 
         'Library' => [
@@ -627,12 +702,12 @@ return [
             ],
             'library.edit' => [
                 'label' => 'Library Edit',
-                'dependencies' => ['library.index']
+                'dependencies' => ['library.index', 'library.edit.post']
             ],
-            'library.edit.post' => [
-                'label' => 'Library Update',
-                'dependencies' => ['library.index']
-            ],
+            // 'library.edit.post' => [
+            //     'label' => 'Library Update',
+            //     'dependencies' => ['library.index']
+            // ],
         ],
 
         'Notice Board' => [
@@ -649,20 +724,20 @@ return [
 
         'Fee Management' => [
             'fee.index' => 'Fee View',
-            'fee.create' => 'Get Student',
-            'fee.create.store' => [
+            // 'fee.create' => 'Get Student',
+            'fee.create' => [
                 'label' => 'Fee Create',
-                'dependencies' => ['fee.index']
+                'dependencies' => ['fee.index', 'fee.create.store']
             ],
-            'fee.get.invoice.collect' => 'Get Invoice Collect',
+            // 'fee.get.invoice.collect' => 'Get Invoice Collect',
             'fee.collect.store' => [
                 'label' => 'Store Invoice Collect',
-                'dependencies' => ['fee.index']
+                'dependencies' => ['fee.index', 'fee.get.invoice.collect']
             ],
-            'fee.edit.invoice' => 'Edit Invoice',
+            // 'fee.edit.invoice' => 'Edit Invoice',
             'fee.edit.invoice.post' => [
                 'label' => 'Update Invoice',
-                'dependencies' => ['fee.index']
+                'dependencies' => ['fee.index', 'fee.edit.invoice']
             ],
             'fee.get.student.fee' => 'Get Student Fee',
             'fee.update' => 'Student Fee Update',
@@ -682,13 +757,16 @@ return [
             ],
             'expense.edit' => [
                 'label' => 'Expenses Edit',
+                'dependencies' => ['expense.index', 'expense.edit.post']
+            ],
+            // 'expense.edit.post' => [
+            //     'label' => 'Expenses Update',
+            //     'dependencies' => ['expense.index']
+            // ],
+            'expense.summary' => [
+                'label' => 'Expenses Summary',
                 'dependencies' => ['expense.index']
             ],
-            'expense.edit.post' => [
-                'label' => 'Expenses Update',
-                'dependencies' => ['expense.index']
-            ],
-            'expense.summary' => 'Expenses Summary',
         ],
 
         'SMS Notifications' => [
