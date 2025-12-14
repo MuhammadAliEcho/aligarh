@@ -103,13 +103,13 @@
 
 @section('content')
 <div class="print-header text-center">
-    <h2>Class Routine Timetable</h2>
-    <h3>Class: {{ $class->name }}</h3>
+  	<h2 class="text-center">{{ tenancy()->tenant->system_info['general']['title'] }}</h2>
+    <h3>Class Routine</h3>
 </div>
 
 @foreach($sections as $section)
 <div class="section-break {{ $loop->first ? 'no-break' : '' }}">
-    <h4>Section: {{ $section->name }}</h4>
+    <h4>Class: {{ $class->name }}, Section: {{ $section->name }}</h4>
     <table class="table table-bordered">
         <thead>
             <tr>
