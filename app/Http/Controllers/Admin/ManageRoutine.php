@@ -11,6 +11,7 @@ use App\Model\Subject;
 use DB;
 use Auth;
 use App\Http\Controllers\Controller;
+use App\Helpers\PrintableViewHelper;
 
 class ManageRoutine extends Controller
 {
@@ -192,6 +193,30 @@ class ManageRoutine extends Controller
     $Routines->subject_id = $request->input('subject');
     $Routines->from_time = $request->input('from_time');
     $Routines->to_time = $request->input('to_time');
+  }
+
+  public function printTimetable($classId, $sectionId = null) {
+    $class = Classe::findOrFail($classId);
+    $data['class'] = $class;
+
+    if ($sectionId) {
+      $sections = Section::where('id', $sectionId)->where('class_id', $classId)->get();
+    } else {
+      $sections = Section::where('class_id', $classId)->get();
+    }
+
+    $data['sections'] = $sections;
+    $data['routines'] = [];
+
+    foreach ($sections as $section) {
+      $this->RoutinesSortDays($section);
+      $data['routines']['section_' . $section->id] = $this->data['routines']['section_' . $section->id];
+    }
+
+    $data['days'] = $this->days;
+
+    $view = PrintableViewHelper::resolve('routine_timetable');
+    return view($view, $data);
   }
 
 }

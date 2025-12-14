@@ -72,6 +72,9 @@
                                             <span class="fa fa-plus" data-toggle="tooltip" title="Add Routine"></span>
                                           </a>
                                           @endcan
+                                          <a href="{{ route('routines.print', ['class' => $class->id]) }}" target="_blank" data-toggle="tooltip" title="Print Class Timetable">
+                                            <span class="fa fa-print"></span>
+                                          </a>
                                           <a class="collapse-link">
                                             <i data-toggle="tooltip" title="Collapse" class="fa fa-chevron-up"></i>
                                           </a>
@@ -92,6 +95,11 @@
                                             <div class="col-lg-10 col-md-10 col-sm-10 col-xs-9 bhoechie-tab">
                                               @foreach($sections['class_'.$class->id] AS $sk=>$section)
                                               <div id="tab-section-{{ $section->id }}" class="bhoechie-tab-content {{ ($sk == 0)? 'active' : '' }}">                                            
+                                                <div class="ibox-tools" style="margin-bottom: 10px;">
+                                                  <a href="{{ route('routines.print', ['class' => $class->id, 'section' => $section->id]) }}" target="_blank" data-toggle="tooltip" title="Print Section Timetable">
+                                                    <span class="fa fa-print"></span> Print Timetable
+                                                  </a>
+                                                </div>
                                                 <div class="table-responsive">
                                                   <table class="table table-striped table-bordered table-hover dataTables-teacher" >
                                                     <thead>

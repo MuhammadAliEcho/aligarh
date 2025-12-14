@@ -217,6 +217,7 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::post('/delete', [ManageRoutine::class, 'DeleteRoutine'])->name('.delete');
         Route::post('/add', [ManageRoutine::class, 'AddRoutine'])->name('.add');
         Route::post('/edit/{id}', [ManageRoutine::class, 'PostEditRoutine'])->name('.edit.post');
+        Route::get('/print/{class}/{section?}', [ManageRoutine::class, 'printTimetable'])->name('.print');
     });
 
     Route::prefix('student-attendance')->name('student-attendance')->group(function(){

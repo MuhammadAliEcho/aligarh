@@ -42,6 +42,9 @@
 
     </script>
 
+    {{-- Tailwind CSS --}}
+    <link href="{{ asset('css/tailwind.css') }}" rel="stylesheet">
+    
 
     @yield('head')
 
