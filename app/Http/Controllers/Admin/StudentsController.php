@@ -60,7 +60,7 @@ class StudentsController extends Controller
 									->with('StdClass')
 									->with('Section')
 									->with(['Guardian'	=>	function($qry) use ($id){
-										$qry->with(['Student'	=>	function($qry) use ($id){
+										$qry->with(['Students'	=>	function($qry) use ($id){
 											$qry->select('id', 'guardian_id', 'name', 'gr_no');
 											$qry->where('id', '!=', $id);
 										}]);

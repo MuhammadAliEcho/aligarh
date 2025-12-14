@@ -23,7 +23,7 @@ class HomeController extends Controller
 //				return $request->user();
 		$images_base64 = [];
         $guardian   =    Guardian::where('id', $request->user()->foreign_id)
-        ->with(['Student' => function($query){
+        ->with(['Students' => function($query){
             $query->with(['StdClass' => function($qry){
                 $qry->select('id', 'name');
             }])

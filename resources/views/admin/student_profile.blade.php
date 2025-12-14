@@ -184,7 +184,7 @@
 							<div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-mt-6 tw-pt-4 tw-border-t tw-border-gray-200">
 								<div class="tw-text-center">
 									<div class="tw-text-xs tw-text-gray-500 tw-uppercase tw-tracking-wide tw-mb-1">Class</div>
-									<div class="tw-text-sm tw-font-semibold tw-text-gray-800">@{{ student.std_class.name }} @{{ student.section.nick_name }}</div>
+									<div class="tw-text-sm tw-font-semibold tw-text-gray-800">@{{ student.std_class ? student.std_class.name : 'N/A' }} @{{ student.section ? student.section.nick_name : '' }}</div>
 								</div>
 								<div class="tw-text-center">
 									<div class="tw-text-xs tw-text-gray-500 tw-uppercase tw-tracking-wide tw-mb-1">Fee</div>
@@ -194,17 +194,7 @@
 							
 							<!-- Contact Actions -->
 							<div class="tw-mt-6 tw-space-y-2">
-								<a v-if="student.email" :href="'mailto:' + student.email" 
-								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 bg-light hover:bg-light text-primary tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
-									<i class="fa fa-envelope"></i>
-									Send Email
-								</a>
-								<a v-if="student.phone" :href="'tel:' + student.phone" 
-								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 bg-light hover:bg-light text-primary tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
-									<i class="fa fa-phone"></i>
-									Call Now
-								</a>
-								<a :href="URL+'/guardians/profile/'+student.guardian.id"
+								<a v-if="student.guardian" :href="URL+'/guardians/profile/'+student.guardian.id"
 								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-4 tw-py-2 bg-light hover:bg-light text-primary tw-rounded-lg tw-transition-colors tw-text-sm tw-font-medium">
 									<i class="fa fa-users"></i>
 									View Guardian
@@ -294,7 +284,7 @@
 							</h5>
 						</div>
 						<div class="tw-p-4">
-							<div v-if="student.certificates.length" class="tw-space-y-2 tw-mb-4">
+							<div v-if="student.certificates && student.certificates.length" class="tw-space-y-2 tw-mb-4">
 								<div v-for="certificate in student.certificates" 
 									 class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-gray-50 tw-rounded-lg">
 									<span class="tw-text-sm tw-font-medium tw-text-gray-800">@{{ certificate.title }}</span>
@@ -483,7 +473,7 @@
 											<div class="tw-flex-1 tw-min-w-0">
 													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Class</p>
 													<p class="tw-text-base tw-font-semibold tw-text-gray-800 tw-truncate">
-															@{{ student.std_class.name }} @{{ student.section.nick_name }}
+															@{{ student.std_class ? student.std_class.name : 'N/A' }} @{{ student.section ? student.section.nick_name : '' }}
 													</p>
 											</div>
 									</div>
@@ -496,10 +486,11 @@
 											<div class="tw-flex-1 tw-min-w-0">
 													<p class="tw-text-sm tw-text-gray-500 tw-mb-1">Guardian</p>
 													<p class="tw-text-sm tw-font-semibold">
-															<a :href="URL + '/guardians/profile/' + student.guardian.id"
+															<a v-if="student.guardian" :href="URL + '/guardians/profile/' + student.guardian.id"
 																class="tw-text-blue-600 hover:tw-text-teal-700 tw-transition-colors">
 																	@{{ student.guardian.name }} (@{{ student.guardian_relation }})
 															</a>
+															<span v-else class="tw-text-gray-500">No guardian assigned</span>
 													</p>
 											</div>
 									</div>
@@ -617,9 +608,12 @@
 			},
 			computed: {
 				siblings: function(){
-					return this.student.guardian.student;
+					if (this.student && this.student.guardian && this.student.guardian.Students) {
+						return this.student.guardian.Students;
+					}
+					return [];
 /*					vm = this;
-					return	_.filter(this.student.guardian.student, function(std){
+					return	_.filter(this.student.guardian.Students, function(std){
 								return std.id !== vm.student.id;
 							});*/
 				}
