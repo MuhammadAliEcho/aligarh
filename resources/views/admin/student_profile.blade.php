@@ -547,7 +547,7 @@
 							<div class="tw-mt-6">
 								<a  :href="URL+'/students/interview/'+student.id" 
 								   class="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-px-6 tw-py-3 tw-bg-teal-600 hover:tw-bg-teal-700 tw-rounded-lg tw-text-sm tw-font-medium tw-transition-colors">
-									<i class="fa fa-podcast"></i> Parent Interview
+									<i class="fa fa-podcast"></i> @lang('modules.parent_interview')
 								</a>
 							</div>
 							@endcan
