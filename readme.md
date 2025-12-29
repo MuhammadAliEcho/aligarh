@@ -140,7 +140,7 @@ Before installing Aligarh, ensure you have the following:
 
 #### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/yourusername/aligarh.git
+git clone https://github.com/AIAndME-coder/aligarh.git
 cd aligarh
 ```
 
@@ -236,7 +236,7 @@ php artisan tenants:create tenant1 tenant1.aligarh.test
 
 #### Step 1: Clone and Configure
 ```bash
-git clone https://github.com/yourusername/aligarh.git
+git clone https://github.com/AIAndME-coder/aligarh.git
 cd aligarh
 cp .env.example .env
 ```
@@ -580,7 +580,7 @@ _This section will be updated with license details._
 ### Support
 For questions, issues, or feature requests:
 - **Email**: [muhammadaliecho@gmail.com](mailto:muhammadaliecho@gmail.com)
-- **GitHub Issues**: [Create an issue](https://github.com/yourusername/aligarh/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/AIAndME-coder/aligarh/issues)
 
 ### Acknowledgments
 - Laravel Framework and Community
@@ -600,8 +600,8 @@ For questions, issues, or feature requests:
 ### ⏳ Pending Updates
 
 1. **Repository URLs** (Replace in 3 locations)
-   - [ ] Installation section: `git clone https://github.com/yourusername/aligarh.git`
-   - [ ] GitHub Issues link: `https://github.com/yourusername/aligarh/issues`
+   - [ ] Installation section: `git clone https://github.com/AIAndME-coder/aligarh.git`
+   - [ ] GitHub Issues link: `https://github.com/AIAndME-coder/aligarh/issues`
    - Update with actual repository URL
 
 2. **Support Email** (Credits & Support section)
