@@ -1,6 +1,12 @@
 <?php
 
 return [
+    // Bulk Marks Entry Messages
+    'error_loading_data' => 'Error loading data. Please try again.',
+    'error_saving_marks' => 'Error saving marks. Please try again.',
+    'invalid_marks_entered' => 'Invalid marks entered. Please check all entries.',
+    'error_occurred' => 'An error occurred',
+    'attribute_saved_successfully' => 'Subject attributes saved successfully',
     // Success Messages
     'success' => 'Operation completed successfully',
     'created_success' => 'Record created successfully',

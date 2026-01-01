@@ -605,6 +605,10 @@ return [
     'pages_make_result' => 'Make Result',
     'pages_result_attributes' => 'Result Attributes',
     'pages_student_results_manage_title' => 'Manage Student Results',
+    'pages_bulk_marks_entry' => 'Bulk Marks Entry',
+    'bulk_marks_entry_instructions' => 'Enter marks for all students across multiple subjects. Uncheck attendance to mark a student absent for that attribute.',
+    'subjects_without_attributes' => 'The following subjects do not have result attributes configured:',
+    'setup_attributes_first' => 'Please set up result attributes for these subjects before entering marks.',
 
     // Form Titles & Actions
     'forms_teacher_registration' => 'Teacher Registration',

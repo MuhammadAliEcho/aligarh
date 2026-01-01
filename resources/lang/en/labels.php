@@ -1,6 +1,12 @@
 <?php
 
 return [
+    // Bulk Marks Entry
+    'select_exam' => 'Select Exam',
+    'select_class' => 'Select Class',
+    'present' => 'P',
+    'total' => 'Total',
+    'total_marks' => 'Grand Total',
     // Common Form Labels
     'id' => 'ID',
     'name' => 'Name',

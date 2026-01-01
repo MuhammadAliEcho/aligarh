@@ -1,6 +1,13 @@
 <?php
 
 return [
+    // Bulk Marks Entry Actions
+    'load_students' => 'Load Students',
+    'save_marks' => 'Save All Marks',
+    'reset' => 'Reset',
+    'loading' => 'Loading',
+    'warning' => 'Warning',
+    'select_exam_and_class' => 'Please select exam and class',
     // Common Shared Strings
     'yes' => 'Yes',
     'no' => 'No',

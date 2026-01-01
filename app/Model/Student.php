@@ -111,7 +111,7 @@ class Student extends Model
 
 	public function StudentSubjectResult()
 	{
-		return $this->hasOne('App\Model\StudentResult');
+		return $this->hasMany('App\Model\StudentResult');
 	}
 
 	public function ParentInterview()

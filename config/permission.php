@@ -669,6 +669,20 @@ return [
                 'label' => 'View Result',
                 'dependencies' => ['manage-result.index']
             ],
+            
+            // Bulk marks entry permissions
+            'manage-result.bulk.index' => [
+                'label' => 'Bulk Marks Entry View',
+                'dependencies' => ['manage-result.index', 'manage-result.attributes']
+            ],
+            'manage-result.bulk.get.students' => [
+                'label' => 'Get Students for Bulk Entry',
+                'dependencies' => ['manage-result.bulk.index']
+            ],
+            'manage-result.bulk.store' => [
+                'label' => 'Save Bulk Marks',
+                'dependencies' => ['manage-result.index', 'manage-result.bulk.index', 'manage-result.attributes']
+            ]
         ],
 
         'Quizzes' => [

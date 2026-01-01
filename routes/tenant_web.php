@@ -294,6 +294,11 @@ Route::group(['middleware' => ['auth', 'auth.active', 'route_has_permission']], 
         Route::get('/maketranscript', [ManageStudentResultCtrl::class, 'MakeTranscript'])->name('.maketranscript');
         Route::post('/maketranscript', [ManageStudentResultCtrl::class, 'SaveTranscript'])->name('.maketranscript.create');
         Route::post('/make', [ManageStudentResultCtrl::class, 'UpdateResult'])->name('.result');
+        
+        // Bulk marks entry routes
+        Route::get('/bulk', [ManageStudentResultCtrl::class, 'BulkMakeResult'])->name('.bulk.index');
+        Route::post('/bulk/get-students', [ManageStudentResultCtrl::class, 'GetBulkStudents'])->name('.bulk.get.students');
+        Route::post('/bulk', [ManageStudentResultCtrl::class, 'BulkSaveResult'])->name('.bulk.store');
     });
 
     Route::prefix('library')->name('library')->group(function(){

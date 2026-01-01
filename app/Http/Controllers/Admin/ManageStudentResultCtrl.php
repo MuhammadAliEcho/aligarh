@@ -288,4 +288,199 @@ class ManageStudentResultCtrl extends Controller
             ],
         ]);
     }
+
+    /**
+     * Display bulk marks entry form
+     */
+    public function BulkMakeResult(Request $request)
+    {
+        $data['exams'] = Exam::Active()->CurrentSession()->get();
+        $data['classes'] = Classe::select('id', 'name')->get();
+        
+        return view('admin.bulk_make_result', $data);
+    }
+
+    /**
+     * Get students and subjects data for bulk entry (AJAX)
+     */
+    public function GetBulkStudents(Request $request)
+    {
+        $this->validate($request, [
+            'exam' => 'required|numeric',
+            'class' => 'required|numeric',
+        ]);
+
+        $exam = Exam::Active()->CurrentSession()->findOrFail($request->exam);
+        $class = Classe::findOrFail($request->class);
+
+        // Get all examinable subjects for the class with their result attributes
+        $subjects = Subject::select('id', 'name')
+            ->where('class_id', $request->class)
+            ->Examinable()
+            ->get()
+            ->map(function ($subject) use ($request) {
+                $resultAttribute = SubjectResultAttribute::where([
+                    'subject_id' => $subject->id,
+                    'exam_id' => $request->exam,
+                    'class_id' => $request->class
+                ])->first();
+                
+                $subject->subject_result_attribute = $resultAttribute;
+                return $subject;
+            });
+
+        // Get all active students in the class for current session
+        $students = Student::select('id', 'name', 'gr_no')
+            ->where('class_id', $request->class)
+            ->CurrentSession()
+            ->Active()
+            ->orderBy('name')
+            ->with(['StudentSubjectResult' => function ($query) use ($request) {
+                $query->whereHas('SubjectResultAttribute', function ($q) use ($request) {
+                    $q->where(['exam_id' => $request->exam, 'class_id' => $request->class]);
+                })->with('SubjectResultAttribute');
+            }])
+            ->get();
+
+        // Count students with existing results
+        $studentsWithResults = $students->filter(function($student) {
+            return $student->StudentSubjectResult->count() > 0;
+        })->count();
+
+        return response()->json([
+            'success' => true,
+            'exam' => $exam,
+            'class' => $class,
+            'subjects' => $subjects,
+            'students' => $students,
+            'stats' => [
+                'total_students' => $students->count(),
+                'students_with_results' => $studentsWithResults,
+            ],
+        ]);
+    }
+
+    /**
+     * Save bulk marks entry with transaction and upsert
+     */
+    public function BulkSaveResult(Request $request)
+    {
+        $this->validate($request, [
+            'exam' => 'required|numeric',
+            'class' => 'required|numeric',
+            'bulk_data' => 'required|array',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $userId = Auth::id();
+            $now = now();
+
+            // Arrays to collect records for batch upsert
+            $resultAttributesData = [];
+            $studentResultsData = [];
+            $examRemarksData = [];
+
+            // Process each subject's data
+            foreach ($request->bulk_data as $subjectId => $subjectData) {
+                // Skip if no attributes defined
+                if (empty($subjectData['attributes'])) {
+                    continue;
+                }
+
+                // Prepare result attribute record
+                $resultAttributesData[] = [
+                    'subject_id' => $subjectId,
+                    'class_id' => $request->class,
+                    'exam_id' => $request->exam,
+                    'total_marks' => $subjectData['total_marks'],
+                    'attributes' => ($subjectData['attributes']),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                // Get the result attribute ID after upsert (we'll handle this separately)
+                $resultAttribute = SubjectResultAttribute::updateOrCreate(
+                    [
+                        'subject_id' => $subjectId,
+                        'class_id' => $request->class,
+                        'exam_id' => $request->exam
+                    ],
+                    [
+                        'total_marks' => $subjectData['total_marks'],
+                        'attributes' => ($subjectData['attributes']),
+                    ]
+                );
+
+                // Process student marks for this subject
+                if (!empty($subjectData['students'])) {
+                    foreach ($subjectData['students'] as $studentId => $studentMarks) {
+                        // Ensure exam remark exists
+                        $examRemark = ExamRemark::firstOrCreate(
+                            [
+                                'exam_id' => $request->exam,
+                                'class_id' => $request->class,
+                                'student_id' => $studentId
+                            ],
+                            [
+                                'remarks' => '',
+                                'rank' => 0,
+                            ]
+                        );
+
+                        // Calculate total obtain marks
+                        $totalObtainMarks = 0;
+                        $obtainMarksArray = [];
+                        
+                        foreach ($studentMarks['obtain_marks'] as $attributeMark) {
+                            $marks = $attributeMark['attendance'] ? (float)$attributeMark['marks'] : 0;
+                            $totalObtainMarks += $marks;
+                            $obtainMarksArray[] = [
+                                'name' => $attributeMark['name'],
+                                'marks' => $marks,
+                                'attendance' => $attributeMark['attendance']
+                            ];
+                        }
+
+                        // Save student result
+                        StudentResult::updateOrCreate(
+                            [
+                                'subject_result_attribute_id' => $resultAttribute->id,
+                                'student_id' => $studentId,
+                                'exam_remark_id' => $examRemark->id
+                            ],
+                            [
+                                'subject_id' => $subjectId,
+                                'exam_id' => $request->exam,
+                                'obtain_marks' => ($obtainMarksArray),
+                                'total_obtain_marks' => $totalObtainMarks,
+                                'created_by' => $userId,
+                                'updated_by' => $userId,
+                            ]
+                        );
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'type' => 'success',
+                'title' => __('modules.student_results_title'),
+                'msg' => __('modules.exams_update_results_success'),
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                'success' => false,
+                'type' => 'error',
+                'title' => __('modules.student_results_title'),
+                'msg' => __('messages.error_occurred') . ': ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }

@@ -13,7 +13,8 @@ class StudentResult extends Model
 
 	protected $fillable = [
 		'student_id', 'subject_id', 'exam_id', 'exam_remark_id',
-		'subject_result_attribute_id',  'obtain_marks', 'total_obtain_marks'
+		'subject_result_attribute_id',  'obtain_marks', 'total_obtain_marks',
+		'created_by', 'updated_by'
 	];
 
 	public function ExamRemark(){

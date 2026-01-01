@@ -44,6 +44,11 @@
 								<a data-toggle="tab" href="#tab-10"><span class="fa fa-list"></span> {{ __('modules.pages_make_result') }} </a>
 								</li>
 							@endcan
+							@can('manage-result.bulk.index')
+								<li>
+								<a href="{{ route('manage-result.bulk.index') }}"><span class="fa fa-table"></span> {{ __('modules.pages_bulk_marks_entry') }} </a>
+								</li>
+							@endcan
 							@can('manage-result.maketranscript.create')
 							<li class="get-result">
 							  <a data-toggle="tab" href="#tab-11"><span class="fa fa-bar-chart"></span> {{ __('modules.pages_result_attributes') }}</a>
@@ -450,12 +455,17 @@
 				},
 				getstdresult: function(){
 					obtain_marks = [];
-					if(this.std.student_subject_result != null){
+					// StudentSubjectResult is now hasMany (array), get first element since it's filtered by subject
+					const studentResult = (this.std.student_subject_result && this.std.student_subject_result.length > 0) 
+						? this.std.student_subject_result[0] 
+						: null;
+					
+					if(studentResult != null){
 						for(k in this.ResutlAttributes){
 							obtain_marks.push({
-								name: (this.std.student_subject_result.obtain_marks[k] != undefined)? this.std.student_subject_result.obtain_marks[k].name : this.ResutlAttributes[k].name,
-								marks: (this.std.student_subject_result.obtain_marks[k] != undefined)? this.std.student_subject_result.obtain_marks[k].marks : 0,
-								attendance: (this.std.student_subject_result.obtain_marks[k] != undefined)? this.std.student_subject_result.obtain_marks[k].attendance : true
+								name: (studentResult.obtain_marks[k] != undefined)? studentResult.obtain_marks[k].name : this.ResutlAttributes[k].name,
+								marks: (studentResult.obtain_marks[k] != undefined)? studentResult.obtain_marks[k].marks : 0,
+								attendance: (studentResult.obtain_marks[k] != undefined)? studentResult.obtain_marks[k].attendance : true
 							});
 						}
 					} else {

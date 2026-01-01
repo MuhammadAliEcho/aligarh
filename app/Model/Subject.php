@@ -11,4 +11,9 @@ class Subject extends Model
 		$query->where('examinable', 1);
 	}
 
+	public function SubjectResultAttribute()
+	{
+		return $this->hasMany('App\Model\SubjectResultAttribute');
+	}
+
 }
